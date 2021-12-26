@@ -7,11 +7,11 @@ export type Bookmark = {
 	background?: string | null
 	foreground?: string | null
 	tags?: Array<string>
-	collection_id: string
+	folder_id: string
 }
 
-export type Collection = {
-	collection_id: string
+export type Folder = {
+	folder_id: string
 	user_id: string
 	title: string
 	image?: string

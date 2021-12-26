@@ -1,18 +1,18 @@
-import type { Collection } from './types'
-import Dexie from 'dexie';
+import type { Folder } from './types'
+import Dexie from 'dexie'
 
 export class BookmarkDB extends Dexie {
-    collections: Dexie.Table<Collection, number>;
+	folders: Dexie.Table<Folder, number>
 
-    constructor () {
-        super("CollectionsDB");
-        this.version(1).stores({
-            collections: 'collection_id, user_id, *bookmarks, position'
-        });
-        this.collections = this.table("collections");
-    }
+	constructor() {
+		super('FoldersDB')
+		this.version(1).stores({
+			folders: 'folder_id, user_id, *bookmarks, position'
+		})
+		this.folders = this.table('folders')
+	}
 }
 
-const db: BookmarkDB = new BookmarkDB
+const db: BookmarkDB = new BookmarkDB()
 
-export default db;
+export default db

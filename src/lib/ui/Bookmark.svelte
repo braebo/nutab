@@ -1,10 +1,10 @@
 <script lang="ts">
 	// import type { Bookmark } from '../data/types';
-	import { createEventDispatcher } from 'svelte'
 
 	import { settings } from '$lib/settings/settingsStore'
 	import { scale, fade } from 'svelte/transition'
 	import type { Bookmark } from '$lib/data/types'
+	import { createEventDispatcher } from 'svelte'
 	import Edit from '$lib/icons/Edit.svelte'
 
 	export let i: number

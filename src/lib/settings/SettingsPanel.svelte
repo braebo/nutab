@@ -1,16 +1,19 @@
 <script>
-	import { fly } from 'svelte/transition'
-
 	import { settings, showSettings } from './settingsStore'
-	import Range from '../ui/Range.svelte'
 	import { clickOutside } from '../utils/clickOutside'
+	import { fly } from 'svelte/transition'
+	import Range from '../ui/Range.svelte'
 
 	const updateSetting = (setting, value) => {
 		$settings.setting = value
 	}
 </script>
 
-<div class="mousetrap" on:mouseover={() => ($showSettings = true)} />
+<div
+	class="mousetrap"
+	on:mouseover={() => ($showSettings = true)}
+	on:focus={() => ($showSettings = true)}
+/>
 
 {#if $showSettings}
 	<div

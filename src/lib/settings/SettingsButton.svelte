@@ -18,9 +18,9 @@
 
 		justify-content: space-around;
 
+		/* width: 50px; */
 		height: 20px;
-
-		padding: 15px;
+		margin: 15px;
 
 		font-size: 25px;
 

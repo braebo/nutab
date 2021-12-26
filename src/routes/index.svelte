@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { activeCollection } from '$lib/data/dbStore'
+	import { activeFolder } from '$lib/data/dbStore'
 
 	import RightClickMenu from '$lib/ui/RightClickMenu.svelte'
 	import BookmarkEditor from '$lib/ui/BookmarkEditor.svelte'
-	import Collection from '$lib/ui/Collection.svelte'
+	import { emptyBookmark } from '$lib/data/emptyBookmark'
+	import Folder from '$lib/ui/Folder.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
 
 	import Search from '$lib/search/Search.svelte'
@@ -12,9 +13,24 @@
 	let showModal = false,
 		editorSettings: Bookmark
 
-	function showEditor(i) {
-		editorSettings = $activeCollection.bookmarks[i]
+	function showEditor(i: number) {
+		editorSettings = $activeFolder.bookmarks[i]
 		showModal = true
+	}
+
+	function newBookmark() {
+		editorSettings = emptyBookmark($activeFolder.folder_id, $activeFolder.title)
+		showModal = true
+		setTimeout(() => {
+			const titleField = document.getElementById('title')
+			const sel = window.getSelection()
+			const range = document.createRange()
+			range.selectNodeContents(titleField)
+			sel.removeAllRanges()
+			sel.addRange(range)
+			// document.getElementById('title').focus()
+			// document.getElementById('title').select()
+		}, 10)
 	}
 </script>
 
@@ -27,7 +43,7 @@
 
 <br />
 
-<Collection on:showEditor={(e) => showEditor(e.detail.index)} />
+<Folder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
 
 <RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} />
 

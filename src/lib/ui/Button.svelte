@@ -5,6 +5,7 @@
 <style>
 	button {
 		width: var(--width, 4rem);
+		min-width: max-content;
 		height: 2rem;
 
 		padding: 0.5em 1em;

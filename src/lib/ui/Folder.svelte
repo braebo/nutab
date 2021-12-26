@@ -1,20 +1,23 @@
 <script lang="ts">
 	import SettingsPanel from '../settings/SettingsPanel.svelte'
-	import { addDefaultCollection } from '../data/transactions'
+	import { addDefaultFolder } from '../data/transactions'
 	import { settings } from '../settings/settingsStore'
-	import { activeCollection } from '../data/dbStore'
+	import { activeFolder } from '../data/dbStore'
 	import Bookmark from './Bookmark.svelte'
 
-	import { onMount } from 'svelte'
+	import { createEventDispatcher, onMount } from 'svelte'
+	import Tooltip from './Tooltip.svelte'
+
+	const dispatch = createEventDispatcher()
 
 	let hovering: number | null = null
 
-	onMount(() => addDefaultCollection())
+	onMount(() => addDefaultFolder())
 </script>
 
-<div class="collection-container">
-	{#if $activeCollection?.bookmarks}
-		{#each $activeCollection.bookmarks as bookmark, i}
+<div class="folder-container">
+	{#if $activeFolder?.bookmarks}
+		{#each $activeFolder.bookmarks as bookmark, i}
 			<!-- prettier-ignore -->
 			<div
 				class="bookmark-container"
@@ -32,17 +35,22 @@
 			</div>
 		{/each}
 	{/if}
+	<div class="add-bookmark" on:click={() => dispatch('newBookmark')}>
+		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
+	</div>
 </div>
 
 <SettingsPanel />
 
-<style>
+<style lang="scss">
 	.bookmark-container {
 		display: flex;
 
 		width: max-content;
 	}
-	.collection-container {
+
+	.folder-container {
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
@@ -51,6 +59,29 @@
 		max-width: 80vw;
 		margin: 0 auto;
 		margin-top: 5%;
-		contain: none;
+	}
+
+	.add-bookmark {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -7rem;
+
+		width: fit-content;
+		margin: auto;
+
+		font-size: 3rem;
+
+		color: var(--dark-a);
+		opacity: 0.1;
+
+		cursor: pointer;
+		transition: opacity 0.15s;
+
+		&:hover {
+			opacity: 0.75;
+
+			transition: opacity 0.4s;
+		}
 	}
 </style>

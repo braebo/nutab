@@ -1,13 +1,17 @@
 <script lang="ts">
 	import type { Settings } from '$lib/settings/settingsStore'
+	import type { Bookmark } from '$lib/data/types'
 
+	import BookmarkArt from '$lib/ui/BookmarkArt.svelte'
 	import Button from '$lib/ui/Button.svelte'
 	import Tags from '$lib/ui/Tags.svelte'
+	import { log } from 'fractils'
+	import { onMount } from 'svelte'
 
 	export let settings: Settings
 	export let i: number
 	export let bookmark_id: string
-	export let editorSettings = {}
+	export let editorSettings: Bookmark
 
 	let hovering = false,
 		tag = ''
@@ -18,14 +22,16 @@
 	let descriptionInput: HTMLInputElement
 	let descriptionHover = false
 
-	function handleTags(event) {
+	function handleTags(event: CustomEvent) {
 		tag = event.detail.tags
 	}
-	async function updateTags(event, index: number, id: string) {
-		editor['tags'] = event.detail.tags
+	async function updateTags(event: CustomEvent, index: number, id: string) {
+		editorSettings['tags'] = event.detail.tags
 	}
 
 	const hasFocus = (el: Element) => document.activeElement === el
+
+	onMount(() => log(editorSettings))
 </script>
 
 {#if debug}
@@ -33,7 +39,16 @@
 {/if}
 
 <div class="settings-container">
-	<img name="image" src={editorSettings['image']} alt={editorSettings['title']} />
+	{#if editorSettings['image']}
+		<img name="image" src={editorSettings['image']} alt={editorSettings['title']} />
+	{:else}
+		<BookmarkArt
+			--foreground={editorSettings['foreground']}
+			--background={editorSettings['background']}
+			--size="100px"
+			title={editorSettings['title']}
+		/>
+	{/if}
 
 	<div class="setting title">
 		<div id="title" contenteditable bind:innerHTML={editorSettings['title']} />

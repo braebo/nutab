@@ -1,14 +1,11 @@
-import collections from '../collections/'
-
+import folders from '../folders'
 
 let svgList = []
 
-for (const collection of collections) {
-	svgList = [...svgList, { collection: collection.title, images: collection.bookmarks.map(b => b.image) }]
+for (const folder of folders) {
+	svgList = [...svgList, { folder: folder.title, images: folder.bookmarks.map((b) => b.image) }]
 }
 
-
-
 const download_icons = () => {
-	console.log('todo');
+	console.log('todo')
 }
