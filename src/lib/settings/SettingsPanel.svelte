@@ -1,7 +1,7 @@
 <script>
 	import { fly } from 'svelte/transition'
 
-	import { settings, ranges, showSettings } from './settingsStore'
+	import { settings, showSettings } from './settingsStore'
 	import Range from '../ui/Range.svelte'
 	import { clickOutside } from '../utils/clickOutside'
 
@@ -20,7 +20,7 @@
 		use:clickOutside
 	>
 		<div class="controls">
-			{#each Object.keys(ranges) as setting}
+			{#each Object.keys($settings.ranges) as setting}
 				<div class="control">
 					<label for={setting}>{setting}</label>
 					<Range

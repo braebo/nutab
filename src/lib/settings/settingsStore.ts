@@ -1,19 +1,31 @@
 import localStorageStore from '$lib/utils/localStorageStore'
 import { writable } from 'svelte/store'
 
-export const ranges = {
-	size: { min: 75, max: 250 },
-	gap: { min: 0, max: 100 },
-    icon: {min: 0, max: 150},
-};
+type Range = {
+	value: number
+	range: { min: number; max: number }
+}
 
-const default_settings = {
-	size: 75,
-    gap: 25,
-    icon: 50,
-    transparent: true,
-    showTitle: false
-};
+export interface Settings {
+	// Todo: add theme, language, etc.
+	ranges: {
+		gridSize: Range
+		gap: Range
+		iconSize: Range
+	}
+	transparent: boolean
+	showTitle: boolean
+}
+
+const default_settings: Settings = {
+	ranges: {
+		gridSize: { value: 75, range: { min: 75, max: 250 } },
+		gap: { value: 25, range: { min: 0, max: 100 } },
+		iconSize: { value: 50, range: { min: 0, max: 150 } }
+	},
+	transparent: true,
+	showTitle: false
+}
 
 export const settings = localStorageStore('settings', default_settings)
 
