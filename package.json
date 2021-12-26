@@ -1,12 +1,14 @@
 {
-	"name": "frackit",
+	"name": "nutab",
 	"version": "0.0.1",
-	"description": "Fractal's personal sveltekit starter template",
+	"description": "A better new-tab browser extension",
 	"keywords": [
 		"svelte",
 		"sveltekit",
-		"starter",
-		"template"
+		"newtab",
+		"extension",
+		"chrome",
+		"browser"
 	],
 	"type": "module",
 	"scripts": {
