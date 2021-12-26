@@ -1,0 +1,33 @@
+# About
+
+Minimal Sveltekit starter template, pre-configured with:
+
+-   [Autoprefixer](https://github.com/postcss/autoprefixer)
+-   [Typescript](https://www.typescriptlang.org/)
+-   [Dark Mode](https://fractils.fractal-hq.com/#theme)
+-   [CSSNano](https://cssnano.co/)
+-   [MDSvex](https://mdsvex.com/)
+-   [Stylelint](https://stylelint.io/)
+-   [Prettier](https://prettier.io/)
+-   [Greset](https://github.com/ghostdevv/greset)
+-   [SCSS](https://sass-lang.com/)
+-   [Pug](https://github.com/pugjs/pug)
+
+<style>
+	h1 {
+		margin: 4rem auto 2rem auto;
+	}
+	h2 {
+		margin: 2rem auto 1rem;
+		
+		text-align: left;
+	}
+	p {
+		max-width: min(100vw, 900px);
+		margin: 0 auto;
+	}
+	ul {
+		list-style-type: disc;
+		margin: 1rem auto;
+	}
+</style>

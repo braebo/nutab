@@ -1,0 +1,42 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"moduleResolution": "node",
+		"module": "es2020",
+		"lib": ["es2020"],
+		"target": "es2019",
+		"importsNotUsedAsValues": "error",
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"baseUrl": ".",
+		"allowJs": true,
+		"checkJs": true,
+		"types": ["node"],
+		"paths": {
+			"$lib/*": ["src/lib/*"]
+		}
+	},
+	"include": [
+		"src/**/**/**/*.ts",
+		"src/**/*.svelte",
+		"src/**/*.d.ts",
+		"src/**/*.js",
+		"src/**/*.ts",
+		"src/*.d.ts"
+	],
+	"exclude": [
+		".vercel_build_output/*",
+		"mdsvex.config.js",
+		"node_modules/*",
+		".svelte-kit/*",
+		"functions/*",
+		"coverage/*",
+		".svelte/*",
+		"build/*",
+		"dist/*"
+	]
+}

@@ -1,0 +1,46 @@
+@mixin variables($map) {
+	@each $variable, $colour in $map {
+		--#{$variable}: #{$colour};
+		--#{$variable}-rgb: #{red($colour) + ', ' + green($colour) + ', ' + blue($colour)};
+	}
+}
+
+:root {
+	--brand-a: #ffbbb6;
+	--brand-b: #ffcc8b;
+	--brand-c: #ff8ba9;
+	--brand-a-rgb: 255, 187, 182;
+	--brand-b-rgb: 255, 204, 139;
+	--brand-c-rgb: 255, 139, 169;
+	--always-dark: #0b0e11;
+
+	&[theme='light'] {
+		@include variables(
+			(
+				dark-a: #0b0e11,
+				dark-b: #1c1e21,
+				dark-c: #1d252e,
+				dark-d: #3a3a44,
+				light-a: #ffffff,
+				light-b: #dfe1e9,
+				light-c: #c3c4c7,
+				light-d: #acacb4
+			)
+		);
+	}
+
+	&[theme='dark'] {
+		@include variables(
+			(
+				light-a: #0b0e11,
+				light-b: #1c1e21,
+				light-c: #1d252e,
+				light-d: #3a3a44,
+				dark-a: #ffffff,
+				dark-b: #dfe1e9,
+				dark-c: #c3c4c7,
+				dark-d: #acacb4
+			)
+		);
+	}
+}

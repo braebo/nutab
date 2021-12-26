@@ -1,0 +1,13 @@
+<center>
+
+# Contact
+
+[braden@fractal-hq.com](mailto:braden@fractal-hq.com)
+
+</center>
+
+<style>
+	h1 {
+		margin: 4rem auto;
+	}
+</style>
