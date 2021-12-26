@@ -1,10 +1,10 @@
-import { activeCollection } from './dbStore';
-import defaultCollection from './collections/defaultCollection';
-import db from './db';
+import { activeCollection } from './dbStore'
+import defaultCollection from './collections/defaultCollection'
+import db from './db'
 
 // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/logger.ts // TODO use this to make logger a thing
 interface logOptions {
-	str?: string,
+	str?: string
 	color?: string
 	font_size?: number
 	obj?: Object
@@ -18,20 +18,21 @@ const defaults: logOptions = {
 }
 
 // const verbose: boolean = false; // toggle to enable verbose debugging
-const verbose = false;
+const verbose = false
 const log = (opts = defaults) => {
-		const {str, color, font_size, obj } = opts
-		if (verbose) {
-    	    console.log(`%c${performance.now().toFixed(1)}: -- ${str}`, `font-size:${font_size}px;color:${color}`);
-    	    if (obj) {
-    	        console.log(obj);
-    	    }
-    	}
-    	else {
-    	    (s?:string, c?:string, f?: number | string, o?: object) => { };
-    	}
-    }
-
+	const { str, color, font_size, obj } = opts
+	if (verbose) {
+		console.log(
+			`%c${performance.now().toFixed(1)}: -- ${str}`,
+			`font-size:${font_size}px;color:${color}`
+		)
+		if (obj) {
+			console.log(obj)
+		}
+	} else {
+		;(s?: string, c?: string, f?: number | string, o?: object) => {}
+	}
+}
 
 /**
  * Initializes default bookmark collection.
@@ -39,14 +40,13 @@ const log = (opts = defaults) => {
  * @returns {Collection} default_collection
  */
 export async function addDefaultCollection() {
-    log('🎬 Adding default Bookmark Collection: ', 'lightpurple', 25);
+	log('🎬 Adding default Bookmark Collection: ', 'lightpurple', 25)
 
-    await db.collections.add(defaultCollection);
-    activeCollection.set(defaultCollection);
+	await db.collections.add(defaultCollection)
+	activeCollection.set(defaultCollection)
 
-    log('🏁 Add Defaults Complete', 'lightpurple', 25);
+	log('🏁 Add Defaults Complete', 'lightpurple', 25)
 }
-
 
 /**
  * Creates a new bookmark.
@@ -54,10 +54,10 @@ export async function addDefaultCollection() {
  * @returns {Collection} bookmark
  */
 export async function newBookmark() {
-    log('🎬 Creating new bookmark: ', 'lightpurple', 25);
+	log('🎬 Creating new bookmark: ', 'lightpurple', 25)
 
-    await db.collections.add(defaultCollection);
-    activeCollection.set(defaultCollection);
+	await db.collections.add(defaultCollection)
+	activeCollection.set(defaultCollection)
 
-    log('🏁 Add Defaults Complete', 'lightpurple', 25);
+	log('🏁 Add Defaults Complete', 'lightpurple', 25)
 }
