@@ -406,7 +406,7 @@
 		max-width: 100%;
 		margin: auto;
 
-		border: solid 1px rgb(var(--light-b-rgb), 0);
+		border: solid 1px rgba(var(--light-b-rgb), 0);
 		border-radius: 2px;
 	}
 
@@ -418,7 +418,7 @@
 
 		font-family: inherit;
 
-		color: rgb(var(--light-c));
+		color: var(--light-c);
 		border: solid 1px rgba(var(--light-b-rgb), 0);
 		border-radius: 4px;
 

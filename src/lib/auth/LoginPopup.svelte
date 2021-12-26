@@ -45,7 +45,7 @@
 	.success-message {
 		text-align: center;
 		background-color: var(--light-a);
-		border: 1px solid rgb(var(--primary));
+		border: 1px solid var(--primary);
 		font-variation-settings: 'wght' 700;
 		color: var(--dark-a);
 		font-size: 18px;

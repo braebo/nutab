@@ -31,10 +31,10 @@
 			statusColor = 'var(--light-c)'
 			break
 		case 'valid':
-			statusColor = 'rgb(var(--primary))'
+			statusColor = 'var(--primary)'
 			break
 		case 'error':
-			statusColor = 'rgb(var(--error))'
+			statusColor = 'var(--error)'
 			break
 		default:
 			statusColor = 'var(--light-c)'
@@ -227,7 +227,7 @@
 	}
 	.emailValid,
 	.passwordValid {
-		border: 1px solid rgb(var(--primary)) !important;
+		border: 1px solid var(--primary) !important;
 	}
 	.eye-icon {
 		position: absolute;
@@ -259,7 +259,7 @@
 		border: 1px solid var(--status-color);
 		border-radius: 8px;
 		outline: none;
-		outline-color: rgb(var(--primary));
+		outline-color: var(--primary);
 		background: var(--light-a);
 	}
 	::placeholder {
@@ -296,8 +296,8 @@
 		font-variation-settings: 'wght' 500;
 	}
 	input[type='submit']:hover {
-		color: rgb(var(--always-dark));
-		background-color: rgb(var(--primary));
+		color: var(--always-dark);
+		background-color: var(--primary);
 	}
 	.button-wrapper {
 		position: absolute;
@@ -341,7 +341,7 @@
 		user-select: none;
 		transition: color 500ms;
 
-		color: rgb(var(--dark-d));
+		color: var(--dark-d);
 	}
 	ul.login-signup {
 		display: inline-flex;
@@ -368,7 +368,7 @@
 		content: '';
 		transition: width 0.3s;
 
-		background: rgb(var(--primary));
+		background: var(--primary);
 	}
 	.anim-link:hover::after,
 	.activeTab::after {

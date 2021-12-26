@@ -55,7 +55,7 @@
 		font-size: 14px;
 		line-height: 1.4;
 
-		color: rgb(var(--dark-d));
+		color: var(--dark-d);
 		border-radius: 4px;
 		outline: 0;
 		background-color: var(--light-a);
