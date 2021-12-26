@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { Engine } from '$lib/data/types'
 	import { createEventDispatcher } from 'svelte'
 	import { fly } from 'svelte/transition'
-	import type { Engine } from '$lib/data/types'
 
 	export let engines: Engine[] = []
 	export let searchFocused = true
@@ -85,28 +85,23 @@
 	.engines {
 		position: relative;
 		display: flex;
-		flex-grow: 1;
+		align-items: center;
+		flex-grow: 0.35;
 
+		height: 2rem;
 		min-width: max-content;
 		margin: auto;
 
-		transform: translate(4.8rem);
-		z-index: 2;
-	}
-
-	.icon,
-	.engines {
-		position: relative;
-
-		width: 3rem;
-		height: 2rem;
-
+		transform: translate(3.25rem);
 		cursor: pointer;
+		z-index: 2;
 	}
 
 	.icon {
 		position: absolute;
 		display: flex;
+
+		width: 2rem;
 
 		opacity: 0.5;
 
@@ -134,7 +129,7 @@
 		font-family: var(--font);
 
 		opacity: 0;
-		color: rgb(var(--dark-d));
+		color: var(--dark-d) !important;
 
 		transform: translate(7px, 50px);
 		transition: 0.2s ease-out;

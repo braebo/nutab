@@ -3,9 +3,9 @@
 	id="Capa_1"
 	xmlns="http://www.w3.org/2000/svg"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	width="65%"
-	height="65%"
-	viewBox="0 0 13.1 15"
+	width="60%"
+	height="60%"
+	viewBox="0 0.5 13.1 15.5"
 	style="
 		enable-background: new 0 0 13.1 15;
 
