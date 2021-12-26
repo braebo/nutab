@@ -1,0 +1,4 @@
+# Disable email notifications
+notifications:
+    - email: false
+      web: false
