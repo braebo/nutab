@@ -14,7 +14,7 @@
 <template lang="pug">
 
 	svelte:head
-		title {pageTitle($page.path)} · Frackit
+		title {pageTitle($page.path)} · Nutab
 
 	Header
 
