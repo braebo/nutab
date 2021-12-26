@@ -1,6 +1,6 @@
-<script>
-	import { initTheme, toggleTheme } from './themer'
-	import { theme } from './theme'
+<script lang="ts">
+	import { initTheme, toggleTheme } from 'fractils'
+	import { theme } from 'fractils'
 
 	import { fade, fly } from 'svelte/transition'
 	import { quartOut } from 'svelte/easing'
@@ -22,7 +22,7 @@
 		mounted = true
 	})
 
-	export let size
+	export let size: number
 	function handleToggle() {
 		$count++
 		toggleTheme()
