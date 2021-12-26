@@ -1,11 +1,13 @@
 <script lang="ts">
+	import type { Settings } from '$lib/settings/settingsStore'
+
 	import Button from '$lib/ui/Button.svelte'
 	import Tags from '$lib/ui/Tags.svelte'
 
-	export let settings,
-		i: number,
-		bookmark_id: string,
-		editorSettings = {}
+	export let settings: Settings
+	export let i: number
+	export let bookmark_id: string
+	export let editorSettings = {}
 
 	let hovering = false,
 		tag = ''
@@ -13,8 +15,8 @@
 	$: placeholder = descriptionHover ? 'description' : '+'
 	let debug = false
 
-	let descriptionInput: HTMLInputElement,
-		descriptionHover = false
+	let descriptionInput: HTMLInputElement
+	let descriptionHover = false
 
 	function handleTags(event) {
 		tag = event.detail.tags
@@ -41,20 +43,22 @@
 		<!-- <label for='description'>description</label> -->
 		<input
 			name="description"
-			placeholder="+"
+			{placeholder}
 			type="text"
 			bind:this={descriptionInput}
 			bind:value={editorSettings['description']}
 			on:mouseover={() => {
 				descriptionHover = true
-				if (!hasFocus(descriptionInput)) descriptionInput.placeholder = 'description'
 			}}
 			on:mouseout={() => {
 				descriptionHover = false
-				if (!hasFocus(descriptionInput)) descriptionInput.placeholder = '+'
 			}}
-			onfocus="this.placeholder=''"
-			onblur="this.placeholder='+'"
+			on:focus={() => {
+				descriptionHover = true
+			}}
+			on:blur={() => {
+				descriptionHover = false
+			}}
 		/>
 	</div>
 
@@ -138,7 +142,7 @@
 		font-size: 1rem;
 
 		color: var(--dark-a);
-		border: 1px solid rgba(var(--light-b), 0);
+		border: 1px solid rgba(var(--light-b-rgb), 0);
 		border-radius: 3px;
 		outline: none;
 		background: var(--light-a);
@@ -171,13 +175,13 @@
 		margin: 0 0 1rem auto;
 		padding-top: 0.25rem;
 
-		color: rgba(var(--dark-d), 0.5);
+		color: rgba(var(--dark-d-rgb), 0.5);
 
 		text-align: center;
 	}
 
 	input:focus {
-		border: 1px solid rgba(var(--light-b), 1);
+		border: 1px solid rgba(var(--light-b-rgb), 1);
 	}
 
 	input[name='url'] {
@@ -194,7 +198,7 @@
 	input[name='description'] {
 		margin: 0 auto 2rem auto;
 
-		color: rgba(var(--dark-d), 0.75);
+		color: rgba(var(--dark-d-rgb), 0.75);
 
 		text-align: center;
 	}
@@ -266,7 +270,7 @@
 
 		color: var(--dark-b);
 		border-radius: 5px;
-		background: rgba(var(--light-b), 0.5);
+		background: rgba(var(--light-b-rgb), 0.5);
 
 		z-index: -1;
 	}

@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from 'svelte'
 
 	import { settings } from '$lib/settings/settingsStore'
-	import { scale, fly, fade } from 'svelte/transition'
+	import { scale, fade } from 'svelte/transition'
 	import type { Bookmark } from '$lib/data/types'
 	import Edit from '$lib/icons/Edit.svelte'
 
@@ -60,8 +60,8 @@
 			transition:scale={{ duration: 200 + 50 * i }}
 			class="bookmark"
 			style="
-				width: {$settings.width}px;
-				height: {$settings.icon}px;
+				width: {$settings.ranges.iconSize.value}px;
+				height: {$settings.ranges.iconSize.value}px;
 
 				color: {$settings.transparent ? 'transparent' : foreground};
 				background: {$settings.transparent ? 'transparent' : background};
@@ -69,7 +69,7 @@
 		>
 			{#if image}
 				<img
-					style="width: {$settings.icon}px;"
+					style="width: {$settings.iconSize}px;"
 					class="icon icon{i}"
 					src={image}
 					alt={title}

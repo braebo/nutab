@@ -48,7 +48,7 @@
 	}
 
 	input[type='range']:focus::-webkit-slider-thumb {
-		background: rgb(var(--brand-a));
+		background: var(--brand-a);
 	}
 
 	input[type='range']::-moz-range-track {
