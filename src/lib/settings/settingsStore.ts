@@ -10,7 +10,7 @@ export interface Settings {
 	// Todo: add theme, language, etc.
 	ranges: {
 		gridSize: Range
-		gap: Range
+		gridGap: Range
 		iconSize: Range
 	}
 	transparent: boolean
@@ -20,7 +20,7 @@ export interface Settings {
 const default_settings: Settings = {
 	ranges: {
 		gridSize: { value: 75, range: { min: 75, max: 250 } },
-		gap: { value: 25, range: { min: 0, max: 100 } },
+		gridGap: { value: 25, range: { min: 0, max: 100 } },
 		iconSize: { value: 50, range: { min: 0, max: 150 } }
 	},
 	transparent: true,
