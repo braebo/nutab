@@ -119,16 +119,16 @@
 	p {
 		position: absolute;
 
-		width: 100%;
+		width: fit-content;
 
 		font-size: 18px;
 		line-height: 150%;
+		white-space: nowrap;
+		letter-spacing: 2px;
 
 		color: var(--dark-d);
 
 		transform: translateY(200%);
-		white-space: nowrap;
-		letter-spacing: 2px;
 	}
 
 	a {
@@ -137,9 +137,9 @@
 		width: max-content;
 		height: max-content;
 
-		color: var(--dark-a);
-
 		text-decoration: none;
+
+		color: var(--dark-a);
 	}
 
 	.edit {
