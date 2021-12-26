@@ -1,5 +1,11 @@
-@import '@fontsource/fira-mono';
 @import './theme.scss';
+
+/*
+ *
+	FONTS
+*/
+
+@import '@fontsource/fira-mono';
 
 /*	RUBIK  */
 @font-face {
@@ -23,11 +29,15 @@
 	src: url('/fonts/dosis/dosis.ttf') format('truetype');
 }
 
+/*
+ *
+	BASICS
+*/
+
 :root {
 	--font-primary: 'rubik', sans-serif;
 	--font-secondary: 'dosis', sans-serif;
 	--font-mono: 'mono', monospace;
-	--warn: #ff8888;
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
 }
@@ -124,4 +134,16 @@ button:focus:not(:focus-visible) {
 	h1 {
 		font-size: 2.4rem;
 	}
+}
+
+/*
+ *
+	APP SPECIFIC
+*/
+
+#app,
+.page {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
 }

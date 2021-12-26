@@ -1,4 +1,5 @@
-import vercel from '@sveltejs/adapter-vercel'
+// import vercel from '@sveltejs/adapter-vercel'
+import adapter from 'sveltekit-adapter-browser-extension'
 import mdsvexConfig from './mdsvex.config.js'
 import preprocess from 'svelte-preprocess'
 import { mdsvex } from 'mdsvex'
@@ -14,7 +15,9 @@ const config = {
 	],
 	kit: {
 		target: '#svelte',
-		adapter: vercel(),
+		// adapter: vercel(),
+		adapter: adapter(),
+		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
 		ssr: !!process.env.SSR
 	}
 }
