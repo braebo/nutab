@@ -36,9 +36,12 @@
 		align-items: center;
 
 		width: 2rem;
+		margin: 2rem 1.4rem;
 	}
 
-	:global(#theme .icon) {
+	#theme {
+		margin-right: 0.75rem;
+
 		font-size: 1.25rem;
 	}
 </style>
