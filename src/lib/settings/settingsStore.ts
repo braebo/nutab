@@ -2,6 +2,7 @@ import localStorageStore from '$lib/utils/localStorageStore'
 import { writable } from 'svelte/store'
 
 type Range = {
+	label: string
 	value: number
 	range: { min: number; max: number }
 }
@@ -9,7 +10,7 @@ type Range = {
 export interface Settings {
 	// Todo: add theme, language, etc.
 	ranges: {
-		gridSize: Range
+		cellSize: Range
 		gridGap: Range
 		iconSize: Range
 	}
@@ -19,9 +20,9 @@ export interface Settings {
 
 const default_settings: Settings = {
 	ranges: {
-		gridSize: { value: 75, range: { min: 75, max: 250 } },
-		gridGap: { value: 25, range: { min: 0, max: 100 } },
-		iconSize: { value: 50, range: { min: 0, max: 150 } }
+		cellSize: { label: 'Cell Size', value: 75, range: { min: 75, max: 250 } },
+		iconSize: { label: 'Icon Size', value: 50, range: { min: 0, max: 150 } },
+		gridGap: { label: 'Grid Gap', value: 25, range: { min: 0, max: 100 } }
 	},
 	transparent: true,
 	showTitle: false

@@ -19,7 +19,7 @@
 			<div
 				class="bookmark-container"
 				style="
-					width: {$settings.ranges.iconSize.value}px;
+					width: {$settings.ranges.cellSize.value}px;
 					height: {$settings.ranges.iconSize.value}px;
 					margin: {$settings.ranges.gridGap.value}px;
 				"

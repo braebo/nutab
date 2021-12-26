@@ -22,11 +22,11 @@
 		<div class="controls">
 			{#each Object.keys($settings.ranges) as setting}
 				<div class="control">
-					<label for={setting}>{setting}</label>
+					<label for={setting}>{$settings.ranges[setting].label}</label>
 					<Range
-						range={ranges[setting]}
-						bind:setting={$settings[setting]}
-						on:change={(e) => ($settings[setting] = e.target.value)}
+						range={$settings.ranges[setting].range}
+						bind:setting={$settings.ranges[setting].value}
+						on:change={(e) => ($settings.ranges[setting].value = e.target.value)}
 						name={setting}
 					/>
 				</div>
