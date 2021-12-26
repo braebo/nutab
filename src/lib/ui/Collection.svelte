@@ -2,36 +2,31 @@
 	import SettingsPanel from '../settings/SettingsPanel.svelte'
 	import { addDefaultCollection } from '../data/transactions'
 	import { settings } from '../settings/settingsStore'
-	import BookmarkEditor from './BookmarkEditor.svelte'
 	import { activeCollection } from '../data/dbStore'
 	import Bookmark from './Bookmark.svelte'
 
 	import { onMount } from 'svelte'
 
-	const updateSetting = (setting, value) => {
-		$settings.setting = value
-	}
+	let hovering: number | null = null
 
-	let hovering = null
-
-	onMount(() => {
-		addDefaultCollection()
-	})
+	onMount(() => addDefaultCollection())
 </script>
 
 <div class="collection-container">
-	{#if $activeCollection.bookmarks}
+	{#if $activeCollection?.bookmarks}
 		{#each $activeCollection.bookmarks as bookmark, i}
 			<!-- prettier-ignore -->
 			<div
 				class="bookmark-container"
 				style="
-					width: {$settings.size}px;
-					height: {$settings.size}px;
-					margin: {$settings.gap}px;
+					width: {$settings.ranges.iconSize.value}px;
+					height: {$settings.ranges.iconSize.value}px;
+					margin: {$settings.ranges.gridGap.value}px;
 				"
                 on:mouseover={() => hovering = i}
                 on:mouseout={() => hovering = null}
+                on:focus={() => hovering = i}
+                on:blur={() => hovering = null}
 			>
 				<Bookmark {bookmark} {hovering} {i} on:showEditor/>
 			</div>
@@ -43,18 +38,19 @@
 
 <style>
 	.bookmark-container {
-		width: max-content;
 		display: flex;
+
+		width: max-content;
 	}
 	.collection-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+
 		width: max-content;
 		max-width: 80vw;
-		flex-wrap: wrap;
 		margin: 0 auto;
 		margin-top: 5%;
-		display: grid;
 		contain: none;
-		display: flex;
-		justify-content: center;
 	}
 </style>

@@ -69,7 +69,7 @@
 		>
 			{#if image}
 				<img
-					style="width: {$settings.iconSize}px;"
+					style="width: {$settings.ranges.iconSize.value}px;"
 					class="icon icon{i}"
 					src={image}
 					alt={title}
