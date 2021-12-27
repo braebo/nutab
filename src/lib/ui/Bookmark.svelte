@@ -128,7 +128,7 @@
 
 		color: var(--dark-d);
 
-		transform: translateY(200%);
+		transform: translateY(120%);
 	}
 
 	a {
