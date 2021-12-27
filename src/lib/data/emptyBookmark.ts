@@ -8,10 +8,10 @@ export const emptyBookmark = (
 	bookmark_id: cuid(),
 	url: 'url',
 	title: 'title',
-	description: 'description',
+	description: '',
 	image: null,
-	background: 'rgb(0, 0, 0)',
-	foreground: 'rgb(255, 255, 255)',
+	background: '#000000',
+	foreground: '#ffffff',
 	tags: [current_folder_title],
 	folder_id: current_folder_id
 })
