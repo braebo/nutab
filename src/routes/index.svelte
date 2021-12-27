@@ -9,6 +9,7 @@
 
 	import Search from '$lib/search/Search.svelte'
 	import type { Bookmark } from '$lib/data/types'
+	import { selectText } from '$lib/utils/selectText'
 
 	let showModal = false,
 		editorSettings: Bookmark
@@ -22,14 +23,7 @@
 		editorSettings = emptyBookmark($activeFolder.folder_id, $activeFolder.title)
 		showModal = true
 		setTimeout(() => {
-			const titleField = document.getElementById('title')
-			const sel = window.getSelection()
-			const range = document.createRange()
-			range.selectNodeContents(titleField)
-			sel.removeAllRanges()
-			sel.addRange(range)
-			// document.getElementById('title').focus()
-			// document.getElementById('title').select()
+			selectText('title')
 		}, 10)
 	}
 </script>
