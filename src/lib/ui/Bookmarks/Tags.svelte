@@ -10,38 +10,39 @@
 		return s.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
 	}
 
-	export let tags: string[]
-	export let addKeys: number[]
-	export let maxTags: number | false
-	export let onlyUnique: boolean
-	export let removeKeys: number[]
-	export let placeholder: string
-	export let allowPaste: boolean
-	export let allowDrop: boolean
-	export let splitWith: string
-	export let autoComplete: boolean
-	export let autoCompleteKey: number | false
-	export let name: string
-	export let allowBlur: boolean
-	export let disable: boolean
-	export let minChars: number
+	export let tags: string[] = []
+	export let addKeys: number[] = [13]
+	export let maxTags: number | false = false
+	export let onlyUnique: boolean = true
+	export let removeKeys: number[] = [8]
+	export let placeholder: string = ''
+	export let allowPaste: boolean = false
+	export let allowDrop: boolean = false
+	export let splitWith: string = ','
+	export let autoComplete: boolean = false
+	export let autoCompleteKey: number | false = false
+	export let name: string = 'input'
+	export let id = uniqueID()
+	export let allowBlur: boolean = false
+	export let disable: boolean = false
+	export let minChars: number = 1
 
-	$: tags = tags || []
-	$: addKeys = addKeys || [13]
-	$: maxTags = maxTags || false
-	$: onlyUnique = onlyUnique || true
-	$: removeKeys = removeKeys || [8]
-	$: placeholder = placeholder || ''
-	$: allowPaste = allowPaste || false
-	$: allowDrop = allowDrop || false
-	$: splitWith = splitWith || ','
-	$: autoComplete = autoComplete || false
-	$: autoCompleteKey = autoCompleteKey || false
-	$: name = name || 'input'
-	$: id = id || uniqueID()
-	$: allowBlur = allowBlur || false
-	$: disable = disable || false
-	$: minChars = minChars || 1
+	$: tags
+	$: addKeys
+	$: maxTags
+	$: onlyUnique
+	$: removeKeys
+	$: placeholder
+	$: allowPaste
+	$: allowDrop
+	$: splitWith
+	$: autoComplete
+	$: autoCompleteKey
+	$: name
+	$: id
+	$: allowBlur
+	$: disable
+	$: minChars
 
 	$: matchsID = id + '_matchs'
 
@@ -141,7 +142,7 @@
 		}
 	}
 
-	function removeTag(i) {
+	function removeTag(i: number) {
 		tags.splice(i, 1)
 		tags = tags
 
@@ -160,7 +161,7 @@
 		// document.getElementById(id).focus();
 	}
 
-	function onPaste(e) {
+	function onPaste(e: ClipboardEvent) {
 		if (!allowPaste) return
 
 		e.preventDefault()
@@ -169,7 +170,7 @@
 		const tags = splitTags(data).map((tag) => addTag(tag))
 	}
 
-	function onDrop(e) {
+	function onDrop(e: DragEvent) {
 		if (!allowDrop) return
 
 		e.preventDefault()
@@ -178,14 +179,14 @@
 		const tags = splitTags(data).map((tag) => addTag(tag))
 	}
 
-	function onBlur(tag) {
+	function onBlur(tag: string) {
 		if (!document.getElementById(matchsID) && allowBlur) {
 			event.preventDefault()
 			addTag(tag)
 		}
 	}
 
-	function getClipboardData(e) {
+	function getClipboardData(e: ClipboardEvent) {
 		if (window.clipboardData) {
 			return window.clipboardData.getData('Text')
 		}
@@ -197,7 +198,7 @@
 		return ''
 	}
 
-	function splitTags(data) {
+	function splitTags(data: string) {
 		return data.split(splitWith).map((tag) => tag.trim())
 	}
 
@@ -265,7 +266,11 @@
 		arrelementsmatch = matchs
 	}
 
-	function navigateAutoComplete(autoCompleteIndex, autoCompleteLength, autoCompleteElement) {
+	function navigateAutoComplete(
+		autoCompleteIndex: number,
+		autoCompleteLength: number,
+		autoCompleteElement: Element
+	) {
 		if (!autoComplete) return
 
 		event.preventDefault()
@@ -437,11 +442,13 @@
 	.input-layout:hover .input::-webkit-input-placeholder {
 		color: var(--light-c);
 
-		transform: translate(0px, -1px);
 		text-align: center;
+
+		transform: translate(0px, -1px);
 	}
 
 	.input.new-tag {
+		display: flex;
 		position: absolute;
 		right: 0;
 
@@ -450,10 +457,12 @@
 
 		height: 20px;
 		margin: auto;
-
-		padding: 0.3rem 0.5rem;
+		width: fit-content;
+		padding: 1rem 0.5rem;
 
 		border: 1px solid rgba(var(--brand-a-rgb), 0);
+
+		text-align: center;
 
 		transition: 0.5s;
 
@@ -473,8 +482,12 @@
 		color: var(--light-d);
 		border-radius: 2px;
 
-		cursor: default;
 		white-space: nowrap;
+
+		cursor: default;
+	}
+	.hashtag {
+		transform: translate(-2px, 5px);
 	}
 
 	.input-tag-remove {
@@ -504,9 +517,9 @@
 	}
 
 	.input-tag-remove:hover {
-		font-weight: 700;
-
 		color: rgba(var(--dark-c-rgb), 1) !important;
+
+		font-weight: 700;
 	}
 
 	/* input-matchs */
@@ -534,7 +547,6 @@
 	}
 
 	.input-matchs li {
-		/* padding: 5px; */
 		list-style: none;
 
 		border-radius: 2px;

@@ -9,7 +9,7 @@
 	style="width: var(--size, {$settings.ranges.iconSize.value}px); height: var(--size, {$settings
 		.ranges.iconSize.value}px);"
 >
-	{@html title == '' || title == 'title' ? '🔗' : title}
+	{@html title}
 </div>
 
 <style>
@@ -17,11 +17,18 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		flex-wrap: wrap;
 
 		margin: 2rem auto;
+		padding: 0.5rem;
 
 		color: var(--foreground);
 		background: var(--background);
 		border-radius: 10px;
+
+		word-break: break-all;
+		text-align: center;
+
+		overflow: hidden;
 	}
 </style>

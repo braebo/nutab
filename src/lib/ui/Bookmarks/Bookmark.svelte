@@ -121,12 +121,12 @@
 
 		width: fit-content;
 
+		color: var(--dark-d);
+
 		font-size: 18px;
 		line-height: 150%;
 		white-space: nowrap;
 		letter-spacing: 2px;
-
-		color: var(--dark-d);
 
 		transform: translateY(120%);
 	}
@@ -137,9 +137,9 @@
 		width: max-content;
 		height: max-content;
 
-		text-decoration: none;
-
 		color: var(--dark-a);
+
+		text-decoration: none;
 	}
 
 	.edit {
@@ -151,10 +151,10 @@
 		width: 2rem;
 		height: max-content;
 
+		border-radius: 5px;
+
 		font-size: 2rem;
 		line-height: 0.2rem;
-
-		border-radius: 5px;
 
 		cursor: pointer;
 		transition: 0.2s;

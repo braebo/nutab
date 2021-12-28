@@ -1,18 +1,26 @@
 <script lang="ts">
-	import SettingsPanel from '../settings/SettingsPanel.svelte'
-	import { addDefaultFolder } from '../data/transactions'
-	import { settings } from '../settings/settingsStore'
-	import { activeFolder } from '../data/dbStore'
+	// See fixme below
+	import SettingsPanel from '$lib/settings/SettingsPanel.svelte'
+	import { settings } from '$lib/settings/settingsStore'
 	import Bookmark from './Bookmark.svelte'
+	import { activeFolder } from '$lib/data/dbStore'
+	import { initDB } from '$lib/data/transactions'
 
-	import { createEventDispatcher, onMount } from 'svelte'
-	import Tooltip from './Tooltip.svelte'
+	import { onMount, createEventDispatcher } from 'svelte'
+	import Tooltip from '$lib/ui/Tooltip.svelte'
+	import db from '$lib/data/db'
 
 	const dispatch = createEventDispatcher()
 
 	let hovering: number | null = null
 
-	onMount(() => addDefaultFolder())
+	// FIXME: this shouldn't be necessary because dexie
+	// will only add defaults once (on first startup)
+	onMount(() => {
+		// check if db exists
+		// if not, add defaults
+		initDB()
+	})
 </script>
 
 <div class="folder-container">
@@ -70,10 +78,10 @@
 		width: fit-content;
 		margin: auto;
 
-		font-size: 3rem;
-
 		color: var(--dark-a);
 		opacity: 0.1;
+
+		font-size: 3rem;
 
 		cursor: pointer;
 		transition: opacity 0.15s;

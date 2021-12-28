@@ -6,17 +6,16 @@ export type Bookmark = {
 	image?: string | null
 	background?: string | null
 	foreground?: string | null
-	tags?: Array<string>
-	folder_id: string
+	tags: string[]
 }
 
 export type Folder = {
 	folder_id: string
 	user_id: string
 	title: string
-	image?: string
-	bookmarks: Array<Bookmark>
+	bookmarks: Bookmark[]
 	position: number
+	active: boolean
 }
 
 export interface Engine {

@@ -8,16 +8,15 @@
 		min-width: max-content;
 		height: 2rem;
 
-		padding: 0.5em 1em;
+		/* padding: 0.5em 1em; */
 
-		font-family: var(--font-primary);
-
-		color: var(--color);
-
+		color: var(--color, var(--dark-a));
 		border: var(--border, 1px solid transparent);
 		border-radius: 5px;
-		background: var(--bg);
+		background: var(--bg, var(--light-a));
 		box-shadow: 0 1px 2px #00000022;
+
+		font-family: var(--font-primary);
 
 		cursor: pointer;
 		transition: 0.2s;

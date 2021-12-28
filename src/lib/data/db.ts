@@ -1,14 +1,17 @@
-import type { Folder } from './types'
+import type { Bookmark, Folder } from './types'
 import Dexie from 'dexie'
 
 export class BookmarkDB extends Dexie {
+	bookmarks: Dexie.Table<Bookmark, number>
 	folders: Dexie.Table<Folder, number>
 
 	constructor() {
-		super('FoldersDB')
+		super('BookmarksDB' && 'FoldersDB')
 		this.version(1).stores({
-			folders: 'folder_id, user_id, *bookmarks, position'
+			bookmarks: '++id, bookmark_id, position, *tags',
+			folders: '++id, *bookmarks, position'
 		})
+		this.bookmarks = this.table('bookmarks')
 		this.folders = this.table('folders')
 	}
 }

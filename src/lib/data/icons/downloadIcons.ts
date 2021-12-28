@@ -1,4 +1,4 @@
-import folders from '../folders'
+import folders from '../bookmarks'
 
 let svgList = []
 
