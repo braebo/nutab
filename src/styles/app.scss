@@ -61,34 +61,32 @@ body {
 
 h1,
 h2 {
+	color: var(--dark-a);
+
 	font-family: var(--font-primary);
 	font-weight: 500;
-
 	letter-spacing: 1.2px;
 	word-spacing: 8px;
-
-	color: var(--dark-a);
 }
 
 p,
 li {
+	color: var(--dark-a, --text-color);
+	& a {
+		color: var(--dark-c);
+	}
+
 	font-family: var(--font-primary);
 	font-size: 1.2em;
 	font-weight: 200;
 	line-height: 1.5;
-
-	color: var(--dark-a, --text-color);
-
-	& a {
-		color: var(--dark-c);
-	}
 }
 
 a {
+	color: var(--dark-a);
+
 	text-decoration: underline;
 	text-decoration-color: var(--light-d);
-
-	color: var(--dark-a);
 }
 
 a:hover {
@@ -110,13 +108,13 @@ h2 {
 pre {
 	padding: 0.5em;
 
-	font-family: var(--font-mono);
-	font-size: 16px;
-
 	color: var(--dark-a);
 	border-radius: 3px;
 	background-color: rgba(255, 255, 255, 0.45);
-	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
+	box-shadow: 2px 2px 6px rgb(0 0 0 / 25%);
+
+	font-family: var(--font-mono);
+	font-size: 16px;
 
 	overflow-x: auto;
 }
@@ -147,4 +145,23 @@ button:focus:not(:focus-visible) {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
+}
+
+.scroller {
+	&::-webkit-scrollbar {
+		width: 8px;
+	}
+	&.vertical::-webkit-scrollbar {
+		height: 8px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: #282a36;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: #50546d;
+		border-radius: 0px;
+		border: 0px solid #282a36;
+	}
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { bookmarkEditor } from '$lib/stores/bookmarkEditor'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
 	import { localStorageStore } from 'fractils'
@@ -72,8 +72,8 @@
 		link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-dracula.css")
 	
 	+if('$showDebugger && !!$debug')
-		.debug-panel(transition:fly='{{ y: 1000, opacity: 1, duration: 300 }}')
-			.debuggable.one
+		.debug-panel.scroller.vertical(transition:fly='{{ y: 1000, opacity: 1, duration: 300 }}')
+			.debuggable.one.scroller
 				+each("[['Show Debugger', $showDebugger]] as [name, value]")
 					+key('value')
 						.kv
@@ -82,9 +82,9 @@
 								code.language-javascript
 									.store {JSON.stringify(value, null, 2)}
 
-			+each("[['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder.bookmarks], ['Editor Settings', $bookmarkEditor]] as [name, value], i")
+			+each("[['Bookmark Editor', $bookmarkEditor], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder.bookmarks]] as [name, value], i")
 				+key('value')
-					.debuggable
+					.debuggable.scroller
 						h4 {name}
 						pre(use:highlight)
 							code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
@@ -105,17 +105,16 @@
 <style lang="scss">
 	.mousetrap {
 		position: absolute;
-
-		z-index: 100;
 		bottom: 0;
 		left: 2vw;
 
 		width: 75px;
 		height: 75px;
+
+		z-index: 100;
 	}
 	button {
 		position: absolute;
-		z-index: 100;
 		bottom: 0;
 		left: 3vw;
 
@@ -128,6 +127,8 @@
 		border-bottom: none;
 		background: var(--light-a);
 		box-shadow: 0 0 8px 3px #00000009;
+
+		z-index: 100;
 
 		cursor: pointer;
 
@@ -146,7 +147,6 @@
 		position: absolute;
 		flex-wrap: wrap;
 		display: flex;
-		z-index: 99;
 		bottom: 0;
 		right: 0;
 		left: 0;
@@ -163,12 +163,15 @@
 		background: var(--light-a);
 		box-shadow: 0 0 10px 3px #00000011;
 
+		z-index: 99;
+
 		overflow: auto;
 	}
 	.debuggable {
 		position: relative;
 
-		width: 500px;
+		// width: 500px;
+
 		max-width: max-content;
 		height: 800px;
 		padding: 10px;
@@ -188,10 +191,10 @@
 	.kv {
 		display: grid;
 		align-items: center;
+		grid-template-rows: 1fr;
+		grid-template-columns: 1fr;
 
 		width: 20rem;
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr;
 
 		& h4 {
 			margin-right: auto;
@@ -201,11 +204,11 @@
 		& pre {
 			min-width: 5rem;
 			width: max-content;
-			max-width: 20rem;
+			// max-width: 20rem;
 			margin-bottom: 2rem;
 			padding: 0.5rem;
 
-			overflow: auto !important;
+			// overflow: auto !important;
 
 			code {
 				color: var(--blue) !important;
@@ -213,6 +216,8 @@
 		}
 	}
 	pre {
+		width: fit-content;
+
 		font-family: var(--font-mono);
 		font-size: 13px;
 	}
@@ -230,7 +235,7 @@
 		}
 	}
 	.one {
-		width: 250px;
+		width: 150px;
 
 		max-width: 250px;
 
