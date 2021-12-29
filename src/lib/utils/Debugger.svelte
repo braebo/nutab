@@ -8,6 +8,7 @@
 	import { browser, dev } from '$app/env'
 	import { onMount } from 'svelte'
 	import { log } from 'fractils'
+	import '../../styles/prism.css'
 
 	interface PrismJS extends NodeModule {
 		highlightAll: () => void
@@ -68,8 +69,8 @@
 
 <template lang="pug">
 
-	svelte:head
-		link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-dracula.css")
+	//- svelte:head
+	//- 	link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-dracula.css")
 	
 	+if('$showDebugger && !!$debug')
 		.debug-panel.scroller.vertical(transition:fly='{{ y: 1000, opacity: 1, duration: 300 }}')
