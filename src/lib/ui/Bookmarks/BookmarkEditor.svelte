@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
-	import { createEventDispatcher, onMount } from 'svelte'
+	import { createEventDispatcher, onMount, tick } from 'svelte'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor'
 	import { newBookmark } from '$lib/data/transactions'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
@@ -9,14 +10,15 @@
 	import Button from '$lib/ui/Button.svelte'
 
 	import { getClipboardUrl } from '$lib/utils/getClipboardUrl'
+	import { log } from 'fractils'
 
-	export let i: number
-	export let bookmark_id: string
-	export let editorSettings: Bookmark
+	export let i: number = 0
+	export let bookmark_id: string = ''
 
 	const dispatch = createEventDispatcher()
 
 	let titleInput: HTMLInputElement
+	let urlInput: HTMLInputElement
 	let descriptionInput: HTMLInputElement
 	let descriptionFocused = false
 	$: placeholder = descriptionFocused ? '' : 'description'
@@ -26,7 +28,7 @@
 		tag = event.detail.tags
 	}
 	async function updateTags(event: CustomEvent, index: number, id: string) {
-		editorSettings['tags'] = event.detail.tags
+		$bookmarkEditor['tags'] = event.detail.tags
 	}
 
 	export let editorContext: 'edit' | 'create' = 'edit'
@@ -34,34 +36,39 @@
 	function handleSave() {
 		if (editorContext === 'edit') {
 			// TODO: update bookmark
-			// updateBookmark(bookmark_id, editorSettings)
+			// updateBookmark(bookmark_id, $bookmarkEditor)
 		} else {
-			newBookmark(editorSettings)
+			newBookmark($bookmarkEditor)
 		}
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		titleInput.select()
-		const test = getClipboardUrl()
-		console.log('Got Url:', test)
+		;(async function checkClipboard() {
+			const clipboardContents = await getClipboardUrl()
+			log('clipboardContents :', 'cyan', 'black', 25)
+			log(clipboardContents, 'cyan', 'black', 25)
+
+			$bookmarkEditor.url = clipboardContents
+		})()
 	})
 </script>
 
-<div class="settings-container">
-	{#if editorSettings['image']}
-		<img name="image" src={editorSettings['image']} alt={editorSettings['title']} />
+<div class="editor-container">
+	{#if $bookmarkEditor['image']}
+		<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
 	{:else}
 		<!-- Fallback Image -->
 		<div class="bookmark-art">
 			<BookmarkArt
-				--foreground={editorSettings['foreground']}
-				--background={editorSettings['background']}
+				--foreground={$bookmarkEditor['foreground']}
+				--background={$bookmarkEditor['background']}
 				--size="100px"
-				title={editorSettings['title']}
+				title={$bookmarkEditor['title']}
 			/>
 			<div class="color-settings">
-				<input name="background" type="color" bind:value={editorSettings['background']} />
-				<input name="foreground" type="color" bind:value={editorSettings['foreground']} />
+				<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
+				<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
 			</div>
 		</div>
 	{/if}
@@ -71,7 +78,7 @@
 			name="title"
 			placeholder="title"
 			bind:this={titleInput}
-			bind:value={editorSettings['title']}
+			bind:value={$bookmarkEditor['title']}
 			on:click={() => titleInput.select()}
 		/>
 	</div>
@@ -83,7 +90,7 @@
 			{placeholder}
 			type="text"
 			bind:this={descriptionInput}
-			bind:value={editorSettings['description']}
+			bind:value={$bookmarkEditor['description']}
 			on:focus={() => {
 				descriptionFocused = true
 			}}
@@ -99,19 +106,18 @@
 			name="url"
 			type="text"
 			placeholder="url"
-			bind:value={editorSettings['url']}
-			on:focus={(e) => (e.target.placeholder = '')}
-			on:blur={(e) => (e.target.placeholder = 'url')}
+			bind:this={urlInput}
+			on:click={() => urlInput.select()}
+			bind:value={$bookmarkEditor['url']}
+			autoComplete="off"
 		/>
 	</div>
 
 	<div class="setting">
-		<!-- <label for="tags">tags</label> -->
-		<!-- <input name="tags" type="text" bind:value={editorSettings['tags']} /> -->
 		<div name="tags" class="tags">
 			<Tags
 				on:updateTags={(e) => updateTags(e, i, bookmark_id)}
-				bind:tags={editorSettings['tags']}
+				bind:tags={$bookmarkEditor['tags']}
 				placeholder={'new tag'}
 				on:tags={handleTags}
 				autoComplete={false}
@@ -144,7 +150,7 @@
 </div>
 
 <style lang="scss">
-	.settings-container {
+	.editor-container {
 		display: flex;
 		position: relative;
 		flex-direction: column;
@@ -157,6 +163,26 @@
 		background: var(--light-a);
 		color: var(--dark-a);
 		box-shadow: 0 5px 15px 5px #00000011;
+
+		perspective: 1200px;
+		transform-style: preserve-3d;
+
+		animation: floatDown ease-out 1s forwards;
+		animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
+
+		/* 3d CSS Float Down Animation */
+		@keyframes floatDown {
+			0% {
+				opacity: 0;
+
+				transform: perspective(500px) translate3d(0, -5px, 25px);
+			}
+			100% {
+				opacity: 1;
+
+				transform: perspective(500px) translate3d(0, 0, 0);
+			}
+		}
 	}
 
 	.setting {
@@ -183,8 +209,13 @@
 
 		transition: border 0.2s;
 
-		&:hover,
 		&:focus {
+			&::placeholder {
+				opacity: 0;
+			}
+		}
+		&:focus,
+		&:hover {
 			border: 1px solid rgba(var(--light-b-rgb), 1);
 		}
 	}
@@ -196,7 +227,7 @@
 		margin: auto;
 		margin-bottom: 1.1rem;
 
-		color: var(--light-c);
+		color: var(--dark-d);
 
 		font: 0.8rem monospace;
 	}
@@ -249,6 +280,25 @@
 
 	.bookmark-art {
 		position: relative;
+
+		perspective: 1200px;
+		transform-style: preserve-3d;
+
+		animation: floatDown ease-out 1.25s forwards;
+
+		animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
+
+		/* 3d CSS Float Down Animation */
+		@keyframes floatDown {
+			0% {
+				opacity: 0;
+				transform: perspective(500px) translate3d(0, -25px, 50px);
+			}
+			100% {
+				opacity: 1;
+				transform: perspective(500px) translate3d(0, 0, 0);
+			}
+		}
 	}
 	.color-settings {
 		position: absolute;
