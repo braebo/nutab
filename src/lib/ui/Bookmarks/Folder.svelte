@@ -1,34 +1,26 @@
 <script lang="ts">
-	// See fixme below
+	// Data
 	import SettingsPanel from '$lib/settings/SettingsPanel.svelte'
 	import { settings } from '$lib/settings/settingsStore'
-	import Bookmark from './Bookmark.svelte'
-	import { activeFolder, lastActiveFolderId } from '$lib/data/dbStore'
+	import { activeFolder } from '$lib/data/dbStore'
 	import { initDB } from '$lib/data/transactions'
 
-	import { onMount, createEventDispatcher, tick } from 'svelte'
+	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
-	import db from '$lib/data/db'
+	import Bookmark from './Bookmark.svelte'
 
+	// Utils
+	import { onMount, createEventDispatcher } from 'svelte'
 	const dispatch = createEventDispatcher()
 
 	let hovering: number | null = null
 
-	// FIXME: this shouldn't be necessary because dexie
-	// will only add defaults once (on first startup)
-	onMount(async () => {
-		// check if db exists
-		// if not, add defaults
-		const lastActiveFolder = await initDB()
-		$activeFolder = lastActiveFolder
-		$lastActiveFolderId = lastActiveFolder.folder_id
-	})
+	onMount(() => initDB())
 </script>
 
 <div class="folder-container">
 	{#if $activeFolder?.bookmarks}
 		{#each $activeFolder.bookmarks as bookmark, i}
-			<!-- prettier-ignore -->
 			<div
 				class="bookmark-container"
 				style="
@@ -36,12 +28,12 @@
 					height: {$settings.ranges.iconSize.value}px;
 					margin: {$settings.ranges.gridGap.value}px;
 				"
-                on:mouseover={() => hovering = i}
-                on:mouseout={() => hovering = null}
-                on:focus={() => hovering = i}
-                on:blur={() => hovering = null}
+				on:mouseover={() => (hovering = i)}
+				on:mouseout={() => (hovering = null)}
+				on:focus={() => (hovering = i)}
+				on:blur={() => (hovering = null)}
 			>
-				<Bookmark {bookmark} {hovering} {i} on:showEditor/>
+				<Bookmark {bookmark} {hovering} {i} on:showEditor />
 			</div>
 		{/each}
 	{/if}

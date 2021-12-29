@@ -4,35 +4,25 @@ import { defaultBookmarks, defaultFolder } from './bookmarks/defaults'
 import { activeFolder, lastActiveFolderId } from './dbStore'
 import { get } from 'svelte/store'
 import { log, wait } from 'fractils'
-import Dexie from 'dexie'
 import db from './db'
 
 /**
  * Default bookmark folder and bookmarks db tables.
  * @param  {BookmarkDB} db
  */
-export async function initDB(): Promise<Folder> {
+export async function initDB() {
 	// Add default tables if they don't exist
-	const bookmarksExist = await Dexie.exists('BookmarksDB')
-	if (!bookmarksExist) {
-		log('🎬 Adding default Bookmark Folder: ', '#fa8', 'dimgray', 25)
-
-		await db.bookmarks.bulkAdd(defaultBookmarks)
-		await db.folders.add(defaultFolder)
-		log('🏁 Add Defaults Complete', '#fa8', 'dimgray', 25)
-
-		return defaultFolder
-	} else {
-		// Otherwise get the last active folder
-		log('🏁 Database found.', '#fa8', 'dimgray', 25)
-		wait(100)
-		const lastActiveFolder = await db
-			.table('folders')
-			.where('folder_id')
-			.equals(get(lastActiveFolderId))
-			.first()
-		return lastActiveFolder
-	}
+	// const bookmarksExist = await Dexie.exists('BookmarksDB') // fails
+	// const bookmarksExist = (await db.bookmarks.count()) > defaultBookmarks.length
+	// Otherwise get the last active folder
+	log('🏁 Database found.', '#fa8', 'dimgray', 25)
+	await wait(100)
+	const id = localStorage.getItem('lastActiveFolderId')
+	let lastActiveFolder: Folder | undefined
+	lastActiveFolder = await db.table('folders').where('folder_id').equals(id).first()
+	log('Last active folder found: ', '#fa8', 'dimgray', 25)
+	log(lastActiveFolder)
+	activeFolder.set(lastActiveFolder)
 }
 
 /**
