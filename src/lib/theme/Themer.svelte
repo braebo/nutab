@@ -71,5 +71,6 @@
 		top: 0px;
 
 		cursor: pointer;
+		z-index: 2;
 	}
 </style>

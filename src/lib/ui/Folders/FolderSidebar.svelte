@@ -68,6 +68,8 @@
 
 		height: 100vh;
 		width: 200px;
+
+		z-index: 0;
 	}
 	.folder-sidebar {
 		position: relative;
