@@ -97,7 +97,8 @@ export const defaultBookmarks: Bookmark[] = [
 export const defaultFolder: Folder = {
 	folder_id: cuid(),
 	user_id: 'anon',
-	title: '🏠 General',
+	icon: '🏠',
+	title: 'General',
 	position: 0,
 	bookmarks: defaultBookmarks,
 	active: true

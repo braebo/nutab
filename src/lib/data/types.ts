@@ -12,6 +12,7 @@ export type Bookmark = {
 export type Folder = {
 	folder_id: string
 	user_id: string
+	icon: string
 	title: string
 	bookmarks: Bookmark[]
 	position: number
