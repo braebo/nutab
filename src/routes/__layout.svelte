@@ -1,4 +1,5 @@
 <script lang="ts">
+	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
 	import Debugger from '$lib/utils/Debugger.svelte'
 	import { page } from '$app/stores'
 	import { Header } from '$lib/ui'
@@ -39,6 +40,8 @@
 		Themer(size='{50}')
 
 		Nav
+
+		FolderSidebar
 
 		main
 			slot
