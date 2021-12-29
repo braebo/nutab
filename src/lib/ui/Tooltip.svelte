@@ -51,18 +51,18 @@
 	:global(.tippy-box) {
 		position: relative;
 
-		font-family: var(--font-secondary);
-		font-size: 14px;
-		line-height: 1.4;
-
 		color: var(--dark-d);
 		border-radius: 4px;
 		outline: 0;
 		background-color: var(--light-a);
 		box-shadow: 0 2px 5px #54354311;
 
-		transition-property: transform, visibility, opacity;
+		font-family: var(--font-secondary);
+		font-size: 14px;
+		line-height: 1.4;
 		letter-spacing: 2px;
+
+		transition-property: transform, visibility, opacity;
 		z-index: 1;
 	}
 
