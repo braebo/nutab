@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Debugger from '$lib/utils/Debugger.svelte'
 	import { page } from '$app/stores'
 	import { Header } from '$lib/ui'
 	import 'greset/css/greset.css'
@@ -43,5 +44,7 @@
 			slot
 
 		Settings
+
+		Debugger
 
 </template>
