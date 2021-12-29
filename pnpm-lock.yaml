@@ -15,6 +15,7 @@ specifiers:
   postcss-load-config: ^3.1.0
   prettier: ^2.5.1
   prettier-plugin-svelte: ^2.5.1
+  prismjs: ^1.25.0
   pug: ^3.0.2
   rehype-autolink-headings: ^5.1.0
   rehype-slug: ^4.0.1
@@ -39,7 +40,7 @@ dependencies:
 
 devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.32
-  '@sveltejs/kit': 1.0.0-next.202_sass@1.45.1+svelte@3.44.3
+  '@sveltejs/kit': 1.0.0-next.203_sass@1.45.1+svelte@3.44.3
   autoprefixer: 10.4.0_postcss@8.4.5
   cssnano: 5.0.14_postcss@8.4.5
   cuid: 2.1.8
@@ -51,6 +52,7 @@ devDependencies:
   postcss-load-config: 3.1.0
   prettier: 2.5.1
   prettier-plugin-svelte: 2.5.1_prettier@2.5.1+svelte@3.44.3
+  prismjs: 1.25.0
   pug: 3.0.2
   rehype-autolink-headings: 5.1.0
   rehype-slug: 4.0.1
@@ -342,8 +344,8 @@ packages:
       esbuild: 0.13.15
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.202_sass@1.45.1+svelte@3.44.3:
-    resolution: {integrity: sha512-rXmJ0FplkWvD1CaeCfejRYhOJYrlmeUm5Fkw7gIKDdWPQev5rqOhd9B9ZvRpq35oMqCAwaOfK+e5S6k+83feEQ==}
+  /@sveltejs/kit/1.0.0-next.203_sass@1.45.1+svelte@3.44.3:
+    resolution: {integrity: sha512-+bhfmkzquWMSCCFIJoh36U9D6IKC0p/NrIr4CBHMAdRpqzL9lMP0AYQm1fUDH20F/6b2tWvGxmEg+gAmHikRfA==}
     engines: {node: '>=14.13'}
     hasBin: true
     peerDependencies:
