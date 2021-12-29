@@ -3,8 +3,8 @@ import type { Bookmark } from './types'
 import { defaultBookmarks, defaultFolder } from './bookmarks/defaults'
 import { activeFolder } from './dbStore'
 import { log } from 'fractils'
-import db from './db'
 import Dexie from 'dexie'
+import db from './db'
 
 /**
  * Default bookmark folder and bookmarks db tables.
