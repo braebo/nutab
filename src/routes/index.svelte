@@ -17,7 +17,7 @@
 
 	function showEditor(i: number) {
 		$editorContext = 'edit'
-		$bookmarkEditor = emptyBookmark($activeFolder.title)
+		$bookmarkEditor = $activeFolder.bookmarks[i]
 		showModal = true
 	}
 
@@ -36,7 +36,7 @@
 
 <Folder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
 
-<RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} />
+<RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
 
 <Modal bind:showModal opacity={0}>
 	<BookmarkEditor on:cancel={() => (showModal = false)} />

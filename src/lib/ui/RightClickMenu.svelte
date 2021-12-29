@@ -2,13 +2,13 @@
 	import { fly } from 'svelte/transition'
 	import { createEventDispatcher } from 'svelte'
 	import { showSettings } from '../settings/settingsStore'
-	import { clickOutside } from '../utils/clickOutside'
+	import { clickOutside } from 'fractils'
 	const dispatch = createEventDispatcher()
 
 	export let options = [
 		{
 			text: 'New Bookmark',
-			action: () => alert('Good Job')
+			action: () => dispatch('newBookmark')
 		},
 		{
 			text: 'Settings',
@@ -51,8 +51,7 @@
 	<div
 		class="menu"
 		style="left: {x}px;top: {y}px;"
-		use:clickOutside
-		on:click_outside={() => (showMenu = false)}
+		use:clickOutside={() => (showMenu = false)}
 		in:fly={{ y: 5, duration: 250 }}
 		out:fly={{ y: 5, duration: 150 }}
 	>
@@ -67,13 +66,14 @@
 <style>
 	.menu {
 		position: absolute;
+
 		width: max-content;
 		height: max-content;
-
 		margin: auto;
 
 		border-radius: 0.5em;
 		background: var(--light-a);
+		color: var(--dark-c);
 		box-shadow: 1px 2px 5px #00000022;
 
 		overflow: hidden;
@@ -89,5 +89,6 @@
 	}
 	.option:hover {
 		background: var(--light-b);
+		color: var(--dark-a);
 	}
 </style>
