@@ -3,10 +3,10 @@
 	import SettingsPanel from '$lib/settings/SettingsPanel.svelte'
 	import { settings } from '$lib/settings/settingsStore'
 	import Bookmark from './Bookmark.svelte'
-	import { activeFolder } from '$lib/data/dbStore'
+	import { activeFolder, lastActiveFolderId } from '$lib/data/dbStore'
 	import { initDB } from '$lib/data/transactions'
 
-	import { onMount, createEventDispatcher } from 'svelte'
+	import { onMount, createEventDispatcher, tick } from 'svelte'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import db from '$lib/data/db'
 
@@ -16,10 +16,12 @@
 
 	// FIXME: this shouldn't be necessary because dexie
 	// will only add defaults once (on first startup)
-	onMount(() => {
+	onMount(async () => {
 		// check if db exists
 		// if not, add defaults
-		initDB()
+		const lastActiveFolder = await initDB()
+		$activeFolder = lastActiveFolder
+		$lastActiveFolderId = lastActiveFolder.folder_id
 	})
 </script>
 

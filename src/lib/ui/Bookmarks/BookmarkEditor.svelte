@@ -9,8 +9,8 @@
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
 
-	import { getClipboardUrl } from '$lib/utils/getClipboardUrl'
-	import { log } from 'fractils'
+	// import { getClipboardUrl } from '$lib/utils/getClipboardUrl'
+	// import { log } from 'fractils'
 
 	export let i: number = 0
 	export let bookmark_id: string = ''
@@ -31,24 +31,27 @@
 		$bookmarkEditor['tags'] = event.detail.tags
 	}
 
-	function handleSave() {
+	async function handleSave() {
 		if ($editorContext === 'edit') {
 			// TODO: update bookmark
 			// updateBookmark(bookmark_id, $bookmarkEditor)
 		} else {
-			newBookmark($bookmarkEditor)
+			await newBookmark($bookmarkEditor)
+			dispatch('cancel')
 		}
 	}
 
 	onMount(async () => {
 		titleInput.select()
-		;(async function checkClipboard() {
-			const clipboardContents = await getClipboardUrl()
-			log('clipboardContents :', 'cyan', 'black', 25)
-			log(clipboardContents, 'cyan', 'black', 25)
 
-			$bookmarkEditor.url = clipboardContents
-		})()
+		//// Get URL from clipboard (bad idea)
+		// ;(async function checkClipboard() {
+		// 	const clipboardContents = await getClipboardUrl()
+		// 	log('clipboardContents :', 'cyan', 'black', 25)
+		// 	log(clipboardContents, 'cyan', 'black', 25)
+
+		// 	$bookmarkEditor.url = clipboardContents
+		// })()
 	})
 </script>
 
@@ -62,6 +65,9 @@
 				--foreground={$bookmarkEditor['foreground']}
 				--background={$bookmarkEditor['background']}
 				--size="100px"
+				--margin="2rem auto"
+				--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
+				0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14)"
 				title={$bookmarkEditor['title']}
 			/>
 			<div class="color-settings">
@@ -192,7 +198,7 @@
 	}
 
 	input {
-		width: 70%;
+		width: 60%;
 		padding: 5px 8px 5px 8px;
 
 		color: var(--dark-a);
@@ -214,7 +220,7 @@
 		}
 		&:focus,
 		&:hover {
-			border: 1px solid rgba(var(--light-b-rgb), 1);
+			border-bottom: 1px solid rgba(var(--light-b-rgb), 1);
 		}
 	}
 
@@ -278,7 +284,11 @@
 
 	.bookmark-art {
 		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 
+		margin: 2rem auto;
 		perspective: 1200px;
 		transform-style: preserve-3d;
 
@@ -290,17 +300,19 @@
 		@keyframes floatDown {
 			0% {
 				opacity: 0;
+
 				transform: perspective(500px) translate3d(0, -25px, 50px);
 			}
 			100% {
 				opacity: 1;
+
 				transform: perspective(500px) translate3d(0, 0, 0);
 			}
 		}
 	}
 	.color-settings {
 		position: absolute;
-		top: 3rem;
+		top: 1.5rem;
 		bottom: 0;
 		left: 0;
 		right: -10rem;

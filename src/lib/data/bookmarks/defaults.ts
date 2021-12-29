@@ -12,7 +12,7 @@ const default_theme = {
 export const emptyBookmark = (current_folder_title: Folder['title']): Bookmark => ({
 	bookmark_id: cuid(),
 	url: '',
-	title: 'title',
+	title: '',
 	description: '',
 	image: null,
 	tags: [current_folder_title],

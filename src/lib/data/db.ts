@@ -6,10 +6,10 @@ export class BookmarkDB extends Dexie {
 	folders: Dexie.Table<Folder, number>
 
 	constructor() {
-		super('BookmarksDB' && 'FoldersDB')
+		super('BookmarksDB')
 		this.version(1).stores({
-			bookmarks: '++id, bookmark_id, position, *tags',
-			folders: '++id, *bookmarks, position'
+			bookmarks: 'bookmark_id, position, *tags',
+			folders: 'folder_id, *bookmarks, position'
 		})
 		this.bookmarks = this.table('bookmarks')
 		this.folders = this.table('folders')

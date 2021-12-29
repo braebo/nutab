@@ -6,6 +6,7 @@
 	import type { Bookmark } from '$lib/data/types'
 	import { createEventDispatcher } from 'svelte'
 	import Edit from '$lib/icons/Edit.svelte'
+	import BookmarkArt from './BookmarkArt.svelte'
 
 	export let i: number
 	export let hovering: number
@@ -56,35 +57,49 @@
 	{/if}
 
 	<a target="_blank" href={url}>
-		<div
-			transition:scale={{ duration: 200 + 50 * i }}
-			class="bookmark"
-			style="
+		{#if image}
+			<div
+				transition:scale={{ duration: 200 + 50 * i }}
+				class="bookmark"
+				style="
 				width: {$settings.ranges.iconSize.value}px;
 				height: {$settings.ranges.iconSize.value}px;
 
 				color: {$settings.transparent ? 'transparent' : foreground};
 				background: {$settings.transparent ? 'transparent' : background};
 				"
-		>
-			{#if image}
+			>
 				<img
 					style="width: {$settings.ranges.iconSize.value}px;"
 					class="icon icon{i}"
 					src={image}
 					alt={title}
 				/>
-			{/if}
-			{#if (title && $settings.showTitle) || hovering == i}
-				<p transition:fade={{ duration: 100 }}>{title}</p>
-			{/if}
-		</div>
+				{#if (title && $settings.showTitle) || hovering == i}
+					<p transition:fade={{ duration: 100 }}>{title}</p>
+				{/if}
+			</div>
+		{:else}
+			<div class="bookmark" transition:scale={{ duration: 200 + 50 * i }}>
+				<BookmarkArt
+					--foreground={foreground}
+					--background={background}
+					--size="{$settings.ranges.iconSize.value + 10}px"
+					{title}
+				/>
+			</div>
+		{/if}
 	</a>
 </div>
 
 <style>
 	.bookmark-container {
 		position: relative;
+		display: flex;
+		position: relative;
+		align-items: center;
+		flex-direction: column;
+		justify-content: flex-end;
 
 		height: 100%;
 		width: 100%;
@@ -132,8 +147,10 @@
 	}
 
 	a {
-		position: relative;
+		position: absolute;
+		inset: 0;
 
+		margin: auto;
 		width: max-content;
 		height: max-content;
 

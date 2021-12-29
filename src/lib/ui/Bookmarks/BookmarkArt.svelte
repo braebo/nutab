@@ -14,7 +14,7 @@
 	class="art"
 	style="
 		width: var(--size, {$settings.ranges.iconSize.value}px);
-		height: var(--size, {$settings.ranges.iconSize.value}px);
+		min-height: var(--size, {$settings.ranges.iconSize.value}px);
 		
 		font-size: var(--font-size, {fontSize}px);
 	"
@@ -29,14 +29,13 @@
 		align-items: center;
 		flex-wrap: wrap;
 
-		margin: 2rem auto;
+		margin: var(--margin);
 		padding: 0.5rem;
 
 		color: var(--foreground);
 		background: var(--background);
 		border-radius: 10px;
-		box-shadow: 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
-			0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14);
+		box-shadow: var(--shadow);
 
 		text-align: center;
 

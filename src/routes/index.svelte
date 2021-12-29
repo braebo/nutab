@@ -6,7 +6,7 @@
 	import { emptyBookmark } from '$lib/data/bookmarks/defaults'
 	import { activeFolder } from '$lib/data/dbStore'
 
-	// UI
+	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
 	import RightClickMenu from '$lib/ui/RightClickMenu.svelte'
 	import Folder from '$lib/ui/Bookmarks/Folder.svelte'
