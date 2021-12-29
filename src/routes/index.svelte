@@ -2,6 +2,7 @@
 	import type { Bookmark } from '$lib/data/types'
 
 	// Data
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor'
 	import { emptyBookmark } from '$lib/data/bookmarks/defaults'
 	import { activeFolder } from '$lib/data/dbStore'
 
@@ -12,22 +13,20 @@
 	import Search from '$lib/search/Search.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
 
-	let showModal = false,
-		editorSettings: Bookmark
+	let showModal = false
+	let editorContext: 'edit' | 'create' = 'edit'
 
 	function showEditor(i: number) {
 		editorContext = 'edit'
-		editorSettings = emptyBookmark($activeFolder.title)
+		$bookmarkEditor = emptyBookmark($activeFolder.title)
 		showModal = true
 	}
 
 	function newBookmark() {
 		editorContext = 'create'
-		editorSettings = emptyBookmark($activeFolder.title)
+		$bookmarkEditor = emptyBookmark($activeFolder.title)
 		showModal = true
 	}
-
-	let editorContext: 'edit' | 'create' = 'edit'
 </script>
 
 <br />
@@ -41,5 +40,5 @@
 <RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} />
 
 <Modal bind:showModal opacity={0}>
-	<BookmarkEditor bind:editorContext bind:editorSettings on:cancel={() => (showModal = false)} />
+	<BookmarkEditor bind:editorContext on:cancel={() => (showModal = false)} />
 </Modal>
