@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
-	import { bookmarkEditor } from '$lib/stores/bookmarkEditor'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
 	import { localStorageStore } from 'fractils'
@@ -74,15 +74,15 @@
 	+if('$showDebugger && !!$debug')
 		.debug-panel.scroller.vertical(transition:fly='{{ y: 1000, opacity: 1, duration: 300 }}')
 			.debuggable.one.scroller
-				+each("[['Show Debugger', $showDebugger]] as [name, value]")
+				+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext]] as [name, value]")
 					+key('value')
 						.kv
-							h4 {name}
+							h6 {name}
 							pre(use:highlight)
 								code.language-javascript
 									.store {JSON.stringify(value, null, 2)}
 
-			+each("[['Bookmark Editor', $bookmarkEditor], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder.bookmarks]] as [name, value], i")
+			+each("[['Bookmark Editor', $bookmarkEditor], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
 				+key('value')
 					.debuggable.scroller
 						h4 {name}
@@ -187,6 +187,9 @@
 	}
 	h4 {
 		color: var(--brand-a);
+
+		font-weight: 500;
+		font-family: var(--font-secondary);
 	}
 	.kv {
 		display: grid;
@@ -196,9 +199,14 @@
 
 		width: 20rem;
 
-		& h4 {
+		& h6 {
 			margin-right: auto;
 			width: max-content;
+
+			color: var(--brand-a);
+
+			font-family: var(--font-secondary);
+			font-weight: 300;
 		}
 
 		& pre {

@@ -2,7 +2,7 @@
 	import type { Bookmark } from '$lib/data/types'
 
 	import { createEventDispatcher, onMount, tick } from 'svelte'
-	import { bookmarkEditor } from '$lib/stores/bookmarkEditor'
+	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { newBookmark } from '$lib/data/transactions'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
@@ -31,10 +31,8 @@
 		$bookmarkEditor['tags'] = event.detail.tags
 	}
 
-	export let editorContext: 'edit' | 'create' = 'edit'
-
 	function handleSave() {
-		if (editorContext === 'edit') {
+		if ($editorContext === 'edit') {
 			// TODO: update bookmark
 			// updateBookmark(bookmark_id, $bookmarkEditor)
 		} else {
