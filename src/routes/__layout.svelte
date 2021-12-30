@@ -1,7 +1,7 @@
 <script lang="ts">
 	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
 	import SettingsPanel from '$lib/settings/SettingsPanel.svelte'
-	import Debugger from '$lib/utils/Debugger.svelte'
+	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import { page } from '$app/stores'
 	import { Header } from '$lib/ui'
 	import 'greset/css/greset.css'

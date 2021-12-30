@@ -1,15 +1,16 @@
 <script lang="ts">
+	import FloatingPanel from './FloatingPanel.svelte'
 	import { settings, showSettings } from '$lib/settings/settingsStore'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
 	import { localStorageStore } from 'fractils'
-	import { fly } from 'svelte/transition'
+	import { fade } from 'svelte/transition'
 	import { browser, dev } from '$app/env'
-	import { onMount } from 'svelte'
+	import { onMount, tick } from 'svelte'
 	import { log } from 'fractils'
-	import '../../styles/prism.css'
+	import '../../../styles/prism.css'
 
 	interface PrismJS extends NodeModule {
 		highlightAll: () => void
@@ -65,37 +66,51 @@
 		if (browser) {
 			loadPrism()
 		}
+		await tick()
 	})
+
+	const bounds = { x: 10, y: 10 }
+	const position = { x: 5, y: 500 }
+	const grabZone = 30
+
+	let debugPanel: Element
+
+	let panelWidth: number, panelHeight: number
+
+	$: if (debugPanel) {
+		panelWidth = debugPanel.getBoundingClientRect().width + grabZone
+		panelHeight = debugPanel.getBoundingClientRect().height + grabZone
+	}
 </script>
 
 <template lang="pug">
 
 	//- svelte:head
 	//- 	link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-dracula.css")
-	
 	+if('$showDebugger && !!$debug')
-		.debug-panel.scroller.vertical(transition:fly='{{ y: 1000, opacity: 1, duration: 300 }}')
-			.debuggable.one.scroller
-				+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Settings', $showSettings]] as [name, value]")
+		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
+			.debug-panel.scroller.vertical(transition:fade='{{ duration: 300 }}' bind:this='{debugPanel}')
+				.debuggable.one.scroller
+					+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Settings', $showSettings]] as [name, value]")
+						+key('value')
+							.kv
+								h6 {name}
+								pre(use:highlight)
+									code.language-javascript
+										.store {JSON.stringify(value, null, 2)}
+
+				+each("[['Bookmark Editor', $bookmarkEditor], ['Settings', $settings], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
 					+key('value')
-						.kv
-							h6 {name}
+						.debuggable.scroller
+							h4 {name}
 							pre(use:highlight)
-								code.language-javascript
-									.store {JSON.stringify(value, null, 2)}
-
-			+each("[['Bookmark Editor', $bookmarkEditor], ['Settings', $settings], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
-				+key('value')
-					.debuggable.scroller
-						h4 {name}
-						pre(use:highlight)
-							code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
-						// <JSONTree {value} />
-						.copy(on:click!='{() => handleCopy(value, i)}') {!copied[i] ? 'Copy' : 'Copied!'}
+								code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
+							// <JSONTree {value} />
+							.copy(on:click!='{() => handleCopy(value, i)}') {!copied[i] ? 'Copy' : 'Copied!'}
 
 
-		// svelte-ignore a11y-mouse-events-have-key-events
-		.mousetrap(on:mouseover='{mouseover}' on:mouseout='{mouseout}')
+			// svelte-ignore a11y-mouse-events-have-key-events
+			.mousetrap(on:mouseover='{mouseover}' on:mouseout='{mouseout}')
 
 	+if('hovering || !!$debug')
 		// svelte-ignore a11y-mouse-events-have-key-events
@@ -149,9 +164,9 @@
 		position: absolute;
 		flex-wrap: wrap;
 		display: flex;
-		bottom: 0;
-		right: 0;
-		left: 0;
+		// bottom: 0;
+		// right: 0;
+		// left: 0;
 
 		width: 98vw;
 		height: 50vh;
