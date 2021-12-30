@@ -1,6 +1,5 @@
 <script lang="ts">
 	// Data
-	import SettingsPanel from '$lib/settings/SettingsPanel.svelte'
 	import { settings } from '$lib/settings/settingsStore'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { initDB } from '$lib/data/transactions'
@@ -41,8 +40,6 @@
 		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
 	</div>
 </div>
-
-<SettingsPanel />
 
 <style lang="scss">
 	.bookmark-container {
