@@ -1,9 +1,9 @@
 import type { Bookmark, Folder } from './types'
 
 import { defaultBookmarks, defaultFolder } from './bookmarks/defaults'
+import { activeFolder, lastActiveFolderId } from './dbStore'
 import { log } from 'fractils'
 import Dexie from 'dexie'
-import { activeFolder, lastActiveFolderId } from './dbStore'
 
 export class BookmarkDB extends Dexie {
 	bookmarks: Dexie.Table<Bookmark, number>
@@ -12,7 +12,7 @@ export class BookmarkDB extends Dexie {
 	constructor() {
 		super('BookmarksDB')
 		this.version(1).stores({
-			bookmarks: 'bookmark_id, position, *tags',
+			bookmarks: 'bookmark_id, *tags, position',
 			folders: 'folder_id, *bookmarks, position'
 		})
 		this.bookmarks = this.table('bookmarks')
