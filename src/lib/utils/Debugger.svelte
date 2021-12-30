@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { settings, showSettings } from '$lib/settings/settingsStore'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import { activeFolder } from '$lib/data/dbStore'
@@ -75,7 +76,7 @@
 	+if('$showDebugger && !!$debug')
 		.debug-panel.scroller.vertical(transition:fly='{{ y: 1000, opacity: 1, duration: 300 }}')
 			.debuggable.one.scroller
-				+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext]] as [name, value]")
+				+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Settings', $showSettings]] as [name, value]")
 					+key('value')
 						.kv
 							h6 {name}
@@ -83,7 +84,7 @@
 								code.language-javascript
 									.store {JSON.stringify(value, null, 2)}
 
-			+each("[['Bookmark Editor', $bookmarkEditor], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
+			+each("[['Bookmark Editor', $bookmarkEditor], ['Settings', $settings], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
 				+key('value')
 					.debuggable.scroller
 						h4 {name}
