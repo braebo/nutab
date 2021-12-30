@@ -10,6 +10,7 @@
 
 	export let i: number
 	export let hovering: number
+	export let dragging = false
 	export let bookmark: Bookmark
 	const { url, tags, title, image, background, foreground, description } = bookmark
 
@@ -20,6 +21,7 @@
 		expandEditIcon = false
 
 	function smoothOver(fn: Function, delay = 500) {
+		if (dragging) return
 		timer && clearTimeout(timer)
 		timer = setTimeout(() => {
 			fn()
@@ -32,6 +34,10 @@
 			fn()
 		}, delay)
 	}
+
+	function handleClick(e: MouseEvent) {
+		if (dragging) e.preventDefault()
+	}
 </script>
 
 <div
@@ -41,7 +47,7 @@
 	on:mouseout={() => smoothOut(() => (showEditIcon = false))}
 	on:blur={() => (showEditIcon = false)}
 >
-	{#if showEditIcon}
+	{#if showEditIcon && !dragging}
 		<div
 			on:mouseover={() => smoothOver(() => (expandEditIcon = true))}
 			on:focus={() => (expandEditIcon = true)}
@@ -56,7 +62,13 @@
 		</div>
 	{/if}
 
-	<a target="_blank" href={url}>
+	<a
+		target="_blank"
+		href={url}
+		draggable="false"
+		on:click|preventDefault={handleClick}
+		class:dragging
+	>
 		{#if image}
 			<div
 				transition:scale={{ duration: 200 + 50 * i }}
@@ -70,6 +82,7 @@
 				"
 			>
 				<img
+					draggable="false"
 					style="width: {$settings.ranges.iconSize.value}px;"
 					class="icon icon{i}"
 					src={image}
@@ -157,6 +170,10 @@
 		color: var(--dark-a);
 
 		text-decoration: none;
+	}
+	a.dragging {
+		pointer-events: none;
+		cursor: inherit;
 	}
 
 	.edit {
