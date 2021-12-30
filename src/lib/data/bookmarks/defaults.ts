@@ -9,15 +9,19 @@ const default_theme = {
 	foreground: '#F5F5F5'
 }
 
-export const emptyBookmark = (current_folder_title: Folder['title']): Bookmark => ({
-	bookmark_id: cuid(),
-	url: '',
-	title: '',
-	description: '',
-	image: null,
-	tags: [current_folder_title],
-	...default_theme
-})
+export const emptyBookmark = (current_folder: Folder): Bookmark => {
+	const { title, position } = current_folder
+	return {
+		bookmark_id: cuid(),
+		url: '',
+		title: '',
+		description: '',
+		image: null,
+		tags: [title],
+		...default_theme,
+		position
+	}
+}
 
 export const defaultBookmarks: Bookmark[] = [
 	{
@@ -27,7 +31,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: 'Dev News Extensions',
 		image: 'https://github.com/karakanb/devo/raw/master/img/logo.png',
 		tags: ['Dev', 'News'],
-		...default_theme
+		...default_theme,
+		position: 0
 	},
 	{
 		bookmark_id: cuid(),
@@ -36,7 +41,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: 'Repo Search Engine',
 		image: 'https://d25hn4jiqx5f7l.cloudfront.net/companies/logos/medium/openbase_1601666331.png',
 		tags: ['Dev', 'Code', 'Search'],
-		...default_theme
+		...default_theme,
+		position: 1
 	},
 	{
 		bookmark_id: cuid(),
@@ -45,7 +51,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: 'Front Page of the Internet',
 		image: 'https://www.redditinc.com/assets/images/site/reddit-logo.png',
 		tags: ['Entertainment', 'News', 'Media'],
-		...default_theme
+		...default_theme,
+		position: 2
 	},
 	{
 		bookmark_id: cuid(),
@@ -54,7 +61,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: '',
 		image: 'https://cdn.svgporn.com/logos/youtube-icon.svg',
 		tags: ['Google', 'Video', 'Entertainment', 'Media'],
-		...default_theme
+		...default_theme,
+		position: 3
 	},
 	{
 		bookmark_id: cuid(),
@@ -63,7 +71,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: '',
 		image: 'https://cdn.svgporn.com/logos/github-icon.svg',
 		tags: ['Dev', 'Github'],
-		...default_theme
+		...default_theme,
+		position: 4
 	},
 	{
 		bookmark_id: cuid(),
@@ -72,7 +81,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: 'Email',
 		image: 'https://cdn.svgporn.com/logos/google-gmail.svg',
 		tags: ['Google', 'Email', 'Mail'],
-		...default_theme
+		...default_theme,
+		position: 5
 	},
 	{
 		bookmark_id: cuid(),
@@ -81,7 +91,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: 'Google Drive',
 		image: 'https://cdn.svgporn.com/logos/google-drive.svg',
 		tags: ['Google', 'Storage'],
-		...default_theme
+		...default_theme,
+		position: 6
 	},
 	{
 		bookmark_id: cuid(),
@@ -90,7 +101,8 @@ export const defaultBookmarks: Bookmark[] = [
 		description: 'Gogle Photos',
 		image: 'https://cdn.svgporn.com/logos/google-photos.svg',
 		tags: ['Google', 'Storage', 'Photos', 'Images'],
-		...default_theme
+		...default_theme,
+		position: 7
 	}
 ]
 
@@ -99,7 +111,7 @@ export const defaultFolder: Folder = {
 	user_id: 'anon',
 	icon: '🏠',
 	title: 'General',
-	position: 0,
 	bookmarks: defaultBookmarks,
-	active: true
+	active: true,
+	position: 0
 }

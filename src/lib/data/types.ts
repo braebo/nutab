@@ -7,6 +7,7 @@ export type Bookmark = {
 	background?: string | null
 	foreground?: string | null
 	tags: string[]
+	position: number
 }
 
 export type Folder = {
