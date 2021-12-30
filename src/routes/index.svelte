@@ -23,7 +23,7 @@
 
 	function newBookmark() {
 		$editorContext = 'create'
-		$bookmarkEditor = emptyBookmark($activeFolder.title)
+		$bookmarkEditor = emptyBookmark($activeFolder)
 		showModal = true
 	}
 </script>
