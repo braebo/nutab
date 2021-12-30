@@ -41,6 +41,9 @@
 
 	--confirm: #00a2ff;
 	--warn: tomato;
+
+	--shadow-md: 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09),
+		0px 14px 15px -1px rgba(0, 0, 0, 0.14);
 }
 
 body {
@@ -147,7 +150,7 @@ button:focus:not(:focus-visible) {
 	flex-direction: column;
 	flex-grow: 1;
 
-	overflow-y: hidden;
+	// overflow-y: hidden;
 }
 
 .scroller {
