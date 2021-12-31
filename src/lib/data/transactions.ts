@@ -11,17 +11,14 @@ import db from './db'
  * @param  {BookmarkDB} db
  */
 export async function initDB() {
-	// Add default tables if they don't exist
-	// const bookmarksExist = await Dexie.exists('BookmarksDB') // fails
-	// const bookmarksExist = (await db.bookmarks.count()) > defaultBookmarks.length
-	// Otherwise get the last active folder
+	//? Get the last active folder
 	log('🏁 Database found.', '#fa8', 'dimgray', 25)
 	await wait(100)
 	const id = localStorage.getItem('lastActiveFolderId')
+
+	//? Update activeFolder store
 	let lastActiveFolder: Folder | undefined
 	lastActiveFolder = await db.table('folders').where('folder_id').equals(id).first()
-	log('Last active folder found: ', '#fa8', 'dimgray', 25)
-	log(lastActiveFolder)
 	activeFolder.set(lastActiveFolder)
 }
 
