@@ -5,8 +5,8 @@
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
+	import { fly, fade } from 'svelte/transition'
 	import { localStorageStore } from 'fractils'
-	import { fade } from 'svelte/transition'
 	import { browser, dev } from '$app/env'
 	import { onMount, tick } from 'svelte'
 	import { log } from 'fractils'
@@ -60,6 +60,10 @@
 	const toggle = () => {
 		$showDebugger = !$showDebugger
 		highlight()
+		if ($showDebugger) {
+			position.y = window.innerHeight - 650 - grabZone
+			console.log(position.y)
+		}
 	}
 
 	onMount(async () => {
@@ -71,7 +75,7 @@
 
 	const bounds = { x: 10, y: 10 }
 	const position = { x: 5, y: 500 }
-	const grabZone = 30
+	const grabZone = 20
 
 	let debugPanel: Element
 
@@ -89,7 +93,7 @@
 	//- 	link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-dracula.css")
 	+if('$showDebugger && !!$debug')
 		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
-			.debug-panel.scroller.vertical(transition:fade='{{ duration: 300 }}' bind:this='{debugPanel}')
+			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
 				.debuggable.one.scroller
 					+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Settings', $showSettings]] as [name, value]")
 						+key('value')

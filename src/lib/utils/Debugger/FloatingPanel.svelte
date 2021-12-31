@@ -83,7 +83,7 @@
 	on:mousedown={handleMouseDown}
 	style="
 						transform: translate({position.x}px, {position.y}px);
-						box-shadow: 0 0 0 {grabZone}px var(--grabzone-color, black) inset;
+						box-shadow: 0 0 0 {grabZone}px var(--light-b, black) inset;
 						box-sizing: content-box;
 						user-select: {dragging ? 'none' : 'auto'};
 						width: {panelWidth}px;
@@ -103,9 +103,9 @@
 		align-items: center;
 		justify-content: center;
 
-		background: var(--background, black);
+		background: var(--light-b, black);
 		border-radius: var(--border-radius, 10px);
-		box-shadow: 0 5px 15px 0 #0003;
+		box-shadow: 0 5px 15px 0 var(--light-a, #0003);
 	}
 	.inZone {
 		cursor: grab;
