@@ -1,6 +1,9 @@
 <script lang="ts">
+	// https://github.com/jwlarocque/svelte-dragdroplist/blob/master/DragDropList.svelte
+	// https://github.com/PuruVJ/svelte-drag/blob/main/src/index.ts
+
 	// Types
-	import type { Bookmark } from '$lib/data/types'
+	import type { Bookmark, Folder } from '$lib/data/types'
 
 	// Data
 	import { activeFolder } from '$lib/data/dbStore'
@@ -13,17 +16,17 @@
 
 	// Utils
 	import { spring } from 'svelte/motion'
-	import { mapRange } from 'fractils'
+	import { mapRange, wait } from 'fractils'
 
 	let active = -1
 	let container: HTMLElement
 	let box_el: { [x: string]: HTMLElement } = {}
 	let box_start = 0
-	let dragPosition = spring(0, { stiffness: 0.05, damping: 0.75 })
+	let dragPosition = spring(0, { stiffness: 0.05, damping: 0.25 })
 	let hovering: number | null = null
 	let activeSet = true
 
-	$: box_el[1] && activeSet && set_positions()
+	$: box_el[1] && $settings && set_positions()
 
 	// set the correct absolute positions
 
@@ -50,7 +53,9 @@
 		let offset = 0
 
 		// get the bookmark width + gridGap setting
-		const width = $settings.ranges.cellSize.value + $settings.ranges.gridGap.value
+		const width =
+			parseInt($settings.ranges.cellSize.value) + parseInt($settings.ranges.gridGap.value)
+		// console.log(width)
 
 		$activeFolder.bookmarks.forEach(({ position }, index) => {
 			const _el = box_el[position]
@@ -90,11 +95,11 @@
 	// the mouse up handler will bail us out
 	async function handle_mousedown({ clientX }: MouseEvent, id: number) {
 		active = id
-		console.log(id)
+		console.log('mousedown', id)
 		dispatch('change', id)
-		await tick()
 		// we need to wait for active to be set before we can start transforming
 		activeSet = true
+		await tick()
 
 		// we have other mousedown events, we need to wait a little so we don't get confused
 		timer = setTimeout(async () => {
@@ -177,34 +182,62 @@
 		}
 		// tabs = tabs
 		await tick()
+		debounce(updatePositionData)
+	}
+
+	let dbtimer: NodeJS.Timeout
+	const debounce = (cb: Function) => {
+		clearTimeout(dbtimer)
+		dbtimer = setTimeout(() => {
+			// active = -1
+			cb()
+		}, 1500)
+	}
+
+	function updatePositionData(arr: Bookmark[], from: number, to: number) {
+		let newList = [...arr]
+		newList[from] = [newList[to], (newList[to] = newList[from])][0]
+		$activeFolder.bookmarks = newList
+
+		// $activeFolder.bookmarks = $activeFolder.bookmarks.sort((a, b) => a.position - b.position)
+
+		// const arr = $activeFolder.bookmarks
+		// arr.sort((a, b) => a.position - b.position)
+		// $activeFolder.bookmarks = arr
+
+		// ref.forEach((b, i) => {
+		// 	$activeFolder.bookmarks[i] = b
+		// })
 	}
 
 	// we don't want to write to the dom on every mousevent
 	// we will throttle the operations once per frame
 	// this is basically lodash/throttle but raf
 	function throttle(timer: typeof requestAnimationFrame) {
-		let queued_property_def: null | [string, string] = null
+		let queued_cb: null | Function = null
 
-		return (property_def: [string, string]) => {
-			if (!queued_property_def) {
+		return (cb: Function) => {
+			if (!queued_cb) {
 				timer(() => {
-					const _current = queued_property_def as [string, string]
+					const _current = queued_cb as Function
 					// box_el[active].style.setProperty(_current[0], _current[1])
-					queued_property_def = null
+					queued_cb = null
 				})
 			}
-			queued_property_def = property_def
+			queued_cb = cb
 		}
 	}
 
 	function swap(arr: Array<any>, index_a: any, index_b: any) {
-		const _t = arr[index_a]
+		// const _t = arr[index_a]
 		const _p = arr[index_a].position
 		const _p2 = arr[index_b].position
-		arr[index_a] = arr[index_b]
-		arr[index_b] = _t
+		// arr[index_a] = arr[index_b]
+		// arr[index_b] = _t
 		$activeFolder.bookmarks[index_a].position = _p2
 		$activeFolder.bookmarks[index_b].position = _p
+
+		updatePositionData($activeFolder.bookmarks, index_a, index_b)
 	}
 
 	$: svgDot = container
@@ -214,15 +247,15 @@
 
 <svelte:window on:mouseup={handle_mouseup} on:mousemove={handle_mousemove} />
 
-<ul class="folder-container" bind:this={container}>
+<ul class="folder-container" bind:this={container} class:dragging>
 	<!-- prettier-ignore -->
 	<!-- <svg class="debugDot" style="border: 1px solid blue;" viewBox="0 0 {container?.getBoundingClientRect().width} {container?.getBoundingClientRect().height}">
 		<circle r="10" cx={$dragPosition + container?.getBoundingClientRect().width / 2} cy={container?.getBoundingClientRect().height} fill="red"/>
 	</svg> -->
 	{#if $activeFolder}
-		{#each $activeFolder.bookmarks as bookmark (bookmark.position)}
+		{#each $activeFolder.bookmarks as bookmark, i (bookmark.position)}
 			<li
-				bind:this={box_el[bookmark.position]}
+				bind:this={box_el[i]}
 				class="box bookmark-container"
 				class:active={active === bookmark.position}
 				class:inactive={active !== bookmark.position && dragging}
@@ -240,7 +273,7 @@
 				on:focus={() => (hovering = bookmark.position)}
 				on:blur={() => (hovering = null)}
 			>
-				<BM {bookmark} {dragging} {hovering} i={bookmark.position} on:showEditor />
+				<BM {bookmark} {dragging} {hovering} {i} on:showEditor />
 			</li>
 		{/each}
 		<div class="add-bookmark" on:click={() => dispatch('newBookmark')}>
@@ -249,7 +282,7 @@
 	{/if}
 </ul>
 
-<style>
+<style lang="scss">
 	ul {
 		display: flex;
 		flex-wrap: wrap;
@@ -261,7 +294,14 @@
 
 		list-style: none;
 
+		// border: 1px solid blue;
+
 		font-family: 'Overpass';
+
+		// &.dragging {
+		cursor: grabbing;
+
+		// }
 	}
 
 	li {

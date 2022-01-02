@@ -103,7 +103,7 @@
 									code.language-javascript
 										.store {JSON.stringify(value, null, 2)}
 
-				+each("[['Bookmark Editor', $bookmarkEditor], ['Settings', $settings], ['Active Folder', $activeFolder], ['Active Bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
+				+each("[['$bookmarkEditor', $bookmarkEditor], ['$settings', $settings], ['$activeFolder', $activeFolder], ['$activeFolder.bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
 					+key('value')
 						.debuggable.scroller
 							h4 {name}

@@ -3,10 +3,6 @@
 	import { clickOutside } from '../utils/clickOutside'
 	import { fly } from 'svelte/transition'
 	import Range from '../ui/Range.svelte'
-
-	const updateSetting = (setting, value) => {
-		$settings.setting = value
-	}
 </script>
 
 <div
