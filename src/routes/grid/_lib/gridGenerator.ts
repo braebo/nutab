@@ -1,5 +1,7 @@
-import { writable, derived } from 'svelte/store'
+import { writable, derived, get } from 'svelte/store'
+import { activeFolder } from '$lib/data/dbStore'
 import { exampleArray } from './utils'
+import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
 
 const gridSettings = {
 	gridWidth: 788,
@@ -9,7 +11,7 @@ const gridSettings = {
 
 export const grid = writable({
 	...gridSettings,
-	items: exampleArray
+	items: defaultBookmarks
 })
 
 export const gridDimensions = derived(grid, ($grid) => {
@@ -57,7 +59,7 @@ export const gridDimensions = derived(grid, ($grid) => {
 		// store the positions
 		positions.forEach((_, i) => {
 			positions[i] = {
-				item: $grid.items[i].title, // Todo: remove this
+				item: $grid.items[i]?.title, // Todo: remove this
 				x: Math.floor(getPositionInRow(i)),
 				y: Math.floor(getPositionInColumn(i))
 			}

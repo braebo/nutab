@@ -2,32 +2,10 @@
 	import { grid, gridDimensions } from './_lib/gridGenerator'
 	import DebugPanel from './_lib/DebugPanel.svelte'
 	import { gradient } from './_lib/utils'
-	import { onMount } from 'svelte'
-
-	onMount(() => {
-		const item1 = document.querySelectorAll('.cell')[0]
-		const itemX = item1.getBoundingClientRect().x
-		const grid = document.querySelector('.grid')
-		const gridX = grid.getBoundingClientRect().x
-		const distance = itemX - gridX
-		console.log({ distance })
-	})
 </script>
 
 <DebugPanel />
 
-<!-- CONTROLS -->
-<h4>
-	gridWidth: <input bind:value={$grid.gridWidth} type="range" min="300" max="1000" style="width: 80%;" />
-</h4>
-<h4>
-	gridPadding: <input bind:value={$grid.gridPadding} type="range" min="20" max="500" style="width: 80%;" />
-</h4>
-<h4>
-	itemSize: <input bind:value={$grid.itemSize} type="range" min="50" max="500" style="width: 80%;" />
-</h4>
-
-<!-- GRID -->
 <div
 	class="grid"
 	style="
@@ -81,15 +59,5 @@
 		margin: auto;
 
 		color: white;
-	}
-	h4 {
-		display: flex;
-		justify-content: flex-end;
-
-		margin: auto;
-		height: 30px;
-		width: 40vw;
-
-		line-height: 20px;
 	}
 </style>

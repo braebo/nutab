@@ -53,8 +53,7 @@
 		let offset = 0
 
 		// get the bookmark width + gridGap setting
-		const width =
-			parseInt($settings.ranges.cellSize.value) + parseInt($settings.ranges.gridGap.value)
+		const width = parseInt($settings.ranges.cellSize.value) + parseInt($settings.ranges.gridGap.value)
 		// console.log(width)
 
 		$activeFolder.bookmarks.forEach(({ position }, index) => {
@@ -166,17 +165,12 @@
 		const _index = $activeFolder.bookmarks.findIndex((v) => active === v.position)
 		const right = box_positions[active].width + box_start + (clientX - clientX_start)
 
-		if (
-			movementX > 0 &&
-			_index < $activeFolder.bookmarks.length - 1 &&
-			right > box_positions[$activeFolder.bookmarks[_index + 1].position].mid
-		) {
+		if (movementX > 0 && _index < $activeFolder.bookmarks.length - 1 && right > box_positions[$activeFolder.bookmarks[_index + 1].position].mid) {
 			swap($activeFolder.bookmarks, _index, _index + 1)
 		} else if (
 			movementX < 0 &&
 			_index > 0 &&
-			box_start + (clientX - clientX_start) <
-				box_positions[$activeFolder.bookmarks[_index - 1].position].mid
+			box_start + (clientX - clientX_start) < box_positions[$activeFolder.bookmarks[_index - 1].position].mid
 		) {
 			swap($activeFolder.bookmarks, _index, _index - 1)
 		}
@@ -237,12 +231,10 @@
 		$activeFolder.bookmarks[index_a].position = _p2
 		$activeFolder.bookmarks[index_b].position = _p
 
-		updatePositionData($activeFolder.bookmarks, index_a, index_b)
+		// updatePositionData($activeFolder.bookmarks, index_a, index_b)
 	}
 
-	$: svgDot = container
-		? mapRange($dragPosition, 0, container.getBoundingClientRect().width, 0, 100)
-		: 0
+	$: svgDot = container ? mapRange($dragPosition, 0, container.getBoundingClientRect().width, 0, 100) : 0
 </script>
 
 <svelte:window on:mouseup={handle_mouseup} on:mousemove={handle_mousemove} />
