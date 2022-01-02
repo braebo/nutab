@@ -13,7 +13,7 @@
 		ul
 			+each('links as [path, title], i (title)')
 
-				li(class:active='{$page.path === path}')
+				li(class:active='{$page.url.pathName === path}')
 
 					a(
 						sveltekit:prefetch

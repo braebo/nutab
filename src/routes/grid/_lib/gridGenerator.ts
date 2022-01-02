@@ -2,9 +2,9 @@ import { writable, derived } from 'svelte/store'
 import { exampleArray } from './utils'
 
 const gridSettings = {
-	gridWidth: 683,
+	gridWidth: 788,
 	gridPadding: 38,
-	itemSize: 50
+	itemSize: 75
 }
 
 export const grid = writable({
@@ -38,10 +38,10 @@ export const gridDimensions = derived(grid, ($grid) => {
 	const remainingSpace = gridWidth - lengthOfItems
 	const a = remainingSpace / totalColumns
 	const b = a / 4
-	const remainingSpacePerItem = parseFloat((a - b).toFixed(9))
+	const remainingSpacePerItem = parseFloat((a - b).toFixed(10))
 
 	// calculate final cell size
-	const cellSize = parseFloat(totalItemSize + remainingSpacePerItem).toFixed(2))
+	const cellSize = parseFloat((totalItemSize + remainingSpacePerItem).toFixed(10))
 	// calculate the final grid height
 	const gridHeight = cellSize * totalRows + remainingSpacePerItem
 
@@ -49,9 +49,7 @@ export const gridDimensions = derived(grid, ($grid) => {
 	let positions = Array(itemCount).fill('')
 	function updatePositions() {
 		// get x position
-		const getPositionInRow = (i: number) => ((cellSize * i) % (cellSize * totalColumns)) + remainingSpacePerItem
-		// const totalRowsPlus1 = totalRows + 1
-		// const getPositionInRow = (i: number) => Math.floor(i % totalColumns) * cellSize + remainingSpacePerItem * 2
+		const getPositionInRow = (i: number) => ((cellSize * i) % (cellSize * totalColumns - 0.1)) + remainingSpacePerItem
 
 		// get y position
 		const getPositionInColumn = (i: number) => Math.floor(i / totalColumns) * cellSize + remainingSpacePerItem

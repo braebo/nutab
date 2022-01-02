@@ -10,6 +10,7 @@ specifiers:
   dexie: ^3.2.0
   fractils: ^1.0.16
   greset: ^1.0.0
+  highlight.js: ^11.3.1
   mdsvex: ^0.9.8
   postcss: ^8.4.5
   postcss-load-config: ^3.1.0
@@ -39,14 +40,15 @@ dependencies:
   '@fontsource/fira-mono': 4.5.0
 
 devDependencies:
-  '@sveltejs/adapter-vercel': 1.0.0-next.32
-  '@sveltejs/kit': 1.0.0-next.203_sass@1.45.1+svelte@3.44.3
+  '@sveltejs/adapter-vercel': 1.0.0-next.34
+  '@sveltejs/kit': 1.0.0-next.212_sass@1.45.1+svelte@3.44.3
   autoprefixer: 10.4.0_postcss@8.4.5
   cssnano: 5.0.14_postcss@8.4.5
   cuid: 2.1.8
   dexie: 3.2.0
   fractils: 1.0.16
   greset: 1.0.0
+  highlight.js: 11.3.1
   mdsvex: 0.9.8_svelte@3.44.3
   postcss: 8.4.5
   postcss-load-config: 3.1.0
@@ -338,21 +340,20 @@ packages:
       - supports-color
     dev: true
 
-  /@sveltejs/adapter-vercel/1.0.0-next.32:
-    resolution: {integrity: sha512-ZcltaS5bAobGD5P0z7xJIjPHSlGpF7padMIkqTzJxwMEb/acGgdO5yzDS8XUEaSNgj+prpD2oG8+gm33ds8x0A==}
+  /@sveltejs/adapter-vercel/1.0.0-next.34:
+    resolution: {integrity: sha512-TQDQK2wjDQkoSkNVuFVu4a/hzqKIWCGL15Zi7zQv740ZSd6F2Lg9QHlFfEXMglu6mhoep084h6JiLtzavNiZeA==}
     dependencies:
       esbuild: 0.13.15
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.203_sass@1.45.1+svelte@3.44.3:
-    resolution: {integrity: sha512-+bhfmkzquWMSCCFIJoh36U9D6IKC0p/NrIr4CBHMAdRpqzL9lMP0AYQm1fUDH20F/6b2tWvGxmEg+gAmHikRfA==}
+  /@sveltejs/kit/1.0.0-next.212_sass@1.45.1+svelte@3.44.3:
+    resolution: {integrity: sha512-hjpk/Rqrl6hhNf1Qsx6EDvL3Cm9JvmvW/Z1FRYVhGg1xin/JQkPgFzTU27NBSYhtK1t4buLmlO1tqdMvurs9Fg==}
     engines: {node: '>=14.13'}
     hasBin: true
     peerDependencies:
       svelte: ^3.44.0
     dependencies:
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.32_svelte@3.44.3+vite@2.7.6
-      cheap-watch: 1.0.4
       sade: 1.7.4
       svelte: 3.44.3
       vite: 2.7.6_sass@1.45.1
@@ -807,11 +808,6 @@ packages:
 
   /character-reference-invalid/1.1.4:
     resolution: {integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==}
-    dev: true
-
-  /cheap-watch/1.0.4:
-    resolution: {integrity: sha512-QR/9FrtRL5fjfUJBhAKCdi0lSRQ3rVRRum3GF9wDKp2TJbEIMGhUEr2yU8lORzm9Isdjx7/k9S0DFDx+z5VGtw==}
-    engines: {node: '>=8'}
     dev: true
 
   /cheerio-select/1.5.0:
@@ -1868,6 +1864,11 @@ packages:
 
   /hast-util-to-string/1.0.4:
     resolution: {integrity: sha512-eK0MxRX47AV2eZ+Lyr18DCpQgodvaS3fAQO2+b9Two9F5HEoRPhiUMNzoXArMJfZi2yieFzUBMRl3HNJ3Jus3w==}
+    dev: true
+
+  /highlight.js/11.3.1:
+    resolution: {integrity: sha512-PUhCRnPjLtiLHZAQ5A/Dt5F8cWZeMyj9KRsACsWT+OD6OP0x6dp5OmT5jdx0JgEyPxPZZIPQpRN2TciUT7occw==}
+    engines: {node: '>=12.0.0'}
     dev: true
 
   /hosted-git-info/2.8.9:
