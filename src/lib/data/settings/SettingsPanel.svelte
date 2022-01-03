@@ -1,15 +1,11 @@
 <script>
 	import { settings, showSettings } from './settingsStore'
-	import { clickOutside } from '../utils/clickOutside'
+	import { clickOutside } from '$lib/utils/clickOutside'
+	import Range from '$lib/ui/Range.svelte'
 	import { fly } from 'svelte/transition'
-	import Range from '../ui/Range.svelte'
 </script>
 
-<div
-	class="mousetrap"
-	on:mouseover={() => ($showSettings = true)}
-	on:focus={() => ($showSettings = true)}
-/>
+<div class="mousetrap" on:mouseover={() => ($showSettings = true)} on:focus={() => ($showSettings = true)} />
 
 {#if $showSettings}
 	<div
@@ -74,11 +70,11 @@
 		margin: 20px 0;
 		padding: 2px 15px;
 
-		font-size: 20px;
-
 		border: 1px solid rgba(var(--light-c-rgb), 0.33);
 		border-radius: 10px;
 		background: rgba(var(--light-b-rgb), 0.33);
+
+		font-size: 20px;
 	}
 
 	label {

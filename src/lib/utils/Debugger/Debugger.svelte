@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FloatingPanel from './FloatingPanel.svelte'
-	import { settings, showSettings } from '$lib/settings/settingsStore'
+	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import { activeFolder } from '$lib/data/dbStore'

@@ -1,7 +1,7 @@
 <script lang="ts">
 	// import type { Bookmark } from '../data/types';
 
-	import { settings } from '$lib/settings/settingsStore'
+	import { settings } from '$lib/data/settings/settingsStore'
 	import { scale, fade } from 'svelte/transition'
 	import type { Bookmark } from '$lib/data/types'
 	import { createEventDispatcher } from 'svelte'
@@ -62,13 +62,7 @@
 		</div>
 	{/if}
 
-	<a
-		target="_blank"
-		href={url}
-		draggable="false"
-		on:click|preventDefault={handleClick}
-		class:dragging
-	>
+	<a target="_blank" href={url} draggable="false" on:click|preventDefault={handleClick} class:dragging>
 		{#if image}
 			<div
 				transition:scale={{ duration: 200 + 50 * i }}

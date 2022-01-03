@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Data
-	import { settings } from '$lib/settings/settingsStore'
+	import { settings } from '$lib/data/settings/settingsStore'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { initDB } from '$lib/data/transactions'
 

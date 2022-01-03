@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
-	import SettingsPanel from '$lib/settings/SettingsPanel.svelte'
+	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
 	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import { page } from '$app/stores'
 	import { Header } from '$lib/ui'
@@ -12,7 +12,7 @@
 	import Modal from '$lib/ui/Modal.svelte'
 	import { onMount } from 'svelte'
 
-	import Settings from '$lib/settings/Settings.svelte'
+	import Settings from '$lib/data/settings/Settings.svelte'
 	import Themer from '$lib/theme/Themer.svelte'
 	import Nav from '$lib/ui/Nav.svelte'
 

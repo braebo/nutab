@@ -16,6 +16,7 @@ export interface Settings {
 	}
 	transparent: boolean
 	showTitle: boolean
+	invertDark?: boolean
 }
 
 const default_settings: Settings = {

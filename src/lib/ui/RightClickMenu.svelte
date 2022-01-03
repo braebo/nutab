@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition'
 	import { createEventDispatcher } from 'svelte'
-	import { showSettings } from '../settings/settingsStore'
+	import { showSettings } from '$lib/data/settings/settingsStore'
 	import { clickOutside } from 'fractils'
 	const dispatch = createEventDispatcher()
 

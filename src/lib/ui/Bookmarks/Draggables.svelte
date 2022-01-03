@@ -7,7 +7,7 @@
 
 	// Data
 	import { activeFolder } from '$lib/data/dbStore'
-	import { settings } from '$lib/settings/settingsStore'
+	import { settings } from '$lib/data/settings/settingsStore'
 
 	// Components
 	import Tooltip from './../Tooltip.svelte'
@@ -165,7 +165,11 @@
 		const _index = $activeFolder.bookmarks.findIndex((v) => active === v.position)
 		const right = box_positions[active].width + box_start + (clientX - clientX_start)
 
-		if (movementX > 0 && _index < $activeFolder.bookmarks.length - 1 && right > box_positions[$activeFolder.bookmarks[_index + 1].position].mid) {
+		if (
+			movementX > 0 &&
+			_index < $activeFolder.bookmarks.length - 1 &&
+			right > box_positions[$activeFolder.bookmarks[_index + 1].position].mid
+		) {
 			swap($activeFolder.bookmarks, _index, _index + 1)
 		} else if (
 			movementX < 0 &&

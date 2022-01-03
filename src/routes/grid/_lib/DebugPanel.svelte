@@ -17,42 +17,44 @@
 </script>
 
 <div class="debug-page">
-	<!-- CONTROLS -->
-	<h4>
-		gridWidth: <input bind:value={$grid.gridWidth} type="range" min="300" max={window?.innerWidth * 0.9 || 1000} style="width: 80%;" />
-	</h4>
-	<h4>
-		gridPadding: <input bind:value={$grid.gridPadding} type="range" min="20" max="500" style="width: 80%;" />
-	</h4>
-	<h4>
-		itemSize: <input bind:value={$grid.itemSize} type="range" min="50" max="500" style="width: 80%;" />
-	</h4>
+	<slot>
+		<!-- CONTROLS -->
+		<h4>
+			gridWidth: <input bind:value={$grid.gridWidth} type="range" min="300" max={window?.innerWidth * 0.9 || 1000} style="width: 80%;" />
+		</h4>
+		<h4>
+			gridPadding: <input bind:value={$grid.gridPadding} type="range" min="20" max="500" style="width: 80%;" />
+		</h4>
+		<h4>
+			itemSize: <input bind:value={$grid.itemSize} type="range" min="50" max="500" style="width: 80%;" />
+		</h4>
 
-	<!-- JSON -->
-	{#key [$grid, $gridDimensions]}
-		<div class="debug">
-			<pre>
+		<!-- JSON -->
+		{#key [$grid, $gridDimensions]}
+			<div class="debug">
+				<pre>
 		<code class="language-json">
 		$grid: {JSON.stringify(
-						Object.assign(
-							{
-								itemSize: $grid.itemSize,
-								gridWidth: $grid.gridWidth,
-								gridPadding: $grid.gridPadding
-							},
-							{}
-						),
-						null,
-						2
-					)}</code>
+							Object.assign(
+								{
+									itemSize: $grid.itemSize,
+									gridWidth: $grid.gridWidth,
+									gridPadding: $grid.gridPadding
+								},
+								{}
+							),
+							null,
+							2
+						)}</code>
 		</pre>
-			<pre class="scroller">
+				<pre class="scroller">
 		<code class="language-json">
 		$gridDimensions: {JSON.stringify($gridDimensions, null, 2)}
 		</code>
 		</pre>
-		</div>
-	{/key}
+			</div>
+		{/key}
+	</slot>
 </div>
 
 <svelte:head>
