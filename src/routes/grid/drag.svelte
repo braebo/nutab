@@ -99,8 +99,6 @@
 		}
 	}
 
-	let debug = false
-
 	let swapTimer: NodeJS.Timeout
 	const swap = (a: number, b: number) => {
 		disableTransitions = true
@@ -137,8 +135,7 @@
 				width: {$gridDimensions.totalItemSize}px;
 				height: {$gridDimensions.totalItemSize}px;
 				transform: {getCellPosition(i)};
-				transition: {transitionDuration}ms;
-				{disableTransitions ? 'transition: none;' : ''}
+				transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 				"
 			bind:this={cells[i]}
 		>

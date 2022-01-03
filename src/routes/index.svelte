@@ -12,6 +12,7 @@
 	import Folder from '$lib/ui/Bookmarks/Folder.svelte'
 	import Search from '$lib/search/Search.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
+	import DnDFolder from '$lib/ui/Bookmarks/DnDFolder.svelte'
 
 	let showModal = false
 
@@ -34,7 +35,8 @@
 
 <br />
 
-<Folder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
+<!-- <Folder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} /> -->
+<DnDFolder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
 
 <RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
 

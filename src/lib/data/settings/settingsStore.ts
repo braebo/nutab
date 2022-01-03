@@ -10,7 +10,7 @@ type Range = {
 export interface Settings {
 	// Todo: add theme, language, etc.
 	ranges: {
-		cellSize: Range
+		gridWidth: Range
 		gridGap: Range
 		iconSize: Range
 	}
@@ -21,9 +21,9 @@ export interface Settings {
 
 const default_settings: Settings = {
 	ranges: {
-		cellSize: { label: 'Cell Size', value: 75, range: { min: 75, max: 250 } },
+		gridWidth: { label: 'Grid Width', value: 1000, range: { min: 500, max: 2000 } },
 		iconSize: { label: 'Icon Size', value: 50, range: { min: 0, max: 150 } },
-		gridGap: { label: 'Grid Gap', value: 25, range: { min: 0, max: 100 } }
+		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } }
 	},
 	transparent: true,
 	showTitle: false
@@ -32,3 +32,6 @@ const default_settings: Settings = {
 export const settings = localStorageStore('settings', default_settings)
 
 export const showSettings = writable(false)
+
+// Used to show grid borders while updating gridWidth
+export const showGuidelines = writable(false)

@@ -1,8 +1,18 @@
-<script>
-	import { settings, showSettings } from './settingsStore'
+<script lang="ts">
+	import { settings, showSettings, showGuidelines } from './settingsStore'
 	import { clickOutside } from '$lib/utils/clickOutside'
 	import Range from '$lib/ui/Range.svelte'
 	import { fly } from 'svelte/transition'
+
+	let sgTimer: NodeJS.Timeout
+	const toggleShowGuidelines = (e: Event, setting: any) => {
+		if (setting != 'gridWidth') return
+		clearTimeout(sgTimer)
+		$showGuidelines = true
+		sgTimer = setTimeout(() => {
+			$showGuidelines = false
+		}, 1000)
+	}
 </script>
 
 <div class="mousetrap" on:mouseover={() => ($showSettings = true)} on:focus={() => ($showSettings = true)} />
@@ -21,7 +31,7 @@
 					<Range
 						range={$settings.ranges[setting].range}
 						bind:setting={$settings.ranges[setting].value}
-						on:change={(e) => ($settings.ranges[setting].value = e.target.value)}
+						on:input={(e) => toggleShowGuidelines(e, setting)}
 						name={setting}
 					/>
 				</div>

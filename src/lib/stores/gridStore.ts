@@ -1,23 +1,21 @@
-import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
+// import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
 import { writable, derived } from 'svelte/store'
+import { activeFolder } from '$lib/data/dbStore'
+import { settings } from '$lib/data/settings/settingsStore'
 
-const gridSettings = {
-	gridWidth: 1000,
-	gridPadding: 38,
-	itemSize: 75
-}
-
-export const grid = writable({
-	...gridSettings,
-	items: defaultBookmarks
-})
+export const grid = derived([activeFolder, settings], ([$activeFolder, $settings]) => ({
+	gridWidth: $settings.ranges.gridWidth.value,
+	iconSize: $settings.ranges.iconSize.value,
+	gridGap: $settings.ranges.gridGap.value,
+	items: $activeFolder?.bookmarks
+}))
 
 export const gridDimensions = derived(grid, ($grid) => {
-	const { itemSize, gridPadding, gridWidth } = $grid
+	const { iconSize, gridGap, gridWidth } = $grid
 	const itemCount = $grid.items.length
 
-	// itemSize should include padding
-	const totalItemSize = itemSize + gridPadding * 2
+	// iconSize should include padding
+	const totalItemSize = iconSize + gridGap * 2
 
 	// determine number of columns
 	const totalColumns = getItemsPerRow()

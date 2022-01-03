@@ -3,7 +3,7 @@
 	const { min, max } = range
 </script>
 
-<input {name} bind:value={setting} type="range" {min} {max} on:change />
+<input {name} bind:value={setting} type="range" {min} {max} on:change on:input />
 
 <style>
 	input[type='range'] {
