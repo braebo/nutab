@@ -2,42 +2,50 @@
 	import { grid, gridDimensions } from './_lib/gridGenerator'
 	import DebugPanel from './_lib/DebugPanel.svelte'
 	import { gradient } from './_lib/utils'
-	import { onMount } from 'svelte'
 
 	let dragging = false
-	// the element to drag
+	// The element to drag
 	let active: number = null
-	// the element to swap with
+	// The element to swap with
 	let target: number = null
 	let lastTarget: number = null
-	// mouse movement for dragging active element
+	// Mouse movement for dragging active element
 	let move = { x: 0, y: 0 }
-	// the positions of each grid cell
+	// The positions of each grid cell
 	let positions = $gridDimensions.positions
-	// temporary positions for animations while dragging
+	// Temporary positions for animations while dragging
 	let positionProxy = Array(positions.length).fill(null)
-	// a ref to each cell
+	// A ref to each cell
 	let cells: HTMLElement[] = []
-	// cell transition animation duration in ms
+	// Cell transition animation duration in ms
 	const transitionDuration = 250
-	// a ref to each cell's image
+	// A ref to each cell's image
 	let images: HTMLElement[] = []
-	// temporarily disables target detection
+	// Temporarily disables target detection
 	let cooldown = false
+	// Temporarily disables transitions
+	let disableTransitions = false
 
 	const handleMouseUp = (e: MouseEvent) => {
-		// reset all the things
+		// If we have a target, swap the elements
+		console.log({ target })
+		console.log({ active })
+		if (target !== null && active != null && target != active) {
+			console.log('swapping')
+			swap(active, target)
+		}
+		// Reset all the things
 		dragging = false
 		active = null
 		target = null
 		lastTarget = null
 		move = { x: 0, y: 0 }
-		positionProxy = positionProxy.fill(null)
+		// positionProxy = positionProxy.fill(null)
 	}
 
 	const handleMouseDown = (e: MouseEvent) => {
-		// Store index of active cell
-		const activeClass = e.target.classList[0]
+		// Store index of active cell located in its classname. i.e. - "cell-3"
+		const activeClass = (e.target as Element).classList[0]
 		if (activeClass?.startsWith('item-')) {
 			active = parseInt(activeClass.split('-')[1])
 		}
@@ -53,24 +61,27 @@
 		move.y += e.movementY
 
 		// If we're hovering over a cell and not on cooldown
-		if (!cooldown && e.target.classList[0]?.split('-')[1] != null) {
+		if (!cooldown && (e.target as Element).classList[0]?.split('-')[1] != null) {
 			// Store the target cell's index
-			target = parseInt(e.target.classList[0]?.split('-')[1])
+			target = parseInt((e.target as Element).classList[0]?.split('-')[1])
+
 			// If our target cell has changed
 			if (lastTarget != null && lastTarget != target) {
 				// go back to original position
 				positionProxy[lastTarget] = null
 			}
-			// If the target cell isn't the current active
+
+			// If the target cell isn't the current active cell
 			if (target != active) {
 				// Move it to our active's cell position
 				positionProxy[target] = positions[active]
-			}
-			if (target == active) {
-				// we have returned to the original position
+			} else {
+				// We have returned to the original cell, so
+				// we can reset all positions
 				positionProxy = positionProxy.fill(null)
 			}
-			// update lastTarget
+
+			// Update lastTarget
 			lastTarget = target
 
 			// apply cooldown to avoid jank
@@ -95,7 +106,28 @@
 		}
 	}
 
-	let debug = false
+	let debug = true
+
+	let swapTimer: NodeJS.Timeout
+	const swap = (a: number, b: number) => {
+		disableTransitions = true
+		clearTimeout(swapTimer)
+		swapTimer = setTimeout(() => {
+			disableTransitions = false
+		}, transitionDuration * 0.5)
+
+		const _a = $grid.items[a]
+		$grid.items[a] = $grid.items[b]
+		$grid.items[b] = _a
+
+		const __a = positions[a]
+		positionProxy[b] = positionProxy[__a]
+		// positionProxy[b] = __a
+
+		// const __a = positions[a]
+		// positions[a] = positions[b]
+		// positions[b] = __a
+	}
 </script>
 
 {#if debug}
@@ -125,6 +157,7 @@
 				height: {$gridDimensions.totalItemSize}px;
 				transform: {getCellPosition(i)};
 				transition: {transitionDuration}ms;
+				{disableTransitions ? 'transition: none;' : ''}
 				"
 			bind:this={cells[i]}
 		>
@@ -132,9 +165,12 @@
 				class="item-{i} grid-item"
 				class:active={active === i}
 				class:target={target === i}
-				style="transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : `0, 0`})"
 				draggable="false"
 				class:dragging
+				style="
+					transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : `0, 0`});
+					{disableTransitions ? 'transition: none;' : ''}
+					"
 			>
 				<div
 					class="grid-image"
@@ -163,6 +199,16 @@
 		{/each}
 	</center>
 {/if}
+
+<pre style="width: 400px; margin: auto;">
+	<code class="language-json">
+		{JSON.stringify(
+			$grid.items.map(({ title, position }) => ({ title, position })),
+			null,
+			2
+		)}
+		</code>
+	</pre>
 
 <style lang="scss">
 	.grid {

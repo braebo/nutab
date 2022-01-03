@@ -51,7 +51,8 @@ export const gridDimensions = derived(grid, ($grid) => {
 	let positions = Array(itemCount).fill('')
 	function updatePositions() {
 		// get x position
-		const getPositionInRow = (i: number) => ((cellSize * i) % (cellSize * totalColumns - 0.1)) + remainingSpacePerItem
+		const getPositionInRow = (i: number) =>
+			((cellSize * i) % (cellSize * totalColumns - 0.1)) + remainingSpacePerItem
 
 		// get y position
 		const getPositionInColumn = (i: number) => Math.floor(i / totalColumns) * cellSize + remainingSpacePerItem

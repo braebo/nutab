@@ -20,7 +20,13 @@
 	<slot>
 		<!-- CONTROLS -->
 		<h4>
-			gridWidth: <input bind:value={$grid.gridWidth} type="range" min="300" max={window?.innerWidth * 0.9 || 1000} style="width: 80%;" />
+			gridWidth: <input
+				bind:value={$grid.gridWidth}
+				type="range"
+				min="300"
+				max={window?.innerWidth * 0.9 || 1000}
+				style="width: 80%;"
+			/>
 		</h4>
 		<h4>
 			gridPadding: <input bind:value={$grid.gridPadding} type="range" min="20" max="500" style="width: 80%;" />
@@ -62,6 +68,12 @@
 </svelte:head>
 
 <style>
+	.debug-page {
+		display: flex;
+
+		margin: auto;
+		width: max-content;
+	}
 	h4 {
 		display: flex;
 		justify-content: flex-end;
@@ -83,7 +95,7 @@
 		width: 420px;
 		max-height: 80vh !important;
 
-		background: var(--dark-c);
+		/* background: var(--dark-c); */
 
 		overflow-x: hidden !important;
 	}

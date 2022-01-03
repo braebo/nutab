@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { gridDimensions, grid } from './../../../routes/grid/_lib/gridGenerator.ts'
 	import FloatingPanel from './FloatingPanel.svelte'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
@@ -85,6 +86,16 @@
 		panelWidth = debugPanel.getBoundingClientRect().width + grabZone
 		panelHeight = debugPanel.getBoundingClientRect().height + grabZone
 	}
+
+	const debuggables = [
+		['$bookmarkEditor', $bookmarkEditor],
+		['$settings', $settings],
+		['$activeFolder', $activeFolder],
+		['$activeFolder.bookmarks', $activeFolder?.bookmarks],
+		['$gridDimensions', $gridDimensions],
+		['grid', $grid]
+	]
+	const visible = localStorageStore('debuggerVisibility', Array(debuggables.length).fill(true))
 </script>
 
 <template lang="pug">
@@ -103,15 +114,20 @@
 									code.language-javascript
 										.store {JSON.stringify(value, null, 2)}
 
-				+each("[['$bookmarkEditor', $bookmarkEditor], ['$settings', $settings], ['$activeFolder', $activeFolder], ['$activeFolder.bookmarks', $activeFolder?.bookmarks]] as [name, value], i")
-					+key('value')
-						.debuggable.scroller
-							h4 {name}
-							pre(use:highlight)
-								code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
-							// <JSONTree {value} />
-							.copy(on:click!='{() => handleCopy(value, i)}') {!copied[i] ? 'Copy' : 'Copied!'}
-
+				+each("debuggables as [name, value], i")
+					+if('$visible[i]')
+						input(type='checkbox' bind:checked='{$visible[i]}')
+						+key('value')
+							.debuggable.scroller
+								h4 {name}
+								pre(use:highlight)
+									code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
+								// <JSONTree {value} />
+								.copy(on:click!='{() => handleCopy(value, i)}') {!copied[i] ? 'Copy' : 'Copied!'}
+						+else
+							pre.disabled
+								input(type='checkbox' bind:checked='{$visible[i]}')
+								| {name}
 
 			// svelte-ignore a11y-mouse-events-have-key-events
 			.mousetrap(on:mouseover='{mouseover}' on:mouseout='{mouseout}')
@@ -277,5 +293,12 @@
 
 			overflow: hidden;
 		}
+	}
+	input[type='checkbox'] {
+		opacity: 0.5;
+		filter: hue-rotate(115deg) brightness(0.9);
+	}
+	.disabled {
+		opacity: 0.5;
 	}
 </style>

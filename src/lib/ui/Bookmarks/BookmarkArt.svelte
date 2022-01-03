@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { settings } from '$lib/settings/settingsStore'
+	import { settings } from '$lib/data/settings/settingsStore'
 	import { mapRange } from 'fractils'
 
 	export let title = '🔗'
 
-	$: longestWord = title.split(' ').reduce((p: string[], c: string[]) => {
+	$: longestWord = title.split(' ').reduce((p: string, c: string) => {
 		return c.length > p.length ? c : p
-	}, []).length
+	}, '').length
 	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 12, 20, 14)
 </script>
 
