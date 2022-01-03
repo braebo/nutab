@@ -2,6 +2,7 @@
 	import { grid, gridDimensions } from './_lib/gridGenerator'
 	import DebugPanel from './_lib/DebugPanel.svelte'
 	import { gradient } from './_lib/utils'
+	import { mouse, wait } from 'fractils'
 
 	let dragging = false
 	// The element to drag
@@ -15,23 +16,24 @@
 	let positions = $gridDimensions.positions
 	// Temporary positions for animations while dragging
 	let positionProxy = Array(positions.length).fill(null)
-	// A ref to each cell
-	let cells: HTMLElement[] = []
 	// Cell transition animation duration in ms
 	const transitionDuration = 250
-	// A ref to each cell's image
-	let images: HTMLElement[] = []
 	// Temporarily disables target detection
 	let cooldown = false
 	// Temporarily disables transitions
 	let disableTransitions = false
+	// The grid element
+	let gridElement: HTMLElement
+	// A ref to each cell
+	let cells: HTMLElement[] = []
+	// A ref to each grid item
+	let items: HTMLElement[] = []
+	// A ref to each item's image
+	let images: HTMLElement[] = []
 
 	const handleMouseUp = (e: MouseEvent) => {
 		// If we have a target, swap the elements
-		console.log({ target })
-		console.log({ active })
 		if (target !== null && active != null && target != active) {
-			console.log('swapping')
 			swap(active, target)
 		}
 		// Reset all the things
@@ -40,7 +42,7 @@
 		target = null
 		lastTarget = null
 		move = { x: 0, y: 0 }
-		// positionProxy = positionProxy.fill(null)
+		positionProxy = positionProxy.fill(null)
 	}
 
 	const handleMouseDown = (e: MouseEvent) => {
@@ -106,27 +108,20 @@
 		}
 	}
 
-	let debug = true
+	let debug = false
 
 	let swapTimer: NodeJS.Timeout
 	const swap = (a: number, b: number) => {
 		disableTransitions = true
-		clearTimeout(swapTimer)
-		swapTimer = setTimeout(() => {
-			disableTransitions = false
-		}, transitionDuration * 0.5)
 
 		const _a = $grid.items[a]
 		$grid.items[a] = $grid.items[b]
 		$grid.items[b] = _a
 
-		const __a = positions[a]
-		positionProxy[b] = positionProxy[__a]
-		// positionProxy[b] = __a
-
-		// const __a = positions[a]
-		// positions[a] = positions[b]
-		// positions[b] = __a
+		clearTimeout(swapTimer)
+		swapTimer = setTimeout(async () => {
+			disableTransitions = false
+		}, 0)
 	}
 </script>
 
@@ -144,6 +139,7 @@
 		--grid-width: {$grid.gridWidth}px;
 		--grid-height: {$gridDimensions.gridHeight}px;
 	"
+	bind:this={gridElement}
 >
 	{#each $grid.items as g, i}
 		<div
@@ -163,52 +159,27 @@
 		>
 			<div
 				class="item-{i} grid-item"
+				bind:this={items[i]}
 				class:active={active === i}
 				class:target={target === i}
 				draggable="false"
 				class:dragging
 				style="
-					transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : `0, 0`});
+					transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});
 					{disableTransitions ? 'transition: none;' : ''}
 					"
 			>
+				<!-- transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : `0, 0`}); -->
 				<div
 					class="grid-image"
+					bind:this={images[i]}
 					style="background-image: url({g?.image});"
 					draggable="false"
-					bind:this={images[i]}
 				/>
 			</div>
 		</div>
 	{/each}
 </div>
-
-{#if debug}
-	<center>
-		dragging: {dragging}
-		<br />
-		active: {JSON.stringify(active)}
-		<br />
-		target: {JSON.stringify(target)}
-		<br />
-		lastTarget: {JSON.stringify(lastTarget)}
-		<br />
-		positionProxy:
-		{#each positionProxy as p}
-			<pre>{p}</pre>
-		{/each}
-	</center>
-{/if}
-
-<pre style="width: 400px; margin: auto;">
-	<code class="language-json">
-		{JSON.stringify(
-			$grid.items.map(({ title, position }) => ({ title, position })),
-			null,
-			2
-		)}
-		</code>
-	</pre>
 
 <style lang="scss">
 	.grid {
