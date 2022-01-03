@@ -63,6 +63,8 @@
 		color: var(--dark-a);
 		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);
 		backdrop-filter: blur(50px);
+
+		z-index: 50;
 	}
 
 	.controls {
