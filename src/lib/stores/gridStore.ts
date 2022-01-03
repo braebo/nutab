@@ -1,7 +1,6 @@
-// import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
-import { writable, derived } from 'svelte/store'
-import { activeFolder } from '$lib/data/dbStore'
 import { settings } from '$lib/data/settings/settingsStore'
+import { activeFolder } from '$lib/data/dbStore'
+import { derived } from 'svelte/store'
 
 export const grid = derived([activeFolder, settings], ([$activeFolder, $settings]) => ({
 	gridWidth: $settings.ranges.gridWidth.value,
@@ -12,7 +11,8 @@ export const grid = derived([activeFolder, settings], ([$activeFolder, $settings
 
 export const gridDimensions = derived(grid, ($grid) => {
 	const { iconSize, gridGap, gridWidth } = $grid
-	const itemCount = $grid.items.length
+
+	const itemCount = $grid.items?.length
 
 	// iconSize should include padding
 	const totalItemSize = iconSize + gridGap * 2
@@ -26,6 +26,8 @@ export const gridDimensions = derived(grid, ($grid) => {
 				return i
 			}
 		}
+		// all items fit in 1 row
+		return itemCount
 	}
 
 	// determine number of rows
@@ -56,7 +58,6 @@ export const gridDimensions = derived(grid, ($grid) => {
 		// store the positions
 		positions.forEach((_, i) => {
 			positions[i] = {
-				item: $grid.items[i]?.title, // Todo: remove this
 				x: Math.floor(getPositionInRow(i)),
 				y: Math.floor(getPositionInColumn(i))
 			}
