@@ -2,7 +2,7 @@
 	import { grid, gridDimensions } from './_lib/gridGenerator'
 	import DebugPanel from './_lib/DebugPanel.svelte'
 	import { gradient } from './_lib/utils'
-	import { mouse } from 'fractils'
+	import { onMount } from 'svelte'
 
 	let dragging = false
 	// the element to drag
@@ -18,6 +18,12 @@
 	let positionProxy = Array(positions.length).fill(null)
 	// a ref to each cell
 	let cells: HTMLElement[] = []
+	// cell transition animation duration in ms
+	const transitionDuration = 250
+	// a ref to each cell's image
+	let images: HTMLElement[] = []
+	// temporarily disables target detection
+	let cooldown = false
 
 	const handleMouseUp = (e: MouseEvent) => {
 		// reset all the things
@@ -38,18 +44,20 @@
 	}
 
 	const handleMouseMove = (e: MouseEvent) => {
-		// Make sure we have a active first
+		// Make sure we have an active cell first
 		if (active === null) return
 		else dragging = true
 
-		// Store index of target cell
-		if (e.target.classList[0]?.split('-')[1] != null) {
-			let targetIndex = parseInt(e.target.classList[0]?.split('-')[1])
-			target = targetIndex
+		// Update movement vector
+		move.x += e.movementX
+		move.y += e.movementY
 
+		// If we're hovering over a cell and not on cooldown
+		if (!cooldown && e.target.classList[0]?.split('-')[1] != null) {
+			// Store the target cell's index
+			target = parseInt(e.target.classList[0]?.split('-')[1])
 			// If our target cell has changed
 			if (lastTarget != null && lastTarget != target) {
-				console.log('new target')
 				// go back to original position
 				positionProxy[lastTarget] = null
 			}
@@ -58,23 +66,25 @@
 				// Move it to our active's cell position
 				positionProxy[target] = positions[active]
 			}
-			lastTarget = target
 			if (target == active) {
 				// we have returned to the original position
 				positionProxy = positionProxy.fill(null)
 			}
+			// update lastTarget
+			lastTarget = target
+
+			// apply cooldown to avoid jank
+			setCooldown()
 		}
-		// Update movement vector
-		move.x += e.movementX
-		move.y += e.movementY
-		//// Swap active and target cells
-		// positionProxy = [...positions]
-		// positionProxy[active] = positionProxy[target]
-		// positionProxy[target] = positions[active]
-		// Move target cell to active cell position
 	}
-	if (active && target) {
-		$grid.items[active]
+
+	let cooldownTimer: NodeJS.Timeout
+	function setCooldown() {
+		cooldown = true
+		clearTimeout(cooldownTimer)
+		cooldownTimer = setTimeout(() => {
+			cooldown = false
+		}, transitionDuration * 0.75)
 	}
 
 	$: getCellPosition = (i: number) => {
@@ -96,6 +106,7 @@
 
 <div
 	class="grid"
+	class:dragging
 	style="
 		--item-size: {$grid.itemSize}px;
 		--grid-width: {$grid.gridWidth}px;
@@ -113,19 +124,24 @@
 				width: {$gridDimensions.totalItemSize}px;
 				height: {$gridDimensions.totalItemSize}px;
 				transform: {getCellPosition(i)};
+				transition: {transitionDuration}ms;
 				"
 			bind:this={cells[i]}
 		>
-			<!-- left: {active != i ? (positionProxy ? positionProxy[i]?.x : positions[i]?.x) : positions[i]?.x}px;
-				top: {active != i ? (positionProxy ? positionProxy[i]?.y : positions[i]?.y) : positions[i]?.y}px; -->
 			<div
 				class="item-{i} grid-item"
 				class:active={active === i}
 				class:target={target === i}
-				style="transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : 0})"
+				style="transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : `0, 0`})"
 				draggable="false"
+				class:dragging
 			>
-				<div class="grid-image" style="background-image: url({g?.image});" draggable="false" />
+				<div
+					class="grid-image"
+					style="background-image: url({g?.image});"
+					draggable="false"
+					bind:this={images[i]}
+				/>
 			</div>
 		</div>
 	{/each}
@@ -171,8 +187,6 @@
 		justify-content: center;
 		align-items: center;
 
-		transition: 0.25s;
-
 		&.active {
 			z-index: 10 !important;
 		}
@@ -216,5 +230,8 @@
 		background-position: center;
 
 		pointer-events: none;
+	}
+	.dragging {
+		cursor: grabbing;
 	}
 </style>
