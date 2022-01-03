@@ -1,5 +1,5 @@
 <script>
-	import { grid, gridDimensions } from './_lib/gridGenerator'
+	import { grid, gridDimensions } from '$lib/stores/gridGenerator'
 	import DebugPanel from './_lib/DebugPanel.svelte'
 	import { gradient } from './_lib/utils'
 </script>

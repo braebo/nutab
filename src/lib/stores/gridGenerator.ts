@@ -1,6 +1,4 @@
 import { writable, derived, get } from 'svelte/store'
-import { activeFolder } from '$lib/data/dbStore'
-import { exampleArray } from './utils'
 import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
 
 const gridSettings = {

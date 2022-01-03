@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { grid, gridDimensions } from './gridGenerator'
+	import { grid, gridDimensions } from '$lib/stores/gridGenerator'
 
 	import { onMount, onDestroy } from 'svelte'
 	import hljs from 'highlight.js/lib/common'

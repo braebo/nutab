@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { gridDimensions, grid } from './../../../routes/grid/_lib/gridGenerator.ts'
 	import FloatingPanel from './FloatingPanel.svelte'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { gridDimensions, grid } from '$lib/stores/gridGenerator'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
+	import { localStorageStore, log } from 'fractils'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
 	import { fly, fade } from 'svelte/transition'
-	import { localStorageStore } from 'fractils'
 	import { browser, dev } from '$app/env'
 	import { onMount, tick } from 'svelte'
-	import { log } from 'fractils'
 	import '../../../styles/prism.css'
 
 	interface PrismJS extends NodeModule {

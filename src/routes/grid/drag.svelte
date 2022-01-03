@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { grid, gridDimensions } from './_lib/gridGenerator'
-	import DebugPanel from './_lib/DebugPanel.svelte'
-	import { gradient } from './_lib/utils'
-	import { mouse, wait } from 'fractils'
+	import { grid, gridDimensions } from '$lib/stores/gridGenerator'
 
 	let dragging = false
 	// The element to drag
@@ -22,14 +19,8 @@
 	let cooldown = false
 	// Temporarily disables transitions
 	let disableTransitions = false
-	// The grid element
-	let gridElement: HTMLElement
 	// A ref to each cell
 	let cells: HTMLElement[] = []
-	// A ref to each grid item
-	let items: HTMLElement[] = []
-	// A ref to each item's image
-	let images: HTMLElement[] = []
 
 	const handleMouseUp = (e: MouseEvent) => {
 		// If we have a target, swap the elements
@@ -125,10 +116,6 @@
 	}
 </script>
 
-{#if debug}
-	<DebugPanel />
-{/if}
-
 <svelte:window on:mousedown={handleMouseDown} on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
 
 <div
@@ -139,7 +126,6 @@
 		--grid-width: {$grid.gridWidth}px;
 		--grid-height: {$gridDimensions.gridHeight}px;
 	"
-	bind:this={gridElement}
 >
 	{#each $grid.items as g, i}
 		<div
@@ -148,7 +134,6 @@
 			class:target={target === i}
 			style="
 				/* stylelint-disable */
-				border: {debug ? `1px solid ${gradient(i, $grid.items.length)}` : 'none'};
 				width: {$gridDimensions.totalItemSize}px;
 				height: {$gridDimensions.totalItemSize}px;
 				transform: {getCellPosition(i)};
@@ -159,7 +144,6 @@
 		>
 			<div
 				class="item-{i} grid-item"
-				bind:this={items[i]}
 				class:active={active === i}
 				class:target={target === i}
 				draggable="false"
@@ -169,13 +153,7 @@
 					{disableTransitions ? 'transition: none;' : ''}
 					"
 			>
-				<!-- transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : `0, 0`}); -->
-				<div
-					class="grid-image"
-					bind:this={images[i]}
-					style="background-image: url({g?.image});"
-					draggable="false"
-				/>
+				<div class="grid-image" style="background-image: url({g?.image});" draggable="false" />
 			</div>
 		</div>
 	{/each}
