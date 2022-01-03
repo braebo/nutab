@@ -17,7 +17,9 @@
 	}
 	let Prism: PrismJS
 	const loadPrism = async () => {
+		// @ts-ignore
 		await import('prismjs/components/prism-core.js')
+		// @ts-ignore
 		await import('prismjs/components/prism-json')
 		// @ts-ignore
 		Prism = window.Prism
