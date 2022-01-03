@@ -168,10 +168,6 @@
 
 		z-index: 1;
 		user-select: none;
-
-		&.debug {
-			border: 1px solid gray;
-		}
 	}
 	.cell {
 		position: absolute;
@@ -200,17 +196,9 @@
 			z-index: 10 !important;
 
 			transition: none;
-
-			&.debug {
-				background: rgba(150, 255, 200, 0.25);
-			}
 		}
 
 		&.target:not(.active) {
-			&.debug {
-				background: rgba(250, 155, 200, 0.25);
-			}
-
 			z-index: -1;
 		}
 	}
