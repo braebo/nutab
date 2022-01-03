@@ -1,6 +1,6 @@
-<script>
-	export let setting, name, range
-	const { min, max } = range
+<script lang="ts">
+	export let setting: any, name: string, range
+	const { min, max } = range as { min: number; max: number }
 </script>
 
 <input {name} bind:value={setting} type="range" {min} {max} on:change on:input />
