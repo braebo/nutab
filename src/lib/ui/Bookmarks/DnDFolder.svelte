@@ -107,8 +107,8 @@
 		smoothOver(() => (showEditIcon[i] = true), 1000)
 	}
 	const handleItemMouseOut = (i: number) => {
-		// hovering = null
-		// smoothOver(() => (showEditIcon[i] = false))
+		hovering = null
+		smoothOut(() => (showEditIcon[i] = false))
 	}
 
 	$: if (dragging) {
@@ -162,69 +162,60 @@
 		--item-size: {$grid.iconSize}px;
 	"
 >
-	{#key [$activeFolder?.bookmarks, $gridDimensions]}
-		{#if $grid.items}
-			{#each $grid.items as bookmark, i}
-				<div
-					class="cell-{i} cell"
-					class:active={i == active}
-					class:target={target === i}
-					style="
+	{#if $grid.items}
+		{#each $grid.items as bookmark, i}
+			<div
+				class="cell-{i} cell"
+				class:active={i == active}
+				class:target={target === i}
+				style="
 						/* stylelint-disable */
 						width: {$gridDimensions.totalItemSize}px;
 						height: {$gridDimensions.totalItemSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
-					bind:this={cells[i]}
+				bind:this={cells[i]}
+			>
+				<div
+					class="item-{i} grid-item"
+					class:active={active === i}
+					class:target={target === i}
+					draggable="false"
+					class:dragging
+					class:disableTransitions
+					style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
+					on:mouseover={() => handleItemMouseOver(i)}
+					on:mouseout={() => handleItemMouseOut(i)}
+					on:focus={() => handleItemMouseOver(i)}
+					on:blur={() => handleItemMouseOut(i)}
 				>
-					<div
-						class="item-{i} grid-item"
-						class:active={active === i}
-						class:target={target === i}
-						draggable="false"
-						class:dragging
-						class:disableTransitions
-						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
-						on:mouseover={() => handleItemMouseOver(i)}
-						on:mouseout={() => handleItemMouseOut(i)}
-						on:focus={() => handleItemMouseOver(i)}
-						on:blur={() => handleItemMouseOut(i)}
-					>
-						<div class="grid-image">
-							<Bookmark
-								{bookmark}
-								{hovering}
-								{dragging}
-								{i}
-								on:showEditor
-								--size={$grid.iconSize + 'px'}
-							/>
+					<div class="grid-image">
+						<Bookmark {bookmark} {hovering} {dragging} {i} on:showEditor --size={$grid.iconSize + 'px'} />
+					</div>
+					{#if showEditIcon[i] && !dragging}
+						<div
+							on:mouseover={() => handleItemMouseOver(i)}
+							on:mouseout={() => handleItemMouseOut(i)}
+							on:focus={() => handleItemMouseOver(i)}
+							on:blur={() => handleItemMouseOut(i)}
+							class="edit"
+							class:expand={expandEditIcon[i]}
+							transition:scale={{ duration: 150 }}
+							on:click|preventDefault={() => dispatch('showEditor', { bookmark, index: i })}
+						>
+							<Edit />
 						</div>
-						{#if showEditIcon[i] && !dragging}
-							<div
-								on:mouseover={() => handleItemMouseOver(i)}
-								on:mouseout={() => handleItemMouseOut(i)}
-								on:focus={() => handleItemMouseOver(i)}
-								on:blur={() => handleItemMouseOut(i)}
-								class="edit"
-								class:expand={expandEditIcon[i]}
-								transition:scale={{ duration: 150 }}
-								on:click|preventDefault={() => dispatch('showEditor', { bookmark, index: i })}
-							>
-								<Edit />
-							</div>
-						{/if}
-						<!-- <div
+					{/if}
+					<!-- <div
 							class="grid-image"
 							style="background-image: url({bookmark?.image});width:var(--item-size);height:var(--item-size);"
 							draggable="false"
 						/> -->
-					</div>
 				</div>
-			{/each}
-		{/if}
-	{/key}
+			</div>
+		{/each}
+	{/if}
 	<div class="add-bookmark" on:click={() => dispatch('newBookmark')}>
 		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
 	</div>
