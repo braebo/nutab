@@ -1,37 +1,16 @@
-let hovering = false;
-let timer = null
+let timer: NodeJS.Timeout
 
-export default function smoothHover(node, outDelay = 400, inDelay = 0) {
-    function smoothOver() {
-        timer && clearTimeout(timer);
-        if (hovering) return;
+export function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
+	if (bypass) return
+	timer && clearTimeout(timer)
+	timer = setTimeout(() => {
+		fn()
+	}, delay)
+}
 
-        timer = setTimeout(() => {
-            node.dispatchEvent(new CustomEvent('smoothOver', node));
-            hovering = true;
-        }, inDelay);
-    }
-    
-    function smoothOut() {
-        timer && clearTimeout(timer);
-        if (!hovering) return;
-        
-        timer = setTimeout(() => {
-            node.classList.add('remove');
-
-            node.dispatchEvent(new CustomEvent('smoothOut', node));
-            hovering = false;
-        }, outDelay);
-    };
-    
-    node.addEventListener('mouseover', smoothOver);
-    node.addEventListener('mouseout', smoothOut);
-    
-    return {
-        destroy() {
-            timer && clearTimeout(timer);
-            node.removeEventListener('mouseover', smoothOver);
-            node.removeEventListener('mouseout', smoothOut);
-        }
-    }
+export function smoothOut(fn: Function, delay = 300) {
+	timer && clearTimeout(timer)
+	timer = setTimeout(() => {
+		fn()
+	}, delay)
 }
