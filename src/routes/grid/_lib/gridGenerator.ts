@@ -4,7 +4,7 @@ import { exampleArray } from './utils'
 import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
 
 const gridSettings = {
-	gridWidth: 788,
+	gridWidth: 1000,
 	gridPadding: 38,
 	itemSize: 75
 }

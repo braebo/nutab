@@ -5,76 +5,92 @@
 	import { mouse } from 'fractils'
 
 	let dragging = false
+	// the element to drag
+	let active: number = null
+	// the element to swap with
 	let target: number = null
-	let destination: number = null
-	let lastDestination: number = null
+	let lastTarget: number = null
+	// mouse movement for dragging active element
 	let move = { x: 0, y: 0 }
+	// the positions of each grid cell
 	let positions = $gridDimensions.positions
+	// temporary positions for animations while dragging
 	let positionProxy = Array(positions.length).fill(null)
+	// a ref to each cell
 	let cells: HTMLElement[] = []
 
 	const handleMouseUp = (e: MouseEvent) => {
+		// reset all the things
 		dragging = false
+		active = null
 		target = null
-		destination = null
-		lastDestination = null
+		lastTarget = null
 		move = { x: 0, y: 0 }
-		positionProxy.fill(null)
+		positionProxy = positionProxy.fill(null)
 	}
 
 	const handleMouseDown = (e: MouseEvent) => {
-		// Store index of target cell
-		const targetClass = e.target.classList[0]
-		if (targetClass?.startsWith('item-')) {
-			target = parseInt(targetClass.split('-')[1])
+		// Store index of active cell
+		const activeClass = e.target.classList[0]
+		if (activeClass?.startsWith('item-')) {
+			active = parseInt(activeClass.split('-')[1])
 		}
 	}
 
 	const handleMouseMove = (e: MouseEvent) => {
-		// Make sure we have a target first
-		if (target != null) {
-			if (!dragging) dragging = true
-			// Store index of destination cell
-			if (e.target.classList[0]?.split('-')[1] != null) {
-				let destinationIndex = parseInt(e.target.classList[0]?.split('-')[1])
-				destination = destinationIndex
-				// cells[target].style.left = `${destination.x}px`
-				// cells[target].style.top = `${destination.y}px`
-				// if (lastDestination.index != destination && lastDestination.el) {
-				// 	console.log('putting back')
-				// 	console.log(lastDestination.el)
-				// 	lastDestination.el.style.left = `${positions[lastDestination.index].x}px`
-				// 	lastDestination.el.style.top = `${positions[lastDestination.index].y}px`
-				// }
-				if (lastDestination && lastDestination != destination) {
-					console.log('new destination')
-					if (lastDestination) {
-					}
-				}
-				if (destination != target) {
-					lastDestination = destinationIndex
-					console.log('updated')
-					positionProxy[destinationIndex] = positions[target]
-					cells[lastDestination].style.transform = `translate(${positions[target].x}px, ${positions[target].y}px)`
-					// cells[lastDestination].style.top = `${positions[target].y}px`
-				}
+		// Make sure we have a active first
+		if (active === null) return
+		else dragging = true
+
+		// Store index of target cell
+		if (e.target.classList[0]?.split('-')[1] != null) {
+			let targetIndex = parseInt(e.target.classList[0]?.split('-')[1])
+			target = targetIndex
+
+			// If our target cell has changed
+			if (lastTarget != null && lastTarget != target) {
+				console.log('new target')
+				// go back to original position
+				positionProxy[lastTarget] = null
 			}
-			// Update movement vector
-			move.x += e.movementX
-			move.y += e.movementY
-			//// Swap target and destination cells
-			// positionProxy = [...positions]
-			// positionProxy[target] = positionProxy[destination]
-			// positionProxy[destination] = positions[target]
-			// Move destination cell to target cell position
+			// If the target cell isn't the current active
+			if (target != active) {
+				// Move it to our active's cell position
+				positionProxy[target] = positions[active]
+			}
+			lastTarget = target
+			if (target == active) {
+				// we have returned to the original position
+				positionProxy = positionProxy.fill(null)
+			}
 		}
-		if (target && destination) {
-			$grid.items[target]
+		// Update movement vector
+		move.x += e.movementX
+		move.y += e.movementY
+		//// Swap active and target cells
+		// positionProxy = [...positions]
+		// positionProxy[active] = positionProxy[target]
+		// positionProxy[target] = positions[active]
+		// Move target cell to active cell position
+	}
+	if (active && target) {
+		$grid.items[active]
+	}
+
+	$: getCellPosition = (i: number) => {
+		if (positionProxy[i] != null) {
+			return `translate(${positionProxy[i].x}px, ${positionProxy[i].y}px)`
+		} else {
+			return `translate(${positions[i].x}px, ${positions[i].y}px)`
 		}
 	}
+
+	let debug = false
 </script>
 
-<DebugPanel />
+{#if debug}
+	<DebugPanel />
+{/if}
 
 <svelte:window on:mousedown={handleMouseDown} on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
 
@@ -89,26 +105,24 @@
 	{#each $grid.items as g, i}
 		<div
 			class="cell-{i} cell"
+			class:active={i == active}
+			class:target={target === i}
 			style="
 				/* stylelint-disable */
-				border: 1px solid {gradient(i, $grid.items.length)};
+				border: {debug ? `1px solid ${gradient(i, $grid.items.length)}` : 'none'};
 				width: {$gridDimensions.totalItemSize}px;
 				height: {$gridDimensions.totalItemSize}px;
-				transform: translate({target != i ? (positionProxy[i] != null ? positionProxy[i]?.x : positions[i]?.x) : positions[i]?.x}px, {target != i
-				? positionProxy[i] != null
-					? positionProxy[i]?.y
-					: positions[i]?.y
-				: positions[i]?.y}px);
+				transform: {getCellPosition(i)};
 				"
 			bind:this={cells[i]}
 		>
-			<!-- left: {target != i ? (positionProxy ? positionProxy[i]?.x : positions[i]?.x) : positions[i]?.x}px;
-				top: {target != i ? (positionProxy ? positionProxy[i]?.y : positions[i]?.y) : positions[i]?.y}px; -->
+			<!-- left: {active != i ? (positionProxy ? positionProxy[i]?.x : positions[i]?.x) : positions[i]?.x}px;
+				top: {active != i ? (positionProxy ? positionProxy[i]?.y : positions[i]?.y) : positions[i]?.y}px; -->
 			<div
 				class="item-{i} grid-item"
+				class:active={active === i}
 				class:target={target === i}
-				class:destination={destination === i}
-				style="transform: translate({dragging && target === i ? `${move.x}px, ${move.y}px` : 0})"
+				style="transform: translate({dragging && active === i ? `${move.x}px, ${move.y}px` : 0})"
 				draggable="false"
 			>
 				<div class="grid-image" style="background-image: url({g?.image});" draggable="false" />
@@ -116,20 +130,23 @@
 		</div>
 	{/each}
 </div>
-<center>
-	dragging: {dragging}
-	<br />
-	target: {JSON.stringify(target)}
-	<br />
-	destination: {JSON.stringify(destination)}
-	<br />
-	<pre>lastDestination: {JSON.stringify(lastDestination, null, 2)}</pre>
-	<br />
-	positionProxy:
-	{#each positionProxy as p}
-		<pre>{p}</pre>
-	{/each}
-</center>
+
+{#if debug}
+	<center>
+		dragging: {dragging}
+		<br />
+		active: {JSON.stringify(active)}
+		<br />
+		target: {JSON.stringify(target)}
+		<br />
+		lastTarget: {JSON.stringify(lastTarget)}
+		<br />
+		positionProxy:
+		{#each positionProxy as p}
+			<pre>{p}</pre>
+		{/each}
+	</center>
+{/if}
 
 <style lang="scss">
 	.grid {
@@ -139,11 +156,14 @@
 		height: var(--grid-height);
 		margin: 1vh auto;
 
-		border: 1px solid gray;
 		box-sizing: content-box;
 
-		z-index: 10;
+		z-index: 1;
 		user-select: none;
+
+		&.debug {
+			border: 1px solid gray;
+		}
 	}
 	.cell {
 		position: absolute;
@@ -152,6 +172,10 @@
 		align-items: center;
 
 		transition: 0.25s;
+
+		&.active {
+			z-index: 10 !important;
+		}
 	}
 	.grid-item {
 		width: var(--item-size);
@@ -165,19 +189,23 @@
 
 		transition: 0.2s ease-in-out;
 
-		&.target {
-			background: rgba(150, 255, 200, 0.25);
-
+		&.active {
 			pointer-events: none;
-			z-index: 10;
+			z-index: 10 !important;
 
 			transition: none;
 
-			// transition: none;
+			&.debug {
+				background: rgba(150, 255, 200, 0.25);
+			}
 		}
 
-		&.destination:not(.target) {
-			background: rgba(250, 155, 200, 0.25);
+		&.target:not(.active) {
+			&.debug {
+				background: rgba(250, 155, 200, 0.25);
+			}
+
+			z-index: -1;
 		}
 	}
 	.grid-image {
