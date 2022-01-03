@@ -1,16 +1,16 @@
-let timer: NodeJS.Timeout
-
+let overTimer: NodeJS.Timeout
 export function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
 	if (bypass) return
-	timer && clearTimeout(timer)
-	timer = setTimeout(() => {
+	clearTimeout(overTimer)
+	overTimer = setTimeout(() => {
 		fn()
 	}, delay)
 }
 
+let outTimer: NodeJS.Timeout
 export function smoothOut(fn: Function, delay = 300) {
-	timer && clearTimeout(timer)
-	timer = setTimeout(() => {
+	clearTimeout(outTimer)
+	outTimer = setTimeout(() => {
 		fn()
 	}, delay)
 }
