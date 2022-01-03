@@ -69,7 +69,8 @@ export const defaultBookmarks: Bookmark[] = [
 		url: 'https://github.com',
 		title: 'Github',
 		description: '',
-		image: 'https://cdn.svgporn.com/logos/github-icon.svg',
+		// image: 'https://cdn.svgporn.com/logos/github-icon.svg',
+		image: 'https://cdn.iconscout.com/icon/free/png-256/github-159-721954.png',
 		tags: ['Dev', 'Github'],
 		...default_theme,
 		position: 4
