@@ -23,12 +23,12 @@
 		// if target is bookmark, show it's settings.
 		// else show context menu
 		const target = e.target as Element
-		if (target.className.includes('icon')) {
+		if (target.className.includes('cell')) {
 			const classes = target.classList
 			let index: number
 			classes.forEach((c) => {
-				if (c.includes('icon') && c.length > 3) {
-					index = parseInt(c.split('icon')[1])
+				if (c.includes('cell') && c.length > 3) {
+					index = parseInt(c.split('cell')[1])
 				}
 			})
 			dispatch('showEditor', { index })
