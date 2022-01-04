@@ -10,6 +10,9 @@
 	export let hovering: number
 	export let dragging = false
 	export let bookmark: Bookmark
+	export let disableTransitions = false
+	$: disableTransitions
+	$: console.log(disableTransitions)
 	const { url, title, image, background, foreground } = bookmark
 </script>
 
@@ -17,7 +20,7 @@
 	<a target="_blank" href={url} draggable="false" class:dragging style="pointer-events: none;">
 		{#if image}
 			<div
-				transition:scale={{ duration: 200 + 50 * i }}
+				transition:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
 				class="bookmark"
 				style="
 				width: {$settings.ranges.iconSize.value}px;
@@ -34,14 +37,15 @@
 					src={image}
 					alt={title}
 				/>
+
 				{#if (title && $settings.showTitle) || hovering == i}
 					{#if !dragging}
-						<p transition:fade={{ duration: 100 }}>{title}</p>
+						<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>{title}</p>
 					{/if}
 				{/if}
 			</div>
 		{:else}
-			<div class="bookmark" transition:scale={{ duration: 200 + 50 * i }}>
+			<div class="bookmark" transition:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}>
 				<BookmarkArt
 					--foreground={foreground}
 					--background={background}

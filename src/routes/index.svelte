@@ -16,7 +16,6 @@
 	let showModal = false
 
 	function showEditor({ i }: { i: number }) {
-		console.log(i)
 		$editorContext = 'edit'
 		$bookmarkEditor = $activeFolder.bookmarks[i]
 		showModal = true
