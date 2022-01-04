@@ -3,7 +3,6 @@ export function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
 	if (bypass) return
 	clearTimers()
 	overTimer = setTimeout(() => {
-		console.log(fn())
 		fn()
 	}, delay)
 }
