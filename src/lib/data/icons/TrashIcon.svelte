@@ -24,11 +24,12 @@
 		max-width: var(--size, 24px);
 		max-height: var(--size, 25px);
 
-		color: var(--color, var(--dark-d));
+		color: var(--color, rgba(var(--dark-d-rgb), 0.3));
 
 		cursor: pointer;
+		transition: color 0.15s;
 	}
 	div:hover {
-		color: var(--hover, #ff9d9d);
+		color: var(--hover, #ff9d9dff);
 	}
 </style>
