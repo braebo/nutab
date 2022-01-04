@@ -3,12 +3,13 @@
 
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { createEventDispatcher, onMount, tick } from 'svelte'
-	import { newBookmark_db } from '$lib/data/transactions'
+	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
 	import DeleteBookmark from './DeleteBookmark.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
+	import { uniqueTags } from '$lib/data/dbStore'
 
 	export let i: number = 0
 	export let bookmark_id: string = ''
@@ -21,6 +22,8 @@
 	let descriptionFocused = false
 	$: placeholder = descriptionFocused ? '' : 'description'
 
+	$: console.log($uniqueTags)
+
 	let tag = ''
 	function handleTags(event: CustomEvent) {
 		tag = event.detail.tags
@@ -32,11 +35,11 @@
 	async function handleSave() {
 		if ($editorContext === 'edit') {
 			// TODO: update bookmark
-			// updateBookmark(bookmark_id, $bookmarkEditor)
+			updateBookmark_db($bookmarkEditor)
 		} else {
 			await newBookmark_db($bookmarkEditor)
-			dispatch('close')
 		}
+		dispatch('close')
 	}
 
 	onMount(async () => {
@@ -114,7 +117,7 @@
 					bind:tags={$bookmarkEditor['tags']}
 					placeholder={'new tag'}
 					on:tags={handleTags}
-					autoComplete={false}
+					autoComplete={true}
 					allowPaste={true}
 					onlyUnique={true}
 					removeKeys={[46]}

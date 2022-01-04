@@ -6,8 +6,8 @@ import { log } from 'fractils'
 import Dexie from 'dexie'
 
 export class BookmarkDB extends Dexie {
-	bookmarks: Dexie.Table<Bookmark, number>
-	folders: Dexie.Table<Folder, number>
+	bookmarks: Dexie.Table<Bookmark, string>
+	folders: Dexie.Table<Folder, string>
 
 	constructor() {
 		super('BookmarksDB')

@@ -53,14 +53,14 @@ export async function newBookmark_db(bookmark: Bookmark) {
  * Gets bookmark settings.
  * @param  {id} The id of the bookmark to retrieve.
  */
-export async function getBookmark(id: Bookmark['bookmark_id']) {
+export async function getBookmark_db(id: Bookmark['bookmark_id']) {
 	log(`🎬 Getting bookmark with id of ${id}`, '#fa8', 'dimgray', 25)
 
 	return db.bookmarks.where('bookmark_id').equals(id).first()
 }
 
 /**
- * Updates a bookmark.
+ * Updates the db after an index/position swap.
  */
 export async function swapBookmarks_db(bookmarks: Bookmark[]) {
 	//? Update each bookmark to store the new position
@@ -109,4 +109,17 @@ export async function deleteBookmark_db(id: Bookmark['bookmark_id']) {
 	await db.folders.update(get(activeFolder), { bookmarks })
 
 	log('🏁 Bookmark deleted', '#fa8', 'dimgray', 25)
+}
+
+/**
+ * Updates a bookmark.
+ * @param  {bookmark} The bookmark to update.
+ */
+export async function updateBookmark_db(bookmark: Bookmark) {
+	log('🎬 Updating bookmark: ', '#fa8', 'dimgray', 25)
+	log(bookmark)
+
+	await db.bookmarks.put(bookmark)
+
+	log('🏁 Bookmark updated', '#fa8', 'dimgray', 25)
 }
