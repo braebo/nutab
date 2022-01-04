@@ -9,6 +9,7 @@
 	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
 	import RightClickMenu from '$lib/ui/RightClickMenu.svelte'
+	import { getBookmark_db } from '$lib/data/transactions'
 	import Grid from '$lib/ui/Bookmarks/Grid.svelte'
 	import Search from '$lib/search/Search.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
@@ -16,10 +17,11 @@
 	let showModal = false
 	let bookmark_id = ''
 
-	function showEditor({ i }: { i: number }) {
-		bookmark_id = $activeFolder.bookmarks[i].bookmark_id
+	async function showEditor({ i }: { i: number }) {
+		const id = $activeFolder.bookmarks[i].bookmark_id
+		bookmark_id = id
 		$editorContext = 'edit'
-		$bookmarkEditor = $activeFolder.bookmarks[i]
+		$bookmarkEditor = await getBookmark_db(id)
 		showModal = true
 	}
 
