@@ -1,16 +1,13 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
-	import { createEventDispatcher, onMount, tick } from 'svelte'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { createEventDispatcher, onMount, tick } from 'svelte'
 	import { newBookmark } from '$lib/data/transactions'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
-
-	// import { getClipboardUrl } from '$lib/utils/getClipboardUrl'
-	// import { log } from 'fractils'
 
 	export let i: number = 0
 	export let bookmark_id: string = ''
@@ -42,116 +39,105 @@
 	}
 
 	onMount(async () => {
-		titleInput.select()
-
-		//// Get URL from clipboard (bad idea)
-		// ;(async function checkClipboard() {
-		// 	const clipboardContents = await getClipboardUrl()
-		// 	log('clipboardContents :', 'cyan', 'black', 25)
-		// 	log(clipboardContents, 'cyan', 'black', 25)
-
-		// 	$bookmarkEditor.url = clipboardContents
-		// })()
+		if ($editorContext === 'create') titleInput.select()
 	})
 </script>
 
-<div class="editor-container">
-	{#if $bookmarkEditor['image']}
-		<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
-	{:else}
-		<!-- Fallback Image -->
-		<div class="bookmark-art">
-			<BookmarkArt
-				--foreground={$bookmarkEditor['foreground']}
-				--background={$bookmarkEditor['background']}
-				--size="100px"
-				--margin="2rem auto"
-				--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
+{#if $bookmarkEditor}
+	<div class="editor-container">
+		{#if $bookmarkEditor['image']}
+			<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
+		{:else}
+			<!-- Fallback Image -->
+			<div class="bookmark-art">
+				<BookmarkArt
+					--foreground={$bookmarkEditor['foreground']}
+					--background={$bookmarkEditor['background']}
+					--size="100px"
+					--margin="2rem auto"
+					--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
 				0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14)"
-				title={$bookmarkEditor['title']}
+					title={$bookmarkEditor['title']}
+				/>
+				<div class="color-settings">
+					<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
+					<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
+				</div>
+			</div>
+		{/if}
+
+		<div class="setting title">
+			<input
+				name="title"
+				placeholder="title"
+				bind:this={titleInput}
+				bind:value={$bookmarkEditor['title']}
+				on:click={() => titleInput.select()}
 			/>
-			<div class="color-settings">
-				<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
-				<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
+		</div>
+
+		<div class="setting description">
+			<!-- <label for='description'>description</label> -->
+			<input
+				name="description"
+				{placeholder}
+				type="text"
+				bind:this={descriptionInput}
+				bind:value={$bookmarkEditor['description']}
+				on:focus={() => {
+					descriptionFocused = true
+				}}
+				on:blur={() => {
+					descriptionFocused = false
+				}}
+			/>
+		</div>
+
+		<div class="setting">
+			<!-- <label for="url">url</label> -->
+			<input
+				name="url"
+				type="text"
+				placeholder="url"
+				bind:this={urlInput}
+				on:click={() => urlInput.select()}
+				bind:value={$bookmarkEditor['url']}
+				autoComplete="off"
+			/>
+		</div>
+
+		<div class="setting">
+			<div name="tags" class="tags">
+				<Tags
+					on:updateTags={(e) => updateTags(e, i, bookmark_id)}
+					bind:tags={$bookmarkEditor['tags']}
+					placeholder={'new tag'}
+					on:tags={handleTags}
+					autoComplete={false}
+					allowPaste={true}
+					onlyUnique={true}
+					removeKeys={[46]}
+					addKeys={[9, 13]}
+					allowDrop={true}
+					allowBlur={true}
+					splitWith={'/'}
+					name={'tags'}
+					maxTags={10}
+					minChars={2}
+				/>
 			</div>
 		</div>
-	{/if}
 
-	<div class="setting title">
-		<input
-			name="title"
-			placeholder="title"
-			bind:this={titleInput}
-			bind:value={$bookmarkEditor['title']}
-			on:click={() => titleInput.select()}
-		/>
-	</div>
-
-	<div class="setting description">
-		<!-- <label for='description'>description</label> -->
-		<input
-			name="description"
-			{placeholder}
-			type="text"
-			bind:this={descriptionInput}
-			bind:value={$bookmarkEditor['description']}
-			on:focus={() => {
-				descriptionFocused = true
-			}}
-			on:blur={() => {
-				descriptionFocused = false
-			}}
-		/>
-	</div>
-
-	<div class="setting">
-		<!-- <label for="url">url</label> -->
-		<input
-			name="url"
-			type="text"
-			placeholder="url"
-			bind:this={urlInput}
-			on:click={() => urlInput.select()}
-			bind:value={$bookmarkEditor['url']}
-			autoComplete="off"
-		/>
-	</div>
-
-	<div class="setting">
-		<div name="tags" class="tags">
-			<Tags
-				on:updateTags={(e) => updateTags(e, i, bookmark_id)}
-				bind:tags={$bookmarkEditor['tags']}
-				placeholder={'new tag'}
-				on:tags={handleTags}
-				autoComplete={false}
-				allowPaste={true}
-				onlyUnique={true}
-				removeKeys={[46]}
-				addKeys={[9, 13]}
-				allowDrop={true}
-				allowBlur={true}
-				splitWith={'/'}
-				name={'tags'}
-				maxTags={10}
-				minChars={2}
-			/>
+		<div class="buttons">
+			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => dispatch('cancel')}
+				>Cancel</Button
+			>
+			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}
+				>Save</Button
+			>
 		</div>
 	</div>
-
-	<div class="buttons">
-		<Button
-			--colorHover="var(--warn)"
-			--borderHover="1px solid var(--warn)"
-			on:click={() => dispatch('cancel')}>Cancel</Button
-		>
-		<Button
-			--colorHover="var(--confirm)"
-			--borderHover="1px solid var(--confirm)"
-			on:click={handleSave}>Save</Button
-		>
-	</div>
-</div>
+{/if}
 
 <style lang="scss">
 	.editor-container {
