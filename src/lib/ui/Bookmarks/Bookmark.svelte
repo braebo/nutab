@@ -5,14 +5,17 @@
 	import { scale, fade } from 'svelte/transition'
 
 	import BookmarkArt from './BookmarkArt.svelte'
+	import { smoothHover } from '$lib/utils/smoothHover'
 
 	export let i: number
 	export let hovering: number
 	export let dragging = false
 	export let bookmark: Bookmark
 	export let disableTransitions = false
-	$: disableTransitions
-	$: console.log(disableTransitions)
+	$: disableTransitions // is this necessary?
+
+	let showTitle = false
+
 	const { url, title, image, background, foreground } = bookmark
 </script>
 
@@ -36,10 +39,12 @@
 					class="icon icon{i}"
 					src={image}
 					alt={title}
+					on:mouseover={() => smoothHover.smoothOver(() => (showTitle = true), 1500)}
+					on:focus={() => smoothHover.smoothOver(() => (showTitle = false))}
 				/>
 
 				{#if (title && $settings.showTitle) || hovering == i}
-					{#if !dragging}
+					{#if showTitle && !dragging}
 						<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>{title}</p>
 					{/if}
 				{/if}

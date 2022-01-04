@@ -3,7 +3,7 @@
 	// Data
 	import { init_db, swapBookmarks_db } from '$lib/data/transactions'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
-	import { smoothOut, smoothOver } from '$lib/utils/smoothHover'
+	import { smoothHover } from '$lib/utils/smoothHover'
 	import { grid, gridDimensions } from '$lib/stores/gridStore'
 	import { activeFolder } from '$lib/data/dbStore'
 
@@ -107,11 +107,11 @@
 	}
 	function handleItemMouseOver(i: number) {
 		hovering = i
-		smoothOver(() => toggleShowEditIcon(true, i), 1000)
+		smoothHover.smoothOver(() => toggleShowEditIcon(true, i), 1000)
 	}
 	function handleItemMouseOut(i: number) {
 		hovering = null
-		smoothOut(() => (showEditIcon[i] = false))
+		smoothHover.smoothOut(() => (showEditIcon[i] = false))
 	}
 
 	// Hide edit icon while dragging
