@@ -1,5 +1,5 @@
 let overTimer: NodeJS.Timeout
-export function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
+function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
 	if (bypass) return
 	clearTimers()
 	overTimer = setTimeout(() => {
@@ -8,7 +8,7 @@ export function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
 }
 
 let outTimer: NodeJS.Timeout
-export function smoothOut(fn: Function, delay = 300) {
+function smoothOut(fn: Function, delay = 300) {
 	clearTimers()
 	outTimer = setTimeout(() => {
 		fn()
@@ -16,3 +16,10 @@ export function smoothOut(fn: Function, delay = 300) {
 }
 
 const clearTimers = () => [outTimer, overTimer].forEach((t) => clearTimeout(t))
+
+export const smoothHover = {
+	overTimer,
+	outTimer,
+	smoothOver,
+	smoothOut
+}
