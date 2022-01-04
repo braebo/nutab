@@ -21,15 +21,9 @@
 			"$lib/*": ["src/lib/*"]
 		}
 	},
-	"include": [
-		"src/**/**/**/*.ts",
-		"src/**/*.svelte",
-		"src/**/*.d.ts",
-		"src/**/*.js",
-		"src/**/*.ts",
-		"src/*.d.ts"
-	],
+	"include": ["src/**/**/**/*.ts", "src/**/*.svelte", "src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/*.d.ts"],
 	"exclude": [
+		// "src/lib/ui/Bookmarks/Tags.svelte", // This component isn't typed
 		".vercel_build_output/*",
 		"mdsvex.config.js",
 		"node_modules/*",

@@ -22,8 +22,6 @@
 	let descriptionFocused = false
 	$: placeholder = descriptionFocused ? '' : 'description'
 
-	$: console.log($uniqueTags)
-
 	let tag = ''
 	function handleTags(event: CustomEvent) {
 		tag = event.detail.tags
@@ -117,7 +115,7 @@
 					bind:tags={$bookmarkEditor['tags']}
 					placeholder={'new tag'}
 					on:tags={handleTags}
-					autoComplete={true}
+					autoComplete={$uniqueTags ? $uniqueTags : false}
 					allowPaste={true}
 					onlyUnique={true}
 					removeKeys={[46]}
@@ -128,6 +126,7 @@
 					name={'tags'}
 					maxTags={10}
 					minChars={2}
+					id="editor"
 				/>
 			</div>
 		</div>
@@ -186,6 +185,8 @@
 		justify-content: space-around;
 
 		font-size: 1.3rem;
+
+		z-index: 12;
 	}
 
 	input {
@@ -272,6 +273,8 @@
 		margin: 2rem auto;
 
 		gap: 1rem;
+
+		z-index: 11;
 	}
 
 	.bookmark-art {
