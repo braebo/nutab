@@ -39,7 +39,7 @@
 	// A ref to each cell
 	let cells: HTMLElement[] = []
 
-	let showEditIcon: boolean[] = []
+	let showEditIcon: boolean[] = Array($grid.items?.length).fill(false)
 	let expandEditIcon: boolean[] = []
 
 	const handleMouseUp = (e: MouseEvent) => {
@@ -102,15 +102,19 @@
 		}
 	}
 
-	const handleItemMouseOver = (i: number) => {
-		hovering = i
-		smoothOver(() => (showEditIcon[i] = true), 1000)
+	function toggleShowEditIcon(bool: boolean, i: number) {
+		showEditIcon = showEditIcon.map((x, index) => (index === i ? bool : !bool))
 	}
-	const handleItemMouseOut = (i: number) => {
+	function handleItemMouseOver(i: number) {
+		hovering = i
+		smoothOver(() => toggleShowEditIcon(true, i), 1000)
+	}
+	function handleItemMouseOut(i: number) {
 		hovering = null
 		smoothOut(() => (showEditIcon[i] = false))
 	}
 
+	// Hide edit icon while dragging
 	$: if (dragging) {
 		hovering = null
 		showEditIcon.fill(false)
@@ -164,56 +168,61 @@
 >
 	{#if $grid.items}
 		{#each $grid.items as bookmark, i}
-			<div
-				class="cell-{i} cell"
-				class:active={i == active}
-				class:target={target === i}
-				style="
+			{#key $grid.items}
+				<div
+					class="cell-{i} cell"
+					class:active={i == active}
+					class:target={target === i}
+					style="
 						/* stylelint-disable */
 						width: {$gridDimensions.totalItemSize}px;
 						height: {$gridDimensions.totalItemSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
-				bind:this={cells[i]}
-			>
-				<div
-					class="item-{i} grid-item"
-					class:active={active === i}
-					class:target={target === i}
-					draggable="false"
-					class:dragging
-					class:disableTransitions
-					style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
-					on:mouseover={() => handleItemMouseOver(i)}
-					on:mouseout={() => handleItemMouseOut(i)}
-					on:focus={() => handleItemMouseOver(i)}
-					on:blur={() => handleItemMouseOut(i)}
+					bind:this={cells[i]}
 				>
-					<div class="grid-image">
-						<Bookmark {bookmark} {hovering} {dragging} {i} on:showEditor --size={$grid.iconSize + 'px'} />
-					</div>
-					{#if showEditIcon[i] && !dragging}
-						<div
-							on:mouseover={() => handleItemMouseOver(i)}
-							on:mouseout={() => handleItemMouseOut(i)}
-							on:focus={() => handleItemMouseOver(i)}
-							on:blur={() => handleItemMouseOut(i)}
-							class="edit"
-							class:expand={expandEditIcon[i]}
-							transition:scale={{ duration: 150 }}
-							on:click|preventDefault={() => dispatch('showEditor', { bookmark, index: i })}
-						>
-							<Edit />
+					<div
+						class="item-{i} grid-item"
+						class:active={active === i}
+						class:target={target === i}
+						draggable="false"
+						class:dragging
+						class:disableTransitions
+						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
+						on:mouseover={() => handleItemMouseOver(i)}
+						on:mouseout={() => handleItemMouseOut(i)}
+						on:focus={() => handleItemMouseOver(i)}
+						on:blur={() => handleItemMouseOut(i)}
+					>
+						<div class="grid-image">
+							<Bookmark
+								{bookmark}
+								{hovering}
+								{dragging}
+								{i}
+								on:showEditor
+								--size={$grid.iconSize + 'px'}
+								{disableTransitions}
+							/>
 						</div>
-					{/if}
-					<!-- <div
-							class="grid-image"
-							style="background-image: url({bookmark?.image});width:var(--item-size);height:var(--item-size);"
-							draggable="false"
-						/> -->
+						{#if showEditIcon[i] && !dragging}
+							<div
+								on:mouseover={() => handleItemMouseOver(i)}
+								on:mouseout={() => handleItemMouseOut(i)}
+								on:focus={() => handleItemMouseOver(i)}
+								on:blur={() => handleItemMouseOut(i)}
+								class="edit"
+								class:expand={expandEditIcon[i]}
+								transition:scale={{ duration: 150 }}
+								on:click|preventDefault={() => dispatch('showEditor', { bookmark, index: i })}
+							>
+								<Edit />
+							</div>
+						{/if}
+					</div>
 				</div>
-			</div>
+			{/key}
 		{/each}
 	{/if}
 	<div class="add-bookmark" on:click={() => dispatch('newBookmark')}>
