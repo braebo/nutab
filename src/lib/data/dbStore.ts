@@ -3,7 +3,11 @@ import type { Folder } from './types'
 
 import { writable } from 'svelte/store'
 import { localStorageStore } from 'fractils'
+import db from '$lib/data/db'
+import { liveQuery } from 'dexie'
 
 export const activeFolder: Writable<Folder> = writable()
 
 export const lastActiveFolderId = localStorageStore('lastActiveFolderId', '')
+
+export const uniqueTags = liveQuery(async () => await db.bookmarks.orderBy('tags').uniqueKeys())
