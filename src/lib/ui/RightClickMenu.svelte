@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition'
-	import { createEventDispatcher } from 'svelte'
 	import { showSettings } from '$lib/data/settings/settingsStore'
+	import { createEventDispatcher } from 'svelte'
+	import { fly } from 'svelte/transition'
 	import { clickOutside } from 'fractils'
 	const dispatch = createEventDispatcher()
 
@@ -21,17 +21,17 @@
 
 	function show(e: MouseEvent) {
 		// if target is bookmark, show it's settings.
-		// else show context menu
 		const target = e.target as Element
 		if (target.className.includes('cell')) {
 			const classes = target.classList
-			let index: number
+			let i: number
 			classes.forEach((c) => {
-				if (c.includes('cell') && c.length > 3) {
-					index = parseInt(c.split('cell')[1])
+				if (c.includes('cell-') && c.length > 3) {
+					i = parseInt(c.split('cell-')[1])
 				}
 			})
-			dispatch('showEditor', { index })
+			dispatch('showEditor', { i })
+			// else show context menu
 		} else {
 			x = e.clientX
 			y = e.clientY
