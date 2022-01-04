@@ -157,15 +157,15 @@
 		perspective: 1200px;
 		transform-style: preserve-3d;
 
-		animation: floatDown ease-out 1s forwards;
-		animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
+		animation: floatUp ease-out 500ms forwards;
+		animation-timing-function: cubic-bezier(0.175, 0.585, 0.52, 1);
 
 		/* 3d CSS Float Down Animation */
-		@keyframes floatDown {
+		@keyframes floatUp {
 			0% {
 				opacity: 0;
 
-				transform: perspective(500px) translate3d(0, -5px, 25px);
+				transform: perspective(500px) translate3d(0, -5px, -50px);
 			}
 			100% {
 				opacity: 1;
