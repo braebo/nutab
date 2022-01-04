@@ -215,7 +215,7 @@
 								class="edit"
 								class:expand={expandEditIcon[i]}
 								transition:scale={{ duration: 150 }}
-								on:click|preventDefault={() => dispatch('showEditor', { bookmark, index: i })}
+								on:click|preventDefault={() => dispatch('showEditor', { i })}
 							>
 								<Edit />
 							</div>

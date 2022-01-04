@@ -9,14 +9,14 @@
 	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
 	import RightClickMenu from '$lib/ui/RightClickMenu.svelte'
-	import Folder from '$lib/ui/Bookmarks/Folder.svelte'
+	import Grid from '$lib/ui/Bookmarks/Grid.svelte'
 	import Search from '$lib/search/Search.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
-	import DnDFolder from '$lib/ui/Bookmarks/DnDFolder.svelte'
 
 	let showModal = false
 
-	function showEditor(i: number) {
+	function showEditor({ i }: { i: number }) {
+		console.log(i)
 		$editorContext = 'edit'
 		$bookmarkEditor = $activeFolder.bookmarks[i]
 		showModal = true
@@ -35,10 +35,9 @@
 
 <br />
 
-<!-- <Folder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} /> -->
-<DnDFolder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
+<Grid on:showEditor={(e) => showEditor(e.detail)} on:newBookmark={newBookmark} />
 
-<RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
+<RightClickMenu on:showEditor={(e) => showEditor(e.detail)} on:newBookmark={newBookmark} />
 
 <Modal bind:showModal opacity={0}>
 	<BookmarkEditor on:cancel={() => (showModal = false)} />
