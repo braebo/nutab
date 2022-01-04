@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { scale } from 'svelte/transition'
 	// Data
-	import { init_db, swapBookmarks_db } from '$lib/data/transactions'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
-	import { smoothHover } from '$lib/utils/smoothHover'
 	import { grid, gridDimensions } from '$lib/stores/gridStore'
+	import { swapBookmarks_db } from '$lib/data/transactions'
 	import { activeFolder } from '$lib/data/dbStore'
 
 	// Components
@@ -14,11 +12,11 @@
 
 	// Utils
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { smoothHover } from '$lib/utils/smoothHover'
+	import { scale } from 'svelte/transition'
 	const dispatch = createEventDispatcher()
 
 	let hovering: number | null = null
-
-	onMount(() => init_db())
 
 	let dragging = false
 	// The element to drag

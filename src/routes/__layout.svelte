@@ -2,24 +2,29 @@
 	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
 	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
 	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
-	import { page } from '$app/stores'
+	import Settings from '$lib/data/settings/Settings.svelte'
+	import Themer from '$lib/theme/Themer.svelte'
+	import Modal from '$lib/ui/Modal.svelte'
 	import { Header } from '$lib/ui'
+
+	import { init_db } from '$lib/data/transactions'
+
+	import { page } from '$app/stores'
+	import { onMount } from 'svelte'
+
 	import 'greset/css/greset.css'
 	import '../styles/app.scss'
 
 	// import { showLoginPopup, authStore } from '$lib/auth/authStore'
 	// import LoginPopup from '$lib/auth/LoginPopup.svelte'
-	import Modal from '$lib/ui/Modal.svelte'
-	import { onMount } from 'svelte'
 
-	import Settings from '$lib/data/settings/Settings.svelte'
-	import Themer from '$lib/theme/Themer.svelte'
 	import Nav from '$lib/ui/Nav.svelte'
 
 	// const { initAuth } = authStore
 
 	onMount(() => {
 		// initAuth()
+		init_db()
 	})
 
 	const r = (max = 255) => Math.floor(Math.random() * Math.floor(max))
