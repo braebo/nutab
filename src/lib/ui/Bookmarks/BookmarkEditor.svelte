@@ -3,7 +3,7 @@
 
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { createEventDispatcher, onMount, tick } from 'svelte'
-	import { newBookmark } from '$lib/data/transactions'
+	import { newBookmark_db } from '$lib/data/transactions'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
@@ -33,7 +33,7 @@
 			// TODO: update bookmark
 			// updateBookmark(bookmark_id, $bookmarkEditor)
 		} else {
-			await newBookmark($bookmarkEditor)
+			await newBookmark_db($bookmarkEditor)
 			dispatch('cancel')
 		}
 	}

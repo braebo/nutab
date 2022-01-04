@@ -10,7 +10,7 @@ import db from './db'
  * Default bookmark folder and bookmarks db tables.
  * @param  {BookmarkDB} db
  */
-export async function initDB() {
+export async function init_db() {
 	//? Get the last active folder
 	log('🏁 Database found.', '#fa8', 'dimgray', 25)
 	await wait(100)
@@ -26,7 +26,7 @@ export async function initDB() {
  * Creates a new bookmark.
  * @param  {bookmark} The bookmark to add.
  */
-export async function newBookmark(bookmark: Bookmark) {
+export async function newBookmark_db(bookmark: Bookmark) {
 	log('🎬 Creating new bookmark: ', '#fa8', 'dimgray', 25)
 	log(bookmark)
 
@@ -56,10 +56,19 @@ export async function newBookmark(bookmark: Bookmark) {
 export async function getBookmark(id: Bookmark['bookmark_id']) {
 	log(`🎬 Getting bookmark with id of ${id}`, '#fa8', 'dimgray', 25)
 
-	const bookmark = db.bookmarks.where('bookmark_id').equals(id).first()
+	return db.bookmarks.where('bookmark_id').equals(id).first()
+}
 
-	log('🏁 Bookmark retrieved:', '#fa8', 'dimgray', 25)
-	log(bookmark)
-
-	return bookmark
+/**
+ * Updates a bookmark.
+ */
+export async function swapBookmarks_db(bookmarks: Bookmark[]) {
+	//? Update each bookmark to store the new position
+	bookmarks.forEach((b) => {
+		db.bookmarks.put(b)
+	})
+	//? Update in folder (activeFolder store is already updated)
+	await db.folders.update(get(activeFolder), {
+		bookmarks: get(activeFolder).bookmarks
+	})
 }

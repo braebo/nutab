@@ -14,7 +14,7 @@
 	import Modal from '$lib/ui/Modal.svelte'
 	import Draggables from '$lib/ui/Bookmarks/Draggables.svelte'
 	import { onMount } from 'svelte'
-	import { initDB } from '$lib/data/transactions'
+	import { init_db } from '$lib/data/transactions'
 
 	let showModal = false
 
@@ -30,7 +30,7 @@
 		showModal = true
 	}
 
-	onMount(() => initDB())
+	onMount(() => init_db())
 </script>
 
 <Search />

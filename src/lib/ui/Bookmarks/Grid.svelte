@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { scale } from 'svelte/transition'
 	// Data
+	import { init_db, swapBookmarks_db } from '$lib/data/transactions'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
 	import { smoothOut, smoothOver } from '$lib/utils/smoothHover'
 	import { grid, gridDimensions } from '$lib/stores/gridStore'
 	import { activeFolder } from '$lib/data/dbStore'
-	import { initDB } from '$lib/data/transactions'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
@@ -18,7 +18,7 @@
 
 	let hovering: number | null = null
 
-	onMount(() => initDB())
+	onMount(() => init_db())
 
 	let dragging = false
 	// The element to drag
@@ -144,8 +144,15 @@
 		disableTransitions = true
 
 		const _a = $activeFolder.bookmarks[a]
-		$activeFolder.bookmarks[a] = $activeFolder.bookmarks[b]
+		const _b = $activeFolder.bookmarks[b]
+		const aPosition = _a.position
+		const bPosition = _b.position
+		_a.position = bPosition
+		_b.position = aPosition
+		if (_a.position === _b.position) alert('Error: Bookmarks are in the same position')
+		$activeFolder.bookmarks[a] = _b
 		$activeFolder.bookmarks[b] = _a
+		swapBookmarks_db([_a, _b])
 
 		clearTimeout(swapTimer)
 		swapTimer = setTimeout(async () => {

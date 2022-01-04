@@ -2,7 +2,7 @@
 	// Data
 	import { settings } from '$lib/data/settings/settingsStore'
 	import { activeFolder } from '$lib/data/dbStore'
-	import { initDB } from '$lib/data/transactions'
+	import { init_db } from '$lib/data/transactions'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
@@ -14,7 +14,7 @@
 
 	let hovering: number | null = null
 
-	onMount(() => initDB())
+	onMount(() => init_db())
 </script>
 
 <div class="folder-container">
