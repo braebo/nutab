@@ -39,8 +39,17 @@
 	// A ref to each cell
 	let cells: HTMLElement[] = []
 
+	// Hides and shows the edit icon for each bookmark.
 	let showEditIcon: boolean[] = Array($grid.items?.length).fill(false)
-	let expandEditIcon: boolean[] = []
+	// Ugly hack $grid.items is not defined on first render
+	let first = false
+	$: if (!first && showEditIcon.length < $grid?.items?.length) {
+		first = true
+		showEditIcon = Array($grid.items.length).fill(false)
+	}
+
+	// Used as a key to re-render the grid
+	let reRender = false
 
 	const handleMouseUp = (e: MouseEvent) => {
 		// If we have a target, swap the elements
@@ -143,6 +152,7 @@
 	const swap = (a: number, b: number) => {
 		disableTransitions = true
 
+		// Swap the elements and update stores / db
 		const _a = $activeFolder.bookmarks[a]
 		const _b = $activeFolder.bookmarks[b]
 		const aPosition = _a.position
@@ -158,6 +168,9 @@
 		swapTimer = setTimeout(async () => {
 			disableTransitions = false
 		}, 0)
+
+		// Re-render the grid
+		reRender = !reRender
 	}
 </script>
 
@@ -175,7 +188,7 @@
 >
 	{#if $grid.items}
 		{#each $grid.items as bookmark, i}
-			{#key $grid.items}
+			{#key reRender}
 				<div
 					class="cell-{i} cell"
 					class:active={i == active}
@@ -220,7 +233,6 @@
 								on:focus={() => handleItemMouseOver(i)}
 								on:blur={() => handleItemMouseOut(i)}
 								class="edit"
-								class:expand={expandEditIcon[i]}
 								transition:scale={{ duration: 150 }}
 								on:click|preventDefault={() => dispatch('showEditor', { i })}
 							>
