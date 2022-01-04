@@ -6,6 +6,7 @@
 	import { newBookmark_db } from '$lib/data/transactions'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
+	import DeleteBookmark from './DeleteBookmark.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
 
@@ -34,7 +35,7 @@
 			// updateBookmark(bookmark_id, $bookmarkEditor)
 		} else {
 			await newBookmark_db($bookmarkEditor)
-			dispatch('cancel')
+			dispatch('close')
 		}
 	}
 
@@ -129,12 +130,13 @@
 		</div>
 
 		<div class="buttons">
-			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => dispatch('cancel')}
+			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => dispatch('close')}
 				>Cancel</Button
 			>
 			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}
 				>Save</Button
 			>
+			<DeleteBookmark {bookmark_id} on:close={() => dispatch('close')} />
 		</div>
 	</div>
 {/if}
@@ -258,6 +260,7 @@
 
 	.buttons {
 		display: grid;
+		position: relative;
 		grid-template-columns: 1fr 1fr;
 		align-items: flex-end;
 		justify-items: center;

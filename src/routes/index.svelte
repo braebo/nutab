@@ -14,8 +14,10 @@
 	import Modal from '$lib/ui/Modal.svelte'
 
 	let showModal = false
+	let bookmark_id = ''
 
 	function showEditor({ i }: { i: number }) {
+		bookmark_id = $activeFolder.bookmarks[i].bookmark_id
 		$editorContext = 'edit'
 		$bookmarkEditor = $activeFolder.bookmarks[i]
 		showModal = true
@@ -33,11 +35,12 @@
 <Search />
 
 <br />
+<br />
 
 <Grid on:showEditor={(e) => showEditor(e.detail)} on:newBookmark={newBookmark} />
 
 <RightClickMenu on:showEditor={(e) => showEditor(e.detail)} on:newBookmark={newBookmark} />
 
 <Modal bind:showModal opacity={0}>
-	<BookmarkEditor on:cancel={() => (showModal = false)} />
+	<BookmarkEditor on:close={() => (showModal = false)} {bookmark_id} />
 </Modal>

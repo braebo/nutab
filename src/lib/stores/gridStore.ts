@@ -1,6 +1,9 @@
 import { settings } from '$lib/data/settings/settingsStore'
 import { activeFolder } from '$lib/data/dbStore'
-import { derived } from 'svelte/store'
+import { writable, derived } from 'svelte/store'
+
+// Used to trigger the grid's {#key} block
+export const reRender = writable(false)
 
 export const grid = derived([activeFolder, settings], ([$activeFolder, $settings]) => ({
 	gridWidth: $settings.ranges.gridWidth.value,

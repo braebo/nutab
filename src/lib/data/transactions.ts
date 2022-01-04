@@ -72,3 +72,41 @@ export async function swapBookmarks_db(bookmarks: Bookmark[]) {
 		bookmarks: get(activeFolder).bookmarks
 	})
 }
+
+/**
+ * Deletes a bookmark.
+ * @param  {id} The id of the bookmark to delete.
+ * @param  {folder} The folder to delete the bookmark from.
+ */
+export async function deleteBookmark_db(id: Bookmark['bookmark_id']) {
+	log(`🎬 Deleting bookmark with id of ${id}`, '#fa8', 'dimgray', 25)
+
+	const bookmarks = get(activeFolder).bookmarks
+
+	//? Remove from bookmarks store and update positions
+	let found = false
+	bookmarks.forEach((b, i) => {
+		if (id === b.bookmark_id) {
+			bookmarks.splice(i, 1)
+			found = true
+		}
+		if (found) b.position = i
+	})
+
+	//? Update folder store
+	activeFolder.update((f) => {
+		f.bookmarks = bookmarks
+		return f
+	})
+
+	//? Delete from bookmarks
+	await db.bookmarks.delete(id)
+
+	//? Replace bookmarks db table to update positions
+	await db.bookmarks.bulkPut(bookmarks)
+
+	//? Update in folder
+	await db.folders.update(get(activeFolder), { bookmarks })
+
+	log('🏁 Bookmark deleted', '#fa8', 'dimgray', 25)
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Data
+	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
-	import { grid, gridDimensions } from '$lib/stores/gridStore'
 	import { swapBookmarks_db } from '$lib/data/transactions'
 	import { activeFolder } from '$lib/data/dbStore'
 
@@ -45,9 +45,6 @@
 		first = true
 		showEditIcon = Array($grid.items.length).fill(false)
 	}
-
-	// Used as a key to re-render the grid
-	let reRender = false
 
 	const handleMouseUp = (e: MouseEvent) => {
 		// If we have a target, swap the elements
@@ -168,7 +165,7 @@
 		}, 0)
 
 		// Re-render the grid
-		reRender = !reRender
+		$reRender = !$reRender
 	}
 </script>
 
@@ -186,7 +183,7 @@
 >
 	{#if $grid.items}
 		{#each $grid.items as bookmark, i}
-			{#key reRender}
+			{#key $reRender}
 				<div
 					class="cell-{i} cell"
 					class:active={i == active}

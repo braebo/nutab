@@ -15,15 +15,9 @@
 	import 'greset/css/greset.css'
 	import '../styles/app.scss'
 
-	// import { showLoginPopup, authStore } from '$lib/auth/authStore'
-	// import LoginPopup from '$lib/auth/LoginPopup.svelte'
-
 	import Nav from '$lib/ui/Nav.svelte'
 
-	// const { initAuth } = authStore
-
 	onMount(() => {
-		// initAuth()
 		init_db()
 	})
 
