@@ -23,7 +23,7 @@
 	<a target="_blank" href={url} draggable="false" class:dragging style="pointer-events: none;">
 		{#if image}
 			<div
-				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
+				in:scale|once={{ duration: 200 + 50 * i }}
 				class="bookmark"
 				style="
 				width: {$settings.ranges.iconSize.value}px;
@@ -45,12 +45,12 @@
 
 				{#if (title && $settings.showTitle) || hovering == i}
 					{#if showTitle && !dragging}
-						<p in:fade={{ duration: disableTransitions ? 0 : 100 }}>{title}</p>
+						<p in:fade={{ duration: 100 }}>{title}</p>
 					{/if}
 				{/if}
 			</div>
 		{:else}
-			<div class="bookmark" in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}>
+			<div class="bookmark" in:scale|once={{ duration: 200 + 50 * i }}>
 				<BookmarkArt
 					--foreground={foreground}
 					--background={background}
