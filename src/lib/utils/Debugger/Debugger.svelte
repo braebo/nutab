@@ -88,11 +88,12 @@
 		panelHeight = debugPanel.getBoundingClientRect().height + grabZone
 	}
 
-	const debuggables = [
+	let debuggables = []
+	$: debuggables = [
 		['$bookmarkEditor', $bookmarkEditor],
 		['$settings', $settings],
 		['$activeFolder', $activeFolder],
-		['$activeFolder.bookmarks', $activeFolder?.bookmarks],
+		['$activeFolder.bookmarks', $activeFolder && $activeFolder?.bookmarks],
 		['$gridDimensions', $gridDimensions],
 		['grid', $grid]
 	]
