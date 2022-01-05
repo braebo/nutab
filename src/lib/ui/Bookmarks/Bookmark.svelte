@@ -14,8 +14,6 @@
 	export let disableTransitions = false
 	$: disableTransitions // is this necessary?
 
-	let showTitle = false
-
 	$: url = bookmark?.url
 	$: title = bookmark?.title
 	$: image = bookmark?.image
@@ -27,7 +25,7 @@
 	<a target="_blank" href={url} draggable="false" class:dragging style="pointer-events: none;">
 		{#if image}
 			<div
-				in:scale={{ duration: 200 + 50 * i }}
+				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
 				class="bookmark"
 				style="
 				width: {$settings.ranges.iconSize.value}px;
@@ -43,12 +41,12 @@
 					class="icon icon{i}"
 					src={image}
 					alt={title}
-					on:mouseover={() => smoothHover.smoothOver(() => (showTitle = true), 1500)}
-					on:focus={() => smoothHover.smoothOver(() => (showTitle = false))}
+					on:mouseover={() => smoothHover.smoothOver(() => ($settings.showTitle = true), 1500)}
+					on:focus={() => smoothHover.smoothOver(() => ($settings.showTitle = false))}
 				/>
-				{#if (title && $settings.showTitle) || hovering == i}
-					{#if showTitle && !dragging}
-						<p in:fade={{ duration: 100 }}>{title}</p>
+				{#if $settings.showTitle || hovering == i}
+					{#if title && !dragging}
+						<p in:fade={{ duration: disableTransitions ? 0 : 100 }}>{title}</p>
 					{/if}
 				{/if}
 			</div>
