@@ -55,7 +55,7 @@
 				<BookmarkArt
 					--foreground={foreground}
 					--background={background}
-					--size="{$settings.ranges.iconSize.value + 10}px"
+					--size="{$settings.ranges.iconSize.value + 5}px"
 					{title}
 				/>
 			</div>

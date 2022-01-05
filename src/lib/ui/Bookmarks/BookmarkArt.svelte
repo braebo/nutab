@@ -15,7 +15,7 @@
 	style="
 		width: var(--size, {$settings.ranges.iconSize.value}px);
 		min-height: var(--size, {$settings.ranges.iconSize.value}px);
-		
+
 		font-size: var(--font-size, {fontSize}px);
 	"
 >
@@ -29,8 +29,9 @@
 		align-items: center;
 		flex-wrap: wrap;
 
-		margin: var(--margin);
+		margin: var(--margin, auto);
 		padding: 0.5rem;
+		margin-bottom: -0.25rem;
 
 		color: var(--foreground);
 		background: var(--background);
@@ -42,6 +43,6 @@
 		overflow: hidden;
 	}
 	.title {
-		font-weight: 700;
+		font-weight: 500;
 	}
 </style>

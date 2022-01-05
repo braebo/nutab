@@ -294,7 +294,7 @@
 	}
 	.color-settings {
 		position: absolute;
-		top: 1.5rem;
+		top: 1.75rem;
 		bottom: 0;
 		left: 0;
 		right: -10rem;
