@@ -11,8 +11,8 @@
 	import Bookmark from './Bookmark.svelte'
 
 	// Utils
-	import { onMount, createEventDispatcher } from 'svelte'
 	import { smoothHover } from '$lib/utils/smoothHover'
+	import { createEventDispatcher } from 'svelte'
 	import { scale } from 'svelte/transition'
 	const dispatch = createEventDispatcher()
 
@@ -167,6 +167,10 @@
 		// Re-render the grid
 		$reRender = !$reRender
 	}
+
+	// const addButtonSpring = spring(0, { stiffness: 0.1, damping: 0.9 })
+
+	// $: addButtonSpring.set($gridDimensions.gridHeight)
 </script>
 
 <svelte:window on:mousedown={handleMouseDown} on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
@@ -239,9 +243,10 @@
 			{/key}
 		{/each}
 	{/if}
-	<div class="add-bookmark" on:click={() => dispatch('newBookmark')}>
+	<!-- TODO: Should this get it's own setting? -->
+	<!-- <div class="add-bookmark" style="top: {$addButtonSpring}px;" on:click={() => dispatch('newBookmark')}>
 		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
-	</div>
+	</div> -->
 </div>
 
 <style lang="scss">
@@ -312,24 +317,32 @@
 		position: absolute;
 		left: 0;
 		right: 0;
-		bottom: -7rem;
+		// bottom: -7rem;
 
 		width: fit-content;
 		margin: auto;
 
 		color: var(--dark-a);
-		opacity: 0.1;
+		opacity: 0.025;
 
 		font-size: 3rem;
 
 		cursor: pointer;
-		transition: opacity 0.15s;
+		transition: opacity;
+		transition-duration: 0.15s;
+		transition-delay: 1s;
 
 		&:hover {
-			opacity: 0.75;
+			opacity: 0.75 !important;
 
-			transition: opacity 0.4s;
+			transition-duration: 1s;
+			transition-delay: 0s;
 		}
+	}
+	.grid:hover .add-bookmark {
+		opacity: 0.25;
+		transition-duration: 3s;
+		transition-delay: 0s;
 	}
 	.grid-image {
 		width: 100%;
