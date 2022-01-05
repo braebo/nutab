@@ -42,7 +42,7 @@
 	$: isActive = (id: Folder['folder_id']) => id === $activeFolder?.folder_id
 
 	const applyTagFilter = async (tag: string) => {
-		if (tag === $tagFilter) {
+		if (tag === $tagFilter || tag === null) {
 			$tagFilter = null
 			init_db()
 		} else {
@@ -54,13 +54,19 @@
 	}
 
 	let smoothHovering = false
-	const mouseOver = () => {
+	const smooth = smoothHover
+	const mouseOver = async () => {
 		hovering = true
-		smoothHover.smoothOver(smoothHovering)
+		smooth.smoothOver(() => (smoothHovering = true), 0)
 	}
 	const mouseOut = () => {
 		hovering = false
-		smoothHover.smoothOut(() => (smoothHovering = false))
+		smooth.smoothOut(() => (smoothHovering = false), 500)
+	}
+
+	const handleFolderClick = () => {
+		// TODO: Select new folder
+		applyTagFilter(null)
 	}
 </script>
 
@@ -74,17 +80,26 @@
 			on:mouseover!='{mouseOver}'
 			on:mouseout!='{mouseOut}'
 		)
+			
 			+if ('folders')
-				+each('folders as folder')
-					.folder
-						.folder-icon {folder.icon}
-						.folder-title(class:hovering) {folder.title}
+				+each('folders as {id, icon, title}')
+					.folder(on:click!='{() => handleFolderClick(id)}')
+						.folder-icon {icon}
+						.folder-title(class:hovering) {title}
+			
 			.new-folder(class:hovering) 
 				Tooltip(content='New_Folder' position='right' offset='{[9,20]}') +
-			+if ('$uniqueTags && smoothHovering')
-				.tags(transition:fly='{{ x: -20, duration: 600 }}')
+			
+			+if ('$uniqueTags && smoothHovering || $tagFilter')
+				.tags(
+					in:fly='{{ x: -10, duration: 300 }}'
+					out:fly='{{ x: -20, duration: 600 }}'
+				)
 					+each('$uniqueTags as tag')
-						.tag(class:active='{$tagFilter === tag}')
+						.tag(
+							class:active='{$tagFilter === tag}'
+							class:inactive!='{$tagFilter && $tagFilter !== tag}'
+						)
 							.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
 								span.hashtag # 
 								| {tag}
@@ -203,6 +218,9 @@
 				& .hashtag {
 					opacity: 0.5;
 				}
+			}
+			&.inactive {
+				opacity: 0.1;
 			}
 		}
 
