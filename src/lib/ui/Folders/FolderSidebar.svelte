@@ -14,6 +14,7 @@
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import { init_db } from '$lib/data/transactions'
 	import { reRender } from '$lib/stores/gridStore'
+	import { smoothHover } from '$lib/utils/smoothHover'
 
 	let folderIcons = []
 
@@ -51,6 +52,16 @@
 		}
 		$reRender = !$reRender
 	}
+
+	let smoothHovering = false
+	const mouseOver = () => {
+		hovering = true
+		smoothHover.smoothOver(smoothHovering)
+	}
+	const mouseOut = () => {
+		hovering = false
+		smoothHover.smoothOut(() => (smoothHovering = false))
+	}
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -60,8 +71,8 @@
 		.folder-sidebar(
 			bind:this='{sidebar}'
 			class:hovering
-			on:mouseover!='{() => hovering = true}'
-			on:mouseout!='{e => hovering = false}'
+			on:mouseover!='{mouseOver}'
+			on:mouseout!='{mouseOut}'
 		)
 			+if ('folders')
 				+each('folders as folder')
@@ -70,8 +81,8 @@
 						.folder-title(class:hovering) {folder.title}
 			.new-folder(class:hovering) 
 				Tooltip(content='New_Folder' position='right' offset='{[9,20]}') +
-			+if ('$uniqueTags')
-				.tags
+			+if ('$uniqueTags && smoothHovering')
+				.tags(transition:fly='{{ x: -20, duration: 600 }}')
 					+each('$uniqueTags as tag')
 						.tag(class:active='{$tagFilter === tag}')
 							.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
