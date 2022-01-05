@@ -284,8 +284,8 @@
 					{tag[autoCompleteKey]}
 				{/if}
 				{#if !disable}
-					<Tooltip content="Delete_tag" placement="bottom" offset={[0, 15]} delay={[1000, 150]}>
-						<span class="input-tag-remove" on:click|stopPropagation={() => removeTag(i)}>&#215;</span>
+					<Tooltip content="Delete" placement="top" offset={[0, 8]} delay={[1000, 150]}>
+						<div class="input-tag-remove" on:click|stopPropagation={() => removeTag(i)}>&#215;</div>
 					</Tooltip>
 				{/if}
 			</span>
@@ -330,12 +330,14 @@
 {/if}
 
 <style>
-	span.hashtag {
+	.hashtag {
 		padding: 0 2px;
+
+		color: var(--light-b);
 
 		font-size: 14px;
 
-		color: var(--light-b);
+		transform: translate(-2px, 2px);
 	}
 
 	.input,
@@ -441,20 +443,18 @@
 
 		cursor: default;
 	}
-	.hashtag {
-		transform: translate(-2px, 5px);
-	}
 
 	.input-tag-remove {
-		padding-left: 3px;
-
 		color: rgba(var(--light-c-rgb), 0);
 
 		cursor: pointer;
 		transition: 0.2s;
+
 		animation-name: spin;
 		animation-duration: 3s;
 		animation-timing-function: ease-out;
+
+		transform: translate(0, -3px);
 	}
 
 	.input-layout:focus .input-tag-remove,
