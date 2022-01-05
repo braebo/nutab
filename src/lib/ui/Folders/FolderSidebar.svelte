@@ -62,7 +62,7 @@
 			bind:this='{sidebar}'
 			class:hovering
 			on:mouseover!='{() => hovering = true}'
-			on:mouseout!='{e => e.target != sidebar ? null : hovering = false}'
+			on:mouseout!='{e => hovering = false}'
 		)
 			+if ('folders')
 				+each('folders as folder')
@@ -74,8 +74,8 @@
 			+if ('$uniqueTags')
 				.tags
 					+each('$uniqueTags as tag')
-						.tag
-							.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}') 
+						.tag(class:active='{$tagFilter === tag}')
+							.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
 								span.hashtag # 
 								| {tag}
 
@@ -187,7 +187,8 @@
 			transition: opacity 0.2s;
 			cursor: pointer;
 
-			&:hover {
+			&:hover,
+			&.active {
 				opacity: 1;
 				& .hashtag {
 					opacity: 0.5;
@@ -196,6 +197,8 @@
 		}
 
 		& .hashtag {
+			opacity: 0;
+
 			font-size: 75%;
 		}
 	}
