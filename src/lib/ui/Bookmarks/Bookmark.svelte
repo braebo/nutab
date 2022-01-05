@@ -16,14 +16,19 @@
 
 	let showTitle = false
 
-	const { url, title, image, background, foreground } = bookmark
+	// const { url, title, image, background, foreground } = bookmark
+	$: url = bookmark?.url
+	$: title = bookmark?.title
+	$: image = bookmark?.image
+	$: background = bookmark?.background
+	$: foreground = bookmark?.foreground
 </script>
 
 <div class="bookmark-container">
 	<a target="_blank" href={url} draggable="false" class:dragging style="pointer-events: none;">
 		{#if image}
 			<div
-				in:scale|once={{ duration: 200 + 50 * i }}
+				in:scale={{ duration: 200 + 50 * i }}
 				class="bookmark"
 				style="
 				width: {$settings.ranges.iconSize.value}px;
@@ -42,7 +47,6 @@
 					on:mouseover={() => smoothHover.smoothOver(() => (showTitle = true), 1500)}
 					on:focus={() => smoothHover.smoothOver(() => (showTitle = false))}
 				/>
-
 				{#if (title && $settings.showTitle) || hovering == i}
 					{#if showTitle && !dragging}
 						<p in:fade={{ duration: 100 }}>{title}</p>
@@ -131,5 +135,9 @@
 	a.dragging {
 		pointer-events: none;
 		cursor: inherit;
+	}
+	img {
+		position: absolute;
+		inset: 0;
 	}
 </style>
