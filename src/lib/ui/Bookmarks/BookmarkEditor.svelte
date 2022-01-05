@@ -291,20 +291,6 @@
 		animation: floatDown ease-out 1.25s forwards;
 
 		animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
-
-		/* 3d CSS Float Down Animation */
-		@keyframes floatDown {
-			0% {
-				opacity: 0;
-
-				transform: perspective(500px) translate3d(0, -25px, 50px);
-			}
-			100% {
-				opacity: 1;
-
-				transform: perspective(500px) translate3d(0, 0, 0);
-			}
-		}
 	}
 	.color-settings {
 		position: absolute;
@@ -324,6 +310,24 @@
 
 		width: 100px;
 		height: 100px;
-		margin: 2rem auto 0 auto;
+		margin: 2.5rem auto 0.5rem auto;
+
+		animation: floatDown 1s forwards;
+
+		animation-timing-function: cubic-bezier(0.175, 0.985, 0.12, 1);
+	}
+
+	/* 3d CSS Float Down Animation */
+	@keyframes floatDown {
+		0% {
+			opacity: 0;
+
+			transform: perspective(500px) translate3d(0, -25px, 50px) scale(1.2);
+		}
+		100% {
+			opacity: 1;
+
+			transform: perspective(500px) translate3d(0, 0, 0) scale(1);
+		}
 	}
 </style>
