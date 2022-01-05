@@ -1,25 +1,42 @@
+const clearTimers = () => [outTimer, overTimer].forEach((t) => clearTimeout(t))
+
+const run = (cb: unknown) => {
+	if (typeof cb === 'function') cb()
+	else if (typeof cb === 'boolean') cb = !cb
+	else console.error('{smoothOver} cb: function | boolean cannot be ' + typeof cb)
+}
+
 let overTimer: NodeJS.Timeout
-function smoothOver(fn: Function, delay = 500, bypass?: boolean) {
+
+/**
+ * Debounced hover event
+ * @param cb Callback to run, or boolean to make true
+ * @param delay delay in ms
+ * @param bypass optionally cancel the debounce
+ */
+function smoothOver(cb: Function | boolean, delay = 500, bypass?: boolean) {
 	if (bypass) return
 	clearTimers()
 	overTimer = setTimeout(() => {
-		fn()
+		run(cb)
 	}, delay)
 }
 
+/**
+ * Debounced hover event
+ * @param cb Callback to run, or boolean to make false
+ * @param delay delay in ms
+ * @param bypass optionally cancel the debounce
+ */
 let outTimer: NodeJS.Timeout
-function smoothOut(fn: Function, delay = 300) {
+function smoothOut(cb: Function, delay = 300) {
 	clearTimers()
 	outTimer = setTimeout(() => {
-		fn()
+		run(cb)
 	}, delay)
 }
 
-const clearTimers = () => [outTimer, overTimer].forEach((t) => clearTimeout(t))
-
 export const smoothHover = {
-	overTimer,
-	outTimer,
 	smoothOver,
 	smoothOut
 }
