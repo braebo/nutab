@@ -12,6 +12,8 @@
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
+	import { init_db } from '$lib/data/transactions'
+	import { reRender } from '$lib/stores/gridStore'
 
 	let folderIcons = []
 
@@ -38,9 +40,17 @@
 
 	$: isActive = (id: Folder['folder_id']) => id === $activeFolder?.folder_id
 
-	const applyTagFilter = (tag: string) => {
-		$tagFilter = $tagFilter === null ? tag : null
-		console.log($tagFilter)
+	const applyTagFilter = async (tag: string) => {
+		// $tagFilter = $tagFilter === null ? tag : null
+		if (tag === $tagFilter) {
+			$tagFilter = null
+			init_db()
+		} else {
+			$tagFilter = tag
+			const filteredBookmarks = await db.bookmarks.where('tags').equals(tag).toArray()
+			$activeFolder.bookmarks = filteredBookmarks
+		}
+		$reRender = !$reRender
 	}
 </script>
 
