@@ -41,7 +41,6 @@
 	$: isActive = (id: Folder['folder_id']) => id === $activeFolder?.folder_id
 
 	const applyTagFilter = async (tag: string) => {
-		// $tagFilter = $tagFilter === null ? tag : null
 		if (tag === $tagFilter) {
 			$tagFilter = null
 			init_db()

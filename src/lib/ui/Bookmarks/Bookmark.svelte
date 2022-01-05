@@ -16,7 +16,6 @@
 
 	let showTitle = false
 
-	// const { url, title, image, background, foreground } = bookmark
 	$: url = bookmark?.url
 	$: title = bookmark?.title
 	$: image = bookmark?.image
