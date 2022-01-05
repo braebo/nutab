@@ -9,15 +9,7 @@
 </script>
 
 <div id="logo">
-	<span
-		id="NU"
-		class="logo-text"
-		style="color: var(--brand-a);"
-		tabindex="-1"
-		in:fly={{ y: 10, duration: 1000, delay: 420 }}
-	>
-		NU
-	</span>
+	<span id="NU" class="logo-text" tabindex="-1" in:fly={{ y: 10, duration: 1000, delay: 420 }}>NU</span>
 
 	<span id="TAB" class="logo-text" in:fly={{ y: -10, duration: 1000, delay: 420 }}>TAB</span>
 </div>
@@ -40,10 +32,15 @@
 
 		font-size: clamp(30px, 1vw, 100px);
 
+		user-select: none;
 		z-index: 10;
 	}
 
 	#NU {
-		user-select: none;
+		color: var(--brand-a);
+	}
+
+	#TAB {
+		color: var(--dark-a);
 	}
 </style>
