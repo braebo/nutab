@@ -75,6 +75,7 @@
 				bind:this={titleInput}
 				bind:value={$bookmarkEditor['title']}
 				on:click={() => titleInput.select()}
+				on:keydown={(e) => e.key === 'Enter' && handleSave()}
 			/>
 		</div>
 
