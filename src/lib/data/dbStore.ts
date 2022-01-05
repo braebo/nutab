@@ -11,3 +11,6 @@ export const activeFolder: Writable<Folder> = writable()
 export const lastActiveFolderId = localStorageStore('lastActiveFolderId', '')
 
 export const uniqueTags = liveQuery(async () => await db.bookmarks.orderBy('tags').uniqueKeys())
+
+// Filter bookmarks by tag
+export const tagFilter = writable<string | null>(null)

@@ -3,7 +3,7 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import { activeFolder } from '$lib/data/dbStore'
+	import { activeFolder, tagFilter, uniqueTags } from '$lib/data/dbStore'
 	import db from '$lib/data/db'
 
 	// Utils
@@ -37,11 +37,16 @@
 	let sidebar: HTMLElement
 
 	$: isActive = (id: Folder['folder_id']) => id === $activeFolder?.folder_id
+
+	const applyTagFilter = (tag: string) => {
+		$tagFilter = $tagFilter === null ? tag : null
+		console.log($tagFilter)
+	}
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <template lang="pug">
-	
+
 	.folder-sidebar-container
 		.folder-sidebar(
 			bind:this='{sidebar}'
@@ -56,6 +61,13 @@
 						.folder-title(class:hovering) {folder.title}
 			.new-folder(class:hovering) 
 				Tooltip(content='New_Folder' position='right' offset='{[9,20]}') +
+			+if ('$uniqueTags')
+				.tags
+					+each('$uniqueTags as tag')
+						.tag
+							.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}') 
+								span.hashtag # 
+								| {tag}
 
 </template>
 
@@ -134,7 +146,7 @@
 		& .new-folder {
 			position: absolute;
 			left: 2.2rem;
-			bottom: 1rem;
+			bottom: 2rem;
 
 			margin: auto;
 			width: fit-content;
@@ -148,6 +160,33 @@
 			cursor: pointer;
 
 			transition: 0.2s;
+		}
+
+		& .tags {
+			position: absolute;
+
+			top: 90%;
+		}
+
+		& .tag {
+			margin: 0.5rem auto 0 0;
+
+			color: var(--dark-d);
+			opacity: 0.3;
+
+			transition: opacity 0.2s;
+			cursor: pointer;
+
+			&:hover {
+				opacity: 1;
+				& .hashtag {
+					opacity: 0.5;
+				}
+			}
+		}
+
+		& .hashtag {
+			font-size: 75%;
 		}
 	}
 </style>
