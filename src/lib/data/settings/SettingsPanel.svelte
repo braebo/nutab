@@ -20,7 +20,7 @@
 {#if $showSettings}
 	<div
 		class="control-panel"
-		transition:fly={{ y: 500, opacity: 1 }}
+		transition:fly={{ y: 500, opacity: 1, duration: 300 }}
 		on:click_outside={() => ($showSettings = false)}
 		use:clickOutside
 	>
@@ -59,7 +59,7 @@
 
 		border-top-left-radius: 15px;
 		border-top-right-radius: 15px;
-		background: rgba(var(--light-a-rgb), 0.4);
+		background: rgba(var(--light-b-rgb), 0.4);
 		color: var(--dark-a);
 		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);
 		backdrop-filter: blur(50px);
@@ -84,7 +84,7 @@
 
 		border: 1px solid rgba(var(--light-c-rgb), 0.33);
 		border-radius: 10px;
-		background: rgba(var(--light-b-rgb), 0.33);
+		background: rgba(var(--light-a-rgb), 0.33);
 
 		font-size: 20px;
 	}
