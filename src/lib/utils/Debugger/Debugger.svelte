@@ -1,9 +1,9 @@
 <script lang="ts">
-	import FloatingPanel from './FloatingPanel.svelte'
-	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
-	import { gridDimensions, grid } from '$lib/stores/gridGenerator'
+	import { settings, showSettings } from '$lib/data/settings/settingsStore'
+	import { gridDimensions, grid } from '$lib/stores/gridStore'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
+	import FloatingPanel from './FloatingPanel.svelte'
 	import { localStorageStore, log } from 'fractils'
 	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
@@ -202,7 +202,7 @@
 		background: var(--light-a);
 		box-shadow: 0 0 10px 3px #00000011;
 
-		z-index: 99;
+		z-index: 50;
 
 		overflow: auto;
 	}
