@@ -144,6 +144,8 @@
 
 		width: 500px;
 		margin: auto;
+
+		transform: translateX(-12px);
 	}
 
 	input {
