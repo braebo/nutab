@@ -50,14 +50,8 @@
 		dragLock = true
 		const targetPositionY = position.y + e.movementY
 		const targetPositionX = position.x + e.movementX
-		position.y = Math.max(
-			Math.min(targetPositionY, window.innerHeight - bounds.y),
-			bounds.y - height
-		)
-		position.x = Math.max(
-			Math.min(targetPositionX, window.innerWidth - bounds.x),
-			bounds.x - width
-		)
+		position.y = Math.max(Math.min(targetPositionY, window.innerHeight - bounds.y), bounds.y - height)
+		position.x = Math.max(Math.min(targetPositionX, window.innerWidth - bounds.x), bounds.x - width)
 		outOfBounds =
 			position.x == bounds.x - width ||
 			position.x == window.innerWidth - bounds.x ||
@@ -70,12 +64,7 @@
 	}
 </script>
 
-<svelte:window
-	on:mouseup={handleMouseUp}
-	on:mousemove={handleMouseMove}
-	bind:innerWidth
-	bind:innerHeight
-/>
+<svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} bind:innerWidth bind:innerHeight />
 
 <div
 	bind:this={panel}
@@ -106,6 +95,8 @@
 		background: var(--light-b, black);
 		border-radius: var(--border-radius, 10px);
 		box-shadow: 0 5px 15px 0 var(--light-a, #0003);
+
+		z-index: var(--z-index, 50);
 	}
 	.inZone {
 		cursor: grab;
