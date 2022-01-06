@@ -47,16 +47,34 @@ export const gridDimensions = derived(grid, ($grid) => {
 	const cellSize = parseFloat((totalItemSize + remainingSpacePerItem).toFixed(10))
 	// calculate the final grid height
 	const gridHeight = cellSize * totalRows + remainingSpacePerItem
+	const gridCenter = gridWidth / 2 - totalItemSize / 2
 
 	// calculate the positions of each item
 	let positions = Array(itemCount).fill('')
 	function updatePositions() {
 		// get x position
-		const getPositionInRow = (i: number) =>
-			((cellSize * i) % (cellSize * totalColumns - 0.1)) + remainingSpacePerItem
+		const getPositionInRow = (i: number) => {
+			if (totalRows > 1 || itemCount > 2)
+				// this covers any grid with 3+ items
+				return ((cellSize * i) % (cellSize * totalColumns - 0.1)) + remainingSpacePerItem
+			// but 1 and 2 item grids need some help
+			else if (itemCount === 1) {
+				// very center
+				return gridCenter + 20
+			} else if (itemCount === 2) {
+				// center minus or plus padding
+				const minGap = Math.max(gridGap, 40)
+				const offset = i === 0 ? minGap * -1.5 : minGap * 1.5
+				return gridCenter + offset + 20
+			}
+		}
 
 		// get y position
-		const getPositionInColumn = (i: number) => Math.floor(i / totalColumns) * cellSize + remainingSpacePerItem
+		const getPositionInColumn = (i: number) => {
+			// Keep y steady for 1 row
+			if (totalRows <= 1) return 0
+			else return Math.floor(i / totalColumns) * cellSize + remainingSpacePerItem
+		}
 
 		// store the positions
 		positions.forEach((_, i) => {

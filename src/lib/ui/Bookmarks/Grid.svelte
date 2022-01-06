@@ -195,7 +195,7 @@
 					style="
 						/* stylelint-disable */
 						width: {$gridDimensions.totalItemSize}px;
-						height: {$gridDimensions.totalItemSize}px;
+						height: {$gridDimensions.iconSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
