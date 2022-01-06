@@ -25,6 +25,8 @@
 
 		user-select: none;
 		pointer-events: none;
+
+		transform: translateX(-7px);
 	}
 
 	.logo-text {
