@@ -20,7 +20,7 @@
 	let x: number, y: number
 
 	function show(e: MouseEvent) {
-		// if target is bookmark, show it's settings.
+		// if mouse target is bookmark, show it's settings.
 		const target = e.target as Element
 		if (target.className.includes('cell')) {
 			const classes = target.classList
@@ -77,6 +77,8 @@
 		box-shadow: 1px 2px 5px #00000022;
 
 		overflow: hidden;
+
+		z-index: 20;
 	}
 	.option {
 		padding: 0.5em 1.5em;
