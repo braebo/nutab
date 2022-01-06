@@ -116,5 +116,7 @@
 		width: 600px;
 		height: 50px;
 		margin: auto;
+
+		z-index: 40;
 	}
 </style>
