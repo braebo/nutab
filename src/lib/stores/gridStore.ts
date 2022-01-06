@@ -79,7 +79,7 @@ export const gridDimensions = derived(grid, ($grid) => {
 		// store the positions
 		positions.forEach((_, i) => {
 			positions[i] = {
-				x: Math.floor(getPositionInRow(i) + 10),
+				x: Math.floor(getPositionInRow(i)),
 				y: Math.floor(getPositionInColumn(i))
 			}
 		})

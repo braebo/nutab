@@ -254,7 +254,7 @@
 		position: relative;
 
 		margin: 1vh auto;
-		box-sizing: content-box;
+		box-sizing: border-box;
 
 		// for $showGuidelines
 		border: 1px solid #0000;
