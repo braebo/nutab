@@ -60,12 +60,12 @@ export const gridDimensions = derived(grid, ($grid) => {
 			// but 1 and 2 item grids need some help
 			else if (itemCount === 1) {
 				// very center
-				return gridCenter + 20
+				return gridCenter
 			} else if (itemCount === 2) {
 				// center minus or plus padding
 				const minGap = Math.max(gridGap, 40)
 				const offset = i === 0 ? minGap * -1.5 : minGap * 1.5
-				return gridCenter + offset + 20
+				return gridCenter + offset
 			}
 		}
 
@@ -79,7 +79,7 @@ export const gridDimensions = derived(grid, ($grid) => {
 		// store the positions
 		positions.forEach((_, i) => {
 			positions[i] = {
-				x: Math.floor(getPositionInRow(i)),
+				x: Math.floor(getPositionInRow(i) + 10),
 				y: Math.floor(getPositionInColumn(i))
 			}
 		})
