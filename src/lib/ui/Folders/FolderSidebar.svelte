@@ -68,6 +68,10 @@
 		applyTagFilter(null)
 		// TODO: Select new folder
 	}
+
+	const newFolder = () => {
+		// TODO: Create new folder
+	}
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
@@ -87,7 +91,7 @@
 						.folder-icon {icon}
 						.folder-title(class:hovering) {title}
 			
-			.new-folder(class:hovering) 
+			.new-folder(class:hovering on:click='{newFolder}')
 				Tooltip(content='New_Folder' position='right' offset='{[9,20]}') +
 			
 			+if ('$uniqueTags && smoothHovering || $tagFilter')
