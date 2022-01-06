@@ -65,8 +65,8 @@
 	}
 
 	const handleFolderClick = () => {
-		// TODO: Select new folder
 		applyTagFilter(null)
+		// TODO: Select new folder
 	}
 </script>
 
@@ -195,6 +195,12 @@
 			cursor: pointer;
 
 			transition: 0.2s;
+
+			&:hover {
+				color: var(--dark-c);
+
+				transition-delay: 0s;
+			}
 		}
 
 		& .tags {
