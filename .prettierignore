@@ -2,3 +2,4 @@
 static/**
 build/**
 node_modules/**
+src/lib/data/transactions.ts
