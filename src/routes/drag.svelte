@@ -1,26 +1,23 @@
 <script lang="ts">
-	import type { Bookmark } from '$lib/data/types'
-
 	// Data
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { emptyBookmark } from '$lib/data/bookmarks/defaults'
-	import { activeFolder } from '$lib/data/dbStore'
+	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 
 	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
+	import Draggables from '$lib/ui/Bookmarks/Draggables.svelte'
 	import RightClickMenu from '$lib/ui/RightClickMenu.svelte'
-	import Folder from '$lib/ui/Bookmarks/Folder.svelte'
+	import { init_db } from '$lib/data/transactions'
 	import Search from '$lib/search/Search.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
-	import Draggables from '$lib/ui/Bookmarks/Draggables.svelte'
 	import { onMount } from 'svelte'
-	import { init_db } from '$lib/data/transactions'
 
 	let showModal = false
 
 	function showEditor(i: number) {
 		$editorContext = 'edit'
-		$bookmarkEditor = $activeFolder.bookmarks[i]
+		$bookmarkEditor = $activeBookmarks[i]
 		showModal = true
 	}
 
@@ -35,7 +32,6 @@
 
 <Search />
 
-<!-- <Folder on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} /> -->
 <Draggables on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
 
 <RightClickMenu on:showEditor={(e) => showEditor(e.detail.index)} on:newBookmark={newBookmark} />
