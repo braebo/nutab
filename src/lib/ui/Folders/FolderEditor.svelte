@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { Folder } from '$lib/data/types'
-
 	import { folderEditor, editorContext } from '$lib/stores/folderEditor'
 	// TODO:
 	// import { newFolder_db, updateFolder_db } from '$lib/data/transactions'
@@ -16,7 +14,6 @@
 
 	let emoji = '📌'
 	let titleInput: HTMLInputElement
-	let descriptionFocused = false
 
 	async function handleSave() {
 		if ($editorContext === 'edit') {
@@ -148,38 +145,6 @@
 	input[name='title'] {
 		font-size: 1.5rem;
 	}
-	input[name='url'] {
-		margin: auto;
-		margin-bottom: 1.1rem;
-
-		color: var(--dark-d);
-
-		font: 0.8rem monospace;
-	}
-
-	input[name='description'] {
-		margin: 0 auto 2rem auto;
-
-		color: rgba(var(--dark-d-rgb), 0.75);
-
-		&::placeholder {
-			color: rgba(var(--dark-d-rgb), 0.25);
-		}
-	}
-
-	input[type='color'] {
-		width: 30px;
-		height: 30px;
-		padding: 0;
-
-		opacity: 0.2;
-		&:hover {
-			opacity: 1;
-		}
-
-		transition: opacity 0.2s;
-		cursor: pointer;
-	}
 
 	.tags {
 		position: relative;
@@ -204,45 +169,6 @@
 		gap: 1rem;
 
 		z-index: 11;
-	}
-
-	.bookmark-art {
-		position: relative;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		margin: 2rem auto;
-		perspective: 1200px;
-		transform-style: preserve-3d;
-
-		animation: floatDown ease-out 1.25s forwards;
-
-		animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
-	}
-	.color-settings {
-		position: absolute;
-		top: 1.75rem;
-		bottom: 0;
-		left: 0;
-		right: -10rem;
-		display: flex;
-		flex-direction: column;
-
-		width: max-content;
-		margin: auto;
-	}
-
-	img {
-		display: flex;
-
-		width: 100px;
-		height: 100px;
-		margin: 2.5rem auto 0.5rem auto;
-
-		animation: floatDown 1s forwards;
-
-		animation-timing-function: cubic-bezier(0.175, 0.985, 0.12, 1);
 	}
 
 	/* 3d CSS Float Down Animation */
