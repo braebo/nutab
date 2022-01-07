@@ -1,15 +1,15 @@
-<script>
+<script lang="ts">
 	import tippy, { sticky } from 'tippy.js'
 	import { onMount } from 'svelte'
 
 	export let content = 'Tooltip'
 	export let placement = 'right'
-	export let delay = [750, 100]
+	export let delay: [number, number] = [750, 100]
 	export let interactive = false
 	export let arrow = true
 	export let offset = [0, 0]
 	export let display = ''
-	let instance
+	let instance: any
 
 	onMount(() => {
 		tippy.setDefaultProps({
@@ -19,6 +19,7 @@
 			plugins: [sticky],
 			delay
 		})
+		// @ts-ignore
 		tippy(`#${content}`, {
 			content: content.split('_').join(' '),
 			interactive,
@@ -28,6 +29,7 @@
 			delay
 		})
 		const container = document.querySelector(`#${content}`)
+		// @ts-ignore
 		instance = container?._tippy
 	})
 
