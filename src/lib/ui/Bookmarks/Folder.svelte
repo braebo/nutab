@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Data
+	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 	import { settings } from '$lib/data/settings/settingsStore'
-	import { activeFolder } from '$lib/data/dbStore'
 	import { init_db } from '$lib/data/transactions'
 
 	// Components
@@ -19,7 +19,7 @@
 
 <div class="folder-container">
 	{#if $activeFolder?.bookmarks}
-		{#each $activeFolder.bookmarks as bookmark, i}
+		{#each $activeBookmarks as bookmark, i}
 			<div
 				class="bookmark-container"
 				style="

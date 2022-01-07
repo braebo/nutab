@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
+	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import FloatingPanel from './FloatingPanel.svelte'
 	import { localStorageStore, log } from 'fractils'
-	import { activeFolder } from '$lib/data/dbStore'
 	import { copy } from '$lib/utils/clipboardCopy'
 	import { fly, fade } from 'svelte/transition'
 	import { browser, dev } from '$app/env'
@@ -28,10 +28,12 @@
 
 	let timer: ReturnType<typeof setTimeout> | null = null
 	let hovering = false
+
 	const mouseover = () => {
 		if (timer) clearTimeout(timer)
 		hovering = true
 	}
+
 	const mouseout = () => {
 		if (timer) clearTimeout(timer)
 		timer = setTimeout(() => {
@@ -93,7 +95,7 @@
 		['$bookmarkEditor', $bookmarkEditor],
 		['$settings', $settings],
 		['$activeFolder', $activeFolder],
-		['$activeFolder.bookmarks', $activeFolder && $activeFolder?.bookmarks],
+		['$activeBookmarks', $activeBookmarks],
 		['$gridDimensions', $gridDimensions],
 		['grid', $grid]
 	]
@@ -152,6 +154,7 @@
 
 		z-index: 100;
 	}
+
 	button {
 		position: absolute;
 		bottom: 0;
@@ -181,14 +184,12 @@
 			transform: translateX(-3px);
 		}
 	}
+
 	.debug-panel {
 		flex-direction: column;
 		position: absolute;
 		flex-wrap: wrap;
 		display: flex;
-		// bottom: 0;
-		// right: 0;
-		// left: 0;
 
 		width: 98vw;
 		height: 50vh;
@@ -206,10 +207,9 @@
 
 		overflow: auto;
 	}
+
 	.debuggable {
 		position: relative;
-
-		// width: 500px;
 
 		max-width: max-content;
 		height: 800px;
@@ -221,15 +221,18 @@
 		overflow-y: auto;
 		resize: both;
 	}
+
 	.debuggable:last-of-type {
 		margin-right: 100px;
 	}
+
 	h4 {
 		color: var(--brand-a);
 
 		font-weight: 500;
 		font-family: var(--font-secondary);
 	}
+
 	.kv {
 		display: grid;
 		align-items: center;
@@ -249,25 +252,24 @@
 		}
 
 		& pre {
-			min-width: 5rem;
 			width: max-content;
-			// max-width: 20rem;
+			min-width: 5rem;
 			margin-bottom: 2rem;
 			padding: 0.5rem;
-
-			// overflow: auto !important;
 
 			code {
 				color: var(--blue) !important;
 			}
 		}
 	}
+
 	pre {
 		width: fit-content;
 
 		font-family: var(--font-mono);
 		font-size: 13px;
 	}
+
 	.copy {
 		position: absolute;
 		top: 0.5rem;
@@ -281,6 +283,7 @@
 			color: var(--blue);
 		}
 	}
+
 	.one {
 		width: 150px;
 
@@ -296,10 +299,12 @@
 			overflow: hidden;
 		}
 	}
+
 	input[type='checkbox'] {
 		opacity: 0.5;
 		filter: hue-rotate(115deg) brightness(0.9);
 	}
+
 	.disabled {
 		opacity: 0.5;
 	}

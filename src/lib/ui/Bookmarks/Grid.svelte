@@ -3,7 +3,7 @@
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
 	import { swapBookmarks_db } from '$lib/data/transactions'
-	import { activeFolder } from '$lib/data/dbStore'
+	import { activeBookmarks } from '$lib/data/dbStore'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
@@ -109,10 +109,12 @@
 	function toggleShowEditIcon(bool: boolean, i: number) {
 		showEditIcon = showEditIcon.map((x, index) => (index === i ? bool : !bool))
 	}
+
 	function handleItemMouseOver(i: number) {
 		hovering = i
 		smoothHover.smoothOver(() => toggleShowEditIcon(true, i), 1000)
 	}
+
 	function handleItemMouseOut(i: number) {
 		hovering = null
 		smoothHover.smoothOut(() => (showEditIcon[i] = false))
@@ -148,15 +150,15 @@
 		disableTransitions = true
 
 		// Swap the elements and update stores / db
-		const _a = $activeFolder.bookmarks[a]
-		const _b = $activeFolder.bookmarks[b]
+		const _a = $activeBookmarks[a]
+		const _b = $activeBookmarks[b]
 		const aPosition = _a.position
 		const bPosition = _b.position
 		_a.position = bPosition
 		_b.position = aPosition
 		if (_a.position === _b.position) alert('Error: Bookmarks are in the same position')
-		$activeFolder.bookmarks[a] = _b
-		$activeFolder.bookmarks[b] = _a
+		$activeBookmarks[a] = _b
+		$activeBookmarks[b] = _a
 		swapBookmarks_db([_a, _b])
 
 		clearTimeout(swapTimer)
@@ -195,7 +197,7 @@
 					style="
 						/* stylelint-disable */
 						width: {$gridDimensions.totalItemSize}px;
-						height: {$gridDimensions.iconSize}px;
+						height: {$grid.iconSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"

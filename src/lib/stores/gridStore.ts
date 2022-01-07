@@ -1,15 +1,15 @@
 import { settings } from '$lib/data/settings/settingsStore'
-import { activeFolder } from '$lib/data/dbStore'
+import { activeBookmarks } from '$lib/data/dbStore'
 import { writable, derived } from 'svelte/store'
 
 // Used to trigger the grid's {#key} block
 export const reRender = writable(false)
 
-export const grid = derived([activeFolder, settings], ([$activeFolder, $settings]) => ({
+export const grid = derived([activeBookmarks, settings], ([$activeBookmarks, $settings]) => ({
 	gridWidth: $settings.ranges.gridWidth.value,
 	iconSize: $settings.ranges.iconSize.value,
 	gridGap: $settings.ranges.gridGap.value,
-	items: $activeFolder?.bookmarks
+	items: $activeBookmarks
 }))
 
 export const gridDimensions = derived(grid, ($grid) => {

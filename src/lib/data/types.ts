@@ -15,7 +15,7 @@ export type Folder = {
 	user_id: string
 	icon: string
 	title: string
-	bookmarks: Bookmark[]
+	bookmarks: Bookmark['bookmark_id'][]
 	position: number
 	active: boolean
 }

@@ -3,8 +3,8 @@
 
 	// Data
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 	import { emptyBookmark } from '$lib/data/bookmarks/defaults'
-	import { activeFolder } from '$lib/data/dbStore'
 
 	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
@@ -18,7 +18,7 @@
 	let bookmark_id = ''
 
 	async function showEditor({ i }: { i: number }) {
-		const id = $activeFolder.bookmarks[i].bookmark_id
+		const id = $activeBookmarks[i].bookmark_id
 		bookmark_id = id
 		$editorContext = 'edit'
 		$bookmarkEditor = await getBookmark_db(id)

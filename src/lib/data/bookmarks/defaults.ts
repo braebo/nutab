@@ -10,7 +10,7 @@ const default_theme = {
 }
 
 export const emptyBookmark = (current_folder: Folder): Bookmark => {
-	const { title, position } = current_folder
+	const { title } = current_folder
 	return {
 		bookmark_id: cuid(),
 		url: '',
@@ -40,7 +40,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'OpenBase',
 		description: 'Repo Search Engine',
 		image: 'https://d25hn4jiqx5f7l.cloudfront.net/companies/logos/medium/openbase_1601666331.png',
-		tags: ['Dev', 'Code', 'Search'],
+		tags: ['Dev', 'Code'],
 		...default_theme,
 		position: 1
 	},
@@ -50,7 +50,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Reddit',
 		description: 'Front Page of the Internet',
 		image: 'https://www.redditinc.com/assets/images/site/reddit-logo.png',
-		tags: ['Entertainment', 'News', 'Media'],
+		tags: ['Entertainment', 'News'],
 		...default_theme,
 		position: 2
 	},
@@ -60,7 +60,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Youtube',
 		description: '',
 		image: 'https://cdn.svgporn.com/logos/youtube-icon.svg',
-		tags: ['Google', 'Video', 'Entertainment', 'Media'],
+		tags: ['Google', 'Video', 'Entertainment'],
 		...default_theme,
 		position: 3
 	},
@@ -81,7 +81,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Gmail',
 		description: 'Email',
 		image: 'https://cdn.svgporn.com/logos/google-gmail.svg',
-		tags: ['Google', 'Email', 'Mail'],
+		tags: ['Google', 'Email'],
 		...default_theme,
 		position: 5
 	},
@@ -112,7 +112,7 @@ export const defaultFolder: Folder = {
 	user_id: 'anon',
 	icon: '🏠',
 	title: 'General',
-	bookmarks: defaultBookmarks,
+	bookmarks: defaultBookmarks.map((b) => b.bookmark_id),
 	active: true,
 	position: 0
 }

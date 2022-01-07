@@ -3,7 +3,7 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import { activeFolder, tagFilter, uniqueTags } from '$lib/data/dbStore'
+	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter, uniqueTags } from '$lib/data/dbStore'
 	import db from '$lib/data/db'
 
 	// Utils
@@ -44,11 +44,12 @@
 	const applyTagFilter = async (tag: string) => {
 		if (tag === $tagFilter || tag === null) {
 			$tagFilter = null
-			init_db()
+			// init_db()
+			$activeBookmarks = await $activeFolderBookmarks
 		} else {
 			$tagFilter = tag
 			const filteredBookmarks = await db.bookmarks.where('tags').equals(tag).toArray()
-			$activeFolder.bookmarks = filteredBookmarks
+			$activeBookmarks = filteredBookmarks
 		}
 		$reRender = !$reRender
 	}
@@ -84,7 +85,7 @@
 			on:mouseover!='{mouseOver}'
 			on:mouseout!='{mouseOut}'
 		)
-			
+
 			+if ('folders')
 				+each('folders as {id, icon, title}')
 					.folder(on:click!='{() => handleFolderClick(id)}')
