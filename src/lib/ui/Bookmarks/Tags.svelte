@@ -1,6 +1,6 @@
 <script>
-	import { fly } from 'svelte/transition'
 	// @ts-nocheck
+	import { fly } from 'svelte/transition'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import { createEventDispatcher } from 'svelte'
 	const dispatch = createEventDispatcher()
