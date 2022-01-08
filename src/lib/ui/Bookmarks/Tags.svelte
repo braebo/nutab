@@ -1,57 +1,60 @@
-<script>
-	// @ts-nocheck
+<script lang="ts">
 	import { fly } from 'svelte/transition'
+	// @ts-nocheck
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import { createEventDispatcher } from 'svelte'
 	const dispatch = createEventDispatcher()
+
 	let tag = ''
-	let arrelementsmatch = []
-	let regExpEscape = (s) => {
+	let arrelementsmatch: any[] = []
+	let regExpEscape = (s: string) => {
 		return s.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
 	}
 	let blurred = true
-	export let tags
-	export let addKeys
-	export let maxTags
-	export let onlyUnique
-	export let removeKeys
-	export let placeholder
-	export let allowPaste
-	export let allowDrop
-	export let splitWith
-	export let autoComplete
-	export let autoCompleteKey
-	export let name
-	export let id
-	export let allowBlur
-	export let disable
-	export let minChars
-	export let onlyAutocomplete
-	export let labelText
-	export let labelShow
-	$: tags = tags || []
-	$: addKeys = addKeys || [13]
-	$: maxTags = maxTags || false
-	$: onlyUnique = onlyUnique || false
-	$: removeKeys = removeKeys || [8]
-	$: placeholder = placeholder || ''
-	$: allowPaste = allowPaste || false
-	$: allowDrop = allowDrop || false
-	$: splitWith = splitWith || ','
-	$: autoComplete = autoComplete || false
-	$: autoCompleteKey = autoCompleteKey || false
-	$: name = name || 'svelte-tags-input'
-	$: id = id || uniqueID()
-	$: allowBlur = allowBlur || false
-	$: disable = disable || false
-	$: minChars = minChars || 1
-	$: onlyAutocomplete = onlyAutocomplete || false
-	$: labelText = labelText || name
-	$: labelShow = labelShow || false
+	let tagInput: HTMLInputElement
+
+	export let tags: string[] = []
+	export let addKeys: number[] = [13]
+	export let maxTags: boolean | number = false
+	export let onlyUnique = false
+	export let removeKeys = [8]
+	export let placeholder = ''
+	export let allowPaste = false
+	export let allowDrop = false
+	export let splitWith = ','
+	export let autoComplete: string[] | Function | boolean = false
+	export let autoCompleteKey: number = 0
+	export let name = 'svelte-tags-input'
+	export let id = uniqueID()
+	export let allowBlur = false
+	export let disable = false
+	export let minChars = 1
+	export let onlyAutocomplete = false
+	export let labelText = name
+	export let labelShow = false
+	$: tags
+	$: addKeys
+	$: maxTags
+	$: onlyUnique
+	$: removeKeys
+	$: placeholder
+	$: allowPaste
+	$: allowDrop
+	$: splitWith
+	$: autoComplete
+	$: autoCompleteKey
+	$: name
+	$: id
+	$: allowBlur
+	$: disable
+	$: minChars
+	$: onlyAutocomplete
+	$: labelText
+	$: labelShow
 	$: matchsID = id + '_matchs'
 	let storePlaceholder = placeholder
-	function setTag(input) {
-		const currentTag = input.target.value
+	function setTag(input: KeyboardEvent) {
+		const currentTag = (input.target as HTMLInputElement).value
 
 		if (addKeys) {
 			addKeys.forEach(function (key) {
@@ -89,7 +92,7 @@
 						tags: tags
 					})
 					arrelementsmatch = []
-					document.getElementById(id).readOnly = false
+					;(document.getElementById(id) as HTMLInputElement).readOnly = false
 					placeholder = storePlaceholder
 					document.getElementById(id).focus()
 				}
@@ -99,19 +102,20 @@
 		// ArrowDown : focus on first element of the autocomplete
 		if (input.keyCode === 40 && autoComplete && document.getElementById(matchsID)) {
 			event.preventDefault()
-			document.getElementById(matchsID).querySelector('li:first-child').focus()
+			;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLInputElement).focus()
 		} // ArrowUp : focus on last element of the autocomplete
 		else if (input.keyCode === 38 && autoComplete && document.getElementById(matchsID)) {
 			event.preventDefault()
-			document.getElementById(matchsID).querySelector('li:last-child').focus()
+			;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLInputElement).focus()
 		}
 	}
-	function addTag(currentTag) {
+	function addTag(currentTag: string) {
 		if (typeof currentTag === 'object' && currentTag) {
 			if (!autoCompleteKey) {
 				return console.error("'autoCompleteKey' is necessary if 'autoComplete' result is an array of objects")
 			}
 			var currentObjTags = currentTag
+			// @ts-ignore
 			currentTag = currentTag[autoCompleteKey].trim()
 		} else {
 			console.log(currentTag)
@@ -135,11 +139,11 @@
 		arrelementsmatch = []
 		document.getElementById(id).focus()
 		if (maxTags && tags.length == maxTags) {
-			document.getElementById(id).readOnly = true
+			;(document.getElementById(id) as HTMLInputElement).readOnly = true
 			placeholder = ''
 		}
 	}
-	function removeTag(i) {
+	function removeTag(i: number) {
 		tags.splice(i, 1)
 		tags = tags
 		dispatch('tags', {
@@ -148,24 +152,24 @@
 
 		// Hide autocomplete list
 		arrelementsmatch = []
-		document.getElementById(id).readOnly = false
+		;(document.getElementById(id) as HTMLInputElement).readOnly = false
 		placeholder = storePlaceholder
 		// Focus on svelte tags input
 		// document.getElementById(id).focus()
 	}
-	function onPaste(e) {
+	function onPaste(e: ClipboardEvent) {
 		if (!allowPaste) return
 		e.preventDefault()
 		const data = getClipboardData(e)
-		const tags = splitTags(data).map((tag) => addTag(tag))
+		const tags = splitTags(data).map((tag: string) => addTag(tag))
 	}
-	function onDrop(e) {
+	function onDrop(e: DragEvent) {
 		if (!allowDrop) return
 		e.preventDefault()
 		const data = e.dataTransfer.getData('Text')
-		const tags = splitTags(data).map((tag) => addTag(tag))
+		const tags = splitTags(data).map((tag: string) => addTag(tag))
 	}
-	function onBlur(e, tag) {
+	function onBlur(e: Event, tag: string) {
 		if (!document.getElementById(matchsID) && allowBlur) {
 			event.preventDefault()
 			// TODO: Fix adding tag on blue
@@ -173,19 +177,19 @@
 		}
 		blurred = true
 	}
-	function getClipboardData(e) {
-		if (window.clipboardData) {
-			return window.clipboardData.getData('Text')
+	function getClipboardData(e: ClipboardEvent) {
+		if ((<any>window).clipboardData) {
+			return (<any>window).clipboardData.getData('Text')
 		}
 		if (e.clipboardData) {
 			return e.clipboardData.getData('text/plain')
 		}
 		return ''
 	}
-	function splitTags(data) {
+	function splitTags(data: string) {
 		return data.split(splitWith).map((tag) => tag.trim())
 	}
-	async function getMatchElements(input) {
+	async function getMatchElements(input: KeyboardEvent) {
 		if (!autoComplete) return
 		let autoCompleteValues = []
 
@@ -201,7 +205,7 @@
 			}
 		}
 
-		var value = input.target.value
+		var value = (input.target as HTMLInputElement).value
 
 		// Escape
 		if (value == '' || input.keyCode === 27 || value.length < minChars) {
@@ -214,8 +218,8 @@
 				return console.error("'autoCompleteValue' is necessary if 'autoComplete' result is an array of objects")
 			}
 			var matchs = autoCompleteValues
-				.filter((e) => e[autoCompleteKey].toLowerCase().includes(value.toLowerCase()))
-				.map((matchTag) => {
+				.filter((e: string) => e[autoCompleteKey].toLowerCase().includes(value.toLowerCase()))
+				.map((matchTag: string) => {
 					return {
 						label: matchTag,
 						search: matchTag[autoCompleteKey].replace(
@@ -226,8 +230,8 @@
 				})
 		} else {
 			var matchs = autoCompleteValues
-				.filter((e) => e.toLowerCase().includes(value.toLowerCase()))
-				.map((matchTag) => {
+				.filter((e: string) => e.toLowerCase().includes(value.toLowerCase()))
+				.map((matchTag: string) => {
 					return {
 						label: matchTag,
 						search: matchTag.replace(RegExp(regExpEscape(value.toLowerCase()), 'i'), '<strong>$&</strong>')
@@ -235,11 +239,17 @@
 				})
 		}
 		if (onlyUnique === true && !autoCompleteKey) {
-			matchs = matchs.filter((tag) => !tags.includes(tag.label))
+			// @ts-ignore
+			matchs = matchs.filter((tag: string) => !tags.includes(tag.label))
 		}
 		arrelementsmatch = matchs
 	}
-	function navigateAutoComplete(autoCompleteIndex, autoCompleteLength, autoCompleteElement) {
+	function navigateAutoComplete(
+		event: KeyboardEvent,
+		autoCompleteIndex: number,
+		autoCompleteLength: number,
+		autoCompleteElement: string
+	) {
 		if (!autoComplete) return
 
 		event.preventDefault()
@@ -247,7 +257,7 @@
 		if (event.keyCode === 40) {
 			// Last element on the list ? Go to the first
 			if (autoCompleteIndex + 1 === autoCompleteLength) {
-				document.getElementById(matchsID).querySelector('li:first-child').focus()
+				;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLInputElement).focus()
 				return
 			}
 			document.getElementById(matchsID).querySelectorAll('li')[autoCompleteIndex + 1].focus()
@@ -255,7 +265,7 @@
 			// ArrowUp
 			// First element on the list ? Go to the last
 			if (autoCompleteIndex === 0) {
-				document.getElementById(matchsID).querySelector('li:last-child').focus()
+				;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLInputElement).focus()
 				return
 			}
 			document.getElementById(matchsID).querySelectorAll('li')[autoCompleteIndex - 1].focus()
@@ -270,6 +280,14 @@
 	}
 	function uniqueID() {
 		return 'sti_' + Math.random().toString(36).substr(2, 9)
+	}
+	function handleFocus() {
+		blurred = false
+		tagInput.placeholder = ''
+	}
+	function handleBlur(e: Event) {
+		onBlur(e, tag)
+		tagInput.placeholder = 'new tag'
 	}
 </script>
 
@@ -296,19 +314,18 @@
 		type="text"
 		{name}
 		{id}
+		bind:this={tagInput}
 		bind:value={tag}
 		on:keydown={setTag}
 		on:keyup={getMatchElements}
 		on:paste={onPaste}
 		on:drop={onDrop}
-		on:focus={() => (blurred = false)}
-		on:blur={() => onBlur(tag)}
+		on:focus={handleFocus}
+		on:blur={handleBlur}
 		on:click|stopPropagation
 		class="input new-tag"
 		{placeholder}
 		disabled={disable}
-		onfocus="this.placeholder = ''"
-		onblur="this.placeholder = 'new tag'"
 		autocomplete="off"
 	/>
 </div>
@@ -319,7 +336,7 @@
 			{#each arrelementsmatch as element, index}
 				<li
 					tabindex="-1"
-					on:keydown={() => navigateAutoComplete(index, arrelementsmatch.length, element.label)}
+					on:keydown={(e) => navigateAutoComplete(e, index, arrelementsmatch.length, element.label)}
 					on:click|stopPropagation={() => addTag(element.label)}
 				>
 					{@html element.search}
@@ -350,10 +367,10 @@
 
 		/* align-items: center; */
 
+		background: none;
+
 		font-family: inherit;
 		font-size: 1rem;
-
-		background: none;
 	}
 
 	.input-layout {
@@ -378,11 +395,11 @@
 
 		margin: auto;
 
-		font-family: inherit;
-
-		color: var(--light-c);
 		border: solid 1px rgba(var(--light-b-rgb), 0);
+		color: var(--light-c);
 		border-radius: 4px;
+
+		font-family: inherit;
 
 		transition: all 0.3s;
 		box-flex: 1;
