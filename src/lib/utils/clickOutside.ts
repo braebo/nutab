@@ -1,6 +1,5 @@
-export function clickOutside(node: Element) {
+export function clickOutside(node: any) {
 	const handleClick = (event: MouseEvent) => {
-		console.log(event.target)
 		if (
 			node &&
 			!node.contains(event.target as Element) &&

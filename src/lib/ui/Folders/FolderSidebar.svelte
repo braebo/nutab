@@ -44,7 +44,6 @@
 	const applyTagFilter = async (tag: string) => {
 		if (tag === $tagFilter || tag === null) {
 			$tagFilter = null
-			// init_db()
 			$activeBookmarks = await $activeFolderBookmarks
 		} else {
 			$tagFilter = tag
