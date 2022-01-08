@@ -1,20 +1,23 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
+	// Data
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
-	import { createEventDispatcher, onMount, tick } from 'svelte'
+	import { reRender } from '$lib/stores/gridStore'
+	import { uniqueTags } from '$lib/data/dbStore'
 
+	// Components
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
 	import DeleteBookmark from './DeleteBookmark.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
-	import { uniqueTags } from '$lib/data/dbStore'
 	import Button from '$lib/ui/Button.svelte'
+
+	import { createEventDispatcher, onMount } from 'svelte'
+	const dispatch = createEventDispatcher()
 
 	export let i: number = 0
 	export let bookmark_id: string = ''
-
-	const dispatch = createEventDispatcher()
 
 	let titleInput: HTMLInputElement
 	let urlInput: HTMLInputElement
@@ -36,6 +39,7 @@
 		} else {
 			await newBookmark_db($bookmarkEditor)
 		}
+		$reRender = !$reRender
 		dispatch('close')
 	}
 
