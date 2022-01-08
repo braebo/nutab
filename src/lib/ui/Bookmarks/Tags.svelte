@@ -10,7 +10,6 @@
 		return s.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
 	}
 	let blurred = true
-	let tagInput: HTMLInputElement
 
 	export let tags: string[] = []
 	export let addKeys: number[] = [13]
@@ -51,14 +50,16 @@
 	$: labelText
 	$: labelShow
 	$: matchsID = id + '_matchs'
+
 	let storePlaceholder = placeholder
-	function setTag(input: KeyboardEvent) {
-		const currentTag = (input.target as HTMLInputElement).value
+
+	function setTag(e: KeyboardEvent) {
+		const currentTag = (e.target as HTMLInputElement).value
 
 		if (addKeys) {
 			addKeys.forEach(function (key) {
-				if (key === input.keyCode) {
-					if (currentTag) input.preventDefault()
+				if (key === e.keyCode) {
+					if (currentTag) e.preventDefault()
 
 					/* switch (input.keyCode) {
 					case 9:
@@ -83,8 +84,8 @@
 		}
 
 		if (removeKeys) {
-			removeKeys.forEach(function (key) {
-				if (key === input.keyCode && tag === '') {
+			removeKeys.forEach((key) => {
+				if (key === e.keyCode && tag === '') {
 					tags.pop()
 					tags = tags
 					dispatch('tags', {
@@ -97,27 +98,28 @@
 				}
 			})
 		}
-
 		// ArrowDown : focus on first element of the autocomplete
-		if (input.keyCode === 40 && autoComplete && document.getElementById(matchsID)) {
-			event.preventDefault()
-			;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLInputElement).focus()
+		if (e.keyCode === 40 && autoComplete && document.getElementById(matchsID)) {
+			e.preventDefault()
+			;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLLIElement).focus()
 		} // ArrowUp : focus on last element of the autocomplete
-		else if (input.keyCode === 38 && autoComplete && document.getElementById(matchsID)) {
-			event.preventDefault()
-			;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLInputElement).focus()
+		else if (e.keyCode === 38 && autoComplete && document.getElementById(matchsID)) {
+			e.preventDefault()
+			;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLLIElement).focus()
 		}
 	}
+
 	function addTag(currentTag: string) {
+		let currentObjTags
 		if (typeof currentTag === 'object' && currentTag) {
 			if (!autoCompleteKey) {
 				return console.error("'autoCompleteKey' is necessary if 'autoComplete' result is an array of objects")
 			}
-			var currentObjTags = currentTag
+			currentObjTags = currentTag
 			// @ts-ignore
 			currentTag = currentTag[autoCompleteKey].trim()
 		} else {
-			console.log(currentTag)
+			// currentTag =
 			currentTag = currentTag.trim()
 		}
 
@@ -142,6 +144,7 @@
 			placeholder = ''
 		}
 	}
+
 	function removeTag(i: number) {
 		tags.splice(i, 1)
 		tags = tags
@@ -156,26 +159,31 @@
 		// Focus on svelte tags input
 		// document.getElementById(id).focus()
 	}
+
 	function onPaste(e: ClipboardEvent) {
 		if (!allowPaste) return
 		e.preventDefault()
 		const data = getClipboardData(e)
 		const tags = splitTags(data).map((tag: string) => addTag(tag))
 	}
+
 	function onDrop(e: DragEvent) {
 		if (!allowDrop) return
 		e.preventDefault()
 		const data = e.dataTransfer.getData('Text')
 		const tags = splitTags(data).map((tag: string) => addTag(tag))
 	}
+
 	function onBlur(e: Event, tag: string) {
 		if (!document.getElementById(matchsID) && allowBlur) {
-			event.preventDefault()
-			// TODO: Fix adding tag on blue
-			if (tag) addTag(tag)
+			e.preventDefault()
+			// I think adding tags on:blur is a bad idea
+			// if (tag) addTag(tag)
 		}
-		blurred = true
+		// blurred = true
+		placeholder = 'new tag'
 	}
+
 	function getClipboardData(e: ClipboardEvent) {
 		if ((<any>window).clipboardData) {
 			return (<any>window).clipboardData.getData('Text')
@@ -185,9 +193,11 @@
 		}
 		return ''
 	}
+
 	function splitTags(data: string) {
 		return data.split(splitWith).map((tag) => tag.trim())
 	}
+
 	async function getMatchElements(input: KeyboardEvent) {
 		if (!autoComplete) return
 		let autoCompleteValues = []
@@ -204,7 +214,8 @@
 			}
 		}
 
-		var value = (input.target as HTMLInputElement).value
+		let value = (input.target as HTMLInputElement).value
+		let matchs
 
 		// Escape
 		if (value == '' || input.keyCode === 27 || value.length < minChars) {
@@ -216,7 +227,7 @@
 			if (!autoCompleteKey) {
 				return console.error("'autoCompleteValue' is necessary if 'autoComplete' result is an array of objects")
 			}
-			var matchs = autoCompleteValues
+			matchs = autoCompleteValues
 				.filter((e: string) => e[autoCompleteKey].toLowerCase().includes(value.toLowerCase()))
 				.map((matchTag: string) => {
 					return {
@@ -228,7 +239,7 @@
 					}
 				})
 		} else {
-			var matchs = autoCompleteValues
+			matchs = autoCompleteValues
 				.filter((e: string) => e.toLowerCase().includes(value.toLowerCase()))
 				.map((matchTag: string) => {
 					return {
@@ -243,50 +254,53 @@
 		}
 		arrelementsmatch = matchs
 	}
+
 	function navigateAutoComplete(
-		event: KeyboardEvent,
+		e: KeyboardEvent,
 		autoCompleteIndex: number,
 		autoCompleteLength: number,
 		autoCompleteElement: string
 	) {
 		if (!autoComplete) return
 
-		event.preventDefault()
+		e.preventDefault()
 		// ArrowDown
-		if (event.keyCode === 40) {
+		if (e.keyCode === 40) {
 			// Last element on the list ? Go to the first
 			if (autoCompleteIndex + 1 === autoCompleteLength) {
-				;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLInputElement).focus()
+				;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLLIElement).focus()
 				return
 			}
 			document.getElementById(matchsID).querySelectorAll('li')[autoCompleteIndex + 1].focus()
-		} else if (event.keyCode === 38) {
+		} else if (e.keyCode === 38) {
 			// ArrowUp
 			// First element on the list ? Go to the last
 			if (autoCompleteIndex === 0) {
-				;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLInputElement).focus()
+				;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLLIElement).focus()
 				return
 			}
 			document.getElementById(matchsID).querySelectorAll('li')[autoCompleteIndex - 1].focus()
-		} else if (event.keyCode === 13) {
+		} else if (e.keyCode === 13) {
 			// Enter
 			addTag(autoCompleteElement)
-		} else if (event.keyCode === 27) {
+		} else if (e.keyCode === 27) {
 			// Escape
 			arrelementsmatch = []
 			document.getElementById(id).focus()
 		}
 	}
+
 	function uniqueID() {
-		return 'sti_' + Math.random().toString(36).substr(2, 9)
+		return 'sti_' + Math.random().toString(36).substring(2, 9)
 	}
+
 	function handleFocus() {
 		blurred = false
-		tagInput.placeholder = ''
+		placeholder = ''
 	}
+
 	function handleBlur(e: Event) {
 		onBlur(e, tag)
-		tagInput.placeholder = 'new tag'
 	}
 </script>
 
@@ -313,14 +327,13 @@
 		type="text"
 		{name}
 		{id}
-		bind:this={tagInput}
 		bind:value={tag}
 		on:keydown={setTag}
 		on:keyup={getMatchElements}
 		on:paste={onPaste}
 		on:drop={onDrop}
 		on:focus={handleFocus}
-		on:blur={handleBlur}
+		on:blur={(e) => handleBlur(e)}
 		on:click|stopPropagation
 		class="input new-tag"
 		{placeholder}
