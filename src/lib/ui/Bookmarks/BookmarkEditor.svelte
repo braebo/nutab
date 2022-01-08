@@ -2,14 +2,14 @@
 	import type { Bookmark } from '$lib/data/types'
 
 	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
-	import { createEventDispatcher, onMount, tick } from 'svelte'
 	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
+	import { createEventDispatcher, onMount, tick } from 'svelte'
 
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
 	import DeleteBookmark from './DeleteBookmark.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
-	import Button from '$lib/ui/Button.svelte'
 	import { uniqueTags } from '$lib/data/dbStore'
+	import Button from '$lib/ui/Button.svelte'
 
 	export let i: number = 0
 	export let bookmark_id: string = ''
@@ -32,7 +32,6 @@
 
 	async function handleSave() {
 		if ($editorContext === 'edit') {
-			// TODO: update bookmark
 			updateBookmark_db($bookmarkEditor)
 		} else {
 			await newBookmark_db($bookmarkEditor)
@@ -50,7 +49,6 @@
 		{#if $bookmarkEditor['image']}
 			<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
 		{:else}
-			<!-- Fallback Image -->
 			<div class="bookmark-art">
 				<BookmarkArt
 					--foreground={$bookmarkEditor['foreground']}
@@ -80,7 +78,6 @@
 		</div>
 
 		<div class="setting description">
-			<!-- <label for='description'>description</label> -->
 			<input
 				name="description"
 				{placeholder}
@@ -97,7 +94,6 @@
 		</div>
 
 		<div class="setting">
-			<!-- <label for="url">url</label> -->
 			<input
 				name="url"
 				type="text"
