@@ -50,7 +50,7 @@ export async function newBookmark_db(bookmark: Bookmark) {
 
 	//? Update activeBookmarks store
 	console.log(get(tagFilter))
-	if (get(tagFilter) != null) {
+	if (get(tagFilter) === null) {
 		activeBookmarks.set(await get(activeFolderBookmarks))
 	}
 
