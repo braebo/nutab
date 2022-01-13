@@ -1,79 +1,102 @@
 <script lang="ts">
-	import { folderEditor, editorContext } from '$lib/stores/folderEditor'
-	// TODO:
-	// import { newFolder_db, updateFolder_db } from '$lib/data/transactions'
-	import { createEventDispatcher, onMount } from 'svelte'
-
-	import DeleteFolder from './DeleteFolder.svelte'
+	// Data
+	import { folderEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { editor } from '$lib/stores/bookmarkEditor'
 	import { uniqueTags } from '$lib/data/dbStore'
+	// TODO: import { newFolder_db, updateFolder_db } from '$lib/data/transactions'
+
+	// Components
+	import DeleteFolder from './DeleteFolder.svelte'
 	import Button from '$lib/ui/Button.svelte'
+
+	// Utils
+	import { clickOutside } from 'fractils'
+	import { onMount } from 'svelte'
 
 	export let folder_id: string = ''
 
-	const dispatch = createEventDispatcher()
-
 	let emoji = '📌'
 	let titleInput: HTMLInputElement
+	let header = ''
+	let selectedTags: boolean[] = []
 
 	async function handleSave() {
 		if ($editorContext === 'edit') {
-			// TODO:
 			alert('todo')
-			// updateFolder_db($folderEditor)
+			// TODO: updateFolder_db($folderEditor)
 		} else {
-			// TODO:
 			alert('todo')
-			// await newFolder_db($folderEditor)
+			// TODO: await newFolder_db($folderEditor)
 		}
-		dispatch('close')
+		editor.hide()
 	}
 
 	onMount(async () => {
-		if ($editorContext === 'create') titleInput.select()
+		if ($editorContext === 'create') {
+			header = 'New Folder'
+			titleInput.select()
+		}
 	})
 </script>
 
-{#if $folderEditor}
-	<div class="editor-container">
-		<!-- TODO: Emoji Picker -->
-		<div class="emoji">{emoji}</div>
+<template lang="pug">
+	
+	h1 selectedTags: {selectedTags}
+	+if('$folderEditor')
+		.editor-container(use:clickOutside!='{() => editor.hide()}')
+			.space-sm
+			h2.header {header}
+			.space-sm
+			
+			.setting.title
+				.emoji {emoji}
+				input.title(
+					placeholder="My Folder"
+					bind:this='{titleInput}'
+					bind:value='{$folderEditor.title}'
+					on:click!='{() => titleInput.select()}'
+					on:keydown!='{(e) => e.key === "Enter" && handleSave()}'
+				)
+			.space-lg
+			
+			.setting.tag-manager.scroller
+				.info Add bookmarks from tags (optional)
+				.tags
+					+if('$uniqueTags')
+						+each('$uniqueTags as tag, i')
+							.tag(
+								class:selected='{selectedTags[i]}'
+								on:click!='{() => selectedTags[i] = !selectedTags[i]}'
+							) {tag}
+							.tag(
+								class:selected='{selectedTags[i]}'
+								on:click!='{() => selectedTags[i] = !selectedTags[i]}'
+							) {tag}
+			
+			.buttons
+				Button(
+					'--colorHover'='var(--warn)'
+					'--borderHover'='1px solid var(--warn)'
+					on:click!='{() => editor.hide()}'
+				) Cancel
+				
+				Button(
+					'--colorHover'='var(--confirm)'
+					'--borderHover'='1px solid var(--confirm)'
+					on:click='{handleSave}'
+				) Save
 
-		<div class="setting title">
-			<input
-				name="title"
-				placeholder="title"
-				bind:this={titleInput}
-				bind:value={$folderEditor['title']}
-				on:click={() => titleInput.select()}
-				on:keydown={(e) => e.key === 'Enter' && handleSave()}
-			/>
-		</div>
+				DeleteFolder({folder_id} on:close!='{() => editor.hide()}')
 
-		<div class="setting">
-			<div name="tags" class="tags">
-				{#each $uniqueTags as tag}
-					{tag}
-				{/each}
-			</div>
-		</div>
 
-		<div class="buttons">
-			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => dispatch('close')}
-				>Cancel</Button
-			>
-			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}
-				>Save</Button
-			>
-			<DeleteFolder {folder_id} on:close={() => dispatch('close')} />
-		</div>
-	</div>
-{/if}
+</template>
 
 <style lang="scss">
 	.editor-container {
 		display: flex;
 		position: relative;
 		flex-direction: column;
+		flex-grow: 1;
 
 		width: 500px;
 		height: max-content;
@@ -105,6 +128,15 @@
 		}
 	}
 
+	.header {
+		margin: 1rem auto;
+
+		color: var(--dark-a);
+
+		text-align: center;
+		font-size: 1.5rem;
+	}
+
 	.setting {
 		display: flex;
 		position: relative;
@@ -116,14 +148,16 @@
 	}
 
 	input {
-		width: 60%;
-		padding: 5px 8px 5px 8px;
+		width: 50%;
+		padding: 8px;
 
 		color: var(--dark-a);
 		border: 1px solid rgba(var(--light-b-rgb), 0);
 		border-radius: 3px;
 		outline: none;
 		background: var(--light-a);
+		box-shadow: var(--shadow-sm);
+		border-bottom: 1px solid rgba(var(--light-b-rgb), 1);
 
 		font-family: 'Abel';
 		font-size: 1rem;
@@ -136,24 +170,122 @@
 				opacity: 0;
 			}
 		}
-		&:focus,
+	}
+
+	input.title {
+		min-width: max-content;
+		max-width: 90%;
+
+		border: 1px solid rgba(var(--dark-a-rgb), 0.1);
 		&:hover {
-			border-bottom: 1px solid rgba(var(--light-b-rgb), 1);
+			border: 1px solid rgba(var(--dark-a-rgb), 0.5);
+		}
+		&:focus {
+			border: 1px solid rgba(var(--dark-a-rgb), 1);
+		}
+
+		font-size: 1.25rem;
+	}
+
+	.title {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		margin: auto;
+
+		transform: translateX(-0.4rem);
+	}
+
+	.emoji {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		width: 40px;
+		height: 40px;
+		margin: auto;
+
+		border-radius: 4px;
+		border: 1px solid rgba(var(--dark-a-rgb), 0.1);
+		&:hover {
+			border: 1px solid rgba(var(--dark-a-rgb), 0.5);
+		}
+		&:focus {
+			border: 1px solid rgba(var(--dark-a-rgb), 1);
+		}
+
+		cursor: pointer;
+		transform: translateX(-2rem);
+	}
+
+	.tag-manager {
+		display: flex;
+		flex-direction: column;
+
+		width: 90%;
+		margin: auto;
+
+		border: 1px solid var(--light-b);
+		border-radius: 5px;
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 1;
 		}
 	}
 
-	input[name='title'] {
-		font-size: 1.5rem;
+	.info {
+		margin: 1rem auto;
+
+		color: var(--dark-c);
+
+		text-align: center;
+		font-size: 0.95rem;
 	}
 
 	.tags {
 		position: relative;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+		gap: 10px;
 
-		width: 90%;
-		height: 100%;
+		max-width: 95%;
+		max-height: 200px;
 		margin: 1rem auto;
 
 		font-family: var(--font-primary);
+
+		transition: opacity 0.2s;
+	}
+
+	.tag {
+		display: flex;
+		justify-content: center;
+
+		height: max-content;
+		padding: 0.25rem 0.4rem;
+
+		opacity: 0.5;
+		border: 1px solid;
+		border-radius: 5px;
+		border-color: rgba(var(--dark-a-rgb), 0.25);
+
+		font-size: 0.95rem;
+		text-align: center;
+
+		cursor: pointer;
+		transition: 0.15s;
+
+		&:hover {
+			opacity: 0.75;
+			border-color: rgba(var(--dark-a-rgb), 0.5);
+		}
+
+		&.selected {
+			opacity: 1;
+			border-color: var(--dark-a);
+		}
 	}
 
 	.buttons {

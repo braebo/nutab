@@ -4,17 +4,18 @@
 
 	// Data
 	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter, uniqueTags } from '$lib/data/dbStore'
+	import { editor } from '$lib/stores/bookmarkEditor'
+	import { init_db } from '$lib/data/transactions'
 	import db from '$lib/data/db'
 
 	// Utils
+	import { smoothHover } from '$lib/utils/smoothHover'
+	import { reRender } from '$lib/stores/gridStore'
 	import { fly, fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
-	import { init_db } from '$lib/data/transactions'
-	import { reRender } from '$lib/stores/gridStore'
-	import { smoothHover } from '$lib/utils/smoothHover'
 
 	let folderIcons = []
 
@@ -71,6 +72,7 @@
 
 	const newFolder = () => {
 		// TODO: Create new folder
+		editor.show(['create', 'folder'])
 	}
 </script>
 

@@ -1,14 +1,17 @@
 <script lang="ts">
+	// Data
 	import { showSettings } from '$lib/data/settings/settingsStore'
-	import { createEventDispatcher } from 'svelte'
-	import { fly } from 'svelte/transition'
+	import { editor, showEditor } from '$lib/stores/bookmarkEditor'
+
+	// Utils
+	import { idFromClassList } from '$lib/utils'
 	import { clickOutside } from 'fractils'
-	const dispatch = createEventDispatcher()
+	import { fly } from 'svelte/transition'
 
 	export let options = [
 		{
 			text: 'New Bookmark',
-			action: () => dispatch('newBookmark')
+			action: () => editor.show(['create', 'bookmark'])
 		},
 		{
 			text: 'Settings',
@@ -19,27 +22,25 @@
 	let showMenu = false
 	let x: number, y: number
 
-	function show(e: MouseEvent) {
-		// if mouse target is bookmark, show it's settings.
+	async function show(e: MouseEvent) {
+		if ($showEditor) return
 		const target = e.target as Element
-		if (target.className.includes('cell')) {
-			const classes = target.classList
-			let i: number
-			classes.forEach((c) => {
-				if (c.includes('cell-') && c.length > 3) {
-					i = parseInt(c.split('cell-')[1])
-				}
-			})
-			dispatch('showEditor', { i })
-			// else show context menu
-		} else {
-			x = e.clientX
-			y = e.clientY
-			showMenu = true
-		}
+
+		// if mouse target is bookmark, show it's settings.
+		const i = idFromClassList(target.classList, 'cell-')
+		if (i !== null) return await editor.show(['edit', 'bookmark'], i)
+
+		// if mouse target is folder, show it's settings.
+		const j = idFromClassList(target.classList, 'folder-')
+		if (j !== null) return await editor.show(['edit', 'folder'], j)
+
+		// else show context menu.
+		x = e.clientX
+		y = e.clientY
+		showMenu = true
 	}
 
-	function handleAction(i: number) {
+	function handleAction(e: MouseEvent, i: number) {
 		options[i].action()
 		showMenu = false
 	}
@@ -56,7 +57,7 @@
 		out:fly={{ y: 5, duration: 150 }}
 	>
 		{#each options as { text, action }, i}
-			<div class="option" on:click={() => handleAction(i)}>
+			<div class="option" on:click={(e) => handleAction(e, i)}>
 				{text}
 			</div>
 		{/each}

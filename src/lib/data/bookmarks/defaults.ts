@@ -9,6 +9,16 @@ const default_theme = {
 	foreground: '#F5F5F5'
 }
 
+export const emptyFolder = (current_folder_count: number): Folder => ({
+	folder_id: cuid(),
+	user_id: '',
+	icon: '📌',
+	title: 'My Folder',
+	bookmarks: [],
+	position: current_folder_count + 1,
+	active: true
+})
+
 export const emptyBookmark = (current_folder: Folder): Bookmark => {
 	const { title } = current_folder
 	return {
