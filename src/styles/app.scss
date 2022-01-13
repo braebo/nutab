@@ -42,7 +42,10 @@
 	--confirm: #00a2ff;
 	--warn: tomato;
 
-	--shadow-md: 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14);
+	--shadow-sm: 0px 3px 5px -3px rgba(0, 0, 0, 0.15), 0px 4px 3px -1px rgba(0, 0, 0, 0.05),
+		0px 14px 15px -1px rgba(0, 0, 0, 0.04);
+	--shadow-md: 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09),
+		0px 14px 15px -1px rgba(0, 0, 0, 0.14);
 }
 
 body {
@@ -153,20 +156,43 @@ button:focus:not(:focus-visible) {
 }
 
 .scroller {
+	overflow-y: auto;
+
 	&::-webkit-scrollbar {
-		width: 8px;
+		width: 6px;
 	}
 	&.vertical::-webkit-scrollbar {
 		height: 8px;
 	}
 
 	&::-webkit-scrollbar-track {
-		background: #282a36;
+		background: var(--light-a);
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background-color: #50546d;
-		border-radius: 0px;
-		border: 0px solid #282a36;
+		background-color: rgba(var(--light-c-rgb), 0);
+		border-radius: 10px;
+		border: 0px solid var(--light-c);
+
+		transition: 0.3s !important;
 	}
+	&:hover::-webkit-scrollbar-thumb {
+		background-color: rgba(var(--light-c-rgb), 0.75);
+	}
+}
+
+.space-xs {
+	height: 0.5rem;
+}
+.space-sm {
+	height: 1rem;
+}
+.space-md {
+	height: 1.75rem;
+}
+.space-lg {
+	height: 3rem;
+}
+.space-xl {
+	height: 6rem;
 }
