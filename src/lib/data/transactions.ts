@@ -1,6 +1,6 @@
 import type { Bookmark, Folder } from './types'
 
-import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from './dbStore'
+import { activeBookmarks, activeFolder, activeFolderBookmarks, folders, tagFilter } from './dbStore'
 import { log, wait } from 'fractils'
 import { get } from 'svelte/store'
 import db from './db'
@@ -16,11 +16,12 @@ export async function init_db() {
 	await wait(100)
 	const id = localStorage.getItem('lastActiveFolderId')
 
-	//? Update stores
+	//? Populate stores
 	let lastActiveFolder: Folder | undefined
 	lastActiveFolder = await db.table('folders').where('folder_id').equals(id).first()
 	activeFolder.set(lastActiveFolder)
 	activeBookmarks.set(await db.bookmarks.bulkGet(lastActiveFolder.bookmarks))
+	folders.set(await db.table('folders').toArray())
 }
 
 
@@ -30,16 +31,16 @@ export async function init_db() {
  */
 export async function newBookmark_db(bookmark: Bookmark) {
 	log('🎬 Creating new bookmark: ', '#fa8', 'dimgray', 25)
-	log(bookmark)
-
 	// Todo: Consolidate this into a single transaction?
+
+	$db.bookmarks = [...$db.bookmarks, bookmark]
 
 	//? Add to bookmarks table
 	await db.bookmarks.add(bookmark)
 
 	//? Add id to activeFolder store
 	activeFolder.update((f) => {
-		f.bookmarks = [...f.bookmarks, bookmark.bookmark_id]
+		f.bookmarks.push(bookmark.bookmark_id);
 		return f
 	})
 
@@ -59,6 +60,31 @@ export async function newBookmark_db(bookmark: Bookmark) {
 
 
 /**
+ ** Creates a new folder.
+ * @param  {folder} The bookmark to add.
+ */
+export async function newFolder_db(folder: Folder) {
+	log('🎬 Creating new folder: ', '#fd8', '#333', 25)
+
+	// Todo: Consolidate this into a single transaction?
+
+	//? Clear any filters
+	tagFilter.set(null)
+	
+	//? Add to folders table
+	await db.folders.add(folder)
+
+	//? Set activeFolder store
+	activeFolder.set(folder)
+
+	//? Update activeBookmarks store
+	activeBookmarks.set(await db.bookmarks.bulkGet(folder.bookmarks))
+
+	log('🏁 New Folder added', '#fd8', '#333', 25)
+}
+
+
+/**
  ** Gets bookmark settings.
  * @param  {id} The id of the bookmark to retrieve.
  */
@@ -67,6 +93,24 @@ export async function getBookmark_db(id: Bookmark['bookmark_id']) {
 
 	return db.bookmarks.where('bookmark_id').equals(id).first()
 }
+
+
+/**
+ ** Gets folder settings.
+ * @param  {id} The id of the folder to retrieve.
+ */
+export async function getFolder_db(id: Folder['folder_id']) {
+	log(`🎬 Getting folder with id of ${id}`, '#fa8', 'dimgray', 25)
+
+	return db.folders.where('folder_id').equals(id).first()
+}
+
+
+/**
+ ** Counts total folders.
+ * @returns {Promise<number>} The number of folders in the database.
+ */
+export const getFolderCount_db = () => db.folders.count()
 
 
 /**

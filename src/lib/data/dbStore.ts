@@ -5,6 +5,7 @@ import { localStorageStore } from 'fractils'
 import { liveQuery } from 'dexie'
 import db from '$lib/data/db'
 
+export const folders = writable<Folder[]>()
 export const activeFolder = writable<Folder>()
 
 //? Will always contain the current Folder's bookmarks
@@ -17,7 +18,7 @@ export const activeBookmarks = writable<Bookmark[]>()
 
 export const lastActiveFolderId = localStorageStore('lastActiveFolderId', '')
 
-export const uniqueTags: any = liveQuery(async () => await db.bookmarks.orderBy('tags').uniqueKeys())
+export const uniqueTags: any = liveQuery(() => db.bookmarks.orderBy('tags').uniqueKeys())
 
 //? Filter bookmarks by tag
 export const tagFilter = writable<string | null>(null)
