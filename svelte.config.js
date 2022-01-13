@@ -17,8 +17,7 @@ const config = {
 		target: '#svelte',
 		// adapter: vercel(),
 		adapter: adapter(),
-		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
-		ssr: !!process.env.SSR
+		appDir: 'ext' //* This is important - chrome extensions can't handle the default _app directory name.
 	}
 }
 
