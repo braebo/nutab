@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { editor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
@@ -93,6 +93,7 @@
 	let debuggables = []
 	$: debuggables = [
 		['$bookmarkEditor', $bookmarkEditor],
+		['$folderEditor', $folderEditor],
 		['$settings', $settings],
 		['$activeFolder', $activeFolder],
 		['$activeBookmarks', $activeBookmarks],
@@ -110,7 +111,7 @@
 		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
 			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
 				.debuggable.one.scroller
-					+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Settings', $showSettings]] as [name, value]")
+					+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Editor', $showEditor], ['Show Settings', $showSettings]] as [name, value]")
 						+key('value')
 							.kv
 								h6 {name}
@@ -144,52 +145,12 @@
 </template>
 
 <style lang="scss">
-	.mousetrap {
-		position: absolute;
-		bottom: 0;
-		left: 2vw;
-
-		width: 75px;
-		height: 75px;
-
-		z-index: 100;
-	}
-
-	button {
-		position: absolute;
-		bottom: 0;
-		left: 3vw;
-
-		width: 45px;
-		height: 45px;
-
-		border: 1px solid rgba(var(--light-b-rgb), 0.5);
-		border-top-left-radius: 10px;
-		border-top-right-radius: 10px;
-		border-bottom: none;
-		background: var(--light-a);
-		box-shadow: 0 0 8px 3px #00000009;
-
-		z-index: 100;
-
-		cursor: pointer;
-
-		transform: translate(-3px, 20px);
-		transition: transform 0.15s ease-out;
-		&:hover {
-			transform: translate(-3px, 0px);
-		}
-
-		& .bug {
-			transform: translateX(-3px);
-		}
-	}
-
 	.debug-panel {
-		flex-direction: column;
 		position: absolute;
-		flex-wrap: wrap;
+		flex-wrap: no-wrap;
 		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
 
 		width: 98vw;
 		height: 50vh;
@@ -222,9 +183,9 @@
 		resize: both;
 	}
 
-	.debuggable:last-of-type {
-		margin-right: 100px;
-	}
+	// .debuggable:last-of-type {
+	// 	margin-right: 100px;
+	// }
 
 	h4 {
 		color: var(--brand-a);
@@ -301,11 +262,59 @@
 	}
 
 	input[type='checkbox'] {
+		padding: 0 0.5rem 0 0.5rem;
+
 		opacity: 0.5;
 		filter: hue-rotate(115deg) brightness(0.9);
 	}
 
 	.disabled {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+
 		opacity: 0.5;
+		color: var(--dark-a);
+	}
+
+	.mousetrap {
+		position: absolute;
+		bottom: 0;
+		left: 2vw;
+
+		width: 75px;
+		height: 75px;
+
+		z-index: 100;
+	}
+
+	button {
+		position: absolute;
+		bottom: 0;
+		left: 3vw;
+
+		width: 45px;
+		height: 45px;
+
+		border: 1px solid rgba(var(--light-b-rgb), 0.5);
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		border-bottom: none;
+		background: var(--light-a);
+		box-shadow: 0 0 8px 3px #00000009;
+
+		z-index: 100;
+
+		cursor: pointer;
+
+		transform: translate(-3px, 20px);
+		transition: transform 0.15s ease-out;
+		&:hover {
+			transform: translate(-3px, 0px);
+		}
+
+		& .bug {
+			transform: translateX(-3px);
+		}
 	}
 </style>

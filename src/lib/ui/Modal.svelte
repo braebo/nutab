@@ -1,5 +1,6 @@
 <script>
 	import { clickOutside } from '../utils/clickOutside'
+	import { editor } from '$lib/stores/bookmarkEditor'
 	import { fade } from 'svelte/transition'
 
 	export let showModal = false
@@ -8,12 +9,8 @@
 </script>
 
 {#if showModal}
-	<div
-		class="background"
-		style="background-color: {background};"
-		transition:fade={{ duration: 150 }}
-	>
-		<div class="wrapper" use:clickOutside on:click_outside={() => (showModal = false)}>
+	<div class="background" style="background-color: {background};" transition:fade={{ duration: 150 }}>
+		<div class="wrapper" use:clickOutside on:click_outside={() => editor.hide()}>
 			<slot />
 		</div>
 	</div>

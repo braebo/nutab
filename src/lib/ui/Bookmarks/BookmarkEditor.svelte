@@ -1,8 +1,6 @@
 <script lang="ts">
-	import type { Bookmark } from '$lib/data/types'
-
 	// Data
-	import { bookmarkEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { bookmarkEditor, editor, editorContext, showEditor } from '$lib/stores/bookmarkEditor'
 	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
 	import { reRender } from '$lib/stores/gridStore'
 	import { uniqueTags } from '$lib/data/dbStore'
@@ -13,11 +11,10 @@
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
 
-	import { createEventDispatcher, onMount } from 'svelte'
-	const dispatch = createEventDispatcher()
+	import { onMount } from 'svelte'
 
 	export let i: number = 0
-	export let bookmark_id: string = ''
+	// export let bookmark_id: string = ''
 
 	let titleInput: HTMLInputElement
 	let urlInput: HTMLInputElement
@@ -40,15 +37,14 @@
 			await newBookmark_db($bookmarkEditor)
 		}
 		$reRender = !$reRender
-		dispatch('close')
 	}
 
 	onMount(async () => {
-		if ($editorContext === 'create') titleInput.select()
+		if ($editorContext === 'create') titleInput?.select()
 	})
 </script>
 
-{#if $bookmarkEditor}
+{#if $showEditor && $bookmarkEditor}
 	<div class="editor-container">
 		{#if $bookmarkEditor['image']}
 			<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
@@ -112,7 +108,7 @@
 		<div class="setting">
 			<div name="tags" class="tags">
 				<Tags
-					on:updateTags={(e) => updateTags(e, i, bookmark_id)}
+					on:updateTags={(e) => updateTags(e, i, $bookmarkEditor.bookmark_id)}
 					bind:tags={$bookmarkEditor['tags']}
 					placeholder={'new tag'}
 					on:tags={handleTags}
@@ -133,13 +129,13 @@
 		</div>
 
 		<div class="buttons">
-			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => dispatch('close')}
+			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}
 				>Cancel</Button
 			>
 			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}
 				>Save</Button
 			>
-			<DeleteBookmark {bookmark_id} on:close={() => dispatch('close')} />
+			<DeleteBookmark bookmark_id={$bookmarkEditor.bookmark_id} on:close={() => editor.hide()} />
 		</div>
 	</div>
 {/if}
