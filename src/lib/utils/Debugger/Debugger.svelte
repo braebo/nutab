@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { editor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
+	import { showEditor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
@@ -105,9 +105,7 @@
 
 <template lang="pug">
 
-	//- svelte:head
-	//- 	link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-dracula.css")
-	+if('$showDebugger && !!$debug')
+	+if('$showDebugger && $debug')
 		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
 			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
 				.debuggable.one.scroller
