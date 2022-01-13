@@ -44,7 +44,7 @@
 		"remark-github": "^10.1.0",
 		"sass": "^1.48.0",
 		"stylefmt": "^6.0.3",
-		"stylelint": "^13.13.1",
+		"stylelint": "^14.2.0",
 		"stylelint-config-idiomatic-order": "^8.1.0",
 		"stylelint-order": "^4.1.0",
 		"stylelint-scss": "^3.21.0",
