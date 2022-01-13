@@ -12,9 +12,8 @@
 
 	// Utils
 	import { smoothHover } from '$lib/utils/smoothHover'
-	import { createEventDispatcher } from 'svelte'
+	import { editor } from '$lib/stores/bookmarkEditor'
 	import { scale } from 'svelte/transition'
-	const dispatch = createEventDispatcher()
 
 	let hovering: number | null = null
 
@@ -235,7 +234,8 @@
 								on:blur={() => handleItemMouseOut(i)}
 								class="edit"
 								transition:scale={{ duration: 150 }}
-								on:click|preventDefault={() => dispatch('showEditor', { i })}
+								on:click|preventDefault={() =>
+									editor.show(['edit', 'bookmark'], { id: bookmark.bookmark_id })}
 							>
 								<Edit />
 							</div>
