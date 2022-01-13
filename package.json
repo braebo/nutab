@@ -38,7 +38,7 @@
 		"prettier-plugin-svelte": "^2.5.1",
 		"prismjs": "^1.26.0",
 		"pug": "^3.0.2",
-		"rehype-autolink-headings": "^5.1.0",
+		"rehype-autolink-headings": "^6.1.1",
 		"rehype-slug": "^4.0.1",
 		"remark-abbr": "^1.4.1",
 		"remark-github": "^10.1.0",
