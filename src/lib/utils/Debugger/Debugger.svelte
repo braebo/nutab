@@ -105,7 +105,7 @@
 
 <template lang="pug">
 
-	+if('$showDebugger && $debug')
+	+if('$showDebugger && !!$debug')
 		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
 			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
 				.debuggable.one.scroller
@@ -125,7 +125,6 @@
 								h4 {name}
 								pre(use:highlight)
 									code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
-								// <JSONTree {value} />
 								.copy(on:click!='{() => handleCopy(value, i)}') {!copied[i] ? 'Copy' : 'Copied!'}
 						+else
 							pre.disabled
@@ -137,7 +136,7 @@
 
 	+if('hovering || !!$debug')
 		// svelte-ignore a11y-mouse-events-have-key-events
-		button(on:click='{toggle}' on:mouseover='{mouseover}' transition:fly='{{ y: 50 }}') 
+		button(on:click='{toggle}' on:mouseover='{mouseover}' transition:fly='{{ y: 50 }}')
 			.bug 🐞
 
 </template>
