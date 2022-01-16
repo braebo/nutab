@@ -66,7 +66,6 @@
 		highlight()
 		if ($showDebugger) {
 			position.y = window.innerHeight - 650 - grabZone
-			console.log(position.y)
 		}
 	}
 

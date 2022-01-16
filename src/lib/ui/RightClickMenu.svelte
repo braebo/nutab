@@ -3,7 +3,7 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import { editor, folderEditor, editorShown, showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
+	import { editor, folderEditor, editorShown } from '$lib/stores/bookmarkEditor'
 	import { showSettings } from '$lib/data/settings/settingsStore'
 	import { getFolder_db } from '$lib/data/transactions'
 
@@ -35,7 +35,6 @@
 		if (i !== null) return await editor.show(['edit', 'bookmark'], i)
 
 		// if mouse target is folder, show it's settings.
-		console.log(target)
 		if (target.classList.contains('_folder_')) {
 			$folderEditor = await getFolder_db(target.id as Folder['folder_id'])
 			await editor.show(['edit', 'folder'])
@@ -64,7 +63,7 @@
 		in:fly={{ y: 5, duration: 250 }}
 		out:fly={{ y: 5, duration: 150 }}
 	>
-		{#each options as { text, action }, i}
+		{#each options as { text }, i}
 			<div class="option" on:click={(e) => handleAction(e, i)}>
 				{text}
 			</div>
