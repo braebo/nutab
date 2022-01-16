@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { showEditor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
+	import { showBookmarkEditor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
-	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
+	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import FloatingPanel from './FloatingPanel.svelte'
@@ -109,7 +109,7 @@
 		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
 			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
 				.debuggable.one.scroller
-					+each("[['Show Debugger', $showDebugger], ['Editor Context', $editorContext], ['Show Editor', $showEditor], ['Show Settings', $showSettings]] as [name, value]")
+					+each("[['Show Debugger', $showDebugger], ['Tag Filter', $tagFilter], ['Editor Context', $editorContext], ['Show Bookmark Editor', $showBookmarkEditor], ['Show Settings', $showSettings]] as [name, value]")
 						+key('value')
 							.kv
 								h6 {name}

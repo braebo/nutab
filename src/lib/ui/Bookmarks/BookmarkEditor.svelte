@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Data
-	import { bookmarkEditor, editor, editorContext, showEditor } from '$lib/stores/bookmarkEditor'
+	import { showBookmarkEditor, bookmarkEditor, editor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
 	import { reRender } from '$lib/stores/gridStore'
 	import { uniqueTags } from '$lib/data/dbStore'
@@ -36,6 +36,7 @@
 		} else {
 			await newBookmark_db($bookmarkEditor)
 		}
+		editor.hide()
 		$reRender = !$reRender
 	}
 
@@ -44,7 +45,7 @@
 	})
 </script>
 
-{#if $showEditor && $bookmarkEditor}
+{#if $showBookmarkEditor && $bookmarkEditor}
 	<div class="editor-container">
 		{#if $bookmarkEditor['image']}
 			<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
