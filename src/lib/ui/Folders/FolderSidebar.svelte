@@ -5,13 +5,12 @@
 	// Data
 	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter, uniqueTags } from '$lib/data/dbStore'
 	import { editor } from '$lib/stores/bookmarkEditor'
-	import { init_db } from '$lib/data/transactions'
 	import db from '$lib/data/db'
 
 	// Utils
 	import { smoothHover } from '$lib/utils/smoothHover'
 	import { reRender } from '$lib/stores/gridStore'
-	import { fly, fade } from 'svelte/transition'
+	import { fly } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
 	// Components
@@ -101,14 +100,15 @@
 					in:fly='{{ x: -10, duration: 300 }}'
 					out:fly='{{ x: -20, duration: 600 }}'
 				)
-					+each('$uniqueTags as tag')
-						.tag(
-							class:active='{$tagFilter === tag}'
-							class:inactive!='{$tagFilter && $tagFilter !== tag}'
-						)
-							.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
-								span.hashtag # 
-								| {tag}
+					+if('$uniqueTags')
+						+each('$uniqueTags as tag')
+							.tag(
+								class:active='{$tagFilter === tag}'
+								class:inactive!='{$tagFilter && $tagFilter !== tag}'
+							)
+								.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
+									span.hashtag # 
+									| {tag}
 
 </template>
 
