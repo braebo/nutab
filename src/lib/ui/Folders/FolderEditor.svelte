@@ -1,9 +1,19 @@
 <script lang="ts">
+	import EmojiPicker from './EmojiPicker.svelte'
+	// Types
+	import type { Bookmark } from '$lib/data/types'
+
 	// Data
 	import { folderEditor, editorContext } from '$lib/stores/bookmarkEditor'
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { uniqueTags } from '$lib/data/dbStore'
-	// TODO: import { newFolder_db, updateFolder_db } from '$lib/data/transactions'
+	import {
+		getBookmarksWithSelectedTags_db,
+		getFolderCount_db,
+		updateFolder_db,
+		deleteFolder_db,
+		newFolder_db
+	} from '$lib/data/transactions'
 
 	// Components
 	import DeleteFolder from './DeleteFolder.svelte'
@@ -12,44 +22,63 @@
 	// Utils
 	import { clickOutside } from 'fractils'
 	import { onMount } from 'svelte'
+	import cuid from 'cuid'
 
 	export let folder_id: string = ''
 
 	let emoji = '📌'
+	let showEmojiPicker = false
 	let titleInput: HTMLInputElement
 	let header = ''
 	let selectedTags: boolean[] = []
+	let folderCount = 0
+	$: deleteDisabled = folderCount === 1
 
 	async function handleSave() {
 		if ($editorContext === 'edit') {
-			alert('todo')
-			// TODO: updateFolder_db($folderEditor)
+			updateFolder_db($folderEditor)
 		} else {
-			alert('todo')
-			// TODO: await newFolder_db($folderEditor)
+			// Save the current Folder along with the relevant bookmark id's of any selected tags.
+			// @ts-ignore
+			const tags = selectedTags.reduce((acc, curr, i) => (curr === true ? [...acc, $uniqueTags[i]] : []), [])
+			$folderEditor.bookmarks = await getBookmarksWithSelectedTags_db(tags)
+			newFolder_db($folderEditor)
 		}
+		editor.hide()
+	}
+
+	async function handleDelete() {
+		if (folderCount === 1) return
+		await deleteFolder_db($folderEditor)
 		editor.hide()
 	}
 
 	onMount(async () => {
 		if ($editorContext === 'create') {
 			header = 'New Folder'
-			titleInput.select()
+			titleInput?.select()
+		} else {
+			if ($folderEditor !== null) emoji = $folderEditor.icon
+			folderCount = await getFolderCount_db()
 		}
 	})
 </script>
 
 <template lang="pug">
-	
+
 	h1 selectedTags: {selectedTags}
+
 	+if('$folderEditor')
 		.editor-container(use:clickOutside!='{() => editor.hide()}')
 			.space-sm
 			h2.header {header}
 			.space-sm
-			
+
 			.setting.title
-				.emoji {emoji}
+				.emoji(on:click!='{() => showEmojiPicker = !showEmojiPicker}') {$folderEditor.icon}
+				+if('showEmojiPicker')
+					.emoji-picker
+						EmojiPicker(bind:showEmojiPicker bind:emoji='{$folderEditor.icon}')
 				input.title(
 					placeholder="My Folder"
 					bind:this='{titleInput}'
@@ -58,36 +87,32 @@
 					on:keydown!='{(e) => e.key === "Enter" && handleSave()}'
 				)
 			.space-lg
-			
-			.setting.tag-manager.scroller
-				.info Add bookmarks from tags (optional)
-				.tags
-					+if('$uniqueTags')
-						+each('$uniqueTags as tag, i')
-							.tag(
-								class:selected='{selectedTags[i]}'
-								on:click!='{() => selectedTags[i] = !selectedTags[i]}'
-							) {tag}
-							.tag(
-								class:selected='{selectedTags[i]}'
-								on:click!='{() => selectedTags[i] = !selectedTags[i]}'
-							) {tag}
-			
+
+			+if('$editorContext === "create"')
+				.setting.tag-manager.scroller
+					.info Add bookmarks from tags (optional)
+					.tags
+						+if('$uniqueTags')
+							+each('$uniqueTags as tag, i')
+								.tag(
+									class:selected='{selectedTags[i]}'
+									on:click!='{() => selectedTags[i] = !selectedTags[i]}'
+								) {tag}
+
 			.buttons
 				Button(
 					'--colorHover'='var(--warn)'
 					'--borderHover'='1px solid var(--warn)'
 					on:click!='{() => editor.hide()}'
 				) Cancel
-				
+
 				Button(
 					'--colorHover'='var(--confirm)'
 					'--borderHover'='1px solid var(--confirm)'
 					on:click='{handleSave}'
 				) Save
 
-				DeleteFolder({folder_id} on:close!='{() => editor.hide()}')
-
+				DeleteFolder(disabled='{deleteDisabled}' on:close!='{() => editor.hide()}' on:click='{handleDelete}')
 
 </template>
 
@@ -217,6 +242,13 @@
 
 		cursor: pointer;
 		transform: translateX(-2rem);
+	}
+
+	.emoji-picker {
+		position: absolute;
+
+		left: -150%;
+		top: -220%;
 	}
 
 	.tag-manager {

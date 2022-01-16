@@ -1,9 +1,9 @@
 import type { Bookmark, Folder } from '$lib/data/types'
 
-import { getBookmark_db, getFolderCount_db, getFolder_db } from '$lib/data/transactions'
-import { activeBookmarks, activeFolder, folders } from '$lib/data/dbStore'
+import { getBookmark_db, getFolderCount_db } from '$lib/data/transactions'
+import { activeFolderBookmarks, activeFolder } from '$lib/data/dbStore'
 import { emptyBookmark, emptyFolder } from '$lib/data/bookmarks/defaults'
-import { writable, get } from 'svelte/store'
+import { writable, derived, get } from 'svelte/store'
 import { log } from 'fractils'
 
 type EditorContext = 'edit' | 'create'
@@ -16,7 +16,13 @@ export const editorType = writable<EditorType>()
 export const bookmarkEditor = writable<Bookmark>()
 export const folderEditor = writable<Folder>()
 
-export const showEditor = writable(false)
+export const showFolderEditor = writable<boolean>(false)
+export const showBookmarkEditor = writable<boolean>(false)
+
+export const editorShown = derived(
+	[showBookmarkEditor, showFolderEditor],
+	([$showBookmarkEditor, $showFolderEditor]) => $showBookmarkEditor || $showFolderEditor
+)
 
 export const editor = {
 	show: async (mode: EditorMode, i?: number) => {
@@ -24,17 +30,21 @@ export const editor = {
 		switch (String(mode)) {
 			case 'create,bookmark':
 				bookmarkEditor.set(emptyBookmark(get(activeFolder)))
+				showBookmarkEditor.set(true)
 				break
 			case 'edit,bookmark':
 				if (i === null) console.error('editor: No index provided for bookmark')
-				else bookmarkEditor.set(await getBookmark_db(get(activeBookmarks)[i].bookmark_id))
+				else {
+					bookmarkEditor.set(await getBookmark_db(get(activeFolderBookmarks)[i].bookmark_id))
+					showBookmarkEditor.set(true)
+				}
 				break
 			case 'create,folder':
 				folderEditor.set(emptyFolder(await getFolderCount_db()))
+				showFolderEditor.set(true)
 				break
 			case 'edit,folder':
-				if (i === null) console.error('editor: No index provided for folder')
-				else folderEditor.set(await getFolder_db(get(folders)[i].folder_id))
+				showFolderEditor.set(true)
 				break
 			default:
 				console.error('editor: Invalid mode provided:', mode)
@@ -42,14 +52,14 @@ export const editor = {
 		}
 		editorContext.set(mode[0])
 		editorType.set(mode[1])
-		showEditor.set(true)
 	},
 	hide: () => {
 		bookmarkEditor.set(null)
 		folderEditor.set(null)
 		editorContext.set(null)
 		editorType.set(null)
-		showEditor.set(false)
+		showFolderEditor.set(false)
+		showBookmarkEditor.set(false)
 	}
 }
 Object.freeze(editor)
