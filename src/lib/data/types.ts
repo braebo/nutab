@@ -20,6 +20,13 @@ export type Folder = {
 	active: boolean
 }
 
+//? Used to populate the folder sidebar
+export interface FolderListItem {
+	folder_id: Folder['folder_id']
+	title: Folder['title']
+	icon: Folder['icon']
+}
+
 export interface Engine {
 	/**
 	 * Standard index of the array item.
