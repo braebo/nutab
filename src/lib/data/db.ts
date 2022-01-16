@@ -12,7 +12,7 @@ export class BookmarkDB extends Dexie {
 	constructor() {
 		super('BookmarksDB')
 		this.version(1).stores({
-			bookmarks: 'bookmark_id, *tags, position',
+			bookmarks: 'bookmark_id, *tags, title, position',
 			folders: 'folder_id, *bookmarks, position'
 		})
 		this.bookmarks = this.table('bookmarks')
