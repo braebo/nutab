@@ -1,7 +1,11 @@
 <script lang="ts">
+	// Types
+	import type { Folder } from '$lib/data/types'
+
 	// Data
+	import { editor, folderEditor, editorShown, showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
 	import { showSettings } from '$lib/data/settings/settingsStore'
-	import { editor, showEditor } from '$lib/stores/bookmarkEditor'
+	import { getFolder_db } from '$lib/data/transactions'
 
 	// Utils
 	import { idFromClassList } from '$lib/utils'
@@ -23,7 +27,7 @@
 	let x: number, y: number
 
 	async function show(e: MouseEvent) {
-		if ($showEditor) return
+		if ($editorShown) return
 		const target = e.target as Element
 
 		// if mouse target is bookmark, show it's settings.
@@ -31,8 +35,12 @@
 		if (i !== null) return await editor.show(['edit', 'bookmark'], i)
 
 		// if mouse target is folder, show it's settings.
-		const j = idFromClassList(target.classList, 'folder-')
-		if (j !== null) return await editor.show(['edit', 'folder'], j)
+		console.log(target)
+		if (target.classList.contains('_folder_')) {
+			$folderEditor = await getFolder_db(target.id as Folder['folder_id'])
+			await editor.show(['edit', 'folder'])
+			return
+		}
 
 		// else show context menu.
 		x = e.clientX
