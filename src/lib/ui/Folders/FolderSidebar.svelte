@@ -3,8 +3,17 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter, uniqueTags } from '$lib/data/dbStore'
-	import { editor } from '$lib/stores/bookmarkEditor'
+	import {
+		activeBookmarks,
+		activeFolder,
+		activeFolderBookmarks,
+		lastActiveFolderId,
+		tagFilter,
+		uniqueTags,
+		folders
+	} from '$lib/data/dbStore'
+	import { getAllFolders_db, getFolder_db, newFolder_db } from '$lib/data/transactions'
+	import { editor, folderEditor } from '$lib/stores/bookmarkEditor'
 	import db from '$lib/data/db'
 
 	// Utils
@@ -15,25 +24,14 @@
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
+	import { log, wait } from 'fractils'
+	import { get } from 'svelte/store'
 
 	let folderIcons = []
+	let selectedTags: boolean[] | string[] = []
 
-	interface FolderListItem {
-		folder_id: Folder['folder_id']
-		title: Folder['title']
-		icon: Folder['icon']
-	}
-
-	let folders: FolderListItem[]
-
-	const getFolders = async () => {
-		const allFolders: Folder[] = await db.folders.toArray()
-		folders = allFolders.map((f) => ({ folder_id: f.folder_id, icon: f.icon, title: f.title }))
-		console.log(folders)
-	}
-
-	onMount(() => {
-		getFolders()
+	onMount(async () => {
+		$folders = await getAllFolders_db()
 	})
 
 	let hovering = false
@@ -41,18 +39,20 @@
 
 	$: isActive = (id: Folder['folder_id']) => id === $activeFolder?.folder_id
 
+	// Filters bookmark grid by tag
 	const applyTagFilter = async (tag: string) => {
 		if (tag === $tagFilter || tag === null) {
 			$tagFilter = null
-			$activeBookmarks = await $activeFolderBookmarks
+			// $activeBookmarks = $activeFolderBookmarks
 		} else {
 			$tagFilter = tag
-			const filteredBookmarks = await db.bookmarks.where('tags').equals(tag).toArray()
-			$activeBookmarks = filteredBookmarks
 		}
-		$reRender = !$reRender
+		// reRender()
+		log('applyTagFilter:  Tag filter = ' + $tagFilter)
+		reRender.set(!get(reRender))
 	}
 
+	// Debounced mouse hover for show / hide / animations
 	let smoothHovering = false
 	const smooth = smoothHover
 	const mouseOver = async () => {
@@ -64,13 +64,18 @@
 		smooth.smoothOut(() => (smoothHovering = false), 500)
 	}
 
-	const handleFolderClick = () => {
-		applyTagFilter(null)
-		// TODO: Select new folder
+	// Selects a folder
+	const handleFolderClick = async (id: Folder['folder_id']) => {
+		if ($tagFilter != null) applyTagFilter(null)
+		if (!isActive(id)) {
+			$activeFolder = await getFolder_db(id)
+			$lastActiveFolderId = id
+			$reRender = !$reRender
+		}
 	}
 
+	// Just opens a blank folder editor
 	const newFolder = () => {
-		// TODO: Create new folder
 		editor.show(['create', 'folder'])
 	}
 </script>
@@ -79,6 +84,7 @@
 <template lang="pug">
 
 	.folder-sidebar-container
+		
 		.folder-sidebar(
 			bind:this='{sidebar}'
 			class:hovering
@@ -86,26 +92,40 @@
 			on:mouseout!='{mouseOut}'
 		)
 
-			+if ('folders')
-				+each('folders as {id, icon, title}')
-					.folder(on:click!='{() => handleFolderClick(id)}')
-						.folder-icon {icon}
+			+if ('$folders')
+				
+				+each('$folders as {folder_id, icon, title}, i')
+					
+					._folder_(
+						id='{folder_id}'
+						on:click!='{() => handleFolderClick(folder_id)}'
+						class:active!='{isActive(folder_id)}'
+					)
+						.folder-icon(class:active!='{isActive(folder_id)}') {icon}
 						.folder-title(class:hovering) {title}
-			
+
+
 			.new-folder(class:hovering on:click='{newFolder}')
-				Tooltip(content='New_Folder' position='right' offset='{[9,20]}') +
-			
+				Tooltip(content='New_Folder' position='right' offset='{[9,20]}')
+					| +
+
+
 			+if ('$uniqueTags && smoothHovering || $tagFilter')
+
 				.tags(
 					in:fly='{{ x: -10, duration: 300 }}'
 					out:fly='{{ x: -20, duration: 600 }}'
 				)
+
 					+if('$uniqueTags')
+
 						+each('$uniqueTags as tag')
+
 							.tag(
 								class:active='{$tagFilter === tag}'
 								class:inactive!='{$tagFilter && $tagFilter !== tag}'
 							)
+
 								.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
 									span.hashtag # 
 									| {tag}
@@ -128,27 +148,34 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		align-items: flex-start;
 
 		height: max-content;
 		min-width: 200px;
-		padding: 3rem 2rem 3rem 0;
+		padding: 3rem 2rem 3rem 2rem;
 
 		// border: 1px solid pink;
 
-		& .folder {
+		& ._folder_ {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
 			flex-grow: 1;
 			gap: 0.5rem;
 
-			margin: 1rem;
+			margin: 0.25rem 1rem;
 			margin-left: 0;
 
 			// border: 1px solid lightgreen;
 
 			cursor: pointer;
+
+			transition: transform 0.175s;
+			transform: scale(0.75);
+			transform-origin: 15% center;
+			&.active {
+				transform: scale(1);
+			}
 
 			& .folder-title {
 				color: var(--dark-c);
@@ -160,6 +187,8 @@
 				transform: translateX(5px);
 				transition: 0.2s;
 
+				pointer-events: none;
+
 				&.hovering {
 					opacity: 1;
 
@@ -168,9 +197,12 @@
 			}
 			& .folder-icon {
 				font-size: 1.5rem;
-				filter: saturate(0);
+				&:not(.active) {
+					filter: saturate(0);
+				}
 
-				transition: 0.25s;
+				transition: filter 0.25s;
+				pointer-events: none;
 			}
 		}
 		&.hovering {
@@ -186,8 +218,8 @@
 
 		& .new-folder {
 			position: absolute;
-			left: 2.2rem;
-			bottom: 2rem;
+			left: 1.5rem;
+			bottom: 1.5rem;
 
 			margin: auto;
 			width: fit-content;
@@ -216,7 +248,7 @@
 		}
 
 		& .tag {
-			margin: 0.5rem auto 0 0;
+			padding: 1.5rem auto 0 0.5rem;
 
 			color: var(--dark-d);
 			opacity: 0.3;
@@ -224,15 +256,27 @@
 			transition: opacity 0.2s;
 			cursor: pointer;
 
-			&:hover,
+			transition-duration: 1s;
+
+			&.inactive {
+				opacity: 0.25;
+
+				transition-duration: 1s;
+			}
+			&:hover {
+				opacity: 0.75;
+
+				transition-duration: 0.15s;
+			}
 			&.active {
 				opacity: 1;
 				& .hashtag {
 					opacity: 0.5;
 				}
 			}
-			&.inactive {
-				opacity: 0.1;
+
+			.tag-title {
+				padding: 0.25rem 0;
 			}
 		}
 
@@ -240,6 +284,13 @@
 			opacity: 0;
 
 			font-size: 75%;
+		}
+	}
+	.active {
+		filter: saturate(1);
+
+		.folder-icon {
+			filter: saturate(1);
 		}
 	}
 </style>
