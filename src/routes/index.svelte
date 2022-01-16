@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Data
-	import { showEditor } from '$lib/stores/bookmarkEditor'
+	import { editorContext, showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
 
 	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
@@ -22,7 +22,9 @@
 
 <RightClickMenu />
 
-<Modal bind:showModal={$showEditor} opacity={0}>
-	<FolderEditor />
+<Modal bind:showModal={$showBookmarkEditor} opacity={0}>
 	<BookmarkEditor />
+</Modal>
+<Modal bind:showModal={$showFolderEditor} opacity={0}>
+	<FolderEditor />
 </Modal>
