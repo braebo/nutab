@@ -286,7 +286,7 @@
 		max-height: 200px;
 		margin: 1rem auto;
 
-		font-family: var(--font-primary);
+		font-family: var(--font);
 
 		transition: opacity 0.2s;
 	}

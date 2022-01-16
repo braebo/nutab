@@ -257,7 +257,7 @@
 		height: 100%;
 		margin: 1rem auto;
 
-		font-family: var(--font-primary);
+		font-family: var(--font);
 	}
 
 	.buttons {
