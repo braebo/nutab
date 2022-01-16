@@ -33,8 +33,6 @@ export async function newBookmark_db(bookmark: Bookmark) {
 	log('🎬 Creating new bookmark: ', '#fa8', 'dimgray', 25)
 	// Todo: Consolidate this into a single transaction?
 
-	$db.bookmarks = [...$db.bookmarks, bookmark]
-
 	//? Add to bookmarks table
 	await db.bookmarks.add(bookmark)
 
