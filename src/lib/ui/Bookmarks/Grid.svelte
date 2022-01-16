@@ -3,7 +3,7 @@
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
 	import { swapBookmarks_db } from '$lib/data/transactions'
-	import { activeBookmarks } from '$lib/data/dbStore'
+	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
@@ -186,65 +186,67 @@
 		--item-size: {$grid.iconSize}px;
 	"
 >
-	{#if $grid.items}
-		{#each $grid.items as bookmark, i}
-			{#key $reRender}
-				<div
-					class="cell-{i} cell"
-					class:active={i == active}
-					class:target={target === i}
-					style="
+	{#key $activeFolder}
+		{#if $grid.items}
+			{#each $grid.items as bookmark, i}
+				{#key $reRender}
+					<div
+						class="cell-{i} cell"
+						class:active={i == active}
+						class:target={target === i}
+						style="
 						/* stylelint-disable */
 						width: {$gridDimensions.totalItemSize}px;
 						height: {$grid.iconSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
-					bind:this={cells[i]}
-				>
-					<div
-						class="item-{i} grid-item"
-						class:active={active === i}
-						class:target={target === i}
-						draggable="false"
-						class:dragging
-						class:disableTransitions
-						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
-						on:mouseover={() => handleItemMouseOver(i)}
-						on:mouseout={() => handleItemMouseOut(i)}
-						on:focus={() => handleItemMouseOver(i)}
-						on:blur={() => handleItemMouseOut(i)}
+						bind:this={cells[i]}
 					>
-						<div class="grid-image">
-							<Bookmark
-								{bookmark}
-								{hovering}
-								{dragging}
-								{i}
-								on:showEditor
-								--size={$grid.iconSize + 'px'}
-								{disableTransitions}
-							/>
-						</div>
-						{#if showEditIcon[i] && !dragging}
-							<div
-								on:mouseover={() => handleItemMouseOver(i)}
-								on:mouseout={() => handleItemMouseOut(i)}
-								on:focus={() => handleItemMouseOver(i)}
-								on:blur={() => handleItemMouseOut(i)}
-								class="edit"
-								transition:scale={{ duration: 150 }}
-								on:click|preventDefault={() =>
-									editor.show(['edit', 'bookmark'], { id: bookmark.bookmark_id })}
-							>
-								<Edit />
+						<div
+							class="item-{i} grid-item"
+							class:active={active === i}
+							class:target={target === i}
+							draggable="false"
+							class:dragging
+							class:disableTransitions
+							style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
+							on:mouseover={() => handleItemMouseOver(i)}
+							on:mouseout={() => handleItemMouseOut(i)}
+							on:focus={() => handleItemMouseOver(i)}
+							on:blur={() => handleItemMouseOut(i)}
+						>
+							<div class="grid-image">
+								<Bookmark
+									{bookmark}
+									{hovering}
+									{dragging}
+									{i}
+									on:showBookmarkEditor
+									--size={$grid.iconSize + 'px'}
+									{disableTransitions}
+								/>
 							</div>
-						{/if}
+							{#if showEditIcon[i] && !dragging}
+								<div
+									on:mouseover={() => handleItemMouseOver(i)}
+									on:mouseout={() => handleItemMouseOut(i)}
+									on:focus={() => handleItemMouseOver(i)}
+									on:blur={() => handleItemMouseOut(i)}
+									class="edit"
+									transition:scale={{ duration: 150 }}
+									on:click|preventDefault={() =>
+										editor.show(['edit', 'bookmark'], { id: bookmark.bookmark_id })}
+								>
+									<Edit />
+								</div>
+							{/if}
+						</div>
 					</div>
-				</div>
-			{/key}
-		{/each}
-	{/if}
+				{/key}
+			{/each}
+		{/if}
+	{/key}
 	<!-- TODO: Should this get it's own setting? -->
 	<!-- <div class="add-bookmark" style="top: {$addButtonSpring}px;" on:click={() => dispatch('newBookmark')}>
 		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
