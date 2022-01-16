@@ -32,7 +32,7 @@
 				on:focus={() => (hovering = i)}
 				on:blur={() => (hovering = null)}
 			>
-				<Bookmark {bookmark} {hovering} {i} on:showEditor />
+				<Bookmark {bookmark} {hovering} {i} on:showBookmarkEditor />
 			</div>
 		{/each}
 	{/if}
