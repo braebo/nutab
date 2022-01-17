@@ -235,8 +235,7 @@
 									on:blur={() => handleItemMouseOut(i)}
 									class="edit"
 									transition:scale={{ duration: 150 }}
-									on:click|preventDefault={() =>
-										editor.show(['edit', 'bookmark'], { id: bookmark.bookmark_id })}
+									on:click|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
 								>
 									<Edit />
 								</div>
