@@ -218,7 +218,7 @@
 
 		& .new-folder {
 			position: absolute;
-			left: 1.5rem;
+			left: 2.5rem;
 			bottom: 1.5rem;
 
 			margin: auto;
@@ -281,7 +281,7 @@
 		}
 
 		& .hashtag {
-			opacity: 0;
+			opacity: 0.5;
 
 			font-size: 75%;
 		}
