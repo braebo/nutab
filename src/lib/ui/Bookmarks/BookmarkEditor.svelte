@@ -11,6 +11,8 @@
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
 
+	// Utils
+	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
 	export let i: number = 0
@@ -46,7 +48,7 @@
 </script>
 
 {#if $showBookmarkEditor && $bookmarkEditor}
-	<div class="editor-container">
+	<div class="editor-container" out:fade={{ duration: 100 }}>
 		{#if $bookmarkEditor['image']}
 			<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
 		{:else}
