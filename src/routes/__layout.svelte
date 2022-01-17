@@ -1,28 +1,29 @@
 <script lang="ts">
-	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
+	// Components
 	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
+	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
 	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import Settings from '$lib/data/settings/Settings.svelte'
 	import Themer from '$lib/theme/Themer.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
+	import Nav from '$lib/ui/Nav.svelte'
 	import { Header } from '$lib/ui'
 
+	// Data
 	import { init_db } from '$lib/data/transactions'
 
+	// Utils
+	import { randomBackground } from '$lib/data/settings/randomBackground'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 
+	// Styles
 	import 'greset/css/greset.css'
 	import '../styles/app.scss'
-
-	import Nav from '$lib/ui/Nav.svelte'
 
 	onMount(() => {
 		init_db()
 	})
-
-	const r = (max = 255) => Math.floor(Math.random() * Math.floor(max))
-	const rgba = (opacity = 0.1) => [r(), r(), r(), opacity]
 
 	// turns `/foo/bar/baz` into `Baz`
 	const pageTitle = (path: string) => {
@@ -38,7 +39,7 @@
 	svelte:head
 		title {pageTitle($page.url.pathname)} · Nutab
 
-	#app(style="background-image: linear-gradient(to top, rgba({rgba()}), rgba({rgba()}));")
+	#app(style='{randomBackground()}')
 		Themer(size='{50}')
 
 		Nav
