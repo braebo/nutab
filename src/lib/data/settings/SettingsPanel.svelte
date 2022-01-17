@@ -38,8 +38,10 @@
 					/>
 				</div>
 			{/each}
-			<ShowTitle />
-			<RandomizeBackground />
+			<div class="buttons">
+				<ShowTitle />
+				<RandomizeBackground />
+			</div>
 		</div>
 	</div>
 {/if}
@@ -108,5 +110,13 @@
 		margin: auto;
 
 		z-index: 40;
+	}
+
+	.buttons {
+		display: flex;
+		justify-content: center;
+		gap: 5rem;
+
+		width: 100%;
 	}
 </style>
