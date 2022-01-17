@@ -20,7 +20,7 @@
 	export let allowPaste = false
 	export let allowDrop = false
 	export let splitWith = ','
-	export let autoComplete: string[] | Function | boolean = false
+	export let autoComplete: string[] | Function | boolean | unknown = false
 	export let autoCompleteKey: number = 0
 	export let name = 'svelte-tags-input'
 	export let id = uniqueID()
