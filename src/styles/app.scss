@@ -134,6 +134,27 @@ button:focus:not(:focus-visible) {
 	outline: none;
 }
 
+.btn {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: max-content;
+	height: max-content;
+	padding: 0.5rem 1rem;
+
+	border-radius: 10px;
+	background: var(--light-a);
+	border: 1px solid var(--light-a);
+
+	font-family: var(--font);
+	word-spacing: 3px;
+
+	user-select: none;
+	cursor: pointer;
+}
+
 @media (min-width: 720px) {
 	h1 {
 		font-size: 2.4rem;
