@@ -35,10 +35,8 @@ export const filteredBookmarks = derived(tagFilter, ($tagFilter, set) => {
 export const activeFolderBookmarks = derived<Writable<Folder | string>[], Bookmark[]>(
 	[activeFolder, tagFilter],
 	([$activeFolder, $tagFilter], set) => {
-		let bookmarks: Bookmark[] = []
-
 		if ($tagFilter === null) {
-			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks).then((b) => filterBookmarks(b).then(set))
+			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks).then((b) => set(b))
 		} else {
 			db.bookmarks
 				.where('tags')
