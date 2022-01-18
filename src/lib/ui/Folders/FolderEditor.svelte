@@ -24,8 +24,6 @@
 	import { onMount } from 'svelte'
 	import cuid from 'cuid'
 
-	export let folder_id: string = ''
-
 	let emoji = '📌'
 	let showEmojiPicker = false
 	let titleInput: HTMLInputElement
