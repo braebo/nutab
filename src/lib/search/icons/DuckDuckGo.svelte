@@ -5,14 +5,7 @@
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns="http://www.w3.org/2000/svg"
 >
-	<circle
-		filter="url(#dropshadow)"
-		cx="104.8"
-		cy="60.249"
-		r="53.1"
-		stroke="none"
-		fill="#3D3D3d"
-	/>
+	<circle filter="url(#dropshadow)" cx="104.8" cy="60.249" r="53.1" stroke="none" fill="#3D3D3d" />
 	<defs>
 		<filter id="dropshadow" height="130%">
 			<feGaussianBlur in="SourceAlpha" stdDeviation="3" />
@@ -100,9 +93,3 @@
 		</g>
 	</g>
 </svg>
-
-<style>
-	#backdrop {
-		box-shadow: 2px 3px 4px 5px #000;
-	}
-</style>
