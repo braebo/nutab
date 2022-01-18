@@ -1,4 +1,5 @@
 /.vercel_build_output
+myBookmarks.ts
 .pnpm.debug.log
 /node_modules
 /.svelte-kit
