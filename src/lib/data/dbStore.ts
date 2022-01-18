@@ -35,27 +35,32 @@ export const filteredBookmarks = derived(tagFilter, ($tagFilter, set) => {
 export const activeFolderBookmarks = derived<Writable<Folder | string>[], Bookmark[]>(
 	[activeFolder, tagFilter],
 	([$activeFolder, $tagFilter], set) => {
+		let bookmarks: Bookmark[] = []
+
 		if ($tagFilter === null) {
-			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks).then(set)
+			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks).then((b) => filterBookmarks(b).then(set))
 		} else {
 			db.bookmarks
 				.where('tags')
 				.equals($tagFilter as string)
 				.toArray()
-				.then((bookmarks) => {
-					//? Some folders have similar bookmarks with unique id's, so we
-					//? need to filter out the duplicates.
-					const uniqueTitles = new Set()
-					const uniqueBookmarks = bookmarks.reduce((acc, curr) => {
-						if (!uniqueTitles.has(curr.title)) {
-							uniqueTitles.add(curr.title)
-							return [...acc, curr]
-						}
-						return acc
-					}, [])
-					set(uniqueBookmarks)
-				})
+				.then((b) => filterBookmarks(b).then(set))
 		}
+
+		async function filterBookmarks(bookmarks: Bookmark[]) {
+			//? Some folders have similar bookmarks with unique id's, so we
+			//? need to filter out the duplicates.
+			const uniqueTitles = new Set()
+			const uniqueBookmarks = bookmarks.reduce((acc, curr) => {
+				if (!uniqueTitles.has(curr.title)) {
+					uniqueTitles.add(curr.title)
+					return [...acc, curr]
+				}
+				return acc
+			}, [])
+			return uniqueBookmarks
+		}
+
 		return () => {
 			set = () => {}
 		}
