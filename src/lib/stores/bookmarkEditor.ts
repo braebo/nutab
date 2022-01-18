@@ -40,7 +40,8 @@ export const editor = {
 				}
 				break
 			case 'create,folder':
-				folderEditor.set(emptyFolder(await getFolderCount_db()))
+				const folderCount = await getFolderCount_db()
+				folderEditor.set(emptyFolder(folderCount))
 				showFolderEditor.set(true)
 				break
 			case 'edit,folder':
