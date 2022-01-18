@@ -64,8 +64,6 @@
 
 <template lang="pug">
 
-	h1 selectedTags: {selectedTags}
-
 	+if('$folderEditor')
 		.editor-container(use:clickOutside!='{() => editor.hide()}')
 			.space-sm
