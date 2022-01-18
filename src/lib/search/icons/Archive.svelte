@@ -13,7 +13,7 @@
 	"
 	xml:space="preserve"
 >
-	<style type="text/css">
+	<style>
 		.st0 {
 			fill: var(--dark-a);
 		}
