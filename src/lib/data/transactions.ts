@@ -90,10 +90,22 @@ export async function newFolder_db(folder: Folder) {
  ** Get's the id's of any bookmarks containing a tag from an array of tags
  * @param {string[]} tags An array of tags
  * @returns {string[]} An array of bookmark ids
- */ 
+ */
 export const getBookmarksWithSelectedTags_db = async (tags: string[]): Promise<Bookmark["bookmark_id"][]> => {
  	//? Get all relevant bookmarks
-	const bookmarks = await db.bookmarks.where('tags').anyOf(tags).toArray()
+	const allBookmarks = await db.bookmarks.where('tags').anyOf(tags).toArray()
+	//? We need to filter out duplicates (some share multiple tags)
+	// const bookmarks = [...new Set(allBookmarks)]
+	// console.log({bookmarks})
+	const uniques = new Set()
+	const bookmarks = allBookmarks.reduce((acc, curr) => {
+		if (!uniques.has(curr.title)) {
+			uniques.add(curr.title)
+			acc = [...acc, curr]
+			log(acc)
+		} else log(`Found duplicate: ${curr.title}`)
+		return acc
+	}, [])
 	//? We need to give them unique id's so they can be deleted without affecting other folders.
 	bookmarks.forEach(b => {b.bookmark_id = cuid()})
 	//? Add them to the bookmarks table
