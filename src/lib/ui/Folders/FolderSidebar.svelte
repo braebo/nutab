@@ -75,8 +75,8 @@
 	}
 
 	// Just opens a blank folder editor
-	const newFolder = () => {
-		editor.show(['create', 'folder'])
+	const newFolder = async () => {
+		await editor.show(['create', 'folder'])
 	}
 </script>
 
