@@ -1,4 +1,5 @@
 @import './theme.scss';
+@import './utils.sass';
 
 /*
  *
@@ -42,6 +43,9 @@
 	--confirm: #00a2ff;
 	--warn: tomato;
 
+	--radius-sm: 0.25rem;
+	--radius: 0.5rem;
+
 	--shadow-sm: 0px 3px 5px -3px rgba(0, 0, 0, 0.15), 0px 4px 3px -1px rgba(0, 0, 0, 0.05),
 		0px 14px 15px -1px rgba(0, 0, 0, 0.04);
 	--shadow-md: 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09),
@@ -71,7 +75,7 @@ h2 {
 	font-family: var(--font);
 	font-weight: 500;
 	letter-spacing: 1.2px;
-	word-spacing: 8px;
+	word-spacing: 4px;
 }
 
 p,
@@ -109,20 +113,6 @@ h1 {
 h2 {
 	font-size: 1.5rem;
 }
-
-// pre {
-// 	padding: 0.5em;
-
-// 	color: var(--dark-a);
-// 	border-radius: 3px;
-// 	background-color: rgba(255, 255, 255, 0.45);
-// 	box-shadow: 2px 2px 6px rgb(0 0 0 / 25%);
-
-// 	font-family: var(--font-mono);
-// 	font-size: 16px;
-
-// 	overflow-x: auto;
-// }
 
 input,
 button {
@@ -172,8 +162,6 @@ button:focus:not(:focus-visible) {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
-
-	// overflow-y: hidden;
 }
 
 .scroller {

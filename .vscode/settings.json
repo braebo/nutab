@@ -17,7 +17,7 @@
 		"editor.defaultFormatter": "svelte.svelte-vscode"
 	},
 
-	"workbench.iconTheme": "material-icon-theme",
+	"workbench.iconTheme": "moxer-icons",
 
 	//* More subtle Template Tags
 	"editor.tokenColorCustomizations": {

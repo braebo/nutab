@@ -1,13 +1,14 @@
 <script>
-	import { fade } from 'svelte/transition';
-	import { onMount } from 'svelte';
+	// @ts-nocheck
+	import { fade } from 'svelte/transition'
+	import { onMount } from 'svelte'
 
-	export let size;
-	let mounted = false;
-	onMount(() => (mounted = true));
+	export let size
+	let mounted = false
+	onMount(() => (mounted = true))
 
-	const p = (max) => Math.floor(Math.random() * Math.floor(max)); // random star position
-	const s = (max) => (Math.random() * Math.floor(max)).toFixed(2); // random star size
+	const p = (max) => Math.floor(Math.random() * Math.floor(max)) // random star position
+	const s = (max) => (Math.random() * Math.floor(max)).toFixed(2) // random star size
 </script>
 
 {#if mounted}
@@ -17,9 +18,9 @@
 		out:fade
 		in:fade={{ delay: 750, duration: 2000 }}
 	>
-		{#each Array(25).fill() as star}
+		{#each Array(15).fill() as star}
 			<!-- prettier-ignore -->
-			<div style="--star-size: {String(s(2) / 3) + 'px'}">
+			<div style="--star-size: {String(s(3) / 3) + 'px'}">
 			<figure style="top:{p(100)}%;left:{p(100)}%;animation-delay:{p(3)}s;" class="star">
         	    <figure class="star-top" />
         	    <figure class="star-bottom" />
@@ -48,20 +49,24 @@
 		box-sizing: border-box;
 		width: var(--star-size);
 		height: var(--star-size);
+		backface-visibility: hideen;
 	}
 	.star {
 		display: block;
 		position: absolute;
 		top: 25%;
 		left: 25%;
+
 		background: white;
+		border-radius: 99px;
+
 		overflow: hidden;
 		z-index: 2;
-		border-radius: 99px;
+
 		animation: glitter 8s linear 0s infinite;
 		animation-play-state: playing;
 	}
-	@-webkit-keyframes glitter {
+	@keyframes glitter {
 		0% {
 			-webkit-transform: scale(1);
 			opacity: 0.5;
@@ -72,7 +77,7 @@
 		}
 		50% {
 			-webkit-transform: scale(1);
-			opacity: 0.8;
+			opacity: 1;
 		}
 		75% {
 			-webkit-transform: scale(0.5);

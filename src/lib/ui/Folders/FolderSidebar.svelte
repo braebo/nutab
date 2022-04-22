@@ -218,7 +218,7 @@
 
 		& .new-folder {
 			position: absolute;
-			left: 2.5rem;
+			left: 2.25rem;
 			bottom: 1.5rem;
 
 			margin: auto;

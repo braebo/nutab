@@ -1,0 +1,10 @@
+module.exports = {
+	svelteSortOrder: 'options-scripts-markup-styles',
+	htmlWhitespaceSensitivity: 'ignore',
+	trailingComma: 'none',
+	singleQuote: true,
+	printWidth: 120,
+	useTabs: true,
+	tabWidth: 4,
+	semi: false
+}

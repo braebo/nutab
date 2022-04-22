@@ -43,9 +43,15 @@
 	}
 
 	// Key commands
-	function hotkey(e) {
+	function hotkey(e: KeyboardEvent['key']) {
 		switch (e) {
 			case 'Enter':
+				// Perform search
+				aliases.forEach((a) => {
+					if (query.startsWith(a)) {
+						query = query.split(a.length + 1)[1]
+					}
+				})
 				window.location.href = query
 				break
 			case 'ArrowUp':
@@ -117,17 +123,17 @@
 		margin: 2rem auto;
 		padding: 0.75rem 25px 0.7rem 3rem;
 
-		line-height: 100%;
-
 		color: var(--dark-a);
 		border: 1px solid rgba(var(--dark-b-rgb), 0.2);
 		border-radius: 20px;
 		background: var(--light-a);
 		box-shadow: 0 2px 5px 2px #0001;
 
+		text-align: justify;
+		line-height: 100%;
+
 		resize: false;
 		transform: translateX(-1.4rem);
-		text-align: justify;
 	}
 
 	#search:focus {

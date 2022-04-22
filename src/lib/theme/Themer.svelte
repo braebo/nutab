@@ -67,7 +67,6 @@
 	.theme-toggle {
 		position: absolute;
 
-		/* left: 7px; */
 		top: 0px;
 
 		cursor: pointer;

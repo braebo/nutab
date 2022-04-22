@@ -1,17 +1,28 @@
 <script>
 	import { fly } from 'svelte/transition'
-	import { onMount } from 'svelte'
-
-	let mounted = false
-	onMount(() => {
-		mounted = true
-	})
+	import { backIn, backOut } from 'svelte/easing'
+	import { quintIn } from 'svelte/easing'
 </script>
 
 <div id="logo">
-	<span id="NU" class="logo-text" tabindex="-1" in:fly={{ y: 10, duration: 1000, delay: 420 }}>NU</span>
+	<span
+		id="NU"
+		class="logo-text"
+		tabindex="-1"
+		in:fly={{ y: 10, duration: 1000, delay: 420, easing: backOut }}
+		out:fly={{ y: -10, duration: 1000, delay: 420, easing: quintIn }}
+	>
+		NU
+	</span>
 
-	<span id="TAB" class="logo-text" in:fly={{ y: -10, duration: 1000, delay: 420 }}>TAB</span>
+	<span
+		id="TAB"
+		class="logo-text"
+		in:fly={{ y: -10, duration: 1000, delay: 420, easing: backOut }}
+		out:fly={{ y: 10, duration: 1000, delay: 420, easing: quintIn }}
+	>
+		TAB
+	</span>
 </div>
 
 <style>

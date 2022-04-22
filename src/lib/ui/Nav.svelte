@@ -1,25 +1,43 @@
 <script>
-	import NuTab from './NuTab.svelte'
 	import { onMount } from 'svelte'
 
-	let mounted = false
+	import NuTab from './NuTab.svelte'
+
+	let visible = false
 	onMount(() => {
-		mounted = true
+		visible = true
+		setTimeout(() => {
+			visible = false
+		}, 1000)
 	})
 </script>
 
-<nav>
-	{#if mounted}
-		<NuTab />
-	{/if}
-</nav>
+<template lang="pug">
 
-<style>
-	nav {
-		display: flex;
+	nav
+		+if('visible')
+			.logo
+				NuTab
 
-		padding: 1rem;
+</template>
 
-		font-size: 30px;
-	}
+<style lang="sass">
+
+	nav
+		display: flex
+		justify-content: center
+		position: fixed
+
+		width: 100%
+		padding: 1rem
+
+		font-size: 30px
+
+	.logo
+		position: absolute
+		inset: 0
+		
+		width: max-content
+		margin: 2rem auto
+
 </style>

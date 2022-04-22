@@ -1,8 +1,6 @@
 <script lang="ts">
-	// Data
 	import { showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
 
-	// Components
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
 	import FolderEditor from '$lib/ui/Folders/FolderEditor.svelte'
 	import RightClickMenu from '$lib/ui/RightClickMenu.svelte'
@@ -11,21 +9,22 @@
 	import Modal from '$lib/ui/Modal.svelte'
 </script>
 
-<br />
+<template lang="pug">
 
-<Search />
+	.spacer-md
 
-<br />
-<br />
+	Search
 
-<Grid />
+	.spacer-md
 
-<RightClickMenu />
+	Grid
 
-<Modal bind:showModal={$showBookmarkEditor} opacity={0}>
-	<BookmarkEditor />
-</Modal>
+	RightClickMenu
 
-<Modal bind:showModal={$showFolderEditor} opacity={0}>
-	<FolderEditor />
-</Modal>
+	Modal(bind:showModal!='{$showBookmarkEditor}' opacity='{0}')
+		BookmarkEditor
+
+	Modal(bind:showModal!='{$showFolderEditor}' opacity='{0}')
+		FolderEditor
+
+</template>

@@ -1,4 +1,7 @@
 <script lang="ts">
+	// Data
+	import { init_db } from '$lib/data/transactions'
+
 	// Components
 	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
 	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
@@ -6,11 +9,9 @@
 	import Settings from '$lib/data/settings/Settings.svelte'
 	import Themer from '$lib/theme/Themer.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
+	import Main from '$lib/ui/Main.svelte'
 	import Nav from '$lib/ui/Nav.svelte'
 	import { Header } from '$lib/ui'
-
-	// Data
-	import { init_db } from '$lib/data/transactions'
 
 	// Utils
 	import { randomBackground } from '$lib/data/settings/randomBackground'
@@ -21,32 +22,24 @@
 	import 'greset/css/greset.css'
 	import '../styles/app.scss'
 
-	onMount(() => {
-		init_db()
+	onMount(async () => {
+		await init_db()
 	})
-
-	// turns `/foo/bar/baz` into `Baz`
-	const pageTitle = (path: string) => {
-		if (path === '/') return 'Home'
-		const paths = path.split('/')
-		const title = paths[paths.length - 1]
-		return title.charAt(0).toUpperCase() + title.slice(1)
-	}
 </script>
 
 <template lang="pug">
 
 	svelte:head
-		title {pageTitle($page.url.pathname)} · Nutab
+		title Nutab
 
 	#app(style='{randomBackground()}')
 		Themer(size='{50}')
 
 		Nav
 
-		main
+		Main
 			slot
-		
+
 		FolderSidebar
 
 		Settings
