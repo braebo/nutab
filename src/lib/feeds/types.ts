@@ -1,3 +1,5 @@
+import type { IMeta } from './fetchMeta'
+
 /**
  * Stories, comments, jobs, Ask HNs and even polls are just items. They're identified by their ids,
  * which are unique integers, and live under `/v0/item/<id>`.
@@ -93,13 +95,9 @@ export interface IHNItem {
 	 ** In the case of stories or polls, the total comment count.
 	 */
 	descendants?: number
-}
 
-export interface IJsonLinkMeta {
-	description: string
-	domain: string
-	duration: number
-	images: string[]
-	title: string
-	url: string
+	/**
+	 ** Opengraph metadata for the story.
+	 */
+	meta?: IMeta
 }

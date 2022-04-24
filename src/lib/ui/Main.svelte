@@ -10,12 +10,10 @@
 		main.scrollTo(0, slot.offsetTop)
 	})
 
-	let visible,
-		// scrollDir,
-		options = { threshold: 0.15 }
+	let visible
 
 	function handleChange(e: CustomEvent) {
-		console.log(e.detail)
+		console.log(Object.entries(e.detail))
 		visible = e.detail.isVisible
 		// scrollDir = e.detail.scrollDirection
 	}
@@ -25,9 +23,10 @@
 
 	main(bind:this='{main}')
 		.col
-			.news(use:visibility='{options}' on:f-change='{handleChange}')
-				+if('visible')
-					News
+			//- .news(use:visibility!='{{ threshold: 0.05, once: true, margin: "20px" }}' on:change='{handleChange}')
+				//- +if('visible')
+			.news
+				News
 
 			.slot(bind:this='{slot}')
 				slot
@@ -38,8 +37,10 @@
 
 	main
 		min-height: 100vh
+		
 		overflow-y: auto
 		scroll-snap-type: y mandatory
+		
 		&::-webkit-scrollbar
 			display: none
 	
@@ -48,11 +49,11 @@
 
 	.news
 		display: flex
-		min-height: 100vh
-		min-width: 100vw
 
 	.slot, .news
 		scroll-snap-align: start
 		contain: content
+		min-height: 100vh
+		min-width: 100vw
 
 </style>

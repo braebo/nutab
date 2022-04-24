@@ -1,14 +1,16 @@
 <script lang="ts">
+	import type { IMeta } from './fetchMeta'
+	import type { IHNItem } from './types'
+
+	import { fly } from 'svelte/transition'
 	import HNItem from './HNItem.svelte'
 	import { dev } from '$app/env'
-
-	import type { IHNItem } from './types'
 
 	let items: IHNItem[] = []
 
 	let list: IHNItem['type'] = 'story'
 	type Category = 'topstories' | 'newstories' | 'beststories'
-	let defaultCategory: Category = 'beststories'
+	let defaultCategory: Category = 'topstories'
 
 	const PAGE_SIZE = 5
 	const page = 1
@@ -52,30 +54,55 @@
 
 		next = res.length > start + PAGE_SIZE
 
+		// fetch stories
 		let stories: IHNItem[] = []
-		let promises = []
+		let storyPromises = []
 		for (let id of ids) {
-			promises.push(getItem(id))
+			storyPromises.push(getItem(id))
 		}
+		stories = await Promise.all(storyPromises)
 
-		stories = await Promise.all(promises)
+		// fetch opengraph metadata
+		let metas: IMeta[] = []
+		let metaPromises = []
+		for (let story of stories) {
+			metaPromises.push(getMeta(story.url))
+		}
+		metas = await Promise.all(metaPromises)
+		stories.forEach((story, i) => {
+			story.meta = metas[i]
+		})
+		console.log({ metas })
 		console.log({ stories })
 
 		return stories
 	}
+
+	const getMeta = async (url: string): Promise<IMeta> => {
+		const res = await fetch('https://jsonlink.io/api/extract?url=' + url)
+		if (!res.ok) return {}
+
+		const meta: IJsonLinkMeta = await res.json()
+
+		return meta
+	}
 </script>
 
-<div class="hn-container">
-	{#await getStories() then stories}
-		{#each stories as item, index}
-			<HNItem {item} {index} />
-		{/each}
-		<!-- <pre>{JSON.stringify(stories, null, 2)}</pre> -->
-		<pre>{start}</pre>
-		{#if next}
-			<button on:click={nextPage}>Next</button>
-		{/if}
-	{:catch e}
-		<pre>{e}</pre>
-	{/await}
-</div>
+<template lang="pug">
+
+	.hn-container
+		+await('getStories()')
+			| ...
+			+then('stories')
+				+each('stories as item, i')
+					.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50, y: 10 + i}}')
+						HNItem({item} {i})
+
+				| {start}
+
+			+if('next')
+				button(on:click='{nextPage}') Next
+		
+			+catch('e') {e}
+
+</template>
