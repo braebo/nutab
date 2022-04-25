@@ -47,8 +47,8 @@
 
 	article
 		.image-container
-			+if('item.meta.images?.length')
-				.image(style='background-image: url({item.meta.images[0]})' in:fade)
+			+if('item.meta.image')
+				.image(style='background-image: url({item.meta.image})' in:fade)
 				+else
 					.image(style='{randomBackground()}')
 
@@ -114,6 +114,7 @@
 				filter: grayscale(0%)
 
 		cursor: pointer
+		backface-visibility: hidden
 
 
 	.header
@@ -136,6 +137,7 @@
 		transition: 0.25s
 		&:hover
 			font-variation-settings: 'wght' 700
+			letter-spacing: 0.25px
 			// font-weight: 700
 
 
@@ -177,26 +179,26 @@
 	// 		text-decoration: underline
 	
 	.description
-		width: 500px
+		width: 550px
 		max-width: 90%
-		margin-bottom: 0.5rem
+		// margin-bottom: 0.5rem
+		// max-height: 1.5rem
+		height: 1.2rem
 
 		color: var(--dark-d)
-		
+
 		font-weight: 400
 		font-family: var(--font-a)
 		font-size: 0.9rem
 		text-overflow: ellipsis
 		white-space: nowrap
 		overflow: hidden
-		max-height: 1.5rem
-		height: 1rem
-		
+
 		opacity: 0.9
 		transition: opacity 0.2s
 		&:hover
 			opacity: 1
-	
+
 	.comments
 		display: flex
 		align-items: center

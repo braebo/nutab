@@ -1,3 +1,7 @@
+import { parse } from 'node-html-parser'
+
+import metadataRuleSets from './rulesets'
+
 export interface IMeta {
 	url: string
 	title: string
@@ -33,20 +37,32 @@ const fetchHead = async (url: string) => {
 	return read(res.body)
 }
 
+const makeUrlAbsolute = (url, path) => new URL(path, new URL(url).origin).toString()
+
 /**
  * Fetches a url and parses the meta tags.
  * @param url URL of the page to fetch.
  * @returns A promise that resolves to the metadata.
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
-export const fetchMeta = async (url: string) => {
+export const fetchMeta = async (url) => {
 	const head = await fetchHead(url)
-	const metadata: IMeta = {
-		url: /<meta property="og:url" content="(.*?)"/.exec(head)?.[1] || url,
-		title: /<meta name="title" content="(.*?)"/.exec(head)?.[1] || '',
-		description: /<meta name="description" content="(.*?)"/.exec(head)?.[1] || '',
-		image: /<meta property="og:image" content="(.*?)"/.exec(head)?.[1] || '',
-		icon: /<link rel="icon" href="(.*?)"/.exec(head)?.[1] || ''
+	const dom = parse(head)
+	const metadata = {
+		url
+	}
+	for (const prop in metadataRuleSets) {
+		for (const rule of metadataRuleSets[prop].rules) {
+			const el = dom.querySelector(rule[0])
+			if (el) {
+				let data = rule[1](el)
+				metadata[prop] = metadataRuleSets[prop].absolute ? makeUrlAbsolute(url, data) : data
+				break
+			}
+		}
+		if (!metadata[prop] && metadataRuleSets[prop].defaultValue) {
+			metadata[prop] = makeUrlAbsolute(url, metadataRuleSets[prop].defaultValue)
+		}
 	}
 	return metadata
 }

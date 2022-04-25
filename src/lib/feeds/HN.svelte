@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fetchMeta } from '$lib/feeds/fetchMeta'
 	import type { IMeta } from './fetchMeta'
 	import type { IHNItem } from './types'
 
@@ -66,7 +67,9 @@
 		let metas: IMeta[] = []
 		let metaPromises = []
 		for (let story of stories) {
-			metaPromises.push(getMeta(story.url))
+			// metaPromises.push(getMeta(story.url))
+			const url = dev ? `http://localhost:8080/${story.url}` : story.url
+			metaPromises.push(fetchMeta(url))
 		}
 		metas = await Promise.all(metaPromises)
 		stories.forEach((story, i) => {
@@ -78,14 +81,13 @@
 		return stories
 	}
 
-	const getMeta = async (url: string): Promise<IMeta> => {
-		const res = await fetch('https://jsonlink.io/api/extract?url=' + url)
-		if (!res.ok) return {}
+	// const getMeta = async (url: string): Promise<IMeta> => {
+	// 	const res = await fetch('https://jsonlink.io/api/extract?url=' + url)
+	// 	if (!res.ok) return {}
 
-		const meta: IJsonLinkMeta = await res.json()
-
-		return meta
-	}
+	// 	const meta: IJsonLinkMeta = await res.json()
+	// 	return meta
+	// }
 </script>
 
 <template lang="pug">
