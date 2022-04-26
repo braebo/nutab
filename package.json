@@ -24,6 +24,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "next",
 		"@sveltejs/kit": "next",
+		"@svgdotjs/svg.js": "^3.1.2",
 		"autoprefixer": "^10.4.4",
 		"cors-anywhere": "^0.4.4",
 		"cssnano": "^5.1.7",

@@ -46,7 +46,7 @@
 	{/await}
 </div>
 
-<style>
+<style lang="scss">
 	.thread {
 		display: flex;
 		flex-direction: column;
@@ -55,10 +55,16 @@
 		justify-content: flex-start;
 		width: 40%;
 		min-width: 40%;
-		height: 70%;
+		height: 80%;
 		padding: 1rem;
 		box-sizing: border-box;
 		margin: 0;
+		border: 1px solid transparent;
+		transition: border 0.25s;
+	}
+	.thread:hover {
+		border-radius: var(--radius);
+		border: 1px solid rgba(var(--dark-a-rgb), 0.05);
 	}
 
 	h1 {
@@ -68,11 +74,17 @@
 	}
 
 	.item {
-		border-bottom: 1em solid rgba(0, 0, 0, 0.1);
+		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25);
+		padding-bottom: 1rem;
+		border-radius: 1.5rem;
+	}
+
+	.item :global(*) {
+		font-size: 1rem;
 	}
 
 	:global(html.dark) .item {
-		border-bottom: 1em solid rgba(255, 255, 255, 0.1);
+		border-bottom: 1em solid rgba(var(--light-d-rgb), 0.25);
 	}
 
 	.main-link {
@@ -81,10 +93,9 @@
 	}
 
 	.meta {
-		font-size: 1rem;
+		font-size: 0.85rem;
 		font-weight: 300;
-		color: var(--fg-light);
-		margin-bottom: 1rem;
+		margin-left: 2rem;
 	}
 
 	.dot {
@@ -94,19 +105,29 @@
 	.comments {
 		overflow-y: auto;
 	}
-	.comments::-webkit-scrollbar-track {
-		background: transparent;
+	.comments,
+	:global(pre) {
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
 	}
-	.comments::-webkit-scrollbar {
-		width: 0.5rem;
-		background: transparent;
+	.comments,
+	:global(pre) {
+		&::-webkit-scrollbar {
+			width: 0.5rem;
+			height: 0.5rem;
+			background: transparent;
+		}
 	}
-	.comments::-webkit-scrollbar-thumb {
-		background: rgba(var(--light-a-rgb), 0.5);
-		border-radius: 5px;
+	.comments,
+	:global(pre) {
+		&::-webkit-scrollbar-thumb {
+			background: rgba(var(--light-d-rgb), 0.5);
+			border-radius: 5px;
+		}
 	}
 
-	.comments > :global(.comment):first-child {
+	/* .comments > :global(.comment):first-child {
 		border-top: none;
-	}
+	} */
 </style>

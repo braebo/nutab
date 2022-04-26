@@ -24,6 +24,7 @@
 				<a sveltekit:prefetch href="/user/{comment.by}">{comment.by}</a>
 				<span class="time">
 					· {formatDistanceToNow(comment.time * 1000)
+						.replace(/\sminutes|minute/, 'm')
 						.replace('about', '')
 						.replace(/\s(hour|hours)/, 'hr')}
 				</span>
@@ -48,13 +49,14 @@
 
 <style lang="scss">
 	.comment {
-		border-top: 2px solid rgba(0, 0, 0, 0.1);
-		color: var(--dark-a) !important;
-		padding: 1rem 0;
+		border-top: 2px solid rgba(var(--dark-d-rgb), 0.05);
+		color: var(--dark-b);
+		margin: 1rem 0;
 	}
-	:global(html.dark) .comment {
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-	}
+
+	// :global(html.dark) .comment {
+	// 	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	// }
 	.meta-bar {
 		display: flex;
 		justify-content: space-between;
@@ -63,51 +65,69 @@
 		transition: background 0.25s;
 		border-radius: 0.25rem;
 		&:hover {
-			background: rgba(var(--light-d-rgb), 0.5);
+			background: rgba(var(--light-d-rgb), 0.15);
 		}
 	}
+
 	.time {
-		color: var(--dark-d);
+		color: var(--light-d);
 	}
+
 	.comment .children {
-		padding-left: 1rem;
+		padding-left: 0.5rem;
 		margin: 0;
+		transition: 2s;
 	}
-	.hidden .body,
-	.hidden .children {
-		display: none;
+
+	.hidden {
+		& .body {
+			max-height: 0px;
+			overflow: hidden;
+		}
+		& .children {
+			display: none;
+		}
 	}
+
 	.body {
-		font-family: var(--font-a);
 		font-size: 1rem;
 		padding: 0 1rem;
-	}
-	@media (min-width: 720px) {
-		.comment .children {
-			padding: 0 0 0 2em;
+
+		&,
+		:global(*) {
+			color: var(--dark-b);
+		}
+		& :global(p) {
+			margin: 0.5rem 0;
 		}
 	}
+
+	@media (min-width: 720px) {
+		.comment .children {
+			padding-left: 1.5rem;
+		}
+	}
+
 	li {
 		list-style: none;
 	}
+
 	.meta {
 		display: block;
 		font-size: 14px;
-		color: var(--dark-d);
 	}
+
 	a {
-		color: var(--fg-light);
+		color: var(--light-d);
 	}
+
 	/* prevent crazy overflow layout bug on mobile */
 	.body :global(*) {
 		overflow-wrap: break-word;
 		font-size: 1rem;
-		color: var(--dark-a) !important;
 	}
+
 	.comment :global(pre) {
 		overflow-x: auto;
 	}
-	// :global(quote) {
-	// 	border-left: 1rem var(--light-d);
-	// }
 </style>

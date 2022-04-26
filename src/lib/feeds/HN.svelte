@@ -116,6 +116,7 @@
 		height: 100vh
 		width: 100vw
 		gap: 4rem
+
 	.item
 		display: flex
 		flex-direction: column

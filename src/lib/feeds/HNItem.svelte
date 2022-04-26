@@ -1,5 +1,6 @@
 <script lang="ts">
-	import CommentIcon from '../icons/CommentIcon.svelte'
+	import RandomWave from '$lib/graphics/RandomWave.svelte'
+	import CommentIcon from '$lib/icons/CommentIcon.svelte'
 	import type { IHNItem } from './types'
 
 	import { randomBackground } from '$lib/data/settings/randomBackground'
@@ -22,7 +23,10 @@
 			+if('item.meta.image')
 				.image(style='background-image: url({item.meta.image})' in:fade)
 				+else
-					.image(style='{randomBackground()}')
+					.random-thumbnail
+						.image(style='{randomBackground()}')
+						.random-wave
+							RandomWave
 
 		.col
 			.row.header
@@ -70,7 +74,7 @@
 			transform: scale(1.025)
 			box-shadow: 0px 1.8px 0.7px rgba(0, 0, 0, 0.006), 0px 4.3px 1.8px rgba(0, 0, 0, 0.008), 0px 8.1px 3.4px rgba(0, 0, 0, 0.01), 0px 14.5px 6px rgba(0, 0, 0, 0.012), 0px 27.2px 11.3px rgba(0, 0, 0, 0.014), 0px 65px 27px rgba(0, 0, 0, 0.02)
 
-			& .image
+			& .random-thumbnail, .image
 				filter: grayscale(0%)
 
 		cursor: pointer
@@ -185,6 +189,12 @@
 		max-width: 125px
 		max-height: 100px
 
+	.random-thumbnail
+		min-width: 125px
+		min-height: 100px
+		position: relative
+		transition: filter 0.3s
+		filter: grayscale(100%)
 
 	.image
 		min-width: 125px
@@ -198,6 +208,12 @@
 		transition: filter 0.3s
 		filter: grayscale(100%)
 
+	
+	.random-wave
+		position: absolute
+		inset: 0
+		width: 100%
+		height: 100%
 
 	.author, .since
 		flex-wrap: nowrap
