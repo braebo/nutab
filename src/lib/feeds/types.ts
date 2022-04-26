@@ -1,4 +1,34 @@
-import type { IMeta } from './fetchMeta'
+/**
+ * A single comment.
+ *
+ * @param by The username of the item's author.
+ * @param id The id of the item to retrieve.
+ * @param parent The parent id of the item.
+ * @param kids The ids of the item's comments, in ranked display order.
+ * @param text The comment, story or poll text. HTML.
+ * @param time The creation date of the item, in Unix Time.
+ * @param type The type of item.
+ */
+export interface IComment {
+	by: string
+	id: number
+	kids: number[]
+	parent: number
+	text: string
+	time: number
+	type: string
+}
+
+/**
+ * The metadata for a single story.
+ */
+export interface IMeta {
+	url: string
+	title: string
+	description: string
+	icon: string
+	image: string
+}
 
 /**
  * Stories, comments, jobs, Ask HNs and even polls are just items. They're identified by their ids,
@@ -100,4 +130,9 @@ export interface IHNItem {
 	 ** Opengraph metadata for the story.
 	 */
 	meta?: IMeta
+
+	/**
+	 ** Time since the story was posted in days.
+	 */
+	days_ago?: string
 }

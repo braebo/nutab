@@ -1,14 +1,9 @@
+// modified from https://github.com/luisivan/fetch-meta-tags for browser compat
+import type { IMeta } from './types'
+
 import { parse } from 'node-html-parser'
 
 import metadataRuleSets from './rulesets'
-
-export interface IMeta {
-	url: string
-	title: string
-	description: string
-	image: string
-	icon: string
-}
 
 const fetchHead = async (url: string) => {
 	const read = async (body: ReadableStream<Uint8Array> | null): Promise<string> =>
@@ -37,7 +32,7 @@ const fetchHead = async (url: string) => {
 	return read(res.body)
 }
 
-const makeUrlAbsolute = (url, path) => new URL(path, new URL(url).origin).toString()
+const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url).origin).toString()
 
 /**
  * Fetches a url and parses the meta tags.
@@ -45,11 +40,15 @@ const makeUrlAbsolute = (url, path) => new URL(path, new URL(url).origin).toStri
  * @returns A promise that resolves to the metadata.
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
-export const fetchMeta = async (url) => {
+export const fetchMeta = async (url: string) => {
 	const head = await fetchHead(url)
 	const dom = parse(head)
-	const metadata = {
-		url
+	const metadata: IMeta = {
+		url,
+		title: '',
+		description: '',
+		icon: '',
+		image: ''
 	}
 	for (const prop in metadataRuleSets) {
 		for (const rule of metadataRuleSets[prop].rules) {

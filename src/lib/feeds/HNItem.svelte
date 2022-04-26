@@ -1,51 +1,23 @@
 <script lang="ts">
-	import CommentIcon from './../graphics/CommentIcon.svelte'
+	import CommentIcon from '../icons/CommentIcon.svelte'
 	import type { IHNItem } from './types'
 
-	// import { getMockMetaData } from './mockData'
+	import { randomBackground } from '$lib/data/settings/randomBackground'
 	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
-	import { onMount } from 'svelte'
-	import { randomBackground } from '$lib/data/settings/randomBackground'
+	import { onMount, createEventDispatcher } from 'svelte'
 
 	export let item: IHNItem
-	export let i: number
 
-	const time = new Date(item.time * 1000)
-	const since = daysAgo(time).string
-
-	const showComments = () => {
-		alert('todo')
+	const dispatch = createEventDispatcher()
+	const showThread = () => {
+		dispatch('showThread', { id: item.id })
 	}
-
-	// let meta: IJsonLinkMeta = {
-	// 	title: '',
-	// 	description: '',
-	// 	images: [''],
-	// 	url: '',
-	// 	domain: '',
-	// 	duration: 100
-	// }
-
-	// const getImage = async (): Promise<IJsonLinkMeta> => {
-	// 	const url = 'https://jsonlink.io/api/extract?url=' + item.url
-	// 	const res = await fetch(url)
-	// 	if (!res.ok) return
-	// 	const json: IJsonLinkMeta = await res.json()
-	// 	meta = json
-	// 	console.log(JSON.stringify(json))
-	// }
-
-	// onMount(async () => {
-	// 	// getImage()
-	// 	// const json: IJsonLinkMeta = await getMockMetaData(i)
-	// 	meta = await getMockMetaData(i)
-	// })
 </script>
 
 <template lang="pug">
 
-	article
+	article(on:click='{showThread}')
 		.image-container
 			+if('item.meta.image')
 				.image(style='background-image: url({item.meta.image})' in:fade)
@@ -59,29 +31,18 @@
 						h2 {item.title}
 
 					.row.info
-						.since {since}
+						.since {item.days_ago}
 						span.dot · 
 						a.author(target='_blank' href!='{`https://news.ycombinator.com/user?id=${item.by}`}') {item.by}
-					//- a.domain(href='{item.meta.domain || ``}')
-					//- 	| {item.meta.domain || ''}
-	
-				//- .points {item.score} points
-				//- p.since {since}
+
 			.row
 				p.description {item.meta.description || ''}
-	
 
 		.comments
-			.comment-count(on:click='{showComments}')
+			.comment-count(on:click='{showThread}')
 				| {item.kids ? item.kids.length : 0}
 			.comment-icon
 				CommentIcon
-
-				//- p.since {since} 
-				//- 	span.dot · 
-				//- 	a.author(target='_blank' href='https://news.ycombinator.com/user?id="{item.by}"') {item.by}
-
-		//- span.i {i}
 
 </template>
 
@@ -106,7 +67,6 @@
 
 		transition: transform 0.2s, box-shadow 0.2s
 		&:hover
-			// border-color: rgb(var(--dark-d-rgb), 0.5)
 			transform: scale(1.025)
 			box-shadow: 0px 1.8px 0.7px rgba(0, 0, 0, 0.006), 0px 4.3px 1.8px rgba(0, 0, 0, 0.008), 0px 8.1px 3.4px rgba(0, 0, 0, 0.01), 0px 14.5px 6px rgba(0, 0, 0, 0.012), 0px 27.2px 11.3px rgba(0, 0, 0, 0.014), 0px 65px 27px rgba(0, 0, 0, 0.02)
 
@@ -118,9 +78,9 @@
 
 
 	.header
-		// padding-bottom: 0.25rem
 		margin-bottom: 0.5rem
 		padding-right: 1rem
+
 
 	h2
 		line-height: 1.5rem
@@ -138,7 +98,6 @@
 		&:hover
 			font-variation-settings: 'wght' 700
 			letter-spacing: 0.25px
-			// font-weight: 700
 
 
 	a
@@ -148,6 +107,7 @@
 		&.article
 			text-decoration: none
 
+
 	.info
 		margin: 0
 
@@ -156,33 +116,28 @@
 		font-size: 0.8em
 		font-weight: 300
 
+
 	.col
 		display: flex
 		flex-direction: column
 		flex-grow: 1
-		
+
 		width: 100%
 		height: 100%
+
 
 	.row
 		display: flex
 		width: 100%
 
+
 	.article
 		text-decoration: none
 
-	// .domain
-	// 	color: var(--light-d)
-	// 	font-weight: 300
-	// 	font-size: 0.8rem
-	// 	&:hover
-	// 		text-decoration: underline
-	
+
 	.description
 		width: 550px
 		max-width: 90%
-		// margin-bottom: 0.5rem
-		// max-height: 1.5rem
 		height: 1.2rem
 
 		color: var(--dark-d)
@@ -199,6 +154,7 @@
 		&:hover
 			opacity: 1
 
+
 	.comments
 		display: flex
 		align-items: center
@@ -214,7 +170,8 @@
 		
 		&:hover .comment-icon
 			transform: scale(1.2)
-	
+
+
 	.comment-icon
 		width: 22px
 		height: 22px
@@ -241,6 +198,7 @@
 		transition: filter 0.3s
 		filter: grayscale(100%)
 
+
 	.author, .since
 		flex-wrap: nowrap
 		word-wrap: none
@@ -248,36 +206,9 @@
 		color: var(--light-d)
 		word-spacing: -1px
 		width: max-content
-	
+
+
 	.dot
 		margin: 0 0.25rem
-	
-	// .since
-	// 	margin: 0 0.25rem 0 auto
-
-
-
-	// .i
-	// 	position: absolute
-	// 	left: 0.5rem
-	// 	top: 1rem
-
-	// 	width: 0.75em
-
-	// 	color: var(--light-d)
-
-	// 	font-size: 1rem
-	// 	font-weight: 200
-	// 	text-align: right
-	// 	line-height: 1
-
-
-	// .points
-	// 	color: var(--light-d)
-
-	// 	font-size: 0.8em
-	// 	font-weight: 300
-	
-	
 
 </style>
