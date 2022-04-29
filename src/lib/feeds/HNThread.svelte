@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { formatDistanceToNow } from 'date-fns'
 	import { fly } from 'svelte/transition'
-	import type { IHNItem } from './types'
 
 	import HNComment from './HNComment.svelte'
 	import { fetchItem } from './fetchItem'
