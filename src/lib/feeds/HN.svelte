@@ -123,6 +123,8 @@
 		flex-direction: column
 		align-items: center
 		justify-content: center
+
+		min-width: 600px
 		&.activeThread
 			width: 40%
 

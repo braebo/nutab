@@ -24,9 +24,9 @@
 				<a sveltekit:prefetch href="/user/{comment.by}">{comment.by}</a>
 				<span class="time">
 					· {formatDistanceToNow(comment.time * 1000)
-						.replace(/\sminutes|minute/, 'm')
+						.replace(/\sminutes|\sminute/, 'm')
 						.replace('about', '')
-						.replace(/\s(hour|hours)/, 'hr')}
+						.replace(/\shours|\shour/, 'h')}
 				</span>
 			</span>
 			<CollapseIcon bind:hidden />
@@ -54,9 +54,6 @@
 		margin: 1rem 0;
 	}
 
-	// :global(html.dark) .comment {
-	// 	border-top: 1px solid rgba(255, 255, 255, 0.1);
-	// }
 	.meta-bar {
 		display: flex;
 		justify-content: space-between;
