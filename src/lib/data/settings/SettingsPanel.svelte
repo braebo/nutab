@@ -105,7 +105,7 @@
 		bottom: 0;
 		left: 0;
 
-		width: 600px;
+		width: 100px;
 		height: 50px;
 		margin: auto;
 

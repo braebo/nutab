@@ -88,7 +88,7 @@
 <template lang="pug">
 
 	.hn-container
-		.story-previews
+		.story-previews(class:activeThread)
 			+await('getStories()')
 				| ...
 				+then('stories')
@@ -104,7 +104,8 @@
 				+catch('e') {e}
 
 		+if('activeThread')
-			HnThread(threadId='{activeThread}')
+			.story-thread
+				HnThread(threadId='{activeThread}')
 
 </template>
 
@@ -113,11 +114,45 @@
 		display: flex
 		align-items: center
 		justify-content: center
+
 		height: 100vh
 		width: 100vw
-		gap: 4rem
+	
+	.story-previews
+		display: flex
+		flex-direction: column
+		align-items: center
+		justify-content: center
+		&.activeThread
+			width: 40%
+
+	.story-thread
+		display: flex
+		flex-direction: column
+		align-items: flex-start
+		
+		width: 60%
+		max-height: 80%
+		
+		overflow-y: auto
+
+		margin-right: 4%	// offset the srollbar...
+		padding-right: 1%	// ...just a bit
+		
+		&, :global(pre)
+			&::-webkit-scrollbar-track
+				background: transparent
+			&::-webkit-scrollbar
+				width: 0.5rem
+				height: 0.5rem
+				background: transparent
+			&::-webkit-scrollbar-thumb
+				background: rgba(var(--light-d-rgb), 0.5)
+				border-radius: 5px
 
 	.item
 		display: flex
 		flex-direction: column
+		
+		width: 100%
 </style>

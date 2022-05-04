@@ -18,7 +18,7 @@
 
 <template lang="pug">
 
-	article(on:click='{showThread}')
+	div.article(on:click='{showThread}')
 		.image-container
 			+if('item.meta.image')
 				.image(style='background-image: url({item.meta.image})' in:fade)
@@ -28,10 +28,10 @@
 						.random-wave
 							RandomWave
 
-		.col
+		.content.col
 			.row.header
 				.col
-					a.article(href='{item.url ? item.url : ``}' target='_blank')
+					a.article-link(href='{item.url ? item.url : ``}' target='_blank')
 						h2 {item.title}
 
 					.row.info
@@ -51,18 +51,18 @@
 </template>
 
 <style lang="sass">
-	article
-		box-sizing: border-box
-		position: relative
+	.article
 		display: flex
+		position: relative
+		box-sizing: border-box
 		align-items: space-between
 		gap: 1.5rem
 
-		width: 800px
-		max-width: min(1000px, 90vw)
+		// width: 80%
+		max-width: min(800px, 90vw)
 		min-height: 112px
 		padding: 0.75rem
-		margin-bottom: 1.5rem
+		margin: 0.75rem 10%
 
 		background: var(--light-a)
 		border-radius: var(--radius)
@@ -85,14 +85,13 @@
 		margin-bottom: 0.5rem
 		padding-right: 1rem
 
-
 	h2
 		line-height: 1.5rem
 		color: var(--dark-a)
 
 		font-size: 1rem
 		width: max-content
-		max-width: min(90%, 60vw)
+		max-width: min(100%, 60vw)
 		font-variation-settings: 'wght' 500
 		font-family: var(--font-a)
 		word-spacing: 0px
@@ -108,7 +107,7 @@
 		text-decoration: none
 		&:hover
 			text-decoration: underline
-		&.article
+		&.article-link
 			text-decoration: none
 
 
@@ -134,14 +133,15 @@
 		display: flex
 		width: 100%
 
+	.content
+		width: 75%
 
-	.article
+	.article-link
 		text-decoration: none
 
-
 	.description
-		width: 550px
-		max-width: 90%
+		width: 90%
+		max-width: min(550px, 90%)
 		height: 1.2rem
 
 		color: var(--dark-d)
