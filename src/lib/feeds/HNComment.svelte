@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CollapseIcon from '$lib/icons/CollapseIcon.svelte'
 	import { formatDistanceToNow } from 'date-fns'
-	import { fetchItem } from './fetchItem'
+	import { fetchItem } from './fetchData'
 
 	export let commentId: number
 

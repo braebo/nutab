@@ -3,7 +3,7 @@
 	import { fly } from 'svelte/transition'
 
 	import HNComment from './HNComment.svelte'
-	import { fetchItem } from './fetchItem'
+	import { fetchItem } from './fetchData'
 
 	export let threadId: number
 

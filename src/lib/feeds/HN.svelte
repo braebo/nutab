@@ -1,81 +1,49 @@
 <script lang="ts">
-	import { fetchMeta } from '$lib/feeds/fetchMeta'
-	import type { IHNItem, IMeta } from './types'
+	import type { IHNItem } from './types'
 
-	import { formatDistanceToNow } from 'date-fns'
 	import { fly } from 'svelte/transition'
-	import HNItem from './HNItem.svelte'
-	import { dev } from '$app/env'
-	import { daysAgo } from '$lib/utils/daysAgo'
+	import { get } from 'svelte/store'
+
 	import HnThread from './HNThread.svelte'
+	import HNItem from './HNItem.svelte'
+
+	import { fetchCategory, fetchItem, fetchStories } from './fetchData'
+	import { fetchMeta } from '$lib/feeds/fetchMeta'
+	import { list } from './stores'
+	import { BATCH_SIZE, INITIAL_SIZE } from './constants'
+	import { onMount } from 'svelte'
 
 	let items: IHNItem[] = []
+	$: items
+	let loaded = INITIAL_SIZE
+	let loading = true
 
-	let list: IHNItem['type'] = 'story'
-	let defaultCategory: 'topstories' | 'newstories' | 'beststories' = 'topstories'
+	const loadMore = async () => {
+		if (loading)
+			return setTimeout(() => {
+				if (!loading) loadMore()
+			}, 500)
+		loading = true
 
-	const PAGE_SIZE = 10
-	const page = 1
+		const newStories = await fetchStories(items.length)
+		console.log({ newStories })
+		items = [...items, ...newStories]
+		console.log({ items })
 
-	$: start = 1 + (page - 1) * PAGE_SIZE
-
-	let next = false
-	const nextPage = () => alert('todo')
-
-	const cors = dev ? 'http://localhost:8080/' : ''
-
-	const getCategory = async (type = defaultCategory): Promise<number[]> => {
-		const res: Response | void = await fetch(`${cors}https://hacker-news.firebaseio.com/v0/${type}.json`, {
-			headers: {
-				Accept: 'application/json',
-				'Access-Control-Allow-Origin': '*'
-			}
-		}).catch((e) => console.error('Hmm.. problem fetching the stories.', e))
-		if (!res) return []
-		const category = await res.json()
-		console.log({ category })
-		return category as number[]
+		loaded = Math.min(loaded + BATCH_SIZE, get(list).length)
+		loading = false
 	}
 
-	const getItem = async (id: IHNItem['id']) => {
-		const story = await fetch(`${cors}https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-			.then((res) => res.json())
-			.catch((e) => console.error(`Hmm.. problem fetching story ${id}: `, e))
-		return story
+	let scrollProgress = 0
+	let itemsLeft = 450
+	const handleScroll = ({ target }: Event) => {
+		itemsLeft = loaded / get(list).length
+		const { scrollTop, scrollHeight, offsetHeight } = target as HTMLDivElement
+		scrollProgress = Math.round((scrollTop / (scrollHeight - offsetHeight)) * 100)
 	}
 
-	const getStories = async (type = defaultCategory): Promise<IHNItem[]> => {
-		const res = await getCategory(type)
-		const ids = res.slice(start, start + PAGE_SIZE)
-
-		next = res.length > start + PAGE_SIZE
-
-		// fetch stories
-		let stories: IHNItem[] = []
-		let storyPromises = []
-		for (let id of ids) {
-			storyPromises.push(getItem(id))
-		}
-		stories = await Promise.all(storyPromises)
-
-		// fetch opengraph metadata
-		let metas: IMeta[] = []
-		let metaPromises = []
-		for (let story of stories) {
-			const url = dev ? `${cors}${story.url}` : story.url
-			metaPromises.push(fetchMeta(url))
-		}
-		metas = await Promise.all(metaPromises)
-		stories.forEach((story, i) => {
-			story.meta = metas[i]
-			story.days_ago = daysAgo(new Date(story.time * 1000)).string
-		})
-
-		console.log({ metas })
-		console.log({ stories })
-
-		return stories
-	}
+	$: trigger = 95 + 5 * itemsLeft
+	$: if (scrollProgress > 90) loadMore()
 
 	let activeThread: number | null = null
 
@@ -91,31 +59,35 @@
 		height = fullscreen ? window.innerHeight + 'px' : '100vh'
 		console.log({ height })
 	}
+
+	onMount(async () => {
+		items = await fetchStories()
+		loading = false
+	})
 </script>
 
 <template lang="pug">
 	svelte:window(on:resize='{checkFullscreen}')
 
 	.hn-container(style:height)
-		.story-previews.scroller(class:activeThread)
-			+await('getStories()')
+		.story-previews.scroller(on:scroll='{handleScroll}' class:activeThread)
+			+if('!items.length')
 				| ...
-				+then('stories')
-					+each('stories as item, i')
+				+else
+					+each('items as item, i')
 						.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50, y: 10 + i}}')
 							HNItem({item} on:showThread='{showThread}')
-
-					| {start}
-
-				+if('next')
-					button(on:click='{nextPage}') Next
-
-				+catch('e') {e}
 
 		+if('activeThread')
 			.story-thread
 				HnThread(threadId='{activeThread}')
 
+	//- pre.debug(style='position:absolute;top:3rem;left:3rem;')
+	//- 	| scrollProgress: {scrollProgress}
+	//- 	| itemsLeft: {100 - (itemsLeft * 100)}%
+	//- 	| loaded: {loaded}
+	//- 	| activeThread: {activeThread}
+	//- 	| items: {items}
 </template>
 
 <style lang="sass">
@@ -129,13 +101,16 @@
 
 		width: 100vw
 
+		border-bottom: 1px solid var(--light-a)
+
 	.story-previews
 		flex-direction: column
 		align-items: center
 		justify-content: center
 
-		height: 80%
+		height: 100%
 		max-height: 100%
+		padding-top: 5rem
 		min-width: 600px
 		&.activeThread
 			width: 40%

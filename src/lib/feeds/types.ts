@@ -1,3 +1,5 @@
+export type ICategory = 'topstories' | 'newstories' | 'beststories'
+
 /**
  * A single comment.
  *

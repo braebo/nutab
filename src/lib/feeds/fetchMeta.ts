@@ -27,9 +27,14 @@ const fetchHead = async (url: string) => {
 			})
 		})
 
-	const res = await fetch(url)
-	if (!res.ok) return ''
-	return read(res.body)
+	try {
+		const res = await fetch(url)
+		if (!res.ok) return ''
+		return read(res.body)
+	} catch (e) {
+		console.error(e)
+		return ''
+	}
 }
 
 const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url).origin).toString()
@@ -51,15 +56,19 @@ export const fetchMeta = async (url: string) => {
 		image: ''
 	}
 	for (const prop in metadataRuleSets) {
+		// @ts-ignore
 		for (const rule of metadataRuleSets[prop].rules) {
 			const el = dom.querySelector(rule[0])
 			if (el) {
 				let data = rule[1](el)
+				// @ts-ignore
 				metadata[prop] = metadataRuleSets[prop].absolute ? makeUrlAbsolute(url, data) : data
 				break
 			}
 		}
+		// @ts-ignore
 		if (!metadata[prop] && metadataRuleSets[prop].defaultValue) {
+			// @ts-ignore
 			metadata[prop] = makeUrlAbsolute(url, metadataRuleSets[prop].defaultValue)
 		}
 	}
