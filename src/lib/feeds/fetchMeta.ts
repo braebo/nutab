@@ -12,7 +12,7 @@ const fetchHead = async (url: string) => {
 			const reader = body.getReader()
 			const decoder = new TextDecoder()
 
-			// Stream and decode the response body until the closing <head/> tag is found
+			// Stream and decode the response body until the closing <head/> tag is found.
 			reader.read().then(function next({ done, value }) {
 				const text = decoder.decode(value, { stream: !done })
 				head += text
@@ -32,7 +32,7 @@ const fetchHead = async (url: string) => {
 		if (!res.ok) return ''
 		return read(res.body)
 	} catch (e) {
-		console.error(e)
+		console.warn(e)
 		return ''
 	}
 }

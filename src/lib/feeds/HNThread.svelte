@@ -11,13 +11,13 @@
 </script>
 
 <template lang="pug">
-	
+
 	+await('fetchItem(threadId)')
 		| ...
-		
+
 		+then('item')
 			article.item(out:fly='{{ y: -10, duration: transitionDuration }}' in:fly='{{ y: -10, delay: transitionDuration }}')
-				a(class='main-link' href='{item.url}')
+				a(class='main-link' href='{item.url}' target="_blank")
 					h1 {item.title}
 
 				p.meta
@@ -37,15 +37,13 @@
 						HNComment({commentId})
 					+else
 						p No comments yet...
-		
+
 		+catch('e') Problem loading thread:
 			pre {JSON.stringify(e)}
 
 </template>
 
 <style lang="sass">
-	
-
 	article.item
 		margin: 0 auto
 		padding: 1rem 2rem

@@ -3,7 +3,7 @@ import type { IHNItem, ICategory, IMeta } from './types'
 import { get } from 'svelte/store'
 
 import { BATCH_SIZE, CORS, DEFAULT_CATEGORY, INITIAL_SIZE } from './constants'
-import { currentCategory, list } from './stores'
+import { currentCategory, items, list } from './stores'
 import { daysAgo } from '$lib/utils/daysAgo'
 
 import fetchMeta from './fetchMeta'
@@ -48,25 +48,35 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 	// fetch stories
 	let stories: IHNItem[] = []
 	let storyPromises = []
-	for (let id of ids) {
+	for (const id of ids) {
 		storyPromises.push(fetchItem(id))
 	}
 	stories = await Promise.all(storyPromises)
 
 	// fetch opengraph metadata
-	let metas: IMeta[] = []
-	let metaPromises = []
-	for (let story of stories) {
-		metaPromises.push(fetchMeta(`${CORS}${story.url}`))
-	}
-	metas = await Promise.all(metaPromises)
-	stories.forEach((story, i) => {
-		story.meta = metas[i]
+	for (const story of stories) {
 		story.days_ago = daysAgo(new Date(story.time * 1000)).string
-	})
-
-	// console.log({ metas })
-	// console.log({ stories })
+		story.meta = {
+			url: story.url,
+			title: story.title,
+			description: story.text,
+			icon: '',
+			image: ''
+		}
+		lazyLoadMeta(story.id, `${CORS}${story.url}`)
+	}
+	console.log({ stories })
 
 	return stories
+}
+
+async function lazyLoadMeta(id: number, url: string) {
+	const meta = await fetchMeta(url)
+	items.update((items) => {
+		const item = items.find((item) => item.id === id)
+		if (!item) return items
+		item.meta.image = meta.image
+		item.meta.description = meta.description
+		return items
+	})
 }

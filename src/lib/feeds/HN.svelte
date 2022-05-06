@@ -3,18 +3,17 @@
 
 	import { fly } from 'svelte/transition'
 	import { get } from 'svelte/store'
+	import { onMount } from 'svelte'
 
 	import HnThread from './HNThread.svelte'
 	import HNItem from './HNItem.svelte'
 
 	import { fetchCategory, fetchItem, fetchStories } from './fetchData'
 	import { fetchMeta } from '$lib/feeds/fetchMeta'
-	import { list } from './stores'
-	import { BATCH_SIZE, INITIAL_SIZE } from './constants'
-	import { onMount } from 'svelte'
 
-	let items: IHNItem[] = []
-	$: items
+	import { BATCH_SIZE, INITIAL_SIZE } from './constants'
+	import { items, list } from './stores'
+
 	let loaded = INITIAL_SIZE
 	let loading = true
 
@@ -25,10 +24,10 @@
 			}, 500)
 		loading = true
 
-		const newStories = await fetchStories(items.length)
+		const newStories = await fetchStories($items.length)
 		console.log({ newStories })
-		items = [...items, ...newStories]
-		console.log({ items })
+		$items = [...$items, ...newStories]
+		console.log({ $items })
 
 		loaded = Math.min(loaded + BATCH_SIZE, get(list).length)
 		loading = false
@@ -61,7 +60,7 @@
 	}
 
 	onMount(async () => {
-		items = await fetchStories()
+		$items = await fetchStories()
 		loading = false
 	})
 </script>
@@ -70,12 +69,12 @@
 	svelte:window(on:resize='{checkFullscreen}')
 
 	.hn-container(style:height)
-		.story-previews.scroller(on:scroll='{handleScroll}' class:activeThread)
-			+if('!items.length')
+		.story-previews.scroller.ghost(on:scroll='{handleScroll}' class:activeThread)
+			+if('!$items.length')
 				| ...
 				+else
-					+each('items as item, i')
-						.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50, y: 10 + i}}')
+					+each('$items as item, i')
+						.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50 * 0, y: 10 + i}}')
 							HNItem({item} on:showThread='{showThread}')
 
 		+if('activeThread')
@@ -111,9 +110,15 @@
 		height: 100%
 		max-height: 100%
 		padding-top: 5rem
+		padding-bottom: 10rem
 		min-width: 600px
 		&.activeThread
 			width: 40%
+		
+		opacity: 0.75
+		transition: opacity 0.2s
+		&:hover
+			opacity: 1
 
 	.story-thread
 		display: flex

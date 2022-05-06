@@ -192,6 +192,9 @@ button:focus:not(:focus-visible) {
 	&:hover::-webkit-scrollbar-thumb {
 		background: rgba(var(--dark-d-rgb), 0.1);
 	}
+	&.ghost:hover::-webkit-scrollbar-thumb {
+		background: rgba(var(--dark-d-rgb), 0);
+	}
 }
 
 .space-xs {

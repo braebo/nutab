@@ -99,9 +99,9 @@
 
 		transition: 0.25s
 		&:hover
-			font-variation-settings: 'wght' 700
-			letter-spacing: 0.25px
-
+			// text-decoration: underline
+			// font-variation-settings: 'wght' 700
+			// letter-spacing: 0.25px
 
 	a
 		text-decoration: none
@@ -109,7 +109,6 @@
 			text-decoration: underline
 		&.article-link
 			text-decoration: none
-
 
 	.info
 		margin: 0
