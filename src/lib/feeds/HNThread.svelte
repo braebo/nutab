@@ -6,6 +6,8 @@
 	import { fetchItem } from './fetchItem'
 
 	export let threadId: number
+
+	let transitionDuration = 200
 </script>
 
 <template lang="pug">
@@ -14,7 +16,7 @@
 		| ...
 		
 		+then('item')
-			article(class='item' transition:fly='{{ y: 10 }}')
+			article.item(out:fly='{{ y: -10, duration: transitionDuration }}' in:fly='{{ y: -10, delay: transitionDuration }}')
 				a(class='main-link' href='{item.url}')
 					h1 {item.title}
 
@@ -42,8 +44,11 @@
 </template>
 
 <style lang="sass">
-	.item
-		padding: 1rem
+	
+
+	article.item
+		margin: 0 auto
+		padding: 1rem 2rem
 
 		border-radius: 1.5rem
 		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
@@ -54,7 +59,7 @@
 
 	h1
 		font-weight: 500
-		font-size: 2rem
+		font-size: 1.75rem !important
 
 	:global(html.dark) .item
 		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
@@ -64,7 +69,7 @@
 		text-decoration: none
 
 	.meta
-		margin: 0 0 1rem 2rem
+		margin: 0 2rem 1rem 2rem
 		font-size: 0.85rem
 		font-weight: 300
 

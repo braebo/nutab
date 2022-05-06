@@ -87,7 +87,7 @@
 	}
 
 	.body {
-		font-size: 1rem;
+		font-size: 1.1rem;
 		padding: 0 1rem;
 
 		&,
@@ -121,7 +121,7 @@
 	/* prevent crazy overflow layout bug on mobile */
 	.body :global(*) {
 		overflow-wrap: break-word;
-		font-size: 1rem;
+		font-size: 1.1rem;
 	}
 
 	.comment :global(pre) {
