@@ -165,28 +165,32 @@ button:focus:not(:focus-visible) {
 }
 
 .scroller {
+	position: relative;
 	overflow-y: auto;
+	z-index: 1;
+	-webkit-overflow-scrolling: touch; // smooth scrolling on iOS
 
 	&::-webkit-scrollbar {
-		width: 6px;
-	}
-	&.vertical::-webkit-scrollbar {
-		height: 8px;
+		width: 0.5rem;
+		height: 0.5rem;
+		background: transparent;
 	}
 
 	&::-webkit-scrollbar-track {
-		background: var(--light-a);
+		background: transparent;
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background-color: rgba(var(--light-c-rgb), 0);
-		border-radius: 10px;
-		border: 0px solid var(--light-c);
+		background: rgba(var(--dark-d-rgb), 0);
+		border-radius: 5px;
+		transition: background 0.2s;
 
-		transition: 0.3s !important;
+		&:hover {
+			cursor: pointer;
+		}
 	}
 	&:hover::-webkit-scrollbar-thumb {
-		background-color: rgba(var(--light-c-rgb), 0.75);
+		background: rgba(var(--dark-d-rgb), 0.1);
 	}
 }
 

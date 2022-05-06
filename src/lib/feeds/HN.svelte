@@ -14,7 +14,7 @@
 	let list: IHNItem['type'] = 'story'
 	let defaultCategory: 'topstories' | 'newstories' | 'beststories' = 'topstories'
 
-	const PAGE_SIZE = 5
+	const PAGE_SIZE = 10
 	const page = 1
 
 	$: start = 1 + (page - 1) * PAGE_SIZE
@@ -83,12 +83,21 @@
 		activeThread = null
 		activeThread = e.detail.id
 	}
+
+	let height = '100vh'
+	let fullscreen = false
+	const checkFullscreen = () => {
+		fullscreen = window?.innerHeight == screen?.height
+		height = fullscreen ? window.innerHeight + 'px' : '100vh'
+		console.log({ height })
+	}
 </script>
 
 <template lang="pug">
+	svelte:window(on:resize='{checkFullscreen}')
 
-	.hn-container
-		.story-previews(class:activeThread)
+	.hn-container(style:height)
+		.story-previews.scroller(class:activeThread)
 			+await('getStories()')
 				| ...
 				+then('stories')
@@ -110,20 +119,23 @@
 </template>
 
 <style lang="sass">
+	$scrollbarOffset: 10%
+
 	.hn-container
 		display: flex
+		position: relative
 		align-items: center
 		justify-content: center
 
-		height: 100vh
 		width: 100vw
-	
+
 	.story-previews
-		display: flex
 		flex-direction: column
 		align-items: center
 		justify-content: center
 
+		height: 80%
+		max-height: 100%
 		min-width: 600px
 		&.activeThread
 			width: 40%
@@ -132,15 +144,15 @@
 		display: flex
 		flex-direction: column
 		align-items: flex-start
-		
+
 		width: 60%
 		max-height: 80%
-		
+
 		overflow-y: auto
 
 		margin-right: 4%	// offset the srollbar...
 		padding-right: 1%	// ...just a bit
-		
+
 		&, :global(pre)
 			&::-webkit-scrollbar-track
 				background: transparent
@@ -155,6 +167,6 @@
 	.item
 		display: flex
 		flex-direction: column
-		
+
 		width: 100%
 </style>
