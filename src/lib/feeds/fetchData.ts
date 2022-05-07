@@ -20,7 +20,7 @@ export const fetchCategory = async (type: ICategory = DEFAULT_CATEGORY): Promise
 	return category as number[]
 }
 
-export const fetchItem = async (id: IHNItem['id']) => {
+export const fetchItem = async (id: IHNItem['id']): Promise<IHNItem> => {
 	const item = await fetch(`${CORS}https://hacker-news.firebaseio.com/v0/item/${id}.json`)
 		.then((res) => res.json())
 		.catch((e) => console.error(`Hmm.. problem fetching story ${id}: `, e))
