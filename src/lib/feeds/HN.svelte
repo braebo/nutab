@@ -95,8 +95,9 @@
 	.hn-container
 		display: flex
 		position: relative
-		align-items: center
+		// align-items: center
 		justify-content: center
+		padding-top: 5rem
 
 		width: 100vw
 
@@ -109,7 +110,6 @@
 
 		height: 100%
 		max-height: 100%
-		padding-top: 5rem
 		padding-bottom: 10rem
 		min-width: 600px
 		&.activeThread
@@ -126,7 +126,8 @@
 		align-items: flex-start
 
 		width: 60%
-		max-height: 80%
+		height: 100%
+		padding-bottom: 10rem
 
 		overflow-y: auto
 
