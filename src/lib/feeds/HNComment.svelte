@@ -31,6 +31,9 @@
 	<article class="comment" class:hidden class:dead class:deleted>
 		<div class="meta-bar" on:click={() => (hidden = !hidden)}>
 			<span class="meta">
+				<div class="collapse-icon">
+					<CollapseIcon bind:hidden />
+				</div>
 				<a href="/user/{comment.by}" target="_blank">
 					{pulseCheck(comment, comment.by)}
 				</a>
@@ -43,7 +46,6 @@
 						.replace('less than am', 'just now')}
 				</span>
 			</span>
-			<CollapseIcon bind:hidden />
 		</div>
 
 		<p class="body" in:fly={{ y: 5 }}>
@@ -61,27 +63,41 @@
 {/await}
 
 <style lang="sass">
-	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=PT+Sans:wght@0,200&family=Red+Hat+Text&display=swap')
-
-	$bg: rgba(var(--light-a-rgb), 0.5)
 
 	.comment
-		// border-top: 2px solid rgba(var(--dark-d-rgb), 0.05)
 		color: var(--dark-b)
 		margin: 1rem 0
 
+	li
+		list-style: none
+		box-sizing: border-box
+		position: relative
 
 	.meta-bar
-		font-family: var(--font-mono)
-		display: flex
-		justify-content: space-between
+		overflow: visible
+		position: relative
+
 		padding: 0.5rem 1rem
-		cursor: pointer
-		transition: background 0.25s
+
 		border-radius: 0.25rem
 		&:hover
 			background: rgba(var(--light-d-rgb), 0.15)
+			& .collapse-icon
+				opacity: 1
 
+		font-family: var(--font-mono)
+
+		transition: background 0.25s
+		cursor: pointer
+
+	.collapse-icon
+		left: 0
+		top: 0
+		bottom: 0
+		padding-left: 0.5rem
+		
+		transition: opacity 0.25s
+		opacity: 0
 
 	.time
 		color: var(--light-d)
@@ -96,6 +112,8 @@
 	.hidden
 		& .body
 			display: none
+		& .collapse-icon
+			opacity: 1 !important
 
 		& .children
 			display: none
@@ -103,12 +121,9 @@
 
 	.body
 		padding: 1rem
-		background: $bg
+		background: rgba(var(--light-a-rgb), 0.5)
 		border-radius: var(--radius)
 
-		// font-family: var(--brand-c)
-		font-family: 'Red Hat Text', sans-serif
-		font-family: 'PT Sans', serif
 		font-size: 1.1rem
 		font-weight: 200
 		word-spacing: 1px
@@ -119,11 +134,7 @@
 		overflow-wrap: break-word
 
 		& :global(*)
-			font-family: 'Red Hat Text', sans-serif
-			font-family: 'PT Sans', serif
 			font-weight: 200
-			// font-weight: 100 !important
-			// font-variation-settings: 'wght' 100 !important
 			color: var(--dark-b)
 
 		& :global(i)
@@ -134,20 +145,17 @@
 			font-size: inherit
 			font-weight: inherit
 
-		// font-family: 'Red Hat Text', sans-serif
-
 
 	@media (min-width: 720px)
 		.comment .children
 			padding-left: 1.5rem
 
 
-	li
-		list-style: none
-
 
 	.meta
-		display: block
+		display: flex
+		gap: 0.5rem
+		transform: translateX(-1rem)
 		font-size: 14px
 
 
@@ -168,6 +176,5 @@
 			font-family: 'Inconsolata', monospace
 			letter-spacing: -0.5px
 			font-size: 0.75rem
-
 
 </style>
