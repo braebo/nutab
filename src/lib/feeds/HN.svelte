@@ -1,4 +1,5 @@
 <script lang="ts">
+	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
 	import type { IHNItem } from './types'
 
 	import { fly } from 'svelte/transition'
@@ -44,7 +45,7 @@
 	$: trigger = 95 + 5 * itemsLeft
 	$: if (scrollProgress > 90) loadMore()
 
-	let activeThread: number | null = null
+	let activeThread: IHNItem['id'] = null
 
 	let showThread = (e: CustomEvent) => {
 		activeThread = null
@@ -71,11 +72,11 @@
 	.hn-container(style:height)
 		.story-previews.scroller.ghost(on:scroll='{handleScroll}' class:activeThread)
 			+if('!$items.length')
-				| ...
+				LoadingDots
 				+else
 					+each('$items as item, i')
 						.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50 * 0, y: 10 + i}}')
-							HNItem({item} on:showThread='{showThread}')
+							HNItem({item} bind:activeThread on:showThread='{showThread}')
 
 		+if('activeThread')
 			.story-thread

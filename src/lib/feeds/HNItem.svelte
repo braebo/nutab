@@ -9,16 +9,18 @@
 	import { onMount, createEventDispatcher } from 'svelte'
 
 	export let item: IHNItem
+	export let activeThread: IHNItem['id']
 
 	const dispatch = createEventDispatcher()
 	const showThread = () => {
 		dispatch('showThread', { id: item.id })
+		activeThread = item.id
 	}
 </script>
 
 <template lang="pug">
 
-	div.article(on:click='{showThread}')
+	div.article(on:click='{showThread}' class:active='{activeThread === item.id}')
 		.image-container
 			+if('item.meta.image')
 				.image(style='background-image: url({item.meta.image})' in:fade)
@@ -58,7 +60,6 @@
 		align-items: space-between
 		gap: 1.5rem
 
-		// width: 80%
 		max-width: min(800px, 90vw)
 		min-height: 112px
 		padding: 0.75rem
@@ -70,7 +71,9 @@
 		box-shadow: 0px 0.9px 0.7px rgba(0, 0, 0, 0.008), 0px 2.1px 1.8px rgba(0, 0, 0, 0.012), 0px 3.9px 3.4px rgba(0, 0, 0, 0.015), 0px 6.9px 6px rgba(0, 0, 0, 0.018), 0px 13px 11.3px rgba(0, 0, 0, 0.022), 0px 31px 27px rgba(0, 0, 0, 0.03)		
 
 		transition: transform 0.2s, box-shadow 0.2s
-		&:hover
+		&.active
+			border: 1px solid var(--dark-d)
+		&:hover, &.active
 			transform: scale(1.025)
 			box-shadow: 0px 1.8px 0.7px rgba(0, 0, 0, 0.006), 0px 4.3px 1.8px rgba(0, 0, 0, 0.008), 0px 8.1px 3.4px rgba(0, 0, 0, 0.01), 0px 14.5px 6px rgba(0, 0, 0, 0.012), 0px 27.2px 11.3px rgba(0, 0, 0, 0.014), 0px 65px 27px rgba(0, 0, 0, 0.02)
 

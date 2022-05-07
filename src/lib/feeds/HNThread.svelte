@@ -1,4 +1,5 @@
 <script lang="ts">
+	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
 	import { formatDistanceToNow } from 'date-fns'
 	import { fly } from 'svelte/transition'
 
@@ -13,7 +14,7 @@
 <template lang="pug">
 
 	+await('fetchItem(threadId)')
-		| ...
+		LoadingDots
 
 		+then('item')
 			article.item(out:fly='{{ y: -10, duration: transitionDuration }}' in:fly='{{ y: -10, delay: transitionDuration }}')
@@ -21,11 +22,11 @@
 					h1 {item.title}
 
 				p.meta
-					| {item.score} points
-					span.dot ·
+					| {item.score} points 
+					span.dot · 
 					a(href!="https://news.ycombinator.com/user?id={item.by}")
-						| {item.by}
-					span.dot ·
+						| {item.by} 
+					span.dot · 
 					| {formatDistanceToNow(item.time * 1000).replace('about', '')} ago
 
 				+if('item.text')
@@ -44,20 +45,24 @@
 </template>
 
 <style lang="sass">
+	// TODO #19 install Merriweather locally if it's going to be used
+	@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300')
 	article.item
-		margin: 0 auto
+		margin: 0 auto 2rem auto
 		padding: 1rem 2rem
 
 		border-radius: 1.5rem
 		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
-		background: rgba(var(--light-d-rgb), 0.05)
+		background: rgba(var(--light-a-rgb), 0.5)
+		box-shadow: 0 3px 0.75rem 0 #11111115
 
 	.item :global(*)
 		font-size: 1rem
 
 	h1
-		font-weight: 500
+		font-weight: 300 !important
 		font-size: 1.75rem !important
+		font-family: Merriweather
 
 	:global(html.dark) .item
 		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
@@ -67,7 +72,15 @@
 		text-decoration: none
 
 	.meta
-		margin: 0 2rem 1rem 2rem
+		display: flex
+		// justify-content: space-between
+		align-items: center
+		gap: 0.5rem
+
+		margin: 1rem auto 0 auto
+
+		opacity: 0.5
+
 		font-size: 0.85rem
 		font-weight: 300
 
@@ -76,7 +89,4 @@
 		color: var(--dark-a)
 		background: rgba(var(--light-a-rgb), 0.2)
 		border-radius: var(--radius-sm)
-
-	.dot
-		color: var(--light-d)
 </style>
