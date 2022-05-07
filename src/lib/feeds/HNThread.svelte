@@ -89,4 +89,7 @@
 		color: var(--dark-a)
 		background: rgba(var(--light-a-rgb), 0.2)
 		border-radius: var(--radius-sm)
+	
+	.comments
+		width: 100%
 </style>

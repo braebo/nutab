@@ -70,11 +70,9 @@
 
 	li
 		list-style: none
-		box-sizing: border-box
 		position: relative
 
 	.meta-bar
-		overflow: visible
 		position: relative
 
 		padding: 0.5rem 1rem
