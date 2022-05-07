@@ -1,40 +1,53 @@
 <script lang="ts">
+	import type { IHNItem } from './types'
+
+	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
 	import CollapseIcon from '$lib/icons/CollapseIcon.svelte'
 	import { formatDistanceToNow } from 'date-fns'
+	import { fly } from 'svelte/transition'
 	import { fetchItem } from './fetchData'
 
 	export let commentId: number
 
 	let hidden = false
+	let dead = false
+	let deleted = false
 
-	// function fixMissingPTag(text: string) {
-	// 	const missing = text.split('<p>')
-	// 	const fix = `<p>${missing[0]}</p>`
-	// 	missing.shift()
-	// 	return fix + missing
-	// }
+	const pulseCheck = (comment: IHNItem, _default: string) => {
+		if (comment.dead) {
+			dead = true
+			return '[dead]'
+		}
+		if (comment.deleted) {
+			deleted = true
+			return '[deleted]'
+		} else return _default
+	}
 </script>
 
 {#await fetchItem(commentId)}
-	...
+	<LoadingDots />
 {:then comment}
-	<article class="comment" class:hidden>
+	<article class="comment" class:hidden class:dead class:deleted>
 		<div class="meta-bar" on:click={() => (hidden = !hidden)}>
 			<span class="meta">
-				<a sveltekit:prefetch href="/user/{comment.by}">{comment.by}</a>
+				<a href="/user/{comment.by}" target="_blank">
+					{pulseCheck(comment, comment.by)}
+				</a>
 				<span class="time">
+					<!-- this is wack but I'm tired -->
 					· {formatDistanceToNow(comment.time * 1000)
 						.replace(/\sminutes|\sminute/, 'm')
 						.replace('about', '')
-						.replace(/\shours|\shour/, 'h')}
+						.replace(/\shours|\shour/, 'h')
+						.replace('less than am', 'just now')}
 				</span>
 			</span>
 			<CollapseIcon bind:hidden />
 		</div>
 
-		<p class="body">
-			<!-- {@html fixMissingPTag(comment.text)} -->
-			{@html comment.text}
+		<p class="body" in:fly={{ y: 5 }}>
+			{@html pulseCheck(comment, comment.text)}
 		</p>
 
 		{#if comment.kids?.length > 0}
@@ -47,84 +60,114 @@
 	</article>
 {/await}
 
-<style lang="scss">
-	.comment {
-		border-top: 2px solid rgba(var(--dark-d-rgb), 0.05);
-		color: var(--dark-b);
-		margin: 1rem 0;
-	}
+<style lang="sass">
+	@import url('https://fonts.googleapis.com/css2?family=Inconsolata&family=PT+Sans:wght@0,200&family=Red+Hat+Text&display=swap')
 
-	.meta-bar {
-		display: flex;
-		justify-content: space-between;
-		padding: 0.5rem 1rem;
-		cursor: pointer;
-		transition: background 0.25s;
-		border-radius: 0.25rem;
-		&:hover {
-			background: rgba(var(--light-d-rgb), 0.15);
-		}
-	}
+	$bg: rgba(var(--light-a-rgb), 0.5)
 
-	.time {
-		color: var(--light-d);
-	}
+	.comment
+		// border-top: 2px solid rgba(var(--dark-d-rgb), 0.05)
+		color: var(--dark-b)
+		margin: 1rem 0
 
-	.comment .children {
-		padding-left: 0.5rem;
-		margin: 0;
-		transition: 2s;
-	}
 
-	.hidden {
-		& .body {
-			max-height: 0px;
-			overflow: hidden;
-		}
-		& .children {
-			display: none;
-		}
-	}
+	.meta-bar
+		font-family: var(--font-mono)
+		display: flex
+		justify-content: space-between
+		padding: 0.5rem 1rem
+		cursor: pointer
+		transition: background 0.25s
+		border-radius: 0.25rem
+		&:hover
+			background: rgba(var(--light-d-rgb), 0.15)
 
-	.body {
-		font-size: 1.1rem;
-		padding: 0 1rem;
 
-		&,
-		:global(*) {
-			color: var(--dark-b);
-		}
-		& :global(p) {
-			margin: 0.5rem 0;
-		}
-	}
+	.time
+		color: var(--light-d)
 
-	@media (min-width: 720px) {
-		.comment .children {
-			padding-left: 1.5rem;
-		}
-	}
 
-	li {
-		list-style: none;
-	}
+	.comment .children
+		padding-left: 0.5rem
+		margin: 0
+		transition: 2s
 
-	.meta {
-		display: block;
-		font-size: 14px;
-	}
 
-	a {
-		color: var(--light-d);
-	}
+	.hidden
+		& .body
+			display: none
 
-	/* prevent crazy overflow layout bug on mobile */
-	.body :global(*) {
-		overflow-wrap: break-word;
-		font-size: 1.1rem;
-	}
+		& .children
+			display: none
 
-	.comment :global(pre) {
-		overflow-x: auto;
-	}
+
+	.body
+		padding: 1rem
+		background: $bg
+		border-radius: var(--radius)
+
+		// font-family: var(--brand-c)
+		font-family: 'Red Hat Text', sans-serif
+		font-family: 'PT Sans', serif
+		font-size: 1.1rem
+		font-weight: 200
+		word-spacing: 1px
+		letter-spacing: 0.2px
+		box-shadow: var(--shadow-sm)
+
+		/* prevent crazy overflow layout bug on mobile */
+		overflow-wrap: break-word
+
+		& :global(*)
+			font-family: 'Red Hat Text', sans-serif
+			font-family: 'PT Sans', serif
+			font-weight: 200
+			// font-weight: 100 !important
+			// font-variation-settings: 'wght' 100 !important
+			color: var(--dark-b)
+
+		& :global(i)
+			opacity: 0.75
+
+		& :global(p)
+			margin: 0.5rem 0
+			font-size: inherit
+			font-weight: inherit
+
+		// font-family: 'Red Hat Text', sans-serif
+
+
+	@media (min-width: 720px)
+		.comment .children
+			padding-left: 1.5rem
+
+
+	li
+		list-style: none
+
+
+	.meta
+		display: block
+		font-size: 14px
+
+
+	a
+		color: var(--light-d)
+
+
+	.comment :global(pre)
+		overflow-x: auto
+
+
+	.dead,
+	.deleted
+		opacity: 0.3
+
+		& *
+			// font-family: var(--font-mono)
+			font-family: 'Inconsolata', monospace
+			letter-spacing: -0.5px
+			font-size: 0.75rem
+
+
 </style>
