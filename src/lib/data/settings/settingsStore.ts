@@ -29,6 +29,14 @@ const default_settings: Settings = {
 	showTitle: false
 }
 
+export const cMenu = writable({
+	visible: false,
+	x: 0,
+	y: 0,
+	el: null as HTMLElement,
+	pending: false
+})
+
 export const settings = localStorageStore('settings', default_settings)
 
 export const showSettings = writable(false)

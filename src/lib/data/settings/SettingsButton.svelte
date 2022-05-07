@@ -1,50 +1,64 @@
 <script>
-	import { showSettings } from './settingsStore'
+	import { tick } from 'svelte'
+
+	import { cMenu } from './settingsStore'
+
+	const toggleCMenu = async () => {
+		if (!$cMenu.visible && !$cMenu.pending) {
+			$cMenu.visible = true
+			await tick()
+			$cMenu.x = window.innerWidth - $cMenu.el.clientWidth - 40
+			$cMenu.y = 20
+		}
+	}
 </script>
 
-<div id="settings-button" on:click={() => ($showSettings = !$showSettings)} class:active={$showSettings}>
-	<div class="dot" />
-	<div class="dot" />
-	<div class="dot" />
-</div>
+<template lang="pug">
 
-<style>
-	#settings-button {
-		position: absolute;
-		top: 0;
-		right: 0;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		gap: 4px;
+	#settings-button(on:click!='{toggleCMenu}' class:active='{$cMenu.visible}')
+		.dot
+		.dot
+		.dot
 
-		height: 50px;
-		width: 40px;
-		box-sizing: content-box;
+</template>
 
-		font-size: 25px;
+<style lang="sass">
+	#settings-button
+		position: absolute
+		top: 0
+		right: 0
+		display: flex
+		flex-direction: column
+		justify-content: center
+		align-items: center
+		gap: 4px
 
-		cursor: pointer;
+		height: 50px
+		width: 40px
 
-		transition: 150ms;
-	}
-	.active {
-		top: 3px !important;
-		gap: 10px !important;
-	}
+		font-size: 25px
 
-	.dot {
-		display: flex;
-		flex-direction: row;
+		box-sizing: content-box
+		cursor: pointer
 
-		width: 4px;
-		height: 4px;
+		transition: 150ms
 
-		border-radius: 100%;
+	.active
+		top: 3px !important
+		gap: 10px !important
 
-		background: var(--dark-c);
 
-		pointer-events: none;
-	}
+	.dot
+		display: flex
+		flex-direction: row
+
+		width: 4px
+		height: 4px
+
+		border-radius: 100%
+
+		background: var(--dark-c)
+
+		pointer-events: none
+
 </style>

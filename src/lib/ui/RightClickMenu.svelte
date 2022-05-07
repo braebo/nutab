@@ -3,13 +3,13 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
+	import { cMenu, showSettings } from '$lib/data/settings/settingsStore'
 	import { editor, folderEditor, editorShown } from '$lib/stores/bookmarkEditor'
-	import { showSettings } from '$lib/data/settings/settingsStore'
 	import { getFolder_db } from '$lib/data/transactions'
 
 	// Utils
 	import { idFromClassList } from '$lib/utils'
-	import { clickOutside } from 'fractils'
+	import { clickOutside, wait } from 'fractils'
 	import { fly } from 'svelte/transition'
 
 	export let options = [
@@ -23,11 +23,16 @@
 		}
 	]
 
-	let showMenu = false
-	let x: number, y: number
-
 	async function show(e: MouseEvent) {
 		if ($editorShown) return
+
+		// Disable on news page
+		for (const el of e.composedPath()) {
+			if ((el as Element).classList?.contains('news')) return
+			else if ((el as Element).classList?.contains('bookmarks')) break
+		}
+
+		e.preventDefault()
 		const target = e.target as Element
 
 		// if mouse target is bookmark, show it's settings.
@@ -42,24 +47,38 @@
 		}
 
 		// else show context menu.
-		x = e.clientX
-		y = e.clientY
-		showMenu = true
+		positionMenu(e)
+		$cMenu.visible = true
+	}
+
+	function positionMenu(e?: MouseEvent) {
+		if (e) {
+			$cMenu.x = e.clientX
+			$cMenu.y = e.clientY
+		}
 	}
 
 	function handleAction(e: MouseEvent, i: number) {
 		options[i].action()
-		showMenu = false
+		$cMenu.visible = false
+	}
+
+	const handleClickOutside = async () => {
+		$cMenu.visible = false
+		$cMenu.pending = true
+		await wait(100)
+		$cMenu.pending = false
 	}
 </script>
 
-<svelte:window on:contextmenu|preventDefault={(e) => show(e)} />
+<svelte:window on:contextmenu={(e) => show(e)} />
 
-{#if showMenu}
+{#if $cMenu.visible}
 	<div
-		class="menu"
-		style="left: {x}px;top: {y}px;"
-		use:clickOutside={() => (showMenu = false)}
+		bind:this={$cMenu.el}
+		class="cMenu"
+		style="left: {$cMenu.x}px;top: {$cMenu.y}px;"
+		use:clickOutside={handleClickOutside}
 		in:fly={{ y: 5, duration: 250 }}
 		out:fly={{ y: 5, duration: 150 }}
 	>
@@ -72,7 +91,7 @@
 {/if}
 
 <style>
-	.menu {
+	.cMenu {
 		position: absolute;
 
 		width: max-content;
@@ -94,6 +113,7 @@
 		border-bottom: 1px solid #00000011;
 
 		cursor: pointer;
+		user-select: none;
 
 		transition: background 0.2s;
 	}

@@ -28,7 +28,7 @@
 			.news
 				News
 
-			.slot(bind:this='{slot}')
+			.bookmarks(bind:this='{slot}')
 				slot
 
 </template>
@@ -50,7 +50,7 @@
 	.news
 		display: flex
 
-	.slot, .news
+	.bookmarks, .news
 		scroll-snap-align: start
 		contain: content
 		min-height: 100vh
