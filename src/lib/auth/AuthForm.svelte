@@ -92,20 +92,12 @@
 			<nav in:fly={{ y: 10, delay: 200 }} class="auth-nav">
 				<ul class="login-signup">
 					<li>
-						<h2
-							class="anim-link"
-							class:activeTab={active == 'login'}
-							on:click={() => (active = 'login')}
-						>
+						<h2 class="anim-link" class:activeTab={active == 'login'} on:click={() => (active = 'login')}>
 							Login
 						</h2>
 					</li>
 					<li>
-						<h2
-							class="anim-link"
-							class:activeTab={active == 'signup'}
-							on:click={() => (active = 'signup')}
-						>
+						<h2 class="anim-link" class:activeTab={active == 'signup'} on:click={() => (active = 'signup')}>
 							Sign Up
 						</h2>
 					</li>
@@ -153,11 +145,7 @@
 							autocomplete="current-password"
 						/>
 						{#if password}
-							<div
-								class="eye-icon"
-								on:click={() => (showPassword = !showPassword)}
-								transition:fade
-							>
+							<div class="eye-icon" on:click={() => (showPassword = !showPassword)} transition:fade>
 								<EyeIcon active={showPassword} />
 							</div>
 						{/if}
@@ -240,7 +228,7 @@
 		cursor: pointer;
 	}
 	.login-input {
-		font-family: var(--font);
+		font-family: var(--font-a);
 		font-size: inherit;
 		font-size: 16px;
 

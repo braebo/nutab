@@ -16,7 +16,7 @@
 		background: var(--bg, var(--light-a));
 		box-shadow: 0 1px 2px #00000022;
 
-		font-family: var(--font);
+		font-family: var(--font-a);
 
 		cursor: pointer;
 		transition: 0.2s;

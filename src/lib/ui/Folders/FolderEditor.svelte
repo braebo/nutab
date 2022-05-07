@@ -282,7 +282,7 @@
 		max-height: 200px;
 		margin: 1rem auto;
 
-		font-family: var(--font);
+		font-family: var(--font-a);
 
 		transition: opacity 0.2s;
 	}

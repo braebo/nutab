@@ -132,12 +132,12 @@
 		</div>
 
 		<div class="buttons">
-			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}
-				>Cancel</Button
-			>
-			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}
-				>Save</Button
-			>
+			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}>
+				Cancel
+			</Button>
+			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}>
+				Save
+			</Button>
 			<DeleteBookmark bookmark_id={$bookmarkEditor.bookmark_id} on:close={() => editor.hide()} />
 		</div>
 	</div>
@@ -259,7 +259,7 @@
 		height: 100%;
 		margin: 1rem auto;
 
-		font-family: var(--font);
+		font-family: var(--font-a);
 	}
 
 	.buttons {

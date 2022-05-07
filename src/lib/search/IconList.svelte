@@ -126,7 +126,7 @@
 		text-align: center;
 		white-space: nowrap;
 		letter-spacing: 0.3em;
-		font-family: var(--font);
+		font-family: var(--font-a);
 
 		opacity: 0;
 		color: var(--dark-d) !important;

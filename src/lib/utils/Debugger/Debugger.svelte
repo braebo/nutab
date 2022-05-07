@@ -187,7 +187,7 @@
 		color: var(--brand-a);
 
 		font-weight: 500;
-		font-family: var(--font-secondary);
+		font-family: var(--font-b);
 	}
 
 	.kv {
@@ -204,7 +204,7 @@
 
 			color: var(--brand-a);
 
-			font-family: var(--font-secondary);
+			font-family: var(--font-b);
 			font-weight: 300;
 		}
 

@@ -60,6 +60,14 @@
 		console.log({ height })
 	}
 
+	const scrollToTop = () => {
+		document.querySelector('.story-thread')?.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'smooth'
+		})
+	}
+
 	onMount(async () => {
 		$items = await fetchStories()
 		loading = false
@@ -81,6 +89,7 @@
 		+if('activeThread')
 			.story-thread
 				HnThread(threadId='{activeThread}')
+				.to-top(on:click='{scrollToTop}') 🔝
 
 	//- pre.debug(style='position:absolute;top:3rem;left:3rem;')
 	//- 	| scrollProgress: {scrollProgress}
@@ -151,4 +160,11 @@
 		flex-direction: column
 
 		width: 100%
+
+	.to-top
+		font-size: 2rem
+		text-align: center
+		margin: 2rem auto 0 auto
+		// color: var(--dark-b)
+		cursor: pointer
 </style>

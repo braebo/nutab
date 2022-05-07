@@ -46,7 +46,7 @@
 
 <style lang="sass">
 	// TODO #19 install Merriweather locally if it's going to be used
-	@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300')
+	// @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300')
 	article.item
 		margin: 0 auto 2rem auto
 		padding: 1rem 2rem
@@ -62,7 +62,7 @@
 	h1
 		font-weight: 300 !important
 		font-size: 1.75rem !important
-		font-family: Merriweather
+		font-family: var(--font-c)
 
 	:global(html.dark) .item
 		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
@@ -73,7 +73,6 @@
 
 	.meta
 		display: flex
-		// justify-content: space-between
 		align-items: center
 		gap: 0.5rem
 

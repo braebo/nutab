@@ -163,6 +163,8 @@
 
 	.comment :global(pre)
 		overflow-x: auto
+		font-family: 'Inconsolata', monospace
+		font-size: 1rem
 
 
 	.dead,
@@ -173,6 +175,6 @@
 			// font-family: var(--font-mono)
 			font-family: 'Inconsolata', monospace
 			letter-spacing: -0.5px
-			font-size: 0.75rem
+			font-size: 0.5rem
 
 </style>

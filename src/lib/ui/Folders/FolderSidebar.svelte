@@ -181,7 +181,7 @@
 				color: var(--dark-c);
 				opacity: 0;
 
-				font-family: var(--font-secondary);
+				font-family: var(--font-b);
 				font-size: 1.25rem;
 
 				transform: translateX(5px);

@@ -59,7 +59,7 @@
 		background-color: var(--light-a);
 		box-shadow: 0 2px 5px #54354311;
 
-		font-family: var(--font-secondary);
+		font-family: var(--font-b);
 		font-size: 14px;
 		line-height: 1.4;
 		letter-spacing: 2px;
