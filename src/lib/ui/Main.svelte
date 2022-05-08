@@ -5,17 +5,17 @@
 	import { onMount } from 'svelte'
 
 	let main: HTMLDivElement
-	let slot: HTMLDivElement
+	let bookmarks: HTMLDivElement
 
 	onMount(() => {
-		main.scrollTo(0, slot.offsetTop)
+		main.scrollTo(0, bookmarks.offsetTop)
 	})
 
-	let newsVisible
-
+	let newsVisible = false
+	
 	function handleChange(e: CustomEvent) {
-		newsVisible = e.detail.isVisible
-		$activeSection = newsVisible ? 'news' : 'bookmarks'
+		if (!newsVisible) newsVisible = true
+		$activeSection = e.detail.isVisible ? 'news' : 'bookmarks'
 	}
 </script>
 
@@ -27,7 +27,7 @@
 				+if('newsVisible')
 					News
 
-			.bookmarks(bind:this='{slot}')
+			.bookmarks(bind:this='{bookmarks}')
 				slot
 
 </template>

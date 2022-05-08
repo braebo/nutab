@@ -161,8 +161,6 @@
 		min-width: 200px;
 		padding: 3rem 2rem 3rem 2rem;
 
-		// border: 1px solid pink;
-
 		& ._folder_ {
 			display: flex;
 			flex-direction: row;
@@ -172,8 +170,6 @@
 
 			margin: 0.25rem 1rem;
 			margin-left: 0;
-
-			// border: 1px solid lightgreen;
 
 			cursor: pointer;
 
@@ -225,17 +221,18 @@
 
 		& .new-folder {
 			position: absolute;
-			left: 2.25rem;
+			left: 1.75rem;
 			bottom: 1.5rem;
 
-			margin: auto;
-			width: fit-content;
-			height: fit-content;
+			width: 2rem;
+			height: 2rem;
 
 			color: var(--light-d);
 			opacity: 0;
 
 			font-size: 1.5rem;
+			text-align: center;
+			vertical-align: center;
 
 			cursor: pointer;
 
