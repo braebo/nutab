@@ -3,7 +3,7 @@
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
 	import { swapBookmarks_db } from '$lib/data/transactions'
-	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
+	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
@@ -64,6 +64,8 @@
 	}
 
 	const handleMouseDown = (e: MouseEvent) => {
+		// Disable re-arranging when filter is active
+		if ($tagFilter) return
 		// Store index of active item located in its classname. i.e. - "item-3"
 		const activeClass = (e.target as Element).classList[0]
 		if (activeClass?.startsWith('item-')) {

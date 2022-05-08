@@ -226,7 +226,7 @@ export async function deleteBookmark_db(id: Bookmark['bookmark_id']) {
  */
 export async function deleteFolder_db(folder: Folder) {
 	const id = folder.folder_id
-	log(`🎬 Deleting folder with id of ${id}`, '#fa8', 'dimgray', 25)
+	log(`🎬 Deleting folder "${folder.title}" with id of ${id}`, '#fa8', 'dimgray', 25)
 
 	const before = await db.bookmarks.count()
 	//? Remove the folder's bookmarks
