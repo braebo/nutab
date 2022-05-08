@@ -12,7 +12,7 @@ import db from '$lib/data/db'
 export const folders = writable<FolderListItem[]>()
 export const activeFolder = writable<Folder>()
 
-//? Seperate store that be manually set.  i.e. - to a tag-filtered array of bookmarks
+//? Seperate store that is manually set.  i.e. - to a tag-filtered array of bookmarks
 export const activeBookmarks = writable<Bookmark[]>()
 
 export const lastActiveFolderId = localStorageStore('lastActiveFolderId', '')

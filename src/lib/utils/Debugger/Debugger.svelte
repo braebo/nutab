@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { showBookmarkEditor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
+	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from '$lib/data/dbStore'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
-	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
 	import FloatingPanel from './FloatingPanel.svelte'
@@ -96,6 +96,7 @@
 		['$settings', $settings],
 		['$activeFolder', $activeFolder],
 		['$activeBookmarks', $activeBookmarks],
+		['$activeFolderBookmarks', $activeFolderBookmarks],
 		['$gridDimensions', $gridDimensions],
 		['grid', $grid]
 	]

@@ -14,6 +14,8 @@
 	import { smoothHover } from '$lib/utils/smoothHover'
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { scale } from 'svelte/transition'
+	import { log } from 'fractils'
+	import { tick } from 'svelte'
 
 	let hovering: number | null = null
 
@@ -45,12 +47,14 @@
 		showEditIcon = Array($grid.items.length).fill(false)
 	}
 
-	const handleMouseUp = (e: MouseEvent) => {
+	const handleMouseUp = async (e: MouseEvent) => {
 		// If we have a target, swap the elements
 		if (target !== null && active != null && target != active) {
-			swap(active, target)
+			await swap(active, target)
+			$activeFolder = $activeFolder
 		}
 		// Reset all the things
+		// await tick()
 		dragging = false
 		active = null
 		target = null
@@ -145,12 +149,13 @@
 	$: $gridDimensions
 
 	let swapTimer: NodeJS.Timeout
-	const swap = (a: number, b: number) => {
+	const swap = async (a: number, b: number) => {
 		disableTransitions = true
 
 		// Swap the elements and update stores / db
 		const _a = $activeBookmarks[a]
 		const _b = $activeBookmarks[b]
+		if (!_a || !_b) return
 		const aPosition = _a.position
 		const bPosition = _b.position
 		_a.position = bPosition
@@ -158,7 +163,7 @@
 		if (_a.position === _b.position) alert('Error: Bookmarks are in the same position')
 		$activeBookmarks[a] = _b
 		$activeBookmarks[b] = _a
-		swapBookmarks_db([_a, _b])
+		await swapBookmarks_db([_a, _b])
 
 		clearTimeout(swapTimer)
 		swapTimer = setTimeout(async () => {
@@ -166,7 +171,7 @@
 		}, 0)
 
 		// Re-render the grid
-		$reRender = !$reRender
+		// $reRender = !$reRender
 	}
 
 	// const addButtonSpring = spring(0, { stiffness: 0.1, damping: 0.9 })
@@ -186,66 +191,65 @@
 		--item-size: {$grid.iconSize}px;
 	"
 >
-	{#key $activeFolder}
-		{#if $grid.items}
-			{#each $grid.items as bookmark, i}
-				{#key $reRender}
-					<div
-						class="cell-{i} cell"
-						class:active={i == active}
-						class:target={target === i}
-						style="
-						/* stylelint-disable */
+	<!-- {#key $activeFolder} -->
+	{#if $grid.items}
+		{#each $grid.items as bookmark, i}
+			{#key $reRender}
+				<div
+					class="cell-{i} cell"
+					class:active={i == active}
+					class:target={target === i}
+					style="
 						width: {$gridDimensions.totalItemSize}px;
 						height: {$grid.iconSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
-						bind:this={cells[i]}
+					bind:this={cells[i]}
+				>
+					<div
+						class="item-{i} grid-item"
+						class:active={active === i}
+						class:target={target === i}
+						draggable="false"
+						class:dragging
+						class:disableTransitions
+						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
+						on:mouseover={() => handleItemMouseOver(i)}
+						on:mouseout={() => handleItemMouseOut(i)}
+						on:focus={() => handleItemMouseOver(i)}
+						on:blur={() => handleItemMouseOut(i)}
 					>
-						<div
-							class="item-{i} grid-item"
-							class:active={active === i}
-							class:target={target === i}
-							draggable="false"
-							class:dragging
-							class:disableTransitions
-							style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
-							on:mouseover={() => handleItemMouseOver(i)}
-							on:mouseout={() => handleItemMouseOut(i)}
-							on:focus={() => handleItemMouseOver(i)}
-							on:blur={() => handleItemMouseOut(i)}
-						>
-							<div class="grid-image">
-								<Bookmark
-									{bookmark}
-									{hovering}
-									{dragging}
-									{i}
-									on:showBookmarkEditor
-									--size={$grid.iconSize + 'px'}
-									{disableTransitions}
-								/>
-							</div>
-							{#if showEditIcon[i] && !dragging}
-								<div
-									on:mouseover={() => handleItemMouseOver(i)}
-									on:mouseout={() => handleItemMouseOut(i)}
-									on:focus={() => handleItemMouseOver(i)}
-									on:blur={() => handleItemMouseOut(i)}
-									class="edit"
-									transition:scale={{ duration: 150 }}
-									on:click|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
-								>
-									<Edit />
-								</div>
-							{/if}
+						<div class="grid-image">
+							<Bookmark
+								{bookmark}
+								{hovering}
+								{dragging}
+								{i}
+								on:showBookmarkEditor
+								--size={$grid.iconSize + 'px'}
+								{disableTransitions}
+							/>
 						</div>
+						{#if showEditIcon[i] && !dragging}
+							<div
+								on:mouseover={() => handleItemMouseOver(i)}
+								on:mouseout={() => handleItemMouseOut(i)}
+								on:focus={() => handleItemMouseOver(i)}
+								on:blur={() => handleItemMouseOut(i)}
+								class="edit"
+								transition:scale={{ duration: 150 }}
+								on:click|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
+							>
+								<Edit />
+							</div>
+						{/if}
 					</div>
-				{/key}
-			{/each}
-		{/if}
-	{/key}
+				</div>
+			{/key}
+		{/each}
+	{/if}
+	<!-- {/key} -->
 	<!-- TODO: Should this get it's own setting? -->
 	<!-- <div class="add-bookmark" style="top: {$addButtonSpring}px;" on:click={() => dispatch('newBookmark')}>
 		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
@@ -320,7 +324,6 @@
 		position: absolute;
 		left: 0;
 		right: 0;
-		// bottom: -7rem;
 
 		width: fit-content;
 		margin: auto;

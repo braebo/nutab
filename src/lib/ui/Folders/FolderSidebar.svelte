@@ -69,6 +69,13 @@
 		if ($tagFilter != null) applyTagFilter(null)
 		if (!isActive(id)) {
 			$activeFolder = await getFolder_db(id)
+
+			// This is a gnarly hack to wait for "activeFolderBookmarks"
+			// derived store to update to the new activeFolder...
+			setTimeout(() => {
+				$activeBookmarks = $activeFolderBookmarks
+			}, 100)
+
 			$lastActiveFolderId = id
 			$reRender = !$reRender
 		}

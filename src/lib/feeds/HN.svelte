@@ -165,6 +165,5 @@
 		font-size: 2rem
 		text-align: center
 		margin: 2rem auto 0 auto
-		// color: var(--dark-b)
 		cursor: pointer
 </style>

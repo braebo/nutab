@@ -1,11 +1,18 @@
 import type { Bookmark, Folder, FolderListItem } from './types'
 
-import { activeBookmarks, activeFolder, activeFolderBookmarks, folders, lastActiveFolderId, tagFilter, uniqueTags } from './dbStore'
+import {
+	activeBookmarks,
+	activeFolder,
+	activeFolderBookmarks,
+	folders,
+	lastActiveFolderId,
+	tagFilter,
+	uniqueTags
+} from './dbStore'
 import { log, wait } from 'fractils'
 import { get } from 'svelte/store'
 import db from './db'
 import cuid from 'cuid'
-
 
 /**
  ** Default bookmark folder and bookmarks db tables.
@@ -25,7 +32,6 @@ export async function init_db() {
 	folders.set(await db.table('folders').toArray())
 }
 
-
 /**
  ** Creates a new bookmark.
  * @param  {bookmark} The bookmark to add.
@@ -39,7 +45,7 @@ export async function newBookmark_db(bookmark: Bookmark) {
 
 	//? Add id to activeFolder store
 	activeFolder.update((f) => {
-		f.bookmarks.push(bookmark.bookmark_id);
+		f.bookmarks.push(bookmark.bookmark_id)
 		return f
 	})
 
@@ -56,7 +62,6 @@ export async function newBookmark_db(bookmark: Bookmark) {
 
 	log('🏁 New Bookmark added', '#fa8', 'dimgray', 25)
 }
-
 
 /**
  ** Creates a new folder.
@@ -85,14 +90,13 @@ export async function newFolder_db(folder: Folder) {
 	log('🏁 New Folder added', '#fd8', '#333', 25)
 }
 
-
 /**
  ** Get's the id's of any bookmarks containing a tag from an array of tags
  * @param {string[]} tags An array of tags
  * @returns {string[]} An array of bookmark ids
  */
-export const getBookmarksWithSelectedTags_db = async (tags: string[]): Promise<Bookmark["bookmark_id"][]> => {
- 	//? Get all relevant bookmarks
+export const getBookmarksWithSelectedTags_db = async (tags: string[]): Promise<Bookmark['bookmark_id'][]> => {
+	//? Get all relevant bookmarks
 	const allBookmarks = await db.bookmarks.where('tags').anyOf(tags).toArray()
 	//? We need to filter out duplicates (some share multiple tags)
 	// const bookmarks = [...new Set(allBookmarks)]
@@ -107,14 +111,14 @@ export const getBookmarksWithSelectedTags_db = async (tags: string[]): Promise<B
 		return acc
 	}, [])
 	//? We need to give them unique id's so they can be deleted without affecting other folders.
-	bookmarks.forEach(b => {b.bookmark_id = cuid()})
+	bookmarks.forEach((b) => {
+		b.bookmark_id = cuid()
+	})
 	//? Add them to the bookmarks table
 	await db.bookmarks.bulkAdd(bookmarks)
 
-	return bookmarks.map(b => b.bookmark_id)
+	return bookmarks.map((b) => b.bookmark_id)
 }
-
-
 
 /**
  ** Gets bookmark settings.
@@ -127,7 +131,7 @@ export async function getBookmark_db(id: Bookmark['bookmark_id']) {
 }
 
 /**
- * 
+ *
  ** Get's all folders.
  * @returns All folders
  */
@@ -136,7 +140,6 @@ export const getAllFolders_db = async (): Promise<FolderListItem[]> => {
 	const allFolders: Folder[] = await db.folders.toArray()
 	return allFolders.map((f) => ({ folder_id: f.folder_id, icon: f.icon, title: f.title }))
 }
-
 
 /**
  ** Gets folder settings.
@@ -148,29 +151,33 @@ export async function getFolder_db(id: Folder['folder_id']) {
 	return db.folders.where('folder_id').equals(id).first()
 }
 
-
 /**
  ** Counts total folders.
  * @returns {Promise<number>} The number of folders in the database.
  */
 export const getFolderCount_db = () => db.folders.count()
 
-
 /**
  ** Updates the db after an index/position swap.
  */
 export async function swapBookmarks_db(bookmarks: Bookmark[]) {
-	//? Update each bookmark to store the new position
-	bookmarks.forEach((b) => {
-		db.bookmarks.put(b)
+	return new Promise((resolve) => {
+		//? Update each bookmark to store the new position
+		bookmarks.forEach((b) => {
+			db.bookmarks.put(b)
+		})
+
+		//? Update in folder (activeBookmarks store is already updated)
+		db.folders
+			.update(get(activeFolder), {
+				bookmarks: get(activeBookmarks).map((b) => b.bookmark_id)
+			})
+			.then(resolve)
 	})
 
-	//? Update in folder (activeBookmarks store is already updated)
-	await db.folders.update(get(activeFolder), {
-		bookmarks: get(activeBookmarks).map((b) => b.bookmark_id)
-	})
+	// //? Update activeFolder
+	// activeFolder.set(get(activeFolder))
 }
-
 
 /**
  ** Deletes a bookmark.
@@ -208,11 +215,10 @@ export async function deleteBookmark_db(id: Bookmark['bookmark_id']) {
 	await db.bookmarks.bulkPut(bookmarks)
 
 	//? Update folder table
-	await db.folders.update(get(activeFolder), { bookmarks: bookmarks.map(b => b.bookmark_id) })
+	await db.folders.update(get(activeFolder), { bookmarks: bookmarks.map((b) => b.bookmark_id) })
 
 	log('🏁 Bookmark deleted', '#fa8', 'dimgray', 25)
 }
-
 
 /**
  ** Deletes a folder
@@ -221,13 +227,13 @@ export async function deleteBookmark_db(id: Bookmark['bookmark_id']) {
 export async function deleteFolder_db(folder: Folder) {
 	const id = folder.folder_id
 	log(`🎬 Deleting folder with id of ${id}`, '#fa8', 'dimgray', 25)
-	
+
 	const before = await db.bookmarks.count()
 	//? Remove the folder's bookmarks
 	await db.bookmarks.bulkDelete(folder.bookmarks)
 	const after = await db.bookmarks.count()
 	log('🏁 Removed ' + (before - after) + ' bookmarks', '#fa8', 'dimgray', 25)
-	
+
 	//? Delete from folders table
 	await db.folders.delete(id)
 
@@ -248,7 +254,6 @@ export async function deleteFolder_db(folder: Folder) {
 	log('🏁 Folder deleted', '#fa8', 'dimgray', 25)
 }
 
-
 /**
  ** Updates a bookmark.
  * @param  {bookmark} The bookmark to update.
@@ -258,11 +263,10 @@ export async function updateBookmark_db(bookmark: Bookmark) {
 	log(bookmark)
 
 	await db.bookmarks.put(bookmark)
-	activeBookmarks.update(v => v.map(b => b.bookmark_id === bookmark.bookmark_id ? bookmark : b))
+	activeBookmarks.update((v) => v.map((b) => (b.bookmark_id === bookmark.bookmark_id ? bookmark : b)))
 
 	log('🏁 Bookmark updated', '#fa8', 'dimgray', 25)
 }
-
 
 /**
  ** Updates a folder.
