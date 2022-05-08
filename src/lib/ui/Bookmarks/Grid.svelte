@@ -6,7 +6,6 @@
 	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 
 	// Components
-	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import Edit from '$lib/icons/Edit.svelte'
 	import Bookmark from './Bookmark.svelte'
 
@@ -14,27 +13,33 @@
 	import { smoothHover } from '$lib/utils/smoothHover'
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { scale } from 'svelte/transition'
-	import { log } from 'fractils'
-	import { tick } from 'svelte'
 
 	let hovering: number | null = null
 
 	let dragging = false
+
 	// The element to drag
 	let active: number = null
+
 	// The element to swap with
 	let target: number = null
 	let lastTarget: number = null
+
 	// Mouse movement for dragging active element
 	let move = { x: 0, y: 0 }
+
 	// Temporary positions for animations while dragging
 	let positionProxy = Array($gridDimensions.positions.length).fill(null)
+
 	// Cell transition animation duration in ms
 	const transitionDuration = 250
+
 	// Temporarily disables target detection
 	let cooldown = false
+
 	// Temporarily disables transitions
 	let disableTransitions = false
+
 	// A ref to each cell
 	let cells: HTMLElement[] = []
 
@@ -53,8 +58,11 @@
 			await swap(active, target)
 			$activeFolder = $activeFolder
 		}
+
+		// TODO It would be nice to smoothly animate the dragged
+		// item upon release.  Perhaps that could be done here.
+
 		// Reset all the things
-		// await tick()
 		dragging = false
 		active = null
 		target = null
@@ -66,6 +74,7 @@
 	const handleMouseDown = (e: MouseEvent) => {
 		// Disable re-arranging when filter is active
 		if ($tagFilter) return
+
 		// Store index of active item located in its classname. i.e. - "item-3"
 		const activeClass = (e.target as Element).classList[0]
 		if (activeClass?.startsWith('item-')) {
@@ -98,8 +107,7 @@
 				// Move it to our active's cell position
 				positionProxy[target] = $gridDimensions.positions[active]
 			} else {
-				// We have returned to the original cell, so
-				// we can reset all positions
+				// We have returned to the original cell, so we can reset all positions
 				positionProxy = positionProxy.fill(null)
 			}
 
@@ -152,33 +160,33 @@
 
 	let swapTimer: NodeJS.Timeout
 	const swap = async (a: number, b: number) => {
-		disableTransitions = true
-
-		// Swap the elements and update stores / db
-		const _a = $activeBookmarks[a]
-		const _b = $activeBookmarks[b]
-		if (!_a || !_b) return
-		const aPosition = _a.position
-		const bPosition = _b.position
-		_a.position = bPosition
-		_b.position = aPosition
-		if (_a.position === _b.position) alert('Error: Bookmarks are in the same position')
-		$activeBookmarks[a] = _b
-		$activeBookmarks[b] = _a
-		await swapBookmarks_db([_a, _b])
-
+		// A bit of a hack to make sure the swap doesn't trigger the wrong animations
 		clearTimeout(swapTimer)
 		swapTimer = setTimeout(async () => {
 			disableTransitions = false
-		}, 0)
+		}, 100)
 
-		// Re-render the grid
-		// $reRender = !$reRender
+		return new Promise<void>(async (resolve, reject) => {
+			disableTransitions = true
+
+			// Swap the elements and update stores / db
+			const _a = $activeBookmarks[a]
+			const _b = $activeBookmarks[b]
+			if (!_a || !_b) return
+			const aPosition = _a.position
+			const bPosition = _b.position
+			_a.position = bPosition
+			_b.position = aPosition
+			if (_a.position === _b.position) {
+				reject(console.error('Error: Bookmarks are in the same position'))
+			}
+			$activeBookmarks[a] = _b
+			$activeBookmarks[b] = _a
+			await swapBookmarks_db([_a, _b])
+
+			resolve()
+		})
 	}
-
-	// const addButtonSpring = spring(0, { stiffness: 0.1, damping: 0.9 })
-
-	// $: addButtonSpring.set($gridDimensions.gridHeight)
 </script>
 
 <svelte:window on:mousedown={handleMouseDown} on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
@@ -195,7 +203,7 @@
 >
 	<!-- {#key $activeFolder} -->
 	{#if $grid.items}
-		{#each $grid.items as bookmark, i}
+		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
 			{#key $reRender}
 				<div
 					class="cell-{i} cell"
