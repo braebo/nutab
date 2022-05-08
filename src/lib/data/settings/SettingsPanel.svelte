@@ -60,7 +60,7 @@
 
 		width: 600px;
 		max-width: 100vw;
-		height: 400px;
+		height: 350px;
 		margin: auto;
 
 		border-top-left-radius: 15px;

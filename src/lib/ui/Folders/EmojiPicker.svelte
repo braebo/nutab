@@ -22,19 +22,30 @@
 	})
 </script>
 
-<div class="emoji-picker scroller" transition:fly|local={{ y: -10, duration: 250 }}>
-	<input bind:this={searchBar} type="text" class="search" bind:value={search} placeholder="Search" />
+<div class="container" transition:fly|local={{ y: -10, duration: 250 }}>
+	<div class="emoji-picker scroller">
+		<input bind:this={searchBar} type="text" class="search" bind:value={search} placeholder="Search" />
 
-	<div class="emojis">
-		{#each emojis as e, i}
-			{#if !search || e.name.includes(search)}
-				<div class="emoji" on:click={() => handleClick(e.char)} tabindex="0">{e.char}</div>
-			{/if}
-		{/each}
+		<div class="emojis">
+			{#each emojis as e, i}
+				{#if !search || e.name.includes(search)}
+					<div class="emoji" on:click={() => handleClick(e.char)} tabindex="0">{e.char}</div>
+				{/if}
+			{/each}
+		</div>
 	</div>
 </div>
 
 <style>
+	.container {
+		overflow: hidden;
+
+		background-color: rgba(var(--light-a-rgb), 0.9);
+		backdrop-filter: blur(5px);
+		border-radius: var(--radius-md, 10px);
+
+		margin-top: -2px;
+	}
 	.emoji-picker {
 		position: relative;
 		display: flex;
@@ -49,12 +60,6 @@
 		max-height: 600px;
 		margin: var(--margin, auto);
 		padding: 1rem;
-
-		background-color: #fff9;
-		backdrop-filter: blur(5px);
-		border-radius: 10px;
-
-		font-size: var(--font-size, 1.5rem);
 
 		overflow-y: auto;
 		overflow-x: hidden;
@@ -94,11 +99,11 @@
 	}
 	.emoji:hover,
 	.emoji:focus {
-		background: #1d1d1d50;
+		background: var(--light-d);
 	}
 	.emoji:active {
 		/* 		transform: scale(2); */
-		background: white;
+		background: var(--dark-d);
 	}
 
 	.search {
@@ -109,6 +114,7 @@
 
 		outline: none;
 		border: none;
+		color: var(--dark-b);
 		background: rgba(var(--light-a-rgb, 255, 255, 255), 0.8);
 		backdrop-filter: blur(5px);
 		border-radius: 20px;
@@ -116,6 +122,7 @@
 			0px 14px 15px -1px rgba(0, 0, 0, 0.04);
 
 		text-align: center;
+		font-size: var(--font-size, 1.25rem);
 
 		z-index: 2;
 	}
