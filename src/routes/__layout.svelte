@@ -5,6 +5,7 @@
 	// Components
 	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
 	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
+	import { settings } from '$lib/data/settings/settingsStore'
 	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import Settings from '$lib/data/settings/Settings.svelte'
 	import Themer from '$lib/theme/Themer.svelte'
@@ -23,7 +24,10 @@
 	import '../styles/app.scss'
 
 	onMount(async () => {
-		await init_db()
+		if (!$settings.lockBackground) {
+			$settings.background = randomBackground()
+		}
+		init_db()
 	})
 </script>
 
@@ -32,7 +36,7 @@
 	svelte:head
 		title Nutab
 
-	#app(style='{randomBackground()}')
+	#app(style='{$settings.background}')
 		Themer(size='{50}')
 
 		Nav

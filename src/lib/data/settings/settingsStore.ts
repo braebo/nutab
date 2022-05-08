@@ -16,6 +16,8 @@ export interface Settings {
 	}
 	transparent: boolean
 	showTitle: boolean
+	background: string
+	lockBackground: boolean
 	invertDark?: boolean
 }
 
@@ -26,7 +28,9 @@ const default_settings: Settings = {
 		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } }
 	},
 	transparent: true,
-	showTitle: false
+	showTitle: false,
+	background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
+	lockBackground: false
 }
 
 export const cMenu = writable({

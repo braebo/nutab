@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { settings, showSettings, showGuidelines } from './settingsStore'
+	import RandomizeBackground from './RandomizeBackground.svelte'
 	import { clickOutside } from '$lib/utils/clickOutside'
+	import ShowTitle from './ShowTitle.svelte'
 	import Range from '$lib/ui/Range.svelte'
 	import { fly } from 'svelte/transition'
-	import ShowTitle from './ShowTitle.svelte'
-	import RandomizeBackground from './RandomizeBackground.svelte'
+	import Lock from '$lib/graphics/Lock.svelte'
 
 	let sgTimer: NodeJS.Timeout
 	const toggleShowGuidelines = (e: Event, setting: any) => {
@@ -40,7 +41,10 @@
 			{/each}
 			<div class="buttons">
 				<ShowTitle />
-				<RandomizeBackground />
+				<div class="background">
+					<RandomizeBackground />
+					<Lock />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -118,5 +122,11 @@
 		gap: 5rem;
 
 		width: 100%;
+	}
+
+	.background {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 </style>

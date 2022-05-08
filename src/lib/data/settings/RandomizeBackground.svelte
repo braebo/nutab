@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { randomBackground } from './randomBackground'
+	import { settings } from './settingsStore'
 
 	let timer: NodeJS.Timeout
 	let animate = false
 	const handleClick = () => {
-		document.getElementById('svelte').style = randomBackground()
+		if ($settings.lockBackground) return
+		$settings.background = randomBackground()
 		clearTimeout(timer)
 		animate = true
 		timer = setTimeout(() => {
@@ -14,7 +16,9 @@
 </script>
 
 {#key animate}
-	<div class:animate class="btn randomize" on:click={() => handleClick()}>Shuffle Background</div>
+	<div class:animate class="btn randomize" class:locked={$settings.lockBackground} on:click={() => handleClick()}>
+		Shuffle Background
+	</div>
 {/key}
 
 <style>
@@ -29,5 +33,9 @@
 		to {
 			filter: hue-rotate(360deg);
 		}
+	}
+	.locked {
+		opacity: 0.4;
+		cursor: default;
 	}
 </style>

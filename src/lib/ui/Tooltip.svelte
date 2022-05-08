@@ -4,9 +4,15 @@
 
 	export let content = 'Tooltip'
 	export let placement = 'right'
+	/**
+	 * @param {number[]} delay - Intro & outro delay in ms.  Default [750, 100]
+	 */
 	export let delay: [number, number] = [750, 100]
 	export let interactive = false
 	export let arrow = true
+	/**
+	 * @param {number[]} offset - Y and X offset in px.  Default [0, 0]
+	 */
 	export let offset = [0, 0]
 	export let display = ''
 	let instance: any
