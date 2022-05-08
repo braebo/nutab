@@ -6,7 +6,7 @@
 	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 
 	// Components
-	import Edit from '$lib/icons/Edit.svelte'
+	import Edit from '$lib/graphics/icons/Edit.svelte'
 	import Bookmark from './Bookmark.svelte'
 
 	// Utils

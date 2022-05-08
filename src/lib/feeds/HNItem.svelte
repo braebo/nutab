@@ -1,6 +1,6 @@
 <script lang="ts">
 	import RandomWave from '$lib/graphics/RandomWave.svelte'
-	import CommentIcon from '$lib/icons/CommentIcon.svelte'
+	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
 	import type { IHNItem } from './types'
 
 	import { randomBackground } from '$lib/data/settings/randomBackground'

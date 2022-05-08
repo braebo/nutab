@@ -2,10 +2,10 @@
 	import { settings, showSettings, showGuidelines } from './settingsStore'
 	import RandomizeBackground from './RandomizeBackground.svelte'
 	import { clickOutside } from '$lib/utils/clickOutside'
+	import Lock from '$lib/graphics/icons/Lock.svelte'
 	import ShowTitle from './ShowTitle.svelte'
 	import Range from '$lib/ui/Range.svelte'
 	import { fly } from 'svelte/transition'
-	import Lock from '$lib/graphics/Lock.svelte'
 
 	let sgTimer: NodeJS.Timeout
 	const toggleShowGuidelines = (e: Event, setting: any) => {

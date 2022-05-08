@@ -2,7 +2,7 @@
 	import type { IHNItem } from './types'
 
 	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
-	import CollapseIcon from '$lib/icons/CollapseIcon.svelte'
+	import CollapseIcon from '$lib/graphics/icons/CollapseIcon.svelte'
 	import { formatDistanceToNow } from 'date-fns'
 	import { fly } from 'svelte/transition'
 	import { fetchItem } from './fetchData'

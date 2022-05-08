@@ -4,9 +4,6 @@
 
 	let locked = $settings?.lockBackground
 
-	$: handleLength = locked ? 2 : 8
-	$: lockHeight = locked ? 17.9 : 11.9
-
 	const toggleLock = () => {
 		$settings.lockBackground = !$settings.lockBackground
 		locked = !locked

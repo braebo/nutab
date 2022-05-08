@@ -8,7 +8,7 @@
 	import Spinner from './Spinner.svelte'
 	import EyeIcon from './EyeIcon.svelte'
 	import { url } from '@roxi/routify'
-	import GithubIcon from '../icons/GithubIcon.svelte'
+	import GithubIcon from '../graphics/icons/GithubIcon.svelte'
 
 	const { status, loading, handleGithubSuccess, authenticated } = authStore
 

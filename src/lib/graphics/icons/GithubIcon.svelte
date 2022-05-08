@@ -1,15 +1,9 @@
 <script>
-	import Tooltip from '../ui/Tooltip.svelte'
+	import Tooltip from '$lib/ui/Tooltip.svelte'
 </script>
 
 <Tooltip content="Login with Github">
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		width="100%"
-		height="100%"
-		fill="none"
-		viewBox="0 0 38 38"
-	>
+	<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 38 38">
 		<path
 			fill="var(--dark-c)"
 			fill-rule="evenodd"

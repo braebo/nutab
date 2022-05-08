@@ -1,5 +1,5 @@
 <script lang="ts">
-	import HomeIcon from '$lib/icons/HomeIcon.svelte'
+	import HomeIcon from '$lib/graphics/icons/HomeIcon.svelte'
 	import { ThemeToggle } from 'fractils'
 	import Nav from './Nav.svelte'
 </script>
