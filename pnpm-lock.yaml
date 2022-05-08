@@ -1,10 +1,11 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
   '@fontsource/fira-mono': ^4.5.8
   '@sveltejs/adapter-vercel': next
   '@sveltejs/kit': next
   '@svgdotjs/svg.js': ^3.1.2
+  '@types/node': ^17.0.31
   autoprefixer: ^10.4.7
   cors-anywhere: ^0.4.4
   cssnano: ^5.1.7
@@ -37,6 +38,7 @@ devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.50
   '@sveltejs/kit': 1.0.0-next.326_sass@1.51.0+svelte@3.48.0
   '@svgdotjs/svg.js': 3.1.2
+  '@types/node': 17.0.31
   autoprefixer: 10.4.7_postcss@8.4.13
   cors-anywhere: 0.4.4
   cssnano: 5.1.7_postcss@8.4.13
@@ -51,12 +53,12 @@ devDependencies:
   postcss: 8.4.13
   postcss-load-config: 3.1.4_postcss@8.4.13
   prettier: 2.6.2
-  prettier-plugin-svelte: 2.7.0_prettier@2.6.2+svelte@3.48.0
+  prettier-plugin-svelte: 2.7.0_kkjbqzpydplecjtkxrgomroeru
   prismjs: 1.28.0
   pug: 3.0.2
   sass: 1.51.0
   svelte: 3.48.0
-  svelte-preprocess: 4.10.6_7d219a3aeedf91b75d8d1dc9d0fb326c
+  svelte-preprocess: 4.10.6_puqzuoxo36i3oxmndxe5b6zsnq
   sveltekit-adapter-browser-extension: 0.1.0
   tippy.js: 6.3.7
   tslib: 2.4.0
@@ -73,6 +75,8 @@ packages:
     resolution: {integrity: sha512-n2Q6i+fnJqzOaq2VkdXxy2TCPCWQZHiCo0XqmrCvDWcZQKRyZzYi4Z0yxlBuN0w+r2ZHmre+Q087DSrw3pbJDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.10
     dev: true
 
   /@babel/types/7.17.10:
@@ -1723,7 +1727,7 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /prettier-plugin-svelte/2.7.0_prettier@2.6.2+svelte@3.48.0:
+  /prettier-plugin-svelte/2.7.0_kkjbqzpydplecjtkxrgomroeru:
     resolution: {integrity: sha512-fQhhZICprZot2IqEyoiUYLTRdumULGRvw0o4dzl5jt0jfzVWdGqeYW27QTWAeXhoupEZJULmNoH3ueJwUWFLIA==}
     peerDependencies:
       prettier: ^1.16.4 || ^2.0.0
@@ -2083,7 +2087,7 @@ packages:
       svelte: 3.48.0
     dev: true
 
-  /svelte-preprocess/4.10.6_7d219a3aeedf91b75d8d1dc9d0fb326c:
+  /svelte-preprocess/4.10.6_puqzuoxo36i3oxmndxe5b6zsnq:
     resolution: {integrity: sha512-I2SV1w/AveMvgIQlUF/ZOO3PYVnhxfcpNyGt8pxpUVhPfyfL/CZBkkw/KPfuFix5FJ9TnnNYMhACK3DtSaYVVQ==}
     engines: {node: '>= 9.11.2'}
     requiresBuild: true
