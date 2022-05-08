@@ -4,6 +4,7 @@
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
 	import { debug, showDebugger } from '$lib/stores/debugStore'
+	import { activeSection } from '$lib/stores/mainStore'
 	import FloatingPanel from './FloatingPanel.svelte'
 	import { localStorageStore, log } from 'fractils'
 	import { copy } from '$lib/utils/clipboardCopy'
@@ -109,7 +110,7 @@
 		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
 			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
 				.debuggable.one.scroller
-					+each("[['Show Debugger', $showDebugger], ['Tag Filter', $tagFilter], ['Editor Context', $editorContext], ['Show Bookmark Editor', $showBookmarkEditor], ['Show Settings', $showSettings]] as [name, value]")
+					+each("[['Show Debugger', $showDebugger], ['Active Section', $activeSection], ['Tag Filter', $tagFilter], ['Editor Context', $editorContext], ['Show Bookmark Editor', $showBookmarkEditor], ['Show Settings', $showSettings]] as [name, value]")
 						+key('value')
 							.kv
 								h6 {name}

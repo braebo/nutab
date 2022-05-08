@@ -1,5 +1,6 @@
 <script lang="ts">
 	import News from '$lib/feeds/News.svelte'
+	import { activeSection } from '$lib/stores/mainStore'
 	import { visibility } from 'fractils'
 	import { onMount } from 'svelte'
 
@@ -10,12 +11,11 @@
 		main.scrollTo(0, slot.offsetTop)
 	})
 
-	let visible
+	let newsVisible
 
 	function handleChange(e: CustomEvent) {
-		console.log(Object.entries(e.detail))
-		visible = e.detail.isVisible
-		// scrollDir = e.detail.scrollDirection
+		newsVisible = e.detail.isVisible
+		$activeSection = newsVisible ? 'news' : 'bookmarks'
 	}
 </script>
 
@@ -23,10 +23,9 @@
 
 	main(bind:this='{main}')
 		.col
-			//- .news(use:visibility!='{{ threshold: 0.05, once: true, margin: "20px" }}' on:change='{handleChange}')
-				//- +if('visible')
-			.news
-				News
+			.news(use:visibility!='{{ threshold: 0.05, margin: "20px" }}' on:change='{handleChange}')
+				+if('newsVisible')
+					News
 
 			.bookmarks(bind:this='{slot}')
 				slot
