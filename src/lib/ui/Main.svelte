@@ -12,9 +12,9 @@
 	})
 
 	let newsVisible = false
-	
+
 	function handleChange(e: CustomEvent) {
-		if (!newsVisible) newsVisible = true
+		if (!newsVisible) newsVisible = e.detail.isVisible
 		$activeSection = e.detail.isVisible ? 'news' : 'bookmarks'
 	}
 </script>
