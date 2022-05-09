@@ -91,12 +91,6 @@
 				HnThread(threadId='{activeThread}')
 				.to-top(on:click='{scrollToTop}') 🔝
 
-	//- pre.debug(style='position:absolute;top:3rem;left:3rem;')
-	//- 	| scrollProgress: {scrollProgress}
-	//- 	| itemsLeft: {100 - (itemsLeft * 100)}%
-	//- 	| loaded: {loaded}
-	//- 	| activeThread: {activeThread}
-	//- 	| items: {items}
 </template>
 
 <style lang="sass">
@@ -105,9 +99,7 @@
 	.hn-container
 		display: flex
 		position: relative
-		// align-items: center
 		justify-content: center
-		padding-top: 5rem
 
 		width: 100vw
 
@@ -120,6 +112,7 @@
 
 		height: 100%
 		max-height: 100%
+		padding-top: 5rem
 		padding-bottom: 10rem
 		min-width: 600px
 		&.activeThread
@@ -137,6 +130,7 @@
 
 		width: 60%
 		height: 100%
+		padding-top: 5rem
 		padding-bottom: 10rem
 
 		overflow-y: auto

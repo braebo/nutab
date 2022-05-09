@@ -36,13 +36,13 @@
 
 	main
 		min-height: 100vh
-		
+
 		overflow-y: auto
 		scroll-snap-type: y mandatory
-		
+
 		&::-webkit-scrollbar
 			display: none
-	
+
 	.col
 		min-height: 200vh
 
