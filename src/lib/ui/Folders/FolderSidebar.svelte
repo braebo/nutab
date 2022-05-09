@@ -145,6 +145,7 @@
 		display: flex;
 		align-items: center;
 		left: 0;
+		top: 0;
 
 		height: 100vh;
 		width: 200px;

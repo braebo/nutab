@@ -4,7 +4,6 @@
 
 	// Components
 	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
-	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
 	import { settings } from '$lib/data/settings/settingsStore'
 	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import Settings from '$lib/data/settings/Settings.svelte'
@@ -43,8 +42,6 @@
 
 		Main
 			slot
-
-		FolderSidebar
 
 		Settings
 

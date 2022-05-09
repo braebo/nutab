@@ -1,6 +1,7 @@
 <script lang="ts">
-	import News from '$lib/feeds/News.svelte'
+	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
 	import { activeSection } from '$lib/stores/mainStore'
+	import News from '$lib/feeds/News.svelte'
 	import { visibility } from 'fractils'
 	import { onMount } from 'svelte'
 
@@ -29,6 +30,7 @@
 
 			.bookmarks(bind:this='{bookmarks}')
 				slot
+				FolderSidebar
 
 </template>
 
