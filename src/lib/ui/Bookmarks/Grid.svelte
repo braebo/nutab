@@ -286,7 +286,7 @@
 			border-bottom: none;
 		}
 
-		z-index: 1;
+		z-index: 3;
 		user-select: none;
 	}
 	.cell {

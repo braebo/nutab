@@ -152,6 +152,7 @@
 
 		z-index: 0;
 	}
+
 	.folder-sidebar {
 		position: relative;
 		display: flex;
@@ -291,6 +292,7 @@
 			font-size: 75%;
 		}
 	}
+
 	.active {
 		filter: saturate(1);
 
