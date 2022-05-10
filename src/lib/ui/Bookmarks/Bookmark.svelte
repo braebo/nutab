@@ -46,7 +46,12 @@
 				/>
 				{#if $settings.showTitle || hovering == i}
 					{#if title && !dragging}
-						<p in:fade={{ duration: disableTransitions ? 0 : 100 }}>{title}</p>
+						<p
+							in:fade={{ duration: disableTransitions ? 0 : 100 }}
+							out:fade={{ duration: disableTransitions ? 0 : 100 }}
+						>
+							{title}
+						</p>
 					{/if}
 				{/if}
 			</div>
@@ -75,6 +80,7 @@
 		height: var(--size, 100%);
 		width: var(--size, 100%);
 	}
+
 	.bookmark {
 		display: flex;
 		position: relative;
@@ -90,6 +96,7 @@
 
 		text-align: center;
 	}
+
 	.icon {
 		display: flex;
 		top: 0;
@@ -109,7 +116,7 @@
 
 		color: var(--dark-d);
 
-		font-size: 18px;
+		font-size: 16px;
 		line-height: 150%;
 		white-space: nowrap;
 		letter-spacing: 2px;
@@ -129,10 +136,12 @@
 
 		text-decoration: none;
 	}
+
 	a.dragging {
 		pointer-events: none;
 		cursor: inherit;
 	}
+
 	img {
 		position: absolute;
 		inset: 0;

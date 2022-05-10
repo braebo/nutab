@@ -260,10 +260,6 @@
 		{/each}
 	{/if}
 	<!-- {/key} -->
-	<!-- TODO: Should this get it's own setting? -->
-	<!-- <div class="add-bookmark" style="top: {$addButtonSpring}px;" on:click={() => dispatch('newBookmark')}>
-		<Tooltip content="New_Bookmark" placement="bottom" offset={[0, 10]}>+</Tooltip>
-	</div> -->
 </div>
 
 <style lang="scss">
