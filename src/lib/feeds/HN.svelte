@@ -4,7 +4,7 @@
 
 	import { fly } from 'svelte/transition'
 	import { get } from 'svelte/store'
-	import { onMount } from 'svelte'
+	import { onMount, tick } from 'svelte'
 
 	import HnThread from './HNThread.svelte'
 	import HNItem from './HNItem.svelte'
@@ -14,6 +14,9 @@
 
 	import { BATCH_SIZE, INITIAL_SIZE } from './constants'
 	import { items, list } from './stores'
+	import { wait } from 'fractils'
+
+	import { flip } from 'svelte/animate'
 
 	let loaded = INITIAL_SIZE
 	let loading = true
@@ -68,25 +71,47 @@
 		})
 	}
 
+	let firstLoad = true
 	onMount(async () => {
 		$items = await fetchStories()
 		loading = false
+		await wait(1000)
+		firstLoad = false
 	})
+
+	let animEl: HTMLElement
+	let windowWidth: number
+	let offsetWidth: number
+	$: left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
+
+	const handleResize = () => {
+		checkFullscreen()
+		left = `${(windowWidth - offsetWidth) / 2}px`
+	}
+
+	const calcLeft = async (node: HTMLElement) => {
+		left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
+		await wait(100)
+		// await tick()
+		animEl.style.transition = 'left 500ms cubic-bezier(.36,.57,.01,.99)'
+	}
 </script>
 
 <template lang="pug">
-	svelte:window(on:resize='{checkFullscreen}')
+	svelte:window(on:resize='{handleResize}' bind:innerWidth='{windowWidth}')
 
 	.hn-container(style:height)
-		.story-previews.scroller.ghost(on:scroll='{handleScroll}' class:activeThread)
-			+if('!$items.length')
-				LoadingDots
-				+else
-					+each('$items as item, i')
-						.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50 * 0, y: 10 + i}}')
-							HNItem({item} bind:activeThread on:showThread='{showThread}')
-
+		.news-anim-container(bind:this='{animEl}' bind:offsetWidth style='left: {left};' class:activeThread)
+			.story-previews.scroller.ghost(on:scroll='{handleScroll}' class:activeThread)
+				+if('!$items.length')
+					LoadingDots
+					+else
+						span(use:calcLeft)
+						+each('$items as item, i')
+							.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50 * (firstLoad ? 1 : 0), y: 10 + i}}')
+								HNItem({item} bind:activeThread on:showThread='{showThread}')
 		+if('activeThread')
+			.story-previews-buffer
 			.story-thread
 				HnThread(threadId='{activeThread}')
 				.to-top(on:click='{scrollToTop}') 🔝
@@ -105,7 +130,19 @@
 
 		border-bottom: 1px solid var(--light-a)
 
-	.story-previews
+	.news-anim-container
+		position: absolute
+		display: flex
+
+		height: 100vh
+		
+		backface-visibility: hidden
+		pointer-events: none
+
+		&.activeThread
+			width: 100%
+
+	.story-previews, .story-previews-buffer
 		flex-direction: column
 		align-items: center
 		justify-content: center
@@ -117,11 +154,16 @@
 		min-width: 600px
 		&.activeThread
 			width: 40%
-		
+
 		opacity: 0.75
 		transition: opacity 0.2s
 		&:hover
 			opacity: 1
+		
+		pointer-events: all
+
+	.story-previews-buffer
+		width: 45%
 
 	.story-thread
 		display: flex

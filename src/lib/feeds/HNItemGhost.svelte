@@ -1,52 +1,34 @@
 <script lang="ts">
-	import RandomWave from '$lib/graphics/RandomWave.svelte'
 	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
-	import type { IHNItem } from './types'
+	import RandomWave from '$lib/graphics/RandomWave.svelte'
 
 	import { randomBackground } from '$lib/data/settings/randomBackground'
-	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
-	import { onMount, createEventDispatcher } from 'svelte'
-
-	export let item: IHNItem
-	export let activeThread: IHNItem['id']
-
-	const dispatch = createEventDispatcher()
-	const showThread = () => {
-		dispatch('showThread', { id: activeThread === null ? item.id : null })
-		activeThread = item.id
-	}
 </script>
 
 <template lang="pug">
 
-	div.article(on:click='{showThread}' class:active='{activeThread === item.id}')
+	div.article
 		.image-container
-			+if('item.meta.image')
-				.image(style='background-image: url({item.meta.image})' in:fade)
-				+else
-					.random-thumbnail
-						.image(style='{randomBackground()}')
-						.random-wave
-							RandomWave
+			.random-thumbnail
+				.image(style='{randomBackground()}')
+				.random-wave
+					RandomWave
 
 		.content.col
 			.row.header
 				.col
-					a.article-link(href='{item.url ? item.url : ``}' target='_blank')
-						h2 {item.title}
+					.article-link
+						h2 &nbsp;
 
-					.row.info
-						.since {item.days_ago}
-						span.dot · 
-						a.author(target='_blank' href!='{`https://news.ycombinator.com/user?id=${item.by}`}') {item.by}
+					.row.info &nbsp;
 
 			.row
-				p.description {item.meta.description || ''}
+				p.description &nbsp;
 
 		.comments
-			.comment-count(on:click='{showThread}')
-				| {item.kids ? item.kids.length : 0}
+			.comment-count
+				| ∞
 			.comment-icon
 				CommentIcon
 
@@ -71,50 +53,34 @@
 		box-shadow: 0px 0.9px 0.7px rgba(0, 0, 0, 0.008), 0px 2.1px 1.8px rgba(0, 0, 0, 0.012), 0px 3.9px 3.4px rgba(0, 0, 0, 0.015), 0px 6.9px 6px rgba(0, 0, 0, 0.018), 0px 13px 11.3px rgba(0, 0, 0, 0.022), 0px 31px 27px rgba(0, 0, 0, 0.03)		
 
 		transition: transform 0.2s, box-shadow 0.2s
-		&.active
-			border: 1px solid var(--dark-d)
-		&:hover, &.active
-			transform: scale(1.025)
-			box-shadow: 0px 1.8px 0.7px rgba(0, 0, 0, 0.006), 0px 4.3px 1.8px rgba(0, 0, 0, 0.008), 0px 8.1px 3.4px rgba(0, 0, 0, 0.01), 0px 14.5px 6px rgba(0, 0, 0, 0.012), 0px 27.2px 11.3px rgba(0, 0, 0, 0.014), 0px 65px 27px rgba(0, 0, 0, 0.02)
 
-			& .random-thumbnail, .image
-				filter: grayscale(0%)
+		& .random-thumbnail, .image
+			filter: grayscale(0%)
 
 		cursor: pointer
 		backface-visibility: hidden
+
 
 	.header
 		margin-bottom: 0.5rem
 		padding-right: 1rem
 
 	h2
-		line-height: 1.5rem
+		width: 100%
+		max-width: min(100%, 60vw)
+
 		color: var(--dark-a)
+		background-image: var(--background-image)
+		border-radius: var(--radius-sm)
 
 		font-size: 1rem
-		width: max-content
-		max-width: min(100%, 60vw)
+		line-height: 1.5rem
 		font-variation-settings: 'wght' 500
 		font-family: var(--font-a)
 		word-spacing: 0px
 		letter-spacing: 0.5px
 
 		transition: 0.25s
-
-	a
-		text-decoration: none
-		&:hover
-			text-decoration: underline
-		&.article-link
-			text-decoration: none
-
-	.info
-		margin: 0
-
-		color: var(--dark-d)
-
-		font-size: 0.8em
-		font-weight: 300
 
 	.col
 		display: flex
@@ -124,9 +90,32 @@
 		width: 100%
 		height: 100%
 
+
 	.row
 		display: flex
 		width: 100%
+
+	.info
+		// height: 100%
+		position: relative
+		margin: 3px 0 0 0
+
+		color: var(--dark-d)
+		border-radius: var(--radius-sm)
+		background-image: var(--background-image)
+
+		font-size: 0.8em
+		font-weight: 300
+
+		&:after
+			position: absolute
+			content: ''
+			right: 0
+			
+			width: 70%
+			height: 15px
+			
+			background-color: var(--light-a)
 
 	.content
 		width: 75%
@@ -140,6 +129,8 @@
 		height: 1.2rem
 
 		color: var(--dark-d)
+		background-image: var(--background-image)
+		border-radius: var(--radius-sm)
 
 		font-weight: 400
 		font-family: var(--font-a)
@@ -152,6 +143,7 @@
 		transition: opacity 0.2s
 		&:hover
 			opacity: 1
+
 
 	.comments
 		display: flex
@@ -169,11 +161,13 @@
 		&:hover .comment-icon
 			transform: scale(1.2)
 
+
 	.comment-icon
 		width: 22px
 		height: 22px
 		margin-right: 0.25rem
 		transition: transform 0.2s ease-out
+
 
 	.image-container
 		min-width: 125px
@@ -186,7 +180,7 @@
 		min-height: 100px
 		position: relative
 		transition: filter 0.3s
-		filter: grayscale(0%)
+		filter: grayscale(100%)
 
 	.image
 		min-width: 125px
@@ -198,24 +192,13 @@
 		border-radius: var(--radius-sm)
 
 		transition: filter 0.3s
-		filter: grayscale(75%)
+		filter: grayscale(100%)
 
+	
 	.random-wave
 		position: absolute
 		inset: 0
 		width: 100%
 		height: 100%
-
-	.author, .since
-		flex-wrap: nowrap
-		word-wrap: none
-		white-space: nowrap
-		color: var(--light-d)
-		word-spacing: -1px
-		width: max-content
-
-
-	.dot
-		margin: 0 0.25rem
 
 </style>
