@@ -135,7 +135,7 @@
 		display: flex
 
 		height: 100vh
-		
+
 		backface-visibility: hidden
 		pointer-events: none
 
@@ -159,7 +159,7 @@
 		transition: opacity 0.2s
 		&:hover
 			opacity: 1
-		
+
 		pointer-events: all
 
 	.story-previews-buffer

@@ -24,7 +24,7 @@ export interface Settings {
 const default_settings: Settings = {
 	ranges: {
 		gridWidth: { label: 'Width', value: 1000, range: { min: 500, max: 2000 } },
-		iconSize: { label: 'Icon', value: 50, range: { min: 0, max: 150 } },
+		iconSize: { label: 'Icon', value: 50, range: { min: 32, max: 90 } },
 		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } }
 	},
 	transparent: true,

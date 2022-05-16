@@ -7,7 +7,9 @@
 	$: longestWord = title.split(' ').reduce((p: string, c: string) => {
 		return c.length > p.length ? c : p
 	}, '').length
+
 	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 12, 20, 14)
+	$: fontSizeScaled = (fontSize * $settings.ranges.iconSize.value) / 80
 </script>
 
 <div
@@ -15,9 +17,8 @@
 	style="
 		width: var(--size, {$settings.ranges.iconSize.value}px);
 		min-height: var(--size, {$settings.ranges.iconSize.value}px);
-
-		font-size: var(--font-size, {fontSize}px);
 	"
+	style:font-size="{fontSizeScaled}px"
 >
 	<span class="title">{@html title}</span>
 </div>
@@ -30,7 +31,7 @@
 		flex-wrap: wrap;
 
 		margin: var(--margin, auto);
-		padding: 0.5rem;
+		padding: 0.2rem;
 		margin-bottom: -0.25rem;
 
 		color: var(--foreground);
@@ -44,5 +45,7 @@
 	}
 	.title {
 		font-weight: 500;
+		word-wrap: break-word;
+		overflow: hidden;
 	}
 </style>
