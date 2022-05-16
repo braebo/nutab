@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { searchValue } from './../../search/searchStore.ts'
 	// Data
+	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
 	import { swapBookmarks_db } from '$lib/data/transactions'
-	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
+	import { searchValue } from '$lib/search/searchStore'
 
 	// Components
 	import Edit from '$lib/graphics/icons/Edit.svelte'
