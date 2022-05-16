@@ -6,6 +6,7 @@
 
 	import BookmarkArt from './BookmarkArt.svelte'
 	import { smoothHover } from '$lib/utils/smoothHover'
+	import { goto } from '$app/navigation'
 
 	export let i: number
 	export let hovering: number
@@ -19,10 +20,14 @@
 	$: image = bookmark?.image
 	$: background = bookmark?.background
 	$: foreground = bookmark?.foreground
+
+	const handleClick = () => {
+		goto(url)
+	}
 </script>
 
-<div class="bookmark-container">
-	<a target="_blank" href={url} draggable="false" class:dragging style="pointer-events: none;">
+<div class="bookmark-container" style:pointer-events="none">
+	<a target="_blank" href={url} draggable="false" class:dragging>
 		{#if image}
 			<div
 				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}

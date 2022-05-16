@@ -8,7 +8,7 @@
 		return c.length > p.length ? c : p
 	}, '').length
 
-	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 12, 20, 14)
+	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 12, 20, 5)
 	$: fontSizeScaled = (fontSize * $settings.ranges.iconSize.value) / 80
 </script>
 

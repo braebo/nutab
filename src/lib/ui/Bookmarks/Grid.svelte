@@ -13,6 +13,7 @@
 	import { smoothHover } from '$lib/utils/smoothHover'
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { scale } from 'svelte/transition'
+	import { goto } from '$app/navigation'
 
 	let hovering: number | null = null
 
@@ -216,6 +217,7 @@
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
 					bind:this={cells[i]}
+					on:click={() => goto(bookmark.url)}
 				>
 					<div
 						class="item-{i} grid-item"
