@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Engine } from '$lib/data/types'
 	import { defaultEngines } from './Engines.svelte'
-	import { activeEngine } from './searchStore'
+	import { activeEngine, searchValue } from './searchStore'
 	import Icons from './IconList.svelte'
 	import { onMount } from 'svelte'
 	import '$lib/utils/rotateArray'
@@ -12,8 +12,7 @@
 
 	$: engines
 	$: aliases = []
-	$: inputValue = ''
-	$: query = engines[0].url + inputValue
+	$: query = engines[0].url + $searchValue
 
 	onMount(() => {
 		setTimeout(() => {
@@ -30,14 +29,14 @@
 	}
 
 	function selectAlias() {
-		select(engines.find((engine) => engine.alias == inputValue).position)
+		select(engines.find((engine) => engine.alias == $searchValue).position)
 	}
 	function deselectAlias() {
 		select(startPosition)
 	}
 
-	$: if (!aliases.includes(inputValue)) {
-		if (input && inputValue == '') deselectAlias()
+	$: if (!aliases.includes($searchValue)) {
+		if (input && $searchValue == '') deselectAlias()
 	} else {
 		selectAlias()
 	}
@@ -98,7 +97,7 @@
 		id="search"
 		autocomplete="off"
 		bind:this={input}
-		bind:value={inputValue}
+		bind:value={$searchValue}
 		on:keydown={(e) => hotkey(e.key)}
 		on:focus={() => (searchFocused = true)}
 		on:blur={() => (searchFocused = false)}

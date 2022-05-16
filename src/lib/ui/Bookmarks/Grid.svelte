@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { searchValue } from './../../search/searchStore.ts'
 	// Data
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
 	import { showGuidelines } from '$lib/data/settings/settingsStore'
@@ -188,6 +189,14 @@
 			resolve()
 		})
 	}
+
+	const isRelevant = (i: number) => {
+		const bm = $activeBookmarks[i]
+		return (
+			bm.title.toLowerCase().includes($searchValue.toLowerCase()) ||
+			bm.description.toLowerCase().includes($searchValue.toLowerCase())
+		)
+	}
 </script>
 
 <svelte:window on:mousedown={handleMouseDown} on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
@@ -207,6 +216,8 @@
 		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
 			{#key $reRender}
 				<div
+					class:unfocused={$searchValue !== '' && !isRelevant(i)}
+					class:focused={$searchValue === '' || isRelevant(i)}
 					class="cell-{i} cell"
 					class:active={i == active}
 					class:target={target === i}
@@ -295,6 +306,13 @@
 
 		&.active {
 			z-index: 10 !important;
+		}
+
+		&.unfocused {
+			opacity: 0.5;
+		}
+		&.focused {
+			opacity: 1;
 		}
 	}
 	.grid-item {
