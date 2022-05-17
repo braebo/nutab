@@ -152,8 +152,6 @@
 		padding-top: 5rem
 		padding-bottom: 10rem
 		min-width: 600px
-		&.activeThread
-			width: 40%
 
 		opacity: 0.75
 		transition: opacity 0.2s
@@ -161,6 +159,9 @@
 			opacity: 1
 
 		pointer-events: all
+	
+	.story-previews.activeThread
+		width: 40%
 
 	.story-previews-buffer
 		width: 45%
