@@ -127,7 +127,7 @@
 
 	function handleItemMouseOver(i: number) {
 		hovering = i
-		smoothHover.smoothOver(() => toggleShowEditIcon(true, i), 1000)
+		smoothHover.smoothOver(() => toggleShowEditIcon(true, i), 500)
 	}
 
 	function handleItemMouseOut(i: number) {
