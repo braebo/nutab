@@ -6,7 +6,7 @@
 
 	import BookmarkArt from './BookmarkArt.svelte'
 	import { smoothHover } from '$lib/utils/smoothHover'
-	import { goto } from '$app/navigation'
+	import { onMount } from 'svelte'
 
 	export let i: number
 	export let hovering: number
@@ -21,9 +21,24 @@
 	$: background = bookmark?.background
 	$: foreground = bookmark?.foreground
 
-	const handleClick = () => {
-		goto(url)
-	}
+	let aspectRatio = '1'
+
+	onMount(() => {
+		if (image) {
+			const img = new Image()
+			img.addEventListener('load', (e) => {
+				console.log({ e })
+				const width = img.naturalWidth
+				const height = img.naturalHeight
+				console.log({ width })
+				console.log({ height })
+				if (!isNaN(width) && !isNaN(height)) {
+					aspectRatio = `${width} / ${height}`
+				}
+			})
+			img.src = image
+		}
+	})
 </script>
 
 <div class="bookmark-container" style:pointer-events="none">
@@ -41,9 +56,9 @@
 				"
 			>
 				<img
-					draggable="false"
-					style="width: {$settings.ranges.iconSize.value}px;"
+					style:aspect-ratio={aspectRatio}
 					class="icon icon{i}"
+					draggable="false"
 					src={image}
 					alt={title}
 					on:mouseover={() => smoothHover.smoothOver(() => ($settings.showTitle = true), 1500)}
@@ -51,10 +66,7 @@
 				/>
 				{#if $settings.showTitle || hovering == i}
 					{#if title && !dragging}
-						<p
-							in:fade={{ duration: disableTransitions ? 0 : 100 }}
-							out:fade={{ duration: disableTransitions ? 0 : 100 }}
-						>
+						<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
 							{title}
 						</p>
 					{/if}
@@ -107,8 +119,9 @@
 		top: 0;
 		bottom: 0;
 
-		max-width: 100%;
-		max-height: 100%;
+		/* max-width: 100%; */
+		/* max-height: 100%; */
+		height: 100%;
 		margin: auto;
 
 		user-select: none;

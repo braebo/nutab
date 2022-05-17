@@ -7,6 +7,7 @@
 
 	// Components
 	import BookmarkArt from '$lib/ui/Bookmarks/BookmarkArt.svelte'
+	import ImageURL from '$lib/ui/Bookmarks/ImageURL.svelte'
 	import DeleteBookmark from './DeleteBookmark.svelte'
 	import Tags from '$lib/ui/Bookmarks/Tags.svelte'
 	import Button from '$lib/ui/Button.svelte'
@@ -14,6 +15,7 @@
 	// Utils
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
+	import Tooltip from '../Tooltip.svelte'
 
 	export let i: number = 0
 	// export let bookmark_id: string = ''
@@ -45,13 +47,19 @@
 	onMount(async () => {
 		if ($editorContext === 'create') titleInput?.select()
 	})
+
+	let open = false // for ImageURL input
 </script>
 
 {#if $showBookmarkEditor && $bookmarkEditor}
 	<div class="editor-container" out:fade={{ duration: 100 }}>
 		{#if $bookmarkEditor['image']}
-			<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
+			<div class="img-overlay">
+				<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
+				<ImageURL bind:open urlActive={true} />
+			</div>
 		{:else}
+			<ImageURL bind:open urlActive={false} />
 			<div class="bookmark-art">
 				<BookmarkArt
 					--foreground={$bookmarkEditor['foreground']}
@@ -65,6 +73,9 @@
 				<div class="color-settings">
 					<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
 					<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
+					<Tooltip content="Image_from_URL">
+						<div class="image-url-link-icon" on:click={() => (open = !open)}>🔗</div>
+					</Tooltip>
 				</div>
 			</div>
 		{/if}
@@ -307,13 +318,31 @@
 	img {
 		display: flex;
 
-		width: 100px;
+		width: auto;
 		height: 100px;
 		margin: 2.5rem auto 0.5rem auto;
 
 		animation: floatDown 1s forwards;
 
 		animation-timing-function: cubic-bezier(0.175, 0.985, 0.12, 1);
+	}
+
+	.img-overlay {
+		position: relative;
+		width: max-content;
+		height: max-content;
+		margin: 0 auto;
+	}
+
+	.image-url-link-icon {
+		opacity: 0.5;
+		text-align: center;
+		cursor: pointer;
+		padding-top: 0.25rem;
+
+		&:hover {
+			opacity: 1;
+		}
 	}
 
 	/* 3d CSS Float Down Animation */
