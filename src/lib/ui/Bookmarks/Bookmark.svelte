@@ -23,15 +23,13 @@
 
 	let aspectRatio = '1'
 
+	// Get the aspect ratio of the image if it exists
 	onMount(() => {
 		if (image) {
 			const img = new Image()
 			img.addEventListener('load', (e) => {
-				console.log({ e })
 				const width = img.naturalWidth
 				const height = img.naturalHeight
-				console.log({ width })
-				console.log({ height })
 				if (!isNaN(width) && !isNaN(height)) {
 					aspectRatio = `${width} / ${height}`
 				}
