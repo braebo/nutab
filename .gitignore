@@ -7,3 +7,5 @@ myBookmarks.ts
 .DS_Store
 /build
 .env
+build.crx
+build.pem

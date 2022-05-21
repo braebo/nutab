@@ -17,6 +17,7 @@
 	import { randomBackground } from '$lib/data/settings/randomBackground'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
+	import { dev } from '$app/env'
 
 	// Styles
 	import 'greset/css/greset.css'
@@ -45,7 +46,8 @@
 
 		Settings
 
-		Debugger
+		+if('dev')
+			Debugger
 
 </template>
 
