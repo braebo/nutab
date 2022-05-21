@@ -1,5 +1,5 @@
-// import adapter from 'sveltekit-adapter-browser-extension'
-import adapter from '@sveltejs/adapter-vercel'
+import adapter from 'sveltekit-adapter-browser-extension'
+// import adapter from '@sveltejs/adapter-vercel'
 import preprocess from 'svelte-preprocess'
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -11,7 +11,10 @@ const config = {
 	],
 	kit: {
 		adapter: adapter(),
-		appDir: 'ext' //* This is important - chrome extensions can't handle the default _app directory name.
+		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
+		prerender: {
+			default: true
+		}
 	}
 }
 
