@@ -17,7 +17,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"strictNullChecks": false,
-		"types": ["node"],
+		"types": ["node", "tippy.js", "date-fns"],
 		"paths": {
 			"$lib": ["src/lib"],
 			"$lib/*": ["src/lib/*"]
