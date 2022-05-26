@@ -1,22 +1,26 @@
 <script lang="ts">
-	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
+	// Types
 	import type { IHNItem } from './types'
 
-	import { fly } from 'svelte/transition'
-	import { get } from 'svelte/store'
-	import { onMount, tick } from 'svelte'
+	// Data
+	import { BATCH_SIZE, INITIAL_SIZE } from './constants'
+	import { items, list } from './stores'
 
+	// Svelte
+	import { fly } from 'svelte/transition'
+	import { onMount, tick } from 'svelte'
+	import { flip } from 'svelte/animate'
+	import { get } from 'svelte/store'
+
+	// Components
+	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
 	import HnThread from './HNThread.svelte'
 	import HNItem from './HNItem.svelte'
 
+	// Utils
 	import { fetchCategory, fetchItem, fetchStories } from './fetchData'
 	import { fetchMeta } from '$lib/feeds/fetchMeta'
-
-	import { BATCH_SIZE, INITIAL_SIZE } from './constants'
-	import { items, list } from './stores'
 	import { wait } from 'fractils'
-
-	import { flip } from 'svelte/animate'
 
 	let loaded = INITIAL_SIZE
 	let loading = true
@@ -92,7 +96,6 @@
 	const calcLeft = async (node: HTMLElement) => {
 		left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
 		await wait(100)
-		// await tick()
 		animEl.style.transition = 'left 500ms cubic-bezier(.36,.57,.01,.99)'
 	}
 </script>
