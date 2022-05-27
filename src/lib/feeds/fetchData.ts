@@ -1,4 +1,4 @@
-import type { IHNItem, ICategory, IMeta } from './types'
+import type { IHNItem, ICategory } from './types'
 
 import { get } from 'svelte/store'
 
@@ -32,9 +32,6 @@ let first = true
 export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Promise<IHNItem[]> => {
 	const currentList = get(list)
 	const rangeUpper = first ? INITIAL_SIZE : rangeLower + BATCH_SIZE
-	// console.log('rangeLower', rangeLower)
-	// console.log('rangeUpper', rangeUpper)
-
 	if (first) first = false
 
 	// initialize the list or change it's category
@@ -43,7 +40,6 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 	}
 	// get id's of the new stories
 	const ids = get(list).slice(rangeLower, rangeUpper)
-	// console.log('ids', ids)
 
 	// fetch stories
 	let stories: IHNItem[] = []
@@ -65,7 +61,6 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 		}
 		lazyLoadMeta(story.id, `${CORS}${story.url}`)
 	}
-	console.log({ stories })
 
 	return stories
 }

@@ -1,9 +1,8 @@
 // modified from https://github.com/luisivan/fetch-meta-tags for browser compat
 import type { IMeta } from './types'
 
-import { parse } from 'node-html-parser'
-
 import metadataRuleSets from './rulesets'
+import parse from 'node-html-parser'
 
 const fetchHead = async (url: string) => {
 	const read = async (body: ReadableStream<Uint8Array> | null): Promise<string> =>
@@ -28,7 +27,9 @@ const fetchHead = async (url: string) => {
 		})
 
 	try {
-		const res = await fetch(url)
+		// const res = await fetch(url)
+		const res = await fetch(`/api/${encodeURIComponent(url)}`)
+		console.log({ res })
 		if (!res.ok) return ''
 		return read(res.body)
 	} catch (e) {
@@ -72,6 +73,7 @@ export const fetchMeta = async (url: string) => {
 			metadata[prop] = makeUrlAbsolute(url, metadataRuleSets[prop].defaultValue)
 		}
 	}
+	console.log({ metadata })
 	return metadata
 }
 
