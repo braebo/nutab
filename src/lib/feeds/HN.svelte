@@ -26,6 +26,7 @@
 	let loading = true
 
 	const loadMore = async () => {
+		// Debounce a bit
 		if (loading)
 			return setTimeout(() => {
 				if (!loading) loadMore()
@@ -33,23 +34,18 @@
 		loading = true
 
 		const newStories = await fetchStories($items.length)
-		console.log({ newStories })
 		$items = [...$items, ...newStories]
-		console.log({ $items })
 
 		loaded = Math.min(loaded + BATCH_SIZE, get(list).length)
 		loading = false
 	}
 
 	let scrollProgress = 0
-	let itemsLeft = 450
 	const handleScroll = ({ target }: Event) => {
-		itemsLeft = loaded / get(list).length
 		const { scrollTop, scrollHeight, offsetHeight } = target as HTMLDivElement
 		scrollProgress = Math.round((scrollTop / (scrollHeight - offsetHeight)) * 100)
 	}
 
-	$: trigger = 95 + 5 * itemsLeft
 	$: if (scrollProgress > 90) loadMore()
 
 	let activeThread: IHNItem['id'] = null
@@ -59,12 +55,12 @@
 		activeThread = e.detail.id
 	}
 
+	// Fullscreen screws up the layout, so we need to check for it
 	let height = '100vh'
 	let fullscreen = false
 	const checkFullscreen = () => {
 		fullscreen = window?.innerHeight == screen?.height
 		height = fullscreen ? window.innerHeight + 'px' : '100vh'
-		console.log({ height })
 	}
 
 	const scrollToTop = () => {
