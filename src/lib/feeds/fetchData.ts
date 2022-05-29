@@ -2,14 +2,14 @@ import type { IHNItem, ICategory } from './types'
 
 import { get } from 'svelte/store'
 
-import { BATCH_SIZE, CORS, DEFAULT_CATEGORY, INITIAL_SIZE } from './constants'
+import { BATCH_SIZE, DEFAULT_CATEGORY, INITIAL_SIZE } from './constants'
 import { currentCategory, items, list } from './stores'
 import { daysAgo } from '$lib/utils/daysAgo'
 
 import fetchMeta from './fetchMeta'
 
 export const fetchCategory = async (type: ICategory = DEFAULT_CATEGORY): Promise<number[]> => {
-	const res: Response | void = await fetch(`${CORS}https://hacker-news.firebaseio.com/v0/${type}.json`, {
+	const res: Response | void = await fetch(`https://hacker-news.firebaseio.com/v0/${type}.json`, {
 		headers: {
 			Accept: 'application/json',
 			'Access-Control-Allow-Origin': '*'
@@ -21,7 +21,7 @@ export const fetchCategory = async (type: ICategory = DEFAULT_CATEGORY): Promise
 }
 
 export const fetchItem = async (id: IHNItem['id']): Promise<IHNItem> => {
-	const item = await fetch(`${CORS}https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+	const item = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
 		.then((res) => res.json())
 		.catch((e) => console.error(`Hmm.. problem fetching story ${id}: `, e))
 	return item
@@ -59,7 +59,7 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 			icon: '',
 			image: ''
 		}
-		lazyLoadMeta(story.id, `${CORS}${story.url}`)
+		lazyLoadMeta(story.id, `${story.url}`)
 	}
 
 	return stories

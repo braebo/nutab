@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Engine } from '$lib/data/types'
-	import { defaultEngines } from './Engines.svelte'
 	import { activeEngine, searchValue } from './searchStore'
+	import { defaultEngines } from './Engines.svelte'
 	import Icons from './IconList.svelte'
 	import { onMount } from 'svelte'
 	import '$lib/utils/rotateArray'
+	import { wait } from 'fractils'
 
 	let engines = Array.from(defaultEngines)
 	let startPosition = $activeEngine
@@ -14,12 +14,14 @@
 	$: aliases = []
 	$: query = engines[0].url + $searchValue
 
-	onMount(() => {
+	onMount(async () => {
 		setTimeout(() => {
 			rotateEngines()
 			startPosition = $activeEngine
 			getAliases()
 		}, 0)
+		await wait(100)
+		input.focus()
 	})
 
 	function getAliases() {
@@ -92,6 +94,7 @@
 <div class="search-wrapper">
 	<Icons bind:engines on:newSelection={(e) => select(e.detail.position)} {searchFocused} />
 
+	<!-- svelte-ignore a11y-autofocus -->
 	<input
 		type="text"
 		id="search"

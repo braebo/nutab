@@ -107,11 +107,11 @@
 					+else
 						span(use:calcLeft)
 						+each('$items as item, i')
-							.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50 * (firstLoad ? 1 : 0), y: 10 + i}}')
+							.item(in:fly='{{ y: 10 + i, duration: 250 + (i * 50), delay: i * 50 * (firstLoad ? 1 : 0) }}')
 								HNItem({item} bind:activeThread on:showThread='{showThread}')
 		+if('activeThread')
 			.story-previews-buffer
-			.story-thread
+			.story-thread(transition:fly='{{ x: 20, duration: 750, delay: 0 }}')
 				HnThread(threadId='{activeThread}')
 				.to-top(on:click='{scrollToTop}') 🔝
 

@@ -24,11 +24,15 @@
 		"@fontsource/fira-mono": "^4.5.8"
 	},
 	"devDependencies": {
+		"@hapi/hoek": "^10.0.0",
+		"@sveltejs/adapter-static": "1.0.0-next.32",
 		"@sveltejs/adapter-vercel": "next",
 		"@sveltejs/kit": "next",
 		"@svgdotjs/svg.js": "^3.1.2",
 		"@types/node": "^17.0.35",
+		"@types/sjcl": "^1.0.30",
 		"autoprefixer": "^10.4.7",
+		"cheerio": "1.0.0-rc.11",
 		"cors-anywhere": "^0.4.4",
 		"cssnano": "^5.1.9",
 		"cuid": "^2.1.8",
@@ -47,9 +51,11 @@
 		"pug": "^3.0.2",
 		"rimraf": "^3.0.2",
 		"sass": "^1.52.1",
+		"sjcl": "^1.0.8",
 		"svelte": "^3.48.0",
 		"svelte-preprocess": "^4.10.6",
-		"sveltekit-adapter-browser-extension": "^0.2.0",
+		"sveltekit-adapter-browser-extension": "github:antony/sveltekit-adapter-browser-extension",
+		"sveltekit-adapter-chrome-extension": "1.0.3-next.1",
 		"tippy.js": "^6.3.7",
 		"tslib": "^2.4.0",
 		"typescript": "^4.7.2"

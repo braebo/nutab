@@ -2,11 +2,15 @@ lockfileVersion: 5.4
 
 specifiers:
   '@fontsource/fira-mono': ^4.5.8
+  '@hapi/hoek': ^10.0.0
+  '@sveltejs/adapter-static': 1.0.0-next.32
   '@sveltejs/adapter-vercel': next
   '@sveltejs/kit': next
   '@svgdotjs/svg.js': ^3.1.2
   '@types/node': ^17.0.35
+  '@types/sjcl': ^1.0.30
   autoprefixer: ^10.4.7
+  cheerio: 1.0.0-rc.11
   cors-anywhere: ^0.4.4
   cssnano: ^5.1.9
   cuid: ^2.1.8
@@ -25,9 +29,11 @@ specifiers:
   pug: ^3.0.2
   rimraf: ^3.0.2
   sass: ^1.52.1
+  sjcl: ^1.0.8
   svelte: ^3.48.0
   svelte-preprocess: ^4.10.6
-  sveltekit-adapter-browser-extension: ^0.2.0
+  sveltekit-adapter-browser-extension: github:antony/sveltekit-adapter-browser-extension
+  sveltekit-adapter-chrome-extension: 1.0.3-next.1
   tippy.js: ^6.3.7
   tslib: ^2.4.0
   typescript: ^4.7.2
@@ -36,11 +42,15 @@ dependencies:
   '@fontsource/fira-mono': 4.5.8
 
 devDependencies:
+  '@hapi/hoek': 10.0.0
+  '@sveltejs/adapter-static': 1.0.0-next.32
   '@sveltejs/adapter-vercel': 1.0.0-next.56
   '@sveltejs/kit': 1.0.0-next.345_sass@1.52.1+svelte@3.48.0
   '@svgdotjs/svg.js': 3.1.2
   '@types/node': 17.0.35
+  '@types/sjcl': 1.0.30
   autoprefixer: 10.4.7_postcss@8.4.14
+  cheerio: 1.0.0-rc.11
   cors-anywhere: 0.4.4
   cssnano: 5.1.9_postcss@8.4.14
   cuid: 2.1.8
@@ -59,9 +69,11 @@ devDependencies:
   pug: 3.0.2
   rimraf: 3.0.2
   sass: 1.52.1
+  sjcl: 1.0.8
   svelte: 3.48.0
   svelte-preprocess: 4.10.6_koqbhisajzsnfz6xm652hjfoey
-  sveltekit-adapter-browser-extension: 0.2.0
+  sveltekit-adapter-browser-extension: github.com/antony/sveltekit-adapter-browser-extension/a377dd83b4ecd599442725b680bed490b9163a97
+  sveltekit-adapter-chrome-extension: 1.0.3-next.1
   tippy.js: 6.3.7
   tslib: 2.4.0
   typescript: 4.7.2
@@ -92,6 +104,10 @@ packages:
   /@fontsource/fira-mono/4.5.8:
     resolution: {integrity: sha512-sFuSPB/Km8B1fy3CH0NqO5Nb4GmVMzp3XFaw6MwK293xhm3OnB68QJawwTTjLewcrS78wOTAhTUB058qxurJoQ==}
     dev: false
+
+  /@hapi/hoek/10.0.0:
+    resolution: {integrity: sha512-CeNFz1JcLZ5xE8Vc9aau37cgHw9bxXqSDK/D55GF2GAOv0n0XjyyjSodHtKahB7A1tV3FlgCpijp3zkSITmBdA==}
+    dev: true
 
   /@hapi/hoek/9.3.0:
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -125,6 +141,12 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
+    dev: true
+
+  /@sveltejs/adapter-static/1.0.0-next.32:
+    resolution: {integrity: sha512-kpYlghqxVWbrIdbzoiQTe1kSq9/+xlAkcd8eXTAGGPCBPYTUa0bkxt1NEfoNC+h7a+KlFoLMTi9W0AxnrNuiIQ==}
+    dependencies:
+      tiny-glob: 0.2.9
     dev: true
 
   /@sveltejs/adapter-vercel/1.0.0-next.56:
@@ -201,6 +223,10 @@ packages:
     resolution: {integrity: sha512-BPdoIt1lfJ6B7rw35ncdwBZrAssjcwzI5LByIrYs+tpXlj/CAkuVdRsgZDdP4lq5EjyWzwxZCqAoFyHKFwp32g==}
     dependencies:
       '@types/node': 17.0.35
+    dev: true
+
+  /@types/sjcl/1.0.30:
+    resolution: {integrity: sha512-4ebBtj1rx3Kh3To5RnPua+U4JzVwH2MxUmHQvAlxWpzmfmupBRyyXAIEQceon+e5tW9aBeOApTYA6EXfBysRyQ==}
     dev: true
 
   /@vercel/nft/0.19.1:
@@ -692,7 +718,7 @@ packages:
     dev: true
 
   /delegates/1.0.0:
-    resolution: {integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=}
+    resolution: {integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==}
     dev: true
 
   /detect-indent/6.1.0:
@@ -701,7 +727,7 @@ packages:
     dev: true
 
   /detect-libc/1.0.3:
-    resolution: {integrity: sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=}
+    resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
     engines: {node: '>=0.10'}
     hasBin: true
     dev: true
@@ -1187,6 +1213,14 @@ packages:
       minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
+    dev: true
+
+  /globalyzer/0.1.0:
+    resolution: {integrity: sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==}
+    dev: true
+
+  /globrex/0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
 
   /graceful-fs/4.2.10:
@@ -2772,12 +2806,11 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /sveltekit-adapter-browser-extension/0.2.0:
-    resolution: {integrity: sha512-4zfHGFcEZA1wVT5Kh/gCfwIQ9w9G9aFP1tDt/NDMVLPCpDST682pGw0HMvlHdQDiegabUSUTPhj6QGPLopA7QA==}
+  /sveltekit-adapter-chrome-extension/1.0.3-next.1:
+    resolution: {integrity: sha512-BIpazGDMjCYPHtq0W4Ql3hRv4oBYQRBZ1EJtqSBtkKNApVCQLPDEKeKgonIDwG9NGduIc/N5vbab9o+l3vIrgw==}
     dependencies:
-      '@hapi/hoek': 9.3.0
       cheerio: 1.0.0-rc.11
-      sjcl: 1.0.8
+      tiny-glob: 0.2.9
     dev: true
 
   /svgo/2.8.0:
@@ -2817,6 +2850,13 @@ packages:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
+    dev: true
+
+  /tiny-glob/0.2.9:
+    resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
+    dependencies:
+      globalyzer: 0.1.0
+      globrex: 0.1.2
     dev: true
 
   /tippy.js/6.3.7:
@@ -2964,4 +3004,14 @@ packages:
   /yaml/1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
+    dev: true
+
+  github.com/antony/sveltekit-adapter-browser-extension/a377dd83b4ecd599442725b680bed490b9163a97:
+    resolution: {tarball: https://codeload.github.com/antony/sveltekit-adapter-browser-extension/tar.gz/a377dd83b4ecd599442725b680bed490b9163a97}
+    name: sveltekit-adapter-browser-extension
+    version: 0.2.0
+    dependencies:
+      '@hapi/hoek': 9.3.0
+      cheerio: 1.0.0-rc.11
+      sjcl: 1.0.8
     dev: true

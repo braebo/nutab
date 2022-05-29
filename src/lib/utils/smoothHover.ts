@@ -10,7 +10,11 @@ async function smoothOver(cb: Function, delay = 500, bypass?: boolean) {
 	if (bypass) return
 	clearTimers()
 	overTimer = setTimeout(() => {
-		cb()
+		try {
+			cb()
+		} catch (e) {
+			console.warn(e)
+		}
 	}, delay)
 }
 
@@ -24,7 +28,11 @@ let outTimer: NodeJS.Timeout
 async function smoothOut(cb: Function, delay = 300, bybass?: boolean) {
 	clearTimers()
 	outTimer = setTimeout(() => {
-		cb()
+		try {
+			cb()
+		} catch (e) {
+			console.warn(e)
+		}
 	}, delay)
 }
 

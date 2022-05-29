@@ -27,9 +27,7 @@ const fetchHead = async (url: string) => {
 		})
 
 	try {
-		// const res = await fetch(url)
-		const res = await fetch(`/api/${encodeURIComponent(url)}`)
-		console.log({ res })
+		const res = await fetch(url)
 		if (!res.ok) return ''
 		return read(res.body)
 	} catch (e) {
@@ -73,7 +71,6 @@ export const fetchMeta = async (url: string) => {
 			metadata[prop] = makeUrlAbsolute(url, metadataRuleSets[prop].defaultValue)
 		}
 	}
-	console.log({ metadata })
 	return metadata
 }
 

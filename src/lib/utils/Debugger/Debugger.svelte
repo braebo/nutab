@@ -11,7 +11,10 @@
 	import { fly, fade } from 'svelte/transition'
 	import { browser, dev } from '$app/env'
 	import { onMount, tick } from 'svelte'
-	import '../../../styles/prism.scss'
+
+	if (dev) {
+		import('../../../styles/prism.scss')
+	}
 
 	interface PrismJS extends NodeModule {
 		highlightAll: () => void
