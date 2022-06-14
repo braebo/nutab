@@ -4,6 +4,7 @@ export type Bookmark = {
 	title?: string
 	description?: string
 	image?: string | null
+	autoImage: boolean
 	background?: string | null
 	foreground?: string | null
 	tags: string[]

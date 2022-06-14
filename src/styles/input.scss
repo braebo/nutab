@@ -1,0 +1,53 @@
+.checkbox {
+	align-self: flex-start;
+
+	width: 70%;
+	margin: 0;
+
+	font-weight: 200;
+	letter-spacing: 1px;
+
+	opacity: 0.5;
+
+	input {
+		position: absolute;
+		opacity: 0;
+		cursor: pointer;
+		height: 0;
+		width: 0;
+	}
+}
+
+$size: 0.75rem;
+
+.radio {
+	position: relative;
+	height: $size;
+	width: $size;
+	margin: 0;
+
+	outline: none;
+
+	background: transparent;
+	border: 1px solid var(--dark-a);
+	border-radius: 1rem;
+
+	cursor: pointer;
+
+	.circle {
+		position: absolute;
+		inset: 0;
+
+		width: 8px;
+		height: 8px;
+		margin: auto;
+		border-radius: 1rem;
+
+		background: var(--dark-a);
+		transform: scale(0);
+		transition: 0.1s ease-out;
+		&.checked {
+			transform: scale(1);
+		}
+	}
+}

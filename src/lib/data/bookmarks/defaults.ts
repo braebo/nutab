@@ -27,6 +27,7 @@ export const emptyBookmark = (current_folder: Folder): Bookmark => {
 		title: '',
 		description: '',
 		image: null,
+		autoImage: false,
 		tags: [title],
 		...default_theme,
 		position: current_folder.bookmarks.length + 1
@@ -40,6 +41,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Devo',
 		description: 'Dev News Extensions',
 		image: 'https://github.com/karakanb/devo/raw/master/img/logo.png',
+		autoImage: false,
 		tags: ['Dev', 'News'],
 		...default_theme,
 		position: 0
@@ -50,6 +52,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'OpenBase',
 		description: 'Repo Search Engine',
 		image: 'https://d25hn4jiqx5f7l.cloudfront.net/companies/logos/medium/openbase_1601666331.png',
+		autoImage: false,
 		tags: ['Dev', 'Code'],
 		...default_theme,
 		position: 1
@@ -60,6 +63,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Reddit',
 		description: 'Front Page of the Internet',
 		image: 'https://www.redditinc.com/assets/images/site/reddit-logo.png',
+		autoImage: false,
 		tags: ['Entertainment', 'News'],
 		...default_theme,
 		position: 2
@@ -70,6 +74,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Youtube',
 		description: '',
 		image: 'https://cdn.svgporn.com/logos/youtube-icon.svg',
+		autoImage: false,
 		tags: ['Google', 'Video', 'Entertainment'],
 		...default_theme,
 		position: 3
@@ -81,6 +86,7 @@ export const defaultBookmarks: Bookmark[] = [
 		description: '',
 		// image: 'https://cdn.svgporn.com/logos/github-icon.svg',
 		image: 'https://cdn.iconscout.com/icon/free/png-256/github-159-721954.png',
+		autoImage: false,
 		tags: ['Dev', 'Github'],
 		...default_theme,
 		position: 4
@@ -91,6 +97,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Gmail',
 		description: 'Email',
 		image: 'https://cdn.svgporn.com/logos/google-gmail.svg',
+		autoImage: false,
 		tags: ['Google', 'Email'],
 		...default_theme,
 		position: 5
@@ -101,6 +108,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Drive',
 		description: 'Google Drive',
 		image: 'https://cdn.svgporn.com/logos/google-drive.svg',
+		autoImage: false,
 		tags: ['Google', 'Storage'],
 		...default_theme,
 		position: 6
@@ -111,6 +119,7 @@ export const defaultBookmarks: Bookmark[] = [
 		title: 'Photos',
 		description: 'Gogle Photos',
 		image: 'https://cdn.svgporn.com/logos/google-photos.svg',
+		autoImage: false,
 		tags: ['Google', 'Storage', 'Photos', 'Images'],
 		...default_theme,
 		position: 7

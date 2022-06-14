@@ -39,6 +39,9 @@
 		border-radius: 10px;
 		box-shadow: var(--shadow);
 
+		background-repeat: no-repeat;
+		background-size: cover;
+
 		text-align: center;
 
 		overflow: hidden;

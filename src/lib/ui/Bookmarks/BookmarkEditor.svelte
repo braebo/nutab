@@ -16,6 +16,7 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 	import Tooltip from '../Tooltip.svelte'
+	import { wait } from 'fractils'
 
 	export let i: number = 0
 	// export let bookmark_id: string = ''
@@ -25,6 +26,9 @@
 	let descriptionInput: HTMLInputElement
 	let descriptionFocused = false
 	$: placeholder = descriptionFocused ? '' : 'description'
+	$: icon = `https://cdn.cdnlogo.com/logos/a/1/${new URL($bookmarkEditor?.['url']).hostname.split('.')[0]}-icon.svg`
+
+	let hoveringAI = false
 
 	let tag = ''
 	function handleTags(event: CustomEvent) {
@@ -35,6 +39,12 @@
 	}
 
 	async function handleSave() {
+		if (!$bookmarkEditor.url) {
+			urlInput.style.border = '1px solid var(--warn)'
+			await wait(1000)
+			urlInput.style.border = '1px solid transparent'
+			return
+		}
 		if ($editorContext === 'edit') {
 			updateBookmark_db($bookmarkEditor)
 		} else {
@@ -53,33 +63,46 @@
 
 {#if $showBookmarkEditor && $bookmarkEditor}
 	<div class="editor-container" out:fade={{ duration: 100 }}>
-		{#if $bookmarkEditor['image']}
-			<div class="img-overlay">
-				<img name="image" src={$bookmarkEditor['image']} alt={$bookmarkEditor['title']} />
-				<ImageURL bind:open urlActive={true} />
-			</div>
-		{:else}
-			<ImageURL bind:open urlActive={false} />
-			<div class="bookmark-art">
-				<BookmarkArt
-					--foreground={$bookmarkEditor['foreground']}
-					--background={$bookmarkEditor['background']}
-					--size="100px"
-					--margin="2rem auto"
-					--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
+		<div class="image-container">
+			{#if $bookmarkEditor['image'] || $bookmarkEditor['autoImage']}
+				<div class="img-overlay">
+					<img name="image" src={$bookmarkEditor['image'] || icon} alt={$bookmarkEditor['title']} />
+					<ImageURL bind:open urlActive={true} />
+				</div>
+			{:else}
+				<ImageURL bind:open urlActive={false} />
+				<div class="bookmark-art">
+					<BookmarkArt
+						--foreground={$bookmarkEditor['foreground']}
+						--background={$bookmarkEditor['background']}
+						--size="100px"
+						--margin="2rem auto"
+						--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
 				0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14)"
-					title={$bookmarkEditor['title']}
-				/>
-				<div class="color-settings">
-					<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
-					<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
-					<Tooltip content="Image_from_URL">
-						<div class="image-url-link-icon" on:click={() => (open = !open)}>🔗</div>
-					</Tooltip>
+						title={$bookmarkEditor['title']}
+					/>
+					<div class="color-settings">
+						<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
+						<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
+						<Tooltip content="Custom_image_URL">
+							<div class="image-url-link-icon" on:click={() => (open = !open)}>🔗</div>
+						</Tooltip>
+					</div>
+				</div>
+			{/if}
+			<div class="auto-image checkbox">
+				<label class:hoveringAI for="auto-image">Auto Image</label>
+				<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+				<div
+					class="radio"
+					on:mouseover={() => (hoveringAI = true)}
+					on:mouseout={() => (hoveringAI = false)}
+					on:click={() => ($bookmarkEditor['autoImage'] = !$bookmarkEditor['autoImage'])}
+				>
+					<div class="circle" class:checked={$bookmarkEditor['autoImage']} />
 				</div>
 			</div>
-		{/if}
-
+		</div>
 		<div class="setting title">
 			<input
 				name="title"
@@ -302,6 +325,7 @@
 
 		animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1);
 	}
+
 	.color-settings {
 		position: absolute;
 		top: 1.75rem;
@@ -313,6 +337,34 @@
 
 		width: max-content;
 		margin: auto;
+	}
+
+	.image-container {
+		position: relative;
+	}
+
+	.auto-image {
+		& .radio {
+			position: absolute;
+			top: 37%;
+			left: 35%;
+			margin-left: auto;
+			z-index: 50;
+			pointer-events: all;
+		}
+		& label {
+			position: absolute;
+			left: 15%;
+			top: 34%;
+			color: var(--dark-d);
+			font-size: 15px;
+			opacity: 0;
+			transition: opacity 0.25s;
+			&.hoveringAI {
+				opacity: 1;
+			}
+			width: 150%;
+		}
 	}
 
 	img {
@@ -328,9 +380,12 @@
 	}
 
 	.img-overlay {
+		display: flex;
+		align-items: center;
 		position: relative;
 		width: max-content;
 		height: max-content;
+		min-height: 192px;
 		margin: 0 auto;
 	}
 

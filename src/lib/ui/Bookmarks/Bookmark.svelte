@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { CORS } from '$lib/feeds/constants'
 	import type { Bookmark } from '$lib/data/types'
 
 	import { settings } from '$lib/data/settings/settingsStore'
@@ -16,9 +17,11 @@
 	$: disableTransitions // is this necessary?
 
 	$: url = bookmark?.url
+	$: icon = `https://cdn.cdnlogo.com/logos/a/1/${new URL(bookmark?.url).hostname.split('.')[0]}-icon.svg`
+	$: console.log(icon)
 	$: title = bookmark?.title
 	$: image = bookmark?.image
-	$: background = bookmark?.background
+	$: background = bookmark?.background || icon || ''
 	$: foreground = bookmark?.foreground
 
 	let aspectRatio = '1'
@@ -74,7 +77,7 @@
 			<div class="bookmark" in:scale|once={{ duration: 200 + 50 * i }}>
 				<BookmarkArt
 					--foreground={foreground}
-					--background={background}
+					--background={`url(${icon})` || background}
 					--size="{$settings.ranges.iconSize.value + 5}px"
 					{title}
 				/>
