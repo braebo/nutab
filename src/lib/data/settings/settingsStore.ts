@@ -8,7 +8,7 @@ type Range = {
 }
 
 export interface Settings {
-	// Todo: add theme, language, etc.
+	// TODO add theme, language, etc.
 	ranges: {
 		gridWidth: Range
 		gridGap: Range
@@ -18,6 +18,10 @@ export interface Settings {
 	showTitle: boolean
 	background: string
 	lockBackground: boolean
+	// TODO #23 needs ui in settings
+	customBackground: boolean
+	gradientA: string
+	gradientB: string
 	invertDark?: boolean
 }
 
@@ -30,6 +34,9 @@ const default_settings: Settings = {
 	transparent: true,
 	showTitle: false,
 	background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
+	customBackground: false,
+	gradientA: '',
+	gradientB: '',
 	lockBackground: false
 }
 

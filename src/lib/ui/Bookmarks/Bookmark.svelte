@@ -17,10 +17,13 @@
 	$: disableTransitions // is this necessary?
 
 	$: url = bookmark?.url
-	$: icon = `https://cdn.cdnlogo.com/logos/a/1/${new URL(bookmark?.url).hostname.split('.')[0]}-icon.svg`
+	// $: basename = new URL(bookmark?.url).hostname
+	$: basename = bookmark?.url.split('://')[1].split('.')[0]
+	$: icon = `https://cdn.cdnlogo.com/logos/a/1/${basename.split('.')[0]}-icon.svg`
+	let iconError = false // in case the icon doesn't exist on cdnlogo.com
 	$: console.log(icon)
 	$: title = bookmark?.title
-	$: image = bookmark?.image
+	$: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
 	$: background = bookmark?.background || icon || ''
 	$: foreground = bookmark?.foreground
 
@@ -64,6 +67,7 @@
 					alt={title}
 					on:mouseover={() => smoothHover.smoothOver(() => ($settings.showTitle = true), 1500)}
 					on:focus={() => smoothHover.smoothOver(() => ($settings.showTitle = false))}
+					on:error={(e) => (iconError = true)}
 				/>
 				{#if $settings.showTitle || hovering == i}
 					{#if title && !dragging}

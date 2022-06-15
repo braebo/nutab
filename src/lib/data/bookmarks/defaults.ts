@@ -27,7 +27,7 @@ export const emptyBookmark = (current_folder: Folder): Bookmark => {
 		title: '',
 		description: '',
 		image: null,
-		autoImage: false,
+		autoImage: true,
 		tags: [title],
 		...default_theme,
 		position: current_folder.bookmarks.length + 1

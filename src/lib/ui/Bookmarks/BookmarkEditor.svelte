@@ -26,7 +26,11 @@
 	let descriptionInput: HTMLInputElement
 	let descriptionFocused = false
 	$: placeholder = descriptionFocused ? '' : 'description'
-	$: icon = `https://cdn.cdnlogo.com/logos/a/1/${new URL($bookmarkEditor?.['url']).hostname.split('.')[0]}-icon.svg`
+	$: icon = ''
+	$: if ($bookmarkEditor?.['url']) {
+		const basename = $bookmarkEditor?.['url'].split('://')[1].split('.')[0] || ''
+		icon = `https://cdn.cdnlogo.com/logos/a/1/${basename.split('.')[0]}-icon.svg`
+	}
 
 	let hoveringAI = false
 
@@ -347,15 +351,15 @@
 		& .radio {
 			position: absolute;
 			top: 37%;
-			left: 35%;
+			left: 30%;
 			margin-left: auto;
 			z-index: 50;
 			pointer-events: all;
 		}
 		& label {
 			position: absolute;
-			left: 15%;
-			top: 34%;
+			left: 11%;
+			top: 34.5%;
 			color: var(--dark-d);
 			font-size: 15px;
 			opacity: 0;
