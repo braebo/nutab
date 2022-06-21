@@ -1,8 +1,18 @@
-// import adapter from 'sveltekit-adapter-browser-extension'
-import adapter from 'sveltekit-adapter-chrome-extension'
-// import adapter from '@sveltejs/adapter-vercel'
-// import adapter from '@sveltejs/adapter-static'
+import extension from 'sveltekit-adapter-browser-extension'
+import vercel from '@sveltejs/adapter-vercel'
 import preprocess from 'svelte-preprocess'
+
+const hybrid = () => {
+	const adapters = [extension({ fallback: 'index.html' }), vercel()]
+    return {
+        name: 'hybrid',
+        async adapt(argument) {
+            await Promise.all(adapters.map(item =>
+                Promise.resolve(item).then(resolved => resolved.adapt(argument))
+            ))
+        }
+    }
+}
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,8 +22,7 @@ const config = {
 		})
 	],
 	kit: {
-		adapter: adapter(),
-		// adapter: adapter({ fallback: 'index.html' }),
+		adapter: hybrid(),
 		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
 		prerender: {
 			default: true
