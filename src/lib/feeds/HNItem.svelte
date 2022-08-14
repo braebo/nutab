@@ -1,12 +1,13 @@
 <script lang="ts">
-	import RandomWave from '$lib/graphics/RandomWave.svelte'
-	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
 	import type { IHNItem } from './types'
 
+	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
+	import RandomWave from '$lib/graphics/RandomWave.svelte'
+
 	import { randomBackground } from '$lib/data/settings/randomBackground'
+	import { onMount, createEventDispatcher } from 'svelte'
 	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
-	import { onMount, createEventDispatcher } from 'svelte'
 
 	export let item: IHNItem
 	export let activeThread: IHNItem['id']
@@ -22,7 +23,7 @@
 
 	div.article(on:click='{showThread}' class:active='{activeThread === item.id}')
 		.image-container
-			+if('item.meta.image')
+			+if('item.meta?.image')
 				.image(style='background-image: url({item.meta.image})' in:fade)
 				+else
 					.random-thumbnail
@@ -71,8 +72,10 @@
 		box-shadow: 0px 0.9px 0.7px rgba(0, 0, 0, 0.008), 0px 2.1px 1.8px rgba(0, 0, 0, 0.012), 0px 3.9px 3.4px rgba(0, 0, 0, 0.015), 0px 6.9px 6px rgba(0, 0, 0, 0.018), 0px 13px 11.3px rgba(0, 0, 0, 0.022), 0px 31px 27px rgba(0, 0, 0, 0.03)		
 
 		transition: transform 0.2s, box-shadow 0.2s
+		
 		&.active
 			border: 1px solid var(--dark-d)
+		
 		&:hover, &.active
 			transform: scale(1.025)
 			box-shadow: 0px 1.8px 0.7px rgba(0, 0, 0, 0.006), 0px 4.3px 1.8px rgba(0, 0, 0, 0.008), 0px 8.1px 3.4px rgba(0, 0, 0, 0.01), 0px 14.5px 6px rgba(0, 0, 0, 0.012), 0px 27.2px 11.3px rgba(0, 0, 0, 0.014), 0px 65px 27px rgba(0, 0, 0, 0.02)
@@ -88,21 +91,23 @@
 		padding-right: 1rem
 
 	h2
-		line-height: 1.5rem
-		color: var(--dark-a)
-
-		font-size: 1rem
 		width: max-content
 		max-width: min(100%, 60vw)
+		
+		color: var(--dark-a)
+		
 		font-variation-settings: 'wght' 500
 		font-family: var(--font-a)
+		font-size: 1rem
 		word-spacing: 0px
+		line-height: 1.5rem
 		letter-spacing: 0.5px
 
 		transition: 0.25s
 
 	a
 		text-decoration: none
+		
 		&:hover
 			text-decoration: underline
 		&.article-link
@@ -150,6 +155,7 @@
 
 		opacity: 0.9
 		transition: opacity 0.2s
+		
 		&:hover
 			opacity: 1
 
@@ -157,6 +163,7 @@
 		display: flex
 		align-items: center
 		gap: 0.25rem
+
 		position: absolute
 		right: 0.5rem
 		bottom: 0.5rem
@@ -173,6 +180,7 @@
 		width: 22px
 		height: 22px
 		margin-right: 0.25rem
+
 		transition: transform 0.2s ease-out
 
 	.image-container
@@ -182,11 +190,13 @@
 		max-height: 100px
 
 	.random-thumbnail
+		position: relative
+
 		min-width: 125px
 		min-height: 100px
-		position: relative
-		transition: filter 0.3s
+
 		filter: grayscale(0%)
+		transition: filter 0.3s
 
 	.image
 		min-width: 125px
@@ -203,17 +213,20 @@
 	.random-wave
 		position: absolute
 		inset: 0
+		
 		width: 100%
 		height: 100%
 
 	.author, .since
 		flex-wrap: nowrap
-		word-wrap: none
-		white-space: nowrap
-		color: var(--light-d)
-		word-spacing: -1px
+
 		width: max-content
 
+		color: var(--light-d)
+
+		word-wrap: none
+		word-spacing: -1px
+		white-space: nowrap
 
 	.dot
 		margin: 0 0.25rem

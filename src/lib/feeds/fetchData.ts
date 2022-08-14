@@ -12,11 +12,14 @@ export const fetchCategory = async (type: ICategory = DEFAULT_CATEGORY): Promise
 	const res: Response | void = await fetch(`https://hacker-news.firebaseio.com/v0/${type}.json`, {
 		headers: {
 			Accept: 'application/json',
-			'Access-Control-Allow-Origin': '*'
-		}
+			'Access-Control-Allow-Origin': '*',
+		},
 	}).catch((e) => console.error('Hmm.. problem fetching the stories.', e))
+
 	if (!res) return []
+
 	const category = await res.json()
+
 	return category as number[]
 }
 
@@ -51,14 +54,18 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 
 	// fetch opengraph metadata
 	for (const story of stories) {
+		if (!story.url) return
+
 		story.days_ago = daysAgo(new Date(story.time * 1000)).string
+
 		story.meta = {
 			url: story.url,
 			title: story.title,
 			description: story.text,
 			icon: '',
-			image: ''
+			image: '',
 		}
+
 		lazyLoadMeta(story.id, `${story.url}`)
 	}
 
@@ -67,11 +74,15 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 
 async function lazyLoadMeta(id: number, url: string) {
 	const meta = await fetchMeta(url)
+
 	items.update((items) => {
 		const item = items.find((item) => item.id === id)
+
 		if (!item) return items
+
 		item.meta.image = meta.image
 		item.meta.description = meta.description
+
 		return items
 	})
 }
