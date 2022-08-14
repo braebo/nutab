@@ -1,0 +1,10 @@
+{
+	"svelteSortOrder": "options-markup-scripts-styles",
+	"htmlWhitespaceSensitivity": "ignore",
+	"trailingComma": "all",
+	"singleQuote": true,
+	"printWidth": 120,
+	"useTabs": true,
+	"semi": false,
+	"tabWidth": 4
+}
