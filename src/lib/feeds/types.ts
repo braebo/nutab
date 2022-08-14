@@ -25,6 +25,7 @@ export interface IComment {
  * The metadata for a single story.
  */
 export interface IMeta {
+	[key: string]: ValueOf<IMeta>
 	url: string
 	title: string
 	description: string
