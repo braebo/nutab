@@ -1,18 +1,20 @@
-import extension from 'sveltekit-adapter-browser-extension'
+import browser_extension from 'sveltekit-adapter-browser-extension'
 import vercel from '@sveltejs/adapter-vercel'
 import preprocess from 'svelte-preprocess'
 
-const hybrid = () => {
-	const adapters = [extension({ fallback: 'index.html' }), vercel()]
-    return {
-        name: 'hybrid',
-        async adapt(argument) {
-            await Promise.all(adapters.map(item =>
-                Promise.resolve(item).then(resolved => resolved.adapt(argument))
-            ))
-        }
-    }
-}
+const adapters = [
+	vercel(),
+	browser_extension({ fallback: 'index.html' })
+]
+
+const hybrid_adapter = () => ({
+	name: 'hybrid',
+	async adapt(argument) {
+		await Promise.all(adapters.map(adapter =>
+			Promise.resolve(adapter).then(resolved => resolved.adapt(argument))
+		))
+	}
+})
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -22,10 +24,21 @@ const config = {
 		})
 	],
 	kit: {
-		adapter: hybrid(),
+		adapter: hybrid_adapter(),
 		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
 		prerender: {
 			default: true
+		}
+	},
+	vitePlugin: {
+		experimental: {
+			// https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/config.md#inspector
+			inspector: {
+				toggleButtonPos: 'bottom-left',
+				toggleKeyCombo: 'meta-shift',
+				showToggleButton: 'always',
+				holdMode: true
+			}
 		}
 	}
 }
