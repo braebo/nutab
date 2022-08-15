@@ -3,7 +3,6 @@
 	import { init_db } from '$lib/data/transactions'
 
 	// Components
-	import SettingsPanel from '$lib/data/settings/SettingsPanel.svelte'
 	import { settings } from '$lib/data/settings/settingsStore'
 	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import Settings from '$lib/data/settings/Settings.svelte'
@@ -15,13 +14,14 @@
 
 	// Utils
 	import { randomBackground } from '$lib/data/settings/randomBackground'
+	import { Fractils } from 'fractils'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 	import { dev } from '$app/env'
 
 	// Styles
-	import 'greset/css/greset.css'
 	import '../styles/app.scss'
+	import 'greset/greset.css'
 
 	onMount(async () => {
 		if (!$settings.lockBackground) {
@@ -35,6 +35,8 @@
 
 	svelte:head
 		title Nutab
+	
+	Fractils
 
 	#app(style='{$settings.background}')
 		Themer(size='{50}')
