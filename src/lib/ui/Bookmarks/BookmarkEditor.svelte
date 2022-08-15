@@ -19,7 +19,6 @@
 	import { wait } from 'fractils'
 
 	export let i: number = 0
-	// export let bookmark_id: string = ''
 
 	let titleInput: HTMLInputElement
 	let urlInput: HTMLInputElement
@@ -28,8 +27,8 @@
 	$: placeholder = descriptionFocused ? '' : 'description'
 	$: icon = ''
 	$: if ($bookmarkEditor?.['url']) {
-		const basename = $bookmarkEditor?.['url'].split('://')[1].split('.')[0] || ''
-		icon = `https://cdn.cdnlogo.com/logos/a/1/${basename.split('.')[0]}-icon.svg`
+		const basename = $bookmarkEditor?.url?.split('://')[1]?.split('.')?.[0] || ''
+		if (basename) icon = `https://cdn.cdnlogo.com/logos/a/1/${basename.split('.')?.[0]}-icon.svg`
 	}
 
 	let hoveringAI = false
@@ -75,16 +74,17 @@
 				</div>
 			{:else}
 				<ImageURL bind:open urlActive={false} />
+
 				<div class="bookmark-art">
 					<BookmarkArt
 						--foreground={$bookmarkEditor['foreground']}
 						--background={$bookmarkEditor['background']}
 						--size="100px"
 						--margin="2rem auto"
-						--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275),
-				0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14)"
+						--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14)"
 						title={$bookmarkEditor['title']}
 					/>
+
 					<div class="color-settings">
 						<input name="background" type="color" bind:value={$bookmarkEditor['background']} />
 						<input name="foreground" type="color" bind:value={$bookmarkEditor['foreground']} />
@@ -107,6 +107,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="setting title">
 			<input
 				name="title"
@@ -173,9 +174,11 @@
 			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}>
 				Cancel
 			</Button>
+
 			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}>
 				Save
 			</Button>
+
 			<DeleteBookmark bookmark_id={$bookmarkEditor.bookmark_id} on:close={() => editor.hide()} />
 		</div>
 	</div>

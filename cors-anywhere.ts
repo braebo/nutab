@@ -9,8 +9,9 @@ cors_proxy
 	.createServer({
 		originWhitelist: [], // Allow all origins
 		requireHeader: ['origin', 'x-requested-with'],
-		removeHeaders: ['cookie', 'cookie2']
+		removeHeaders: ['cookie', 'cookie2'],
 	})
+	//@ts-ignore
 	.listen(port, hostname, function () {
 		console.log('Running CORS Anywhere on ' + hostname + ':' + port)
 	})

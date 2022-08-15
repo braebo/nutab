@@ -10,15 +10,15 @@
 		lastActiveFolderId,
 		tagFilter,
 		uniqueTags,
-		folders
+		folders,
 	} from '$lib/data/dbStore'
 	import { getAllFolders_db, getFolder_db, newFolder_db } from '$lib/data/transactions'
 	import { editor, folderEditor } from '$lib/stores/bookmarkEditor'
 	import db from '$lib/data/db'
 
 	// Utils
-	import { smoothHover } from '$lib/utils/smoothHover'
 	import { reRender } from '$lib/stores/gridStore'
+	import { debounce } from '$lib/utils/debounce'
 	import { fly } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
@@ -54,14 +54,17 @@
 
 	// Debounced mouse hover for show / hide / animations
 	let smoothHovering = false
-	const smooth = smoothHover
+
+	const smooth = debounce
+
 	const mouseOver = async () => {
 		hovering = true
-		smooth.smoothOver(() => (smoothHovering = true), 0)
+		debounce(() => (smoothHovering = true), 0)
 	}
+
 	const mouseOut = () => {
 		hovering = false
-		smooth.smoothOut(() => (smoothHovering = false), 500)
+		debounce(() => (smoothHovering = false), 500)
 	}
 
 	// Selects a folder

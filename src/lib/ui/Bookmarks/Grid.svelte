@@ -11,8 +11,8 @@
 	import Bookmark from './Bookmark.svelte'
 
 	// Utils
-	import { smoothHover } from '$lib/utils/smoothHover'
 	import { editor } from '$lib/stores/bookmarkEditor'
+	import { debounce } from '$lib/utils/debounce'
 	import { scale } from 'svelte/transition'
 	import { goto } from '$app/navigation'
 
@@ -127,12 +127,12 @@
 
 	function handleItemMouseOver(i: number) {
 		hovering = i
-		smoothHover.smoothOver(() => toggleShowEditIcon(true, i), 500)
+		debounce(() => toggleShowEditIcon(true, i), 500)
 	}
 
 	function handleItemMouseOut(i: number) {
 		hovering = null
-		smoothHover.smoothOut(() => (showEditIcon[i] = false))
+		debounce(() => (showEditIcon[i] = false))
 	}
 
 	// Hide edit icon while dragging
@@ -211,7 +211,6 @@
 		--item-size: {$grid.iconSize}px;
 	"
 >
-	<!-- {#key $activeFolder} -->
 	{#if $grid.items}
 		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
 			{#key $reRender}
@@ -272,7 +271,6 @@
 			{/key}
 		{/each}
 	{/if}
-	<!-- {/key} -->
 </div>
 
 <style lang="scss">
@@ -298,11 +296,14 @@
 		z-index: 3;
 		user-select: none;
 	}
+
 	.cell {
 		position: absolute;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+
+		max-width: 100%;
 
 		&.active {
 			z-index: 10 !important;
@@ -315,6 +316,7 @@
 			opacity: 1;
 		}
 	}
+
 	.grid-item {
 		width: var(--item-size);
 		height: var(--item-size);
@@ -342,6 +344,7 @@
 			transition: none;
 		}
 	}
+
 	.dragging {
 		cursor: grabbing;
 	}
@@ -371,12 +374,16 @@
 			transition-delay: 0s;
 		}
 	}
+
 	.grid:hover .add-bookmark {
 		opacity: 0.25;
 		transition-duration: 3s;
 		transition-delay: 0s;
 	}
+
 	.grid-image {
+		box-sizing: border-box;
+
 		width: 100%;
 		height: 100%;
 		background-size: contain;
@@ -385,6 +392,13 @@
 
 		pointer-events: none;
 	}
+
+	image {
+		display: flex;
+		max-width: 100%;
+		max-height: 100%;
+	}
+
 	.edit {
 		position: absolute;
 		top: -10px;
@@ -404,6 +418,7 @@
 		transform: scale(1);
 		z-index: 15;
 	}
+
 	.edit:hover {
 		transform: scale(1.1);
 	}

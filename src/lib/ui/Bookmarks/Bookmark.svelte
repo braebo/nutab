@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { CORS } from '$lib/feeds/constants'
 	import type { Bookmark } from '$lib/data/types'
 
 	import { settings } from '$lib/data/settings/settingsStore'
-	import { scale, fade } from 'svelte/transition'
+	import { debounce } from '$lib/utils/debounce'
 
 	import BookmarkArt from './BookmarkArt.svelte'
-	import { smoothHover } from '$lib/utils/smoothHover'
+
+	import { scale, fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
+	import { log } from 'fractils'
 
 	export let i: number
 	export let hovering: number
@@ -19,9 +20,10 @@
 	$: url = bookmark?.url
 	// $: basename = new URL(bookmark?.url).hostname
 	$: basename = bookmark?.url.split('://')[1].split('.')[0]
-	$: icon = `https://cdn.cdnlogo.com/logos/a/1/${basename.split('.')[0]}-icon.svg`
-	let iconError = false // in case the icon doesn't exist on cdnlogo.com
-	$: console.log(icon)
+	$: icon_found = basename.split('.')?.[0]
+	$: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}-icon.svg` : ''
+	let iconError = false // toggled if img tag request returns an error
+	$: log(icon)
 	$: title = bookmark?.title
 	$: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
 	$: background = bookmark?.background || icon || ''
@@ -65,8 +67,8 @@
 					draggable="false"
 					src={image}
 					alt={title}
-					on:mouseover={() => smoothHover.smoothOver(() => ($settings.showTitle = true), 1500)}
-					on:focus={() => smoothHover.smoothOver(() => ($settings.showTitle = false))}
+					on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
+					on:focus={() => debounce(() => ($settings.showTitle = false))}
 					on:error={(e) => (iconError = true)}
 				/>
 				{#if $settings.showTitle || hovering == i}
@@ -168,5 +170,8 @@
 	img {
 		position: absolute;
 		inset: 0;
+
+		max-width: 100%;
+		max-height: 100%;
 	}
 </style>

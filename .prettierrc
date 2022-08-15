@@ -1,5 +1,5 @@
 {
-	"svelteSortOrder": "options-markup-scripts-styles",
+	"svelteSortOrder": "options-scripts-markup-styles",
 	"htmlWhitespaceSensitivity": "ignore",
 	"trailingComma": "all",
 	"singleQuote": true,
