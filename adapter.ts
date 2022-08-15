@@ -5,6 +5,7 @@ import { join } from 'path'
 
 import { applyToDefaults } from '@hapi/hoek'
 import * as cheerio from 'cheerio'
+import glob from 'tiny-glob'
 import sjcl from 'sjcl'
 
 const manifest_filename = 'manifest.json'
@@ -25,16 +26,32 @@ function generate_csp(html: string) {
 	return `script-src 'self' ${csp_hashes}; object-src 'self'`
 }
 
-function generate_manifest(html: string) {
-	return {
-		browser_action: {
-			default_title: 'SvelteKit',
-			default_popup: 'index.html'
-		},
-		content_security_policy: generate_csp(html),
-		manifest_version: 2,
+function generate_manifest(html, manifest_version) {
+	const project_placeholders = {
 		name: 'TODO',
-		version: '0.1'
+		version: '0.1',
+	}
+	if (manifest_version === 2) {
+		return {
+			manifest_version: 2,
+			browser_action: {
+				default_title: 'SvelteKit',
+				default_popup: 'index.html',
+			},
+			content_security_policy: generate_csp(html),
+			...project_placeholders,
+		}
+	}
+	return {
+		manifest_version: 3,
+		action: {
+			default_title: 'SvelteKit',
+			default_popup: 'index.html',
+		},
+		content_security_policy: {
+			extension_pages: "script-src 'self'; object-src 'self'",
+		},
+		...project_placeholders,
 	}
 }
 
@@ -46,7 +63,21 @@ function load_manifest() {
 	return {}
 }
 
-export default function ({ pages = 'build', assets = pages, fallback = undefined } = {}): Adapter {
+// Quick and dirty helper function to externalize scripts. Will become obsolete once kit provides a config option to do this ahead of time.
+function externalizeScript(html: string, assets: string) {
+	return html.replace(
+		/<script type="module" data-hydrate="([\s\S]+)">([\s\S]+)<\/script>/,
+		(match, hydrationTarget, content) => {
+			const hash = Buffer.from(hash_script(content), 'base64').toString('hex')
+			const externalized_script_path = join(assets, `${hash}.js`)
+			writeFileSync(externalized_script_path, content)
+
+			return `<script type="module" data-hydrate="${hydrationTarget}" src="${hash}.js"></script>`
+		},
+	)
+}
+
+export default function ({ pages = 'build', assets = pages, fallback = undefined, manifestVersion = 3 } = {}): Adapter {
 	return {
 		name: 'sveltekit-adapter-browser-extension',
 
@@ -60,7 +91,6 @@ export default function ({ pages = 'build', assets = pages, fallback = undefined
 			builder.rimraf(assets)
 			builder.rimraf(pages)
 
-			builder.writeStatic(assets)
 			builder.writeClient(assets)
 
 			builder.writePrerendered(pages, { fallback })
@@ -68,11 +98,23 @@ export default function ({ pages = 'build', assets = pages, fallback = undefined
 			const index_page = join(assets, 'index.html')
 			const index = readFileSync(index_page)
 
-			const generated_manifest = generate_manifest(index.toString())
+			/** The content security policy of manifest_version 3 does not allow for inlined scripts.
+			Until kit implements a config option (#1776) to externalize scripts, the below code block should do 
+			for a quick and dirty externalization of the scripts' contents **/
+			if (manifestVersion === 3) {
+				const HTML_files = await glob('**/*.html', { cwd: pages, dot: true, absolute: true, filesOnly: true })
+				HTML_files.forEach((path) => {
+					let html = readFileSync(path, { encoding: 'utf8' })
+					html = externalizeScript(html, assets)
+					writeFileSync(path, html)
+				})
+			}
+
+			const generated_manifest = generate_manifest(index.toString(), manifestVersion)
 			const merged_manifest = applyToDefaults(generated_manifest, provided_manifest, { nullOverride: true })
 
 			writeFileSync(join(assets, manifest_filename), JSON.stringify(merged_manifest))
 			builder.rimraf(join(assets, '_app'))
-		}
+		},
 	}
 }
