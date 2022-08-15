@@ -1,26 +1,24 @@
 <script lang="ts">
 	import { showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
-	import { showSettings } from '$lib/data/settings/settingsStore'
+	import { blurOverlay } from '$lib/stores/blurOverlay'
 
 	let overlay: HTMLDivElement
 	let unblurBookmarks = false
 
-	$: if ($showSettings) {
+	$: if ($blurOverlay) {
 		overlay.style.zIndex = '2'
 		unblurBookmarks = true
 	}
 
-	$: if (!$showSettings) {
+	$: if (!$blurOverlay) {
 		if (unblurBookmarks) {
-			console.warn('starting')
 			overlay.addEventListener(
 				'transitionend',
 				() => {
-					console.warn('allDone')
 					overlay.style.zIndex = '4'
 					unblurBookmarks = false
 				},
-				{ once: true }
+				{ once: true },
 			)
 		}
 	}
@@ -30,7 +28,7 @@
 	
 	.overlay(
 		bind:this='{overlay}'
-		class:blur='{$showFolderEditor || $showBookmarkEditor || $showSettings}'
+		class:blur='{$showFolderEditor || $showBookmarkEditor || $blurOverlay}'
 		class:unblurBookmarks
 	)
 
@@ -39,7 +37,7 @@
 <style lang="sass">
 
 	.overlay
-		position: absolute
+		position: fixed
 		bottom: 0
 		
 		height: 100%
@@ -55,4 +53,5 @@
 
 	.unblurBookmarks
 		z-index: 2
+
 </style>

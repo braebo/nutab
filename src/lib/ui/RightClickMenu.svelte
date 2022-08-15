@@ -3,8 +3,9 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import { cMenu, showSettings } from '$lib/data/settings/settingsStore'
 	import { editor, folderEditor, editorShown } from '$lib/stores/bookmarkEditor'
+	import { cMenu, showSettings } from '$lib/data/settings/settingsStore'
+	import { blurOverlay } from '$lib/stores/blurOverlay'
 	import { getFolder_db } from '$lib/data/transactions'
 
 	// Utils
@@ -15,12 +16,15 @@
 	export let options = [
 		{
 			text: 'New Bookmark',
-			action: () => editor.show(['create', 'bookmark'])
+			action: () => editor.show(['create', 'bookmark']),
 		},
 		{
 			text: 'Settings',
-			action: () => ($showSettings = true)
-		}
+			action: () => {
+				$showSettings = true
+				$blurOverlay = true
+			},
+		},
 	]
 
 	async function show(e: MouseEvent) {
@@ -78,7 +82,8 @@
 		bind:this={$cMenu.el}
 		class="cMenu"
 		style="left: {$cMenu.x}px;top: {$cMenu.y}px;"
-		use:clickOutside={handleClickOutside}
+		use:clickOutside
+		on:outclick={handleClickOutside}
 		in:fly={{ y: 5, duration: 250 }}
 		out:fly={{ y: 5, duration: 150 }}
 	>
