@@ -19,7 +19,7 @@
 
 	$: url = bookmark?.url
 	// $: basename = new URL(bookmark?.url).hostname
-	$: basename = bookmark?.url.split('://')[1].split('.')[0]
+	$: basename = bookmark?.url.split('://')[1]?.split('.')[0]
 	$: icon_found = basename.split('.')?.[0]
 	$: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}-icon.svg` : ''
 	let iconError = false // toggled if img tag request returns an error
