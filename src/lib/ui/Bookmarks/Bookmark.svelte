@@ -8,24 +8,23 @@
 
 	import { scale, fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
-	import { log } from 'fractils'
 
 	export let i: number
 	export let hovering: number
 	export let dragging = false
 	export let bookmark: Bookmark
 	export let disableTransitions = false
-	$: disableTransitions // is this necessary?
 
+	$: disableTransitions // is this necessary?
 	$: url = bookmark?.url
-	// $: basename = new URL(bookmark?.url).hostname
 	$: basename = bookmark?.url.split('://')[1]?.split('.')[0]
+
+	let iconError = false // toggled if img tag request returns an error
 	$: icon_found = basename.split('.')?.[0]
 	$: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}-icon.svg` : ''
-	let iconError = false // toggled if img tag request returns an error
-	$: log(icon)
-	$: title = bookmark?.title
 	$: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
+
+	$: title = bookmark?.title
 	$: background = bookmark?.background || icon || ''
 	$: foreground = bookmark?.foreground
 
@@ -35,7 +34,7 @@
 	onMount(() => {
 		if (image) {
 			const img = new Image()
-			img.addEventListener('load', (e) => {
+			img.addEventListener('load', () => {
 				const width = img.naturalWidth
 				const height = img.naturalHeight
 				if (!isNaN(width) && !isNaN(height)) {
