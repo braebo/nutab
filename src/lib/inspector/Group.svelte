@@ -7,16 +7,9 @@
 	export let store: Writable<any> | Readable<any>
 	export let isOpen: boolean
 	export let label: string
-
-	console.log($store)
-	setTimeout(() => {
-		console.log(label, $store)
-	}, 1000)
-
-	$: notNullish = $store !== (null || 'undefined')
 </script>
 
-{#if notNullish}
+{#if $store !== (null || 'undefined')}
 	<h4 class:isOpen on:click={() => (isOpen = !isOpen)}>
 		<span>▼</span>
 		{label}
