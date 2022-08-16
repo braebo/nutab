@@ -1,0 +1,134 @@
+<script lang="ts">
+	export let top = `10px`
+	export let active = false
+	export let right = false
+	export let theme = ''
+	export let nub = '🚀'
+
+	interface Link {
+		text: string
+		path?: string
+	}
+
+	export let links: Link[] = [
+		{
+			text: 'How To Use',
+		},
+		{
+			path: '/please',
+			text: 'Please',
+		},
+		{
+			path: '/link-to',
+			text: 'Add `links` prop',
+		},
+		{
+			path: '/link-to',
+			text: 'to populate the menu',
+		},
+	]
+</script>
+
+<div class={`side-menu ${theme}`} class:active class:right style={`--sm-top: ${top}`}>
+	<div class="nub" on:click={() => (active = !active)}>{nub}</div>
+	<div class="side-menu-content scroller">
+		<nav>
+			{#each links as link}
+				{#if link.path}
+					<a href={link.path}>{link.text}</a>
+				{:else}
+					<h4>{link.text}</h4>
+				{/if}
+			{/each}
+		</nav>
+		<slot />
+	</div>
+</div>
+
+<style>
+	:root[theme='dark'] {
+		--color: hsla(0, 0%, 80%, 1);
+		--header-color: hsla(0, 0%, 80%, 1);
+		--background-int: hsla(241, 6%, 15%, 1);
+		--nub-bg: var(--background-int);
+		--highlight: hsla(0, 0%, 25%, 1);
+		--lowlight: hsla(0, 0%, 5%, 1);
+		--header-bg: hsla(0, 0%, 10%, 1);
+	}
+
+	.side-menu {
+		position: fixed;
+		top: var(--sm-top);
+		bottom: 100vh;
+		right: 0;
+
+		width: var(--width, 300px);
+
+		font-family: sans-serif;
+
+		transition: transform 0.2s var(--ease_in_out_quint, cubic-bezier(0.83, 0, 0.17, 1));
+		transform: translate3d(100%, 0, 0);
+		z-index: var(--z, 2001);
+	}
+
+	.side-menu.active {
+		transform: translate3d(0, 0, 0) scale(1.05);
+	}
+
+	.side-menu .nub {
+		position: absolute;
+		right: 100%;
+		top: 20px;
+
+		padding: 10px;
+
+		background: var(--nub-bg, var(--header-bg));
+		border-bottom: solid 1px var(--lowlight);
+		border-right: solid 1px var(--lowlight);
+		border-top: solid 1px var(--highlight);
+		border-radius: 5px 0 0 5px;
+		box-shadow: var(--level-4, -6px 14px 28px rgba(0, 0, 0, 0.1), -6px 10px 10px rgba(0, 0, 0, 0.12));
+
+		cursor: pointer;
+	}
+
+	.side-menu-content {
+		box-sizing: border-box;
+
+		max-height: calc(100vh - var(--top-position));
+		padding-bottom: 200px;
+
+		color: var(--color-int);
+		background: var(--background-int);
+		border-left: solid 1px var(--highlight);
+		box-shadow: var(--level-4, 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22));
+		border-radius: 5px 0 0 5px;
+
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+
+	h4 {
+		margin: 0;
+		padding: 4px 6px;
+
+		background: var(--header-bg);
+		color: var(--header-color, --color);
+		border-bottom: solid 1px var(--lowlight);
+		border-top: solid 1px var(--highlight);
+		box-shadow: var(--level-2, 0 2px 3px rgba(0, 0, 0, 0.1), 0 1px 5px rgba(0, 0, 0, 0.13));
+
+		font-size: var(--heading-font-size, 12px);
+		text-transform: capitalize;
+
+		cursor: pointer;
+	}
+
+	a {
+		display: block;
+
+		padding: 10px;
+
+		color: var(--color);
+	}
+</style>
