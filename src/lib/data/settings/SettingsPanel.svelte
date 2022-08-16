@@ -1,45 +1,64 @@
 <script lang="ts">
-	import { settings, showSettings, showGuidelines } from './settingsStore'
+	import type { Writable } from 'svelte/store'
+
+	import { settings, showGuidelines } from './settingsStore'
+
+	import { fly } from 'svelte/transition'
+	import { onDestroy } from 'svelte'
+
 	import RandomizeBackground from './RandomizeBackground.svelte'
-	import { clickOutside } from '$lib/utils/clickOutside'
+	import { blurOverlay } from '$lib/stores/blurOverlay'
 	import Lock from '$lib/graphics/icons/Lock.svelte'
+	import FluidPanel from './FluidPanel.svelte'
 	import ShowTitle from './ShowTitle.svelte'
 	import Range from '$lib/ui/Range.svelte'
-	import { fly } from 'svelte/transition'
 
-	let sgTimer: NodeJS.Timeout
-	const toggleShowGuidelines = (e: Event, setting: any) => {
-		if (setting != 'gridWidth') return
-		clearTimeout(sgTimer)
-		$showGuidelines = true
-		sgTimer = setTimeout(() => {
+	let timer: NodeJS.Timeout
+
+	function handleInput(e: Event, setting: string) {
+		$blurOverlay = true
+
+		// Show and hide "guidelines" when gridwidth changes
+		if (setting === 'gridWidth') $showGuidelines = true
+
+		clearTimeout(timer)
+
+		timer = setTimeout(() => {
+			$blurOverlay = false
 			$showGuidelines = false
 		}, 1000)
 	}
+
+	onDestroy(() => {
+		clearTimeout(timer)
+	})
 </script>
 
-<div class="mousetrap" on:mouseover={() => ($showSettings = true)} on:focus={() => ($showSettings = true)} />
-
-{#if $showSettings}
-	<div
-		class="control-panel"
-		transition:fly={{ y: 500, opacity: 1, duration: 300 }}
-		on:click_outside={() => ($showSettings = false)}
-		use:clickOutside
-	>
+<FluidPanel>
+	<div class="control-panel">
 		<div class="controls">
-			{#each Object.keys($settings.ranges) as setting}
-				<div class="control">
+			{#each Object.keys($settings.ranges) as setting, i}
+				<div
+					class="control"
+					in:fly={{ y: 25, duration: 300, delay: 33 * i }}
+					out:fly={{ y: 25, duration: 100 }}
+				>
 					<label for={setting}>{$settings.ranges[setting].label}</label>
+
 					<Range
 						range={$settings.ranges[setting].range}
 						bind:setting={$settings.ranges[setting].value}
-						on:input={(e) => toggleShowGuidelines(e, setting)}
+						on:input={(e) => handleInput(e, setting)}
 						name={setting}
 					/>
 				</div>
 			{/each}
-			<div class="buttons">
+
+			<div
+				class="buttons"
+				in:fly={{ y: 10, duration: 300, delay: 50 * Object.keys($settings.ranges).length }}
+				out:fly={{ y: 15, duration: 100 }}
+			>
 				<ShowTitle />
 				<div class="background">
 					<RandomizeBackground />
@@ -48,36 +67,26 @@
 			</div>
 		</div>
 	</div>
-{/if}
+</FluidPanel>
 
 <style lang="scss">
 	.control-panel {
-		position: absolute;
-		position: fixed;
-		right: 0;
-		bottom: 0;
-		left: 0;
+		display: flex;
 
-		width: 600px;
-		max-width: 100vw;
-		height: 350px;
-		margin: auto;
-
-		border-top-left-radius: 15px;
-		border-top-right-radius: 15px;
-		background: rgba(var(--light-b-rgb), 0.4);
-		color: var(--dark-a);
-		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);
-		backdrop-filter: blur(50px);
+		position: relative;
+		min-width: 100%;
+		min-height: 100%;
 
 		z-index: 50;
 	}
 
 	.controls {
-		height: 200px;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+
 		width: 75%;
 		margin: auto;
-		margin-top: 50px;
 	}
 
 	.control {
@@ -85,14 +94,15 @@
 		justify-content: space-between;
 
 		height: max-content;
-		margin: 20px 0;
 		padding: 2px 15px;
 
 		border: 1px solid rgba(var(--light-c-rgb), 0.33);
+		background: rgba(var(--light-a-rgb), 0.25);
 		border-radius: 10px;
-		background: rgba(var(--light-a-rgb), 0.33);
 
-		font-size: 20px;
+		font-size: 16px;
+
+		pointer-events: all;
 	}
 
 	label {
@@ -103,25 +113,14 @@
 		margin: auto 0;
 	}
 
-	.mousetrap {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		left: 0;
-
-		width: 100px;
-		height: 50px;
-		margin: auto;
-
-		z-index: 40;
-	}
-
 	.buttons {
 		display: flex;
 		justify-content: center;
 		gap: 5rem;
 
 		width: 100%;
+
+		pointer-events: all;
 	}
 
 	.background {

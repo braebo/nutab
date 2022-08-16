@@ -8,6 +8,7 @@ type Range = {
 }
 
 export interface Settings {
+	// [index: string]: string | boolean | Record<string, Range>
 	// TODO add theme, language, etc.
 	ranges: {
 		gridWidth: Range
@@ -29,7 +30,7 @@ const default_settings: Settings = {
 	ranges: {
 		gridWidth: { label: 'Width', value: 1000, range: { min: 500, max: 2000 } },
 		iconSize: { label: 'Icon', value: 50, range: { min: 32, max: 90 } },
-		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } }
+		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } },
 	},
 	transparent: true,
 	showTitle: false,
@@ -37,7 +38,7 @@ const default_settings: Settings = {
 	customBackground: false,
 	gradientA: '',
 	gradientB: '',
-	lockBackground: false
+	lockBackground: false,
 }
 
 export const cMenu = writable({
@@ -45,7 +46,7 @@ export const cMenu = writable({
 	x: 0,
 	y: 0,
 	el: null as HTMLElement,
-	pending: false
+	pending: false,
 })
 
 export const settings = localStorageStore('settings', default_settings)
