@@ -3,33 +3,29 @@
 import { writable } from "svelte/store";
 
 /**
- * @template Item
- * @param {string} key What key in localStorage to synchronize with
- * @param {Item} initial The initial value of the writable store
- * @param {boolean} browser Whether or not this code is running in the browser (where localStorage is available) 
- * @returns {import("svelte/store").Writable<Item>} A writable store that synchronizes to localStorage
+ * @param key - What key in localStorage to synchronize with.
+ * @param initial - The initial value of the writable store.
+ * @param browser - Whether or not this code is running in the browser (where localStorage is available).
  */
-export const localStorageStore = (key, initial, browser = typeof window !== "undefined") => {
+export const localStorageStore = <T>(key: string, initial: T, browser = typeof window !== "undefined") => {
 	let currentValue = initial;
 
-	const { set: setStore, ...readableStore } = writable(initial, () => {
+	const { set: setStore, ...readableStore } = writable<T>(initial, () => {
 		if (browser) {	
 			getAndSetFromLocalStorage();
-			
-			/**
-			 * @param {StorageEvent} event
-			 */
-			const updateFromStorageEvents = (event) => {
+
+			const updateFromStorageEvents = (event: StorageEvent) => {
 				if (event.key === key) getAndSetFromLocalStorage();
 			};
+
 			window.addEventListener("storage", updateFromStorageEvents);
+
 			return () => window.removeEventListener("storage", updateFromStorageEvents);
 		}
 	});
 
 	// Set both localStorage and this Svelte store
-	/** @type {import("svelte/store").Writable<Item>["set"]} */
-	const set = (value) => {
+	const set = (value: T) => {
 		currentValue = value;
 		setStore(value);
 
@@ -61,8 +57,7 @@ export const localStorageStore = (key, initial, browser = typeof window !== "und
 		}
 	};
 	
-	/** @type {import("svelte/store").Writable<Item>["update"]} */
-	const update = (fn) => {
+	const update = (fn: (T: T) => T) => {
 		set(fn(currentValue));
 	};
 		
