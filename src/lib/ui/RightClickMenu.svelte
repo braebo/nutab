@@ -22,7 +22,6 @@
 			text: 'Settings',
 			action: () => {
 				$showSettings = true
-				$blurOverlay = true
 			},
 		},
 	]
