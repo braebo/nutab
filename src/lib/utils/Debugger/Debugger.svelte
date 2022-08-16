@@ -3,8 +3,8 @@
 	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from '$lib/data/dbStore'
 	import { settings, showSettings } from '$lib/data/settings/settingsStore'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
-	import { debug, showDebugger } from '$lib/stores/debugStore'
-	import { activeSection } from '$lib/stores/mainStore'
+	import { debug, showDebugger } from '$lib/stores/debug'
+	import { activeSection } from '$lib/stores/activeSection'
 	import FloatingPanel from './FloatingPanel.svelte'
 	import { localStorageStore, log } from 'fractils'
 	import { copy } from '$lib/utils/clipboardCopy'
@@ -102,7 +102,7 @@
 		['$activeBookmarks', $activeBookmarks],
 		['$activeFolderBookmarks', $activeFolderBookmarks],
 		['$gridDimensions', $gridDimensions],
-		['grid', $grid]
+		['grid', $grid],
 	]
 	const visible = localStorageStore('debuggerVisibility', Array(debuggables.length).fill(true))
 </script>

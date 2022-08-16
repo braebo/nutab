@@ -4,8 +4,8 @@
 
 	// Components
 	import { settings } from '$lib/data/settings/settingsStore'
-	import Debugger from '$lib/utils/Debugger/Debugger.svelte'
 	import Settings from '$lib/data/settings/Settings.svelte'
+	import Inspector from '$lib/inspector/index.svelte'
 	import Themer from '$lib/theme/Themer.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
 	import Main from '$lib/ui/Main.svelte'
@@ -35,8 +35,11 @@
 
 	svelte:head
 		title Nutab
-	
+
 	Fractils
+
+	+if('dev')
+		Inspector
 
 	#app(style='{$settings.background}')
 		Themer(size='{50}')
@@ -47,9 +50,6 @@
 			slot
 
 		Settings
-
-		+if('dev')
-			Debugger
 
 </template>
 
