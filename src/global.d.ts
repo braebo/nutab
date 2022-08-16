@@ -14,20 +14,23 @@ export type ActionReturn<Params> = {
 /**
  * Action type shim
  */
-export type ActionLike<Node extends HTMLElement> = (
-	node: Node,
-	params: any,
-) => any
+export type ActionLike<Node extends HTMLElement> = (node: Node, params: any) => any
 
 /**
  * A primitive Action
  */
-export type Action<
-	Node extends HTMLElement = HTMLElement,
-	Params extends any = undefined,
-> = (node: Node, params?: Params) => ActionReturn<Params>
+export type Action<Node extends HTMLElement = HTMLElement, Params extends any = undefined> = (
+	node: Node,
+	params?: Params,
+) => ActionReturn<Params>
 
 declare global {
+	declare namespace svelte.JSX {
+		interface HTMLProps<T> {
+			onoutclick?: (event: import('fractils').ClickOutsideEvent) => void
+		}
+	}
+
 	type ValueOf<T> = T[keyof T]
 
 	/**
