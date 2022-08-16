@@ -21,7 +21,7 @@
 			getAliases()
 		}, 0)
 		await wait(100)
-		input.focus()
+		input?.focus()
 	})
 
 	function getAliases() {
@@ -76,7 +76,7 @@
 		const distance = Math.abs(engines.length - $activeEngine + position)
 		$activeEngine = position
 		engines = engines.rotate(distance)
-		input.focus()
+		input?.focus()
 	}
 
 	let targetPosition = engines.find((engine) => engine.position == startPosition).position
@@ -84,7 +84,7 @@
 	const rotateEngines = (target = $activeEngine) => {
 		targetPosition = engines.find((engine) => engine.position == target).position
 		engines = engines.rotate(targetPosition)
-		input.focus()
+		input?.focus()
 	}
 
 	const debug = false

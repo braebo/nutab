@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FolderSidebar from '$lib/ui/Folders/FolderSidebar.svelte'
-	import { activeSection } from '$lib/stores/mainStore'
+	import { activeSection } from '$lib/stores'
 	import News from '$lib/feeds/News.svelte'
 	import { visibility } from 'fractils'
 	import { onMount } from 'svelte'
@@ -24,7 +24,7 @@
 
 	main(bind:this='{main}')
 		.col
-			.news(use:visibility!='{{ threshold: 0.05, margin: "20px" }}' on:change='{handleChange}')
+			.news(use:visibility!='{{ threshold: 0.05, margin: "20px" }}' on:f-enter='{handleChange}')
 				+if('newsVisible')
 					News
 

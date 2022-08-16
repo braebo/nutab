@@ -289,8 +289,8 @@
 
 		&.showGuidelines {
 			border: 1px solid rgba(var(--dark-d-rgb), 0.5);
-			border-top: none;
 			border-bottom: none;
+			border-top: none;
 		}
 
 		z-index: 3;
@@ -302,8 +302,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-
-		max-width: 100%;
 
 		&.active {
 			z-index: 10 !important;
@@ -382,8 +380,6 @@
 	}
 
 	.grid-image {
-		box-sizing: border-box;
-
 		width: 100%;
 		height: 100%;
 		background-size: contain;
@@ -391,12 +387,6 @@
 		background-position: center;
 
 		pointer-events: none;
-	}
-
-	image {
-		display: flex;
-		max-width: 100%;
-		max-height: 100%;
 	}
 
 	.edit {
