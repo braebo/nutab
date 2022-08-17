@@ -122,7 +122,7 @@
 	class="panel-container"
 	style:--width="{p.w}px"
 	style:--height="{p.h}px"
-	use:clickOutside
+	use:clickOutside={{ whitelist: ['.controls'] }}
 	on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
 >
 	<div class="panel">

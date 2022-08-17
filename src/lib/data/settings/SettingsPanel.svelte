@@ -72,12 +72,13 @@
 <style lang="scss">
 	.control-panel {
 		display: flex;
-
 		position: relative;
+
 		min-width: 100%;
 		min-height: 100%;
 
 		z-index: 50;
+		pointer-events: all;
 	}
 
 	.controls {
