@@ -8,6 +8,7 @@
 
 	import { scale, fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
+	import { editor } from '$lib/stores/bookmarkEditor'
 
 	export let i: number
 	export let hovering: number
@@ -46,8 +47,15 @@
 	})
 </script>
 
-<div class="bookmark-container" style:pointer-events="none">
-	<a target="_blank" href={url} draggable="false" class:dragging>
+<div class="bookmark-container">
+	<a
+		target="_blank"
+		href={url}
+		draggable="false"
+		class:dragging
+		style:pointer-events="all"
+		on:contextmenu|stopPropagation|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
+	>
 		{#if image}
 			<div
 				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}

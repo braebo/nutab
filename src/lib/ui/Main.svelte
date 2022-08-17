@@ -39,11 +39,16 @@
 	main
 		min-height: 100vh
 
+		overflow-x: hidden
 		overflow-y: auto
 		scroll-snap-type: y mandatory
 
+		// Chrome
 		&::-webkit-scrollbar
 			display: none
+		
+		// Firefox
+		scrollbar-width: none
 
 	.col
 		min-height: 200vh

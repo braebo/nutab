@@ -12,7 +12,7 @@
 	let blurred = true
 
 	export let tags: string[] = []
-	export let addKeys: number[] = [13]
+	export let addKeys = [13]
 	export let maxTags: boolean | number = false
 	export let onlyUnique = false
 	export let removeKeys = [8]
@@ -57,7 +57,7 @@
 		const currentTag = (e.target as HTMLInputElement).value
 
 		if (addKeys) {
-			addKeys.forEach(function (key) {
+			addKeys.forEach((key) => {
 				if (key === e.keyCode) {
 					if (currentTag) e.preventDefault()
 
@@ -89,7 +89,7 @@
 					tags.pop()
 					tags = tags
 					dispatch('tags', {
-						tags: tags
+						tags: tags,
 					})
 					arrelementsmatch = []
 					;(document.getElementById(id) as HTMLInputElement).readOnly = false
@@ -132,7 +132,7 @@
 		tags = tags
 		tag = ''
 		dispatch('tags', {
-			tags: tags
+			tags: tags,
 		})
 
 		// Hide autocomplete list
@@ -149,7 +149,7 @@
 		tags.splice(i, 1)
 		tags = tags
 		dispatch('tags', {
-			tags: tags
+			tags: tags,
 		})
 
 		// Hide autocomplete list
@@ -234,8 +234,8 @@
 						label: matchTag,
 						search: matchTag[autoCompleteKey].replace(
 							RegExp(regExpEscape(value.toLowerCase()), 'i'),
-							'<strong>$&</strong>'
-						)
+							'<strong>$&</strong>',
+						),
 					}
 				})
 		} else {
@@ -244,7 +244,7 @@
 				.map((matchTag: string) => {
 					return {
 						label: matchTag,
-						search: matchTag.replace(RegExp(regExpEscape(value.toLowerCase()), 'i'), '<strong>$&</strong>')
+						search: matchTag.replace(RegExp(regExpEscape(value.toLowerCase()), 'i'), '<strong>$&</strong>'),
 					}
 				})
 		}
@@ -259,7 +259,7 @@
 		e: KeyboardEvent,
 		autoCompleteIndex: number,
 		autoCompleteLength: number,
-		autoCompleteElement: string
+		autoCompleteElement: string,
 	) {
 		if (!autoComplete) return
 

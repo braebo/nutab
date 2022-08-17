@@ -227,7 +227,6 @@
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
 					bind:this={cells[i]}
-					on:click={() => goto(bookmark.url)}
 				>
 					<div
 						class="item-{i} grid-item"
