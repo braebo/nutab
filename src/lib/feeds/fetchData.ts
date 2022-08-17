@@ -76,7 +76,7 @@ async function lazyLoadMeta(id: number, url: string) {
 	const meta = await fetchMeta(url)
 
 	items.update((items) => {
-		const item = items.find((item) => item.id === id)
+		const item = items?.find((item) => item.id === id)
 
 		if (!item) return items
 
