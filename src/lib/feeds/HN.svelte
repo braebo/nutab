@@ -67,7 +67,7 @@
 		document.querySelector('.story-thread')?.scrollTo({
 			top: 0,
 			left: 0,
-			behavior: 'smooth'
+			behavior: 'smooth',
 		})
 	}
 
@@ -100,19 +100,33 @@
 	svelte:window(on:resize='{handleResize}' bind:innerWidth='{windowWidth}')
 
 	.hn-container(style:height)
+
 		.news-anim-container(bind:this='{animEl}' bind:offsetWidth style='left: {left};' class:activeThread)
+
 			.story-previews.scroller.ghost(on:scroll='{handleScroll}' class:activeThread)
-				+if('!$items.length')
+
+				+if('!$items?.length')
+
 					LoadingDots
+
 					+else
+
 						span(use:calcLeft)
+
 						+each('$items as item, i')
+
 							.item(in:fly='{{ y: 10 + i, duration: 250 + (i * 50), delay: i * 50 * (firstLoad ? 1 : 0) }}')
+
 								HNItem({item} bind:activeThread on:showThread='{showThread}')
+
 		+if('activeThread')
+
 			.story-previews-buffer
+
 			.story-thread(transition:fly='{{ x: 20, duration: 750, delay: 0 }}')
+
 				HnThread(threadId='{activeThread}')
+
 				.to-top(on:click='{scrollToTop}') 🔝
 
 </template>

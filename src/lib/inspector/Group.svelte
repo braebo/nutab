@@ -1,16 +1,27 @@
 <script lang="ts">
 	import type { Writable, Readable } from 'svelte/store'
 
+	import { createEventDispatcher } from 'svelte'
 	import { slide } from 'svelte/transition'
 	import Row from './Row.svelte'
 
 	export let store: Writable<any> | Readable<any>
 	export let isOpen: boolean
 	export let label: string
+
+	const dispatch = createEventDispatcher()
+
+	const toggle = () => {
+		isOpen = !isOpen
+		dispatch('toggle', {
+			label,
+			isOpen,
+		})
+	}
 </script>
 
 {#if $store !== (null || 'undefined')}
-	<h4 class:isOpen on:click={() => (isOpen = !isOpen)}>
+	<h4 class:isOpen on:click={toggle}>
 		<span>▼</span>
 		{label}
 	</h4>
@@ -19,7 +30,7 @@
 		<div class="state-data" transition:slide>
 			{#key $store}
 				{#if $store === null}
-					<div class="null">Null</div>
+					<div class="null">null</div>
 				{:else if typeof $store === 'object'}
 					{#each Object.entries($store) as [key, value]}
 						<Row {key} {value} {store} path={key} />
@@ -34,7 +45,11 @@
 
 <style lang="scss">
 	div {
-		margin-bottom: 5px;
+		// margin-bottom: 5px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: flex-start;
 	}
 
 	.state-data {

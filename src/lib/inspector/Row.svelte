@@ -9,6 +9,8 @@
 	export let path: string
 	export let simple = false
 	export let label = true
+	export let depth = 0
+	depth++
 
 	const uid = nanoid(4)
 
@@ -39,84 +41,99 @@
 	}
 </script>
 
-{#if value !== null}
-	{#if typeof value === 'object'}
-		{#if Array.isArray(value)}
-			{#if label}
-				<span class="key">{key}{':'}</span>
-			{/if}
-			<!-- Array -->
-			{#each value as nestedValue, index}
-				<svelte:self {key} {store} label={false} value={nestedValue} path={path + '[' + index + ']'} />
-			{/each}
-		{:else}
-			{#if label}
-				<span class="key">{key}{':'}</span>
-			{/if}
-			<div class="nested">
-				{#each Object.entries(value) as [nestedKey, nestedValue]}
-					<svelte:self key={nestedKey} value={nestedValue} {store} path={path + '.' + nestedKey} />
+<div class="kv" style:--hue={depth % 360}>
+	{#if value !== null}
+		{#if typeof value === 'object'}
+			{#if Array.isArray(value)}
+				{#if label}
+					<div class="key">{key}{':'}</div>
+				{/if}
+				<!-- Array -->
+				{#each value as nestedValue, index}
+					<svelte:self {key} {store} label={false} value={nestedValue} path={path + '[' + index + ']'} />
 				{/each}
-			</div>
+			{:else}
+				{#if label}
+					<div class="key">{key}{':'}</div>
+				{/if}
+				<div class="nested">
+					{#each Object.entries(value) as [nestedKey, nestedValue]}
+						<svelte:self
+							key={nestedKey}
+							value={nestedValue}
+							{store}
+							path={path + '.' + nestedKey}
+							{depth}
+						/>
+					{/each}
+				</div>
+			{/if}
+		{:else}
+			<label class="store-container" for="{path}-{uid}">
+				{#if label}
+					<div class="key">{key}{':'}</div>
+				{/if}
+				{#if typeof value === 'string'}
+					<input id={path} type="text" {value} on:input={(e) => updateStore(e.currentTarget.value)} />
+				{:else if typeof value === 'boolean'}
+					<input
+						id="{path}-{uid}"
+						type="checkbox"
+						checked={value}
+						on:change={(e) => {
+							updateStore(e.currentTarget.checked)
+						}}
+					/>
+				{:else if typeof value === 'number'}
+					<input
+						id={path}
+						type="number"
+						{value}
+						on:change={(e) => {
+							updateStore(e.currentTarget.value)
+						}}
+					/>
+				{/if}
+			</label>
 		{/if}
-	{:else}
-		<!-- TODO Labels are potentially not unique. MUST FIX BEFORE V1 -->
-		<label class="st-container" for="{path}-{uid}">
-			{#if label}
-				<span class="key">{key}{':'}</span>
-			{/if}
-			{#if typeof value === 'string'}
-				<input id={path} type="text" {value} on:input={(e) => updateStore(e.currentTarget.value)} />
-			{:else if typeof value === 'boolean'}
-				<input
-					id="{path}-{uid}"
-					type="checkbox"
-					checked={value}
-					on:change={(e) => {
-						updateStore(e.currentTarget.checked)
-					}}
-				/>
-			{:else if typeof value === 'number'}
-				<input
-					id={path}
-					type="number"
-					{value}
-					on:change={(e) => {
-						updateStore(e.currentTarget.value)
-					}}
-				/>
-			{/if}
-		</label>
 	{/if}
-{/if}
+</div>
 
 <style>
+	.kv {
+		display: flex;
+		flex-direction: column;
+		/* align-items: center; */
+		justify-content: center;
+		box-sizing: border-box;
+		height: fit-content;
+	}
 	.key {
 		font-size: var(--font-small);
 		color: var(--key-color);
 		opacity: 0.9;
+		width: 100%;
 	}
 
-	.st-container {
+	.store-container {
 		display: flex;
 		align-items: baseline;
 		justify-content: flex-start;
 		margin-bottom: 2px;
+		width: 100%;
 	}
 
 	input {
-		display: inline;
 		flex-grow: 0;
-
-		padding: 0 3px;
-		margin: 0 4px;
-		margin-left: 2px;
 
 		background: var(--background-int);
 		color: var(--value-color);
 		border: 0;
 		border-radius: 1px;
-		outline-offset: 1px;
+		border-bottom: 1px solid var(--balue-);
+		/* outline-offset: 1px; */
+
+		min-width: 100%;
 
 		font-size: var(--font-small);
 		font-family: 'MonoLisa', monospace;
@@ -129,6 +146,19 @@
 		margin: 0;
 	}
 
+	input[type='checkbox'] {
+		min-width: max-content;
+		margin: 0 100% 0 10px;
+		transform: translateY(2px);
+		background-color: var(--background-int);
+		filter: brightness(0.1);
+		cursor: pointer;
+		padding: 0 10px;
+	}
+	input[type='checkbox']:checked {
+		filter: brightness(1);
+	}
+
 	/* Firefox */
 	input[type='number'] {
 		-moz-appearance: textfield;
@@ -139,6 +169,6 @@
 	}
 
 	.nested {
-		margin-left: 15px;
+		margin: 10px 0 10px 15px;
 	}
 </style>

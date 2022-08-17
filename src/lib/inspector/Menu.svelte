@@ -1,7 +1,12 @@
 <script lang="ts">
-	export let top = `10px`
-	export let active = false
+	import Scrollbar from '$lib/ui/Scrollbar.svelte'
+	import { createEventDispatcher } from 'svelte'
+	import { resize } from '$lib/utils/resizable'
+	import { screenH } from 'fractils'
+
+	export let isOpen = false
 	export let right = false
+	export let top = '10px'
 	export let theme = ''
 	export let nub = '🚀'
 
@@ -10,28 +15,42 @@
 		path?: string
 	}
 
-	export let links: Link[] = [
-		{
-			text: 'How To Use',
-		},
-		{
-			path: '/please',
-			text: 'Please',
-		},
-		{
-			path: '/link-to',
-			text: 'Add `links` prop',
-		},
-		{
-			path: '/link-to',
-			text: 'to populate the menu',
-		},
-	]
+	export let links: Link[]
+	export let position = {
+		top: '7vh',
+		right: null as string | null,
+		bottom: null as string | null,
+		left: null as string | null,
+	}
+	const css = Object.entries(position).reduce((a, b) => (b[1] ? `${a + b.join(':')};` : a), '')
+
+	const dispatch = createEventDispatcher()
+	const toggle = () => {
+		isOpen = !isOpen
+		dispatch('menuToggle', {
+			label: 'menu',
+			isOpen,
+		})
+	}
+
+	let menuEl: HTMLElement
+
+	$: if (menuEl) {
+		menuEl.style.maxHeight = $screenH - menuEl.getBoundingClientRect().top * 2 + 'px'
+	}
 </script>
 
-<div class={`side-menu ${theme}`} class:active class:right style={`--sm-top: ${top}`}>
-	<div class="nub" on:click={() => (active = !active)}>{nub}</div>
-	<div class="side-menu-content scroller">
+<div
+	style={`--sm-top: ${top};` + css}
+	bind:this={menuEl}
+	class="side-menu {theme}"
+	use:resize={{ side: 'left', color: 'var(--light-a)' }}
+	class:isOpen
+	class:right
+>
+	<Scrollbar target={menuEl} />
+	<div class="nub" on:click={toggle}>{nub}</div>
+	<div class="side-menu-content">
 		<nav>
 			{#each links as link}
 				{#if link.path}
@@ -45,7 +64,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	:root[theme='dark'] {
 		--color: hsla(0, 0%, 80%, 1);
 		--header-color: hsla(0, 0%, 80%, 1);
@@ -58,21 +77,33 @@
 
 	.side-menu {
 		position: fixed;
-		top: var(--sm-top);
+		/* top: var(--sm-top); */
 		bottom: 100vh;
 		right: 0;
 
 		width: var(--width, 300px);
+		height: fit-content;
 
 		font-family: sans-serif;
 
 		transition: transform 0.2s var(--ease_in_out_quint, cubic-bezier(0.83, 0, 0.17, 1));
 		transform: translate3d(100%, 0, 0);
 		z-index: var(--z, 2001);
+
+		border-radius: 5px;
+		overflow-y: auto;
+		overflow-x: visible;
+
+		scrollbar-width: 0px;
+
+		&::-webkit-scrollbar {
+			width: 0px;
+			display: none;
+		}
 	}
 
-	.side-menu.active {
-		transform: translate3d(0, 0, 0) scale(1.05);
+	.side-menu.isOpen {
+		transform: translate3d(0, 0, 0);
 	}
 
 	.side-menu .nub {
@@ -96,7 +127,6 @@
 		box-sizing: border-box;
 
 		max-height: calc(100vh - var(--top-position));
-		padding-bottom: 200px;
 
 		color: var(--color-int);
 		background: var(--background-int);
@@ -105,7 +135,7 @@
 		border-radius: 5px 0 0 5px;
 
 		overflow: hidden;
-		overflow-y: scroll;
+		/* overflow-y: scroll; */
 	}
 
 	h4 {
