@@ -15,11 +15,11 @@
 	
 	Overlay
 	
-	.spacer-md
+	.br-md
 
 	Search
 
-	.spacer-md
+	.br-md
 
 	Grid
 
