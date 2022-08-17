@@ -22,12 +22,16 @@ interface ResizeOptions {
 	 */
 	maxSize?: number
 	onResize?: () => void
-	color?: string
 	/**
 	 * Use a visible or invisible gutter.
-	 * @default true
+	 * @default false
 	 */
 	visible?: boolean
+	/**
+	 * Gutter css color (if visible = `true`)
+	 * @default 'transparent'
+	 */
+	color?: string
 	/**
 	 * Persist width in local storage.
 	 * @default true
@@ -47,17 +51,19 @@ const vw = (size: number | string) => {
 export const resize = (node: HTMLElement, options: ResizeOptions) => {
 	const {
 		side = 'left',
-		gutterSize = '5px',
+		gutterSize = '3px',
 		minSize = 15,
 		maxSize = 75,
 		onResize = () => {},
-		color = '#1d1d1d',
 		persistent = true,
+		visible = false,
+		color = '#1d1d1d',
 	} = options
 
 	const grabber = document.createElement('div')
 	grabber.classList.add('resize-grabber')
 	node.appendChild(grabber)
+	node.style.cssText += `padding-${side}: ${px(gutterSize)} !important;`
 
 	if (persistent) {
 		const persistentSize = get(inspectorSize)
@@ -66,48 +72,41 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 	const direction = side === ('left' || 'right') ? 'vertical' : 'horizontal'
 	const width = direction === 'vertical' ? px(gutterSize) : px(node.scrollWidth)
-	const height = direction === 'vertical' ? px(node.scrollHeight) : px(gutterSize)
+	const height = direction === 'vertical' ? px(node.clientHeight + node.scrollTop) : px(gutterSize)
 
-	if (direction === 'vertical') {
-		grabber.style.top = '0'
-	} else grabber.style.left = '0'
+	direction === 'vertical' ? (grabber.style.top = '0') : (grabber.style.left = '0')
+	const cursor = (grabber.style.cursor = direction === 'vertical' ? 'ew-resize' : 'ns-resize')
 
-	node.style.paddingLeft = px(gutterSize)
-	grabber.style.backgroundColor = color
 	grabber.classList.add('grabber')
-	grabber.style.height = height
-	grabber.style.width = width
-	grabber.style[side] = '0'
 	grabber.style.cssText += `
-				position: absolute;
-				display: flex;
-				flex-grow: 1;
-				cursor: grab;
-			`
+		${side}: 0;
+		width: ${width};
+		height: ${height};
+		background: ${visible ? color : 'transparent'};
+		padding: ${px(gutterSize)};
+		border-${direction === 'vertical' ? 'top' : 'left'}-${side}-radius: inherit;
+		border-${direction === 'vertical' ? 'bottom' : 'right'}-${side}-radius: inherit;
+		position: absolute;
+		display: flex;
+		flex-grow: 1;
+		cursor: ${cursor};
+	`
 
 	const onGrab = (e: MouseEvent) => {
+		grabber.style.cursor = 'grabbing'
+		const styleEl = document.createElement('style')
+		styleEl.innerHTML = `
+			* { cursor: grabbing !important; }
+		`
+		document.head.appendChild(styleEl)
 		e.preventDefault()
 		e.stopPropagation()
 		document.addEventListener('mousemove', onMove)
-		document.addEventListener('mouseup', onUp, { once: true })
-		grabber.style.cursor = 'grabbing'
+		document.addEventListener('mouseup', (e) => onUp(e, styleEl), { once: true })
 	}
+	grabber.addEventListener('mousedown', onGrab)
 
-	node.addEventListener('mouseover', () => {
-		switch (direction) {
-			case 'vertical':
-				grabber.style.height = px(node.scrollHeight)
-				break
-			case 'horizontal':
-				grabber.style.width = px(node.scrollWidth)
-				break
-
-			default:
-				break
-		}
-	})
-
-	// grabber.addEventListener('mousedown', onGrab)
+	node.addEventListener('mouseover', updateHeight)
 
 	const onMove = (e: MouseEvent) => {
 		const startWidth = node.offsetWidth
@@ -121,8 +120,6 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 		const newWidth = startWidth - deltaX
 		const newHeight = startHeight + deltaY
-
-		// console.log({ newWidth, newHeight })
 
 		if (direction === 'vertical') {
 			if (newWidth < minSizePx) return
@@ -141,19 +138,36 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 		}, 50)
 	}
 
-	const onUp = () => {
+	const onUp = (e?: Event, styleEl?: HTMLStyleElement) => {
 		document.removeEventListener('mousemove', onMove)
-		grabber.style.cursor = 'grab'
+		// Remove the cursor style element.
+		if (styleEl) document.head.removeChild(styleEl)
+		grabber.style.cursor = cursor
+	}
+	document.addEventListener('mouseup', onUp)
+
+	function updateHeight() {
+		const node_rect = node.getBoundingClientRect()
+		direction === 'vertical'
+			? (grabber.style.height = px(Math.min(node.scrollHeight, node_rect.height)))
+			: (grabber.style.width = px(Math.min(node.scrollWidth, node_rect.width)))
 	}
 
-	document.addEventListener('mouseup', onUp)
-	grabber.addEventListener('mousedown', onGrab)
+	updateHeight()
+
+	// Add a mutation observer to the node
+	const observer = new MutationObserver((mutations) => {
+		mutations.forEach((mutation) => {
+			console.log({ mutation })
+		})
+	}).observe(node, { attributes: true })
 
 	return {
 		destroy: () => {
-			grabber.removeEventListener('mousedown', onGrab)
-			document.removeEventListener('mouseup', onUp)
 			document.removeEventListener('mousemove', onMove)
+			document.removeEventListener('mouseup', onUp)
+			node.addEventListener('mouseover', updateHeight)
+			grabber.removeEventListener('mousedown', onGrab)
 		},
 	}
 }

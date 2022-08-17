@@ -60,14 +60,20 @@
 		border-bottom: solid 1px var(--lowlight);
 		border-top: solid 1px var(--highlight);
 		box-shadow: var(--level-2, 0 2px 3px rgba(0, 0, 0, 0.1), 0 1px 5px rgba(0, 0, 0, 0.13));
-		font-family: 'MonoLisa', monospace;
-		text-transform: capitalize;
 		padding: 4px 6px;
 		cursor: pointer;
-		font-size: var(--heading-font-size, 12px);
 		margin: 0;
+
 		background: var(--header-bg);
 		color: var(--header-color, --color);
+
+		text-transform: capitalize;
+		font-family: var(--font-a);
+		font-family: 'MonoLisa', monospace;
+		font-weight: 400;
+		// letter-spacing: 0.5px;
+		// word-spacing: 2px;
+		font-size: var(--heading-font-size, 12px);
 
 		span {
 			display: inline-block;

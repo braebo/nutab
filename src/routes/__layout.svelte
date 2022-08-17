@@ -23,8 +23,6 @@
 	import '../styles/app.scss'
 	import 'greset/greset.css'
 
-	import { fml } from '$lib/ui/Scrollbar.svelte'
-
 	onMount(async () => {
 		if (!$settings.lockBackground) {
 			$settings.background = randomBackground()
@@ -43,8 +41,6 @@
 	+if('dev')
 		Inspector
 	
-	pre {JSON.stringify($fml, null, 2)}
-
 	#app(style='{$settings.background}')
 		Themer(size='{50}')
 

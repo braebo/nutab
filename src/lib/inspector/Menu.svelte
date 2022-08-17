@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Scrollbar from '$lib/ui/Scrollbar.svelte'
+	import MacScrollbar from '$lib/ui/Scrollbar.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import { resize } from '$lib/utils/resizable'
-	import { screenH } from 'fractils'
+	import { OnMount, screenH } from 'fractils'
 
 	export let isOpen = false
 	export let right = false
@@ -33,24 +33,26 @@
 		})
 	}
 
-	let menuEl: HTMLElement
+	let content: HTMLElement
 
-	$: if (menuEl) {
-		menuEl.style.maxHeight = $screenH - menuEl.getBoundingClientRect().top * 2 + 'px'
+	$: if (content) {
+		content.style.maxHeight = $screenH - content.getBoundingClientRect().top * 2 + 'px'
 	}
+
+	let e: Event
 </script>
 
 <div
+	use:resize={{ side: 'left', color: 'hsla(0, 0%, 10%, 0.8)' }}
 	style={`--sm-top: ${top};` + css}
-	bind:this={menuEl}
 	class="side-menu {theme}"
-	use:resize={{ side: 'left', color: 'var(--light-a)' }}
+	id="inspector-side-menu"
 	class:isOpen
 	class:right
 >
-	<Scrollbar target={menuEl} />
 	<div class="nub" on:click={toggle}>{nub}</div>
-	<div class="side-menu-content">
+	<div class="side-menu-content" bind:this={content} on:scroll={(ev) => (e = ev)}>
+		<MacScrollbar root=".side-menu-content" {e} --mac-scrollbar-color="#131315" />
 		<nav>
 			{#each links as link}
 				{#if link.path}
@@ -82,6 +84,7 @@
 		right: 0;
 
 		width: var(--width, 300px);
+		// height: calc(100vw - var(--top-position));
 		height: fit-content;
 
 		font-family: sans-serif;
@@ -91,15 +94,11 @@
 		z-index: var(--z, 2001);
 
 		border-radius: 5px;
-		overflow-y: auto;
-		overflow-x: visible;
+		// overflow-x: visible;
+		// overflow-y: hidden;
+		// overflow-x: visible;
 
-		scrollbar-width: 0px;
-
-		&::-webkit-scrollbar {
-			width: 0px;
-			display: none;
-		}
+		// scrollbar-width: 0px;
 	}
 
 	.side-menu.isOpen {
@@ -124,9 +123,10 @@
 	}
 
 	.side-menu-content {
+		position: relative;
 		box-sizing: border-box;
 
-		max-height: calc(100vh - var(--top-position));
+		// max-height: calc(100vh - var(--top-position));
 
 		color: var(--color-int);
 		background: var(--background-int);
@@ -134,7 +134,15 @@
 		box-shadow: var(--level-4, 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22));
 		border-radius: 5px 0 0 5px;
 
-		overflow: hidden;
+		// overflow: hidden;
+		overflow-y: scroll;
+
+		&::-webkit-scrollbar {
+			width: 0px;
+			display: none;
+		}
+		scrollbar-width: none;
+		-ms-overflow-style: none;
 		/* overflow-y: scroll; */
 	}
 
