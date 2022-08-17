@@ -13,7 +13,7 @@ export class BookmarkDB extends Dexie {
 		super('BookmarksDB')
 		this.version(1).stores({
 			bookmarks: 'bookmark_id, *tags, title, position',
-			folders: 'folder_id, *bookmarks, position'
+			folders: 'folder_id, *bookmarks, position',
 		})
 		this.bookmarks = this.table('bookmarks')
 		this.folders = this.table('folders')
@@ -28,16 +28,16 @@ db.on('populate', async () => {
 
 	// Add default bookmarks
 	await db.bookmarks.bulkAdd(defaultBookmarks)
-	
+
 	// Add default folder
 	await db.folders.add(defaultFolder)
-	
+
 	// Store folder ID in localStorage
 	lastActiveFolderId.set(defaultFolder.folder_id)
-	
+
 	// Initialize activeFolder store
 	activeFolder.set(defaultFolder)
-	
+
 	// Initialize activeBookmarks store
 	activeBookmarks.set(defaultBookmarks)
 

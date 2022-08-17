@@ -200,7 +200,8 @@
 		&.closed {
 			backdrop-filter: blur(0px);
 			box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0), 0 6px 20px 5px rgba(29, 29, 29, 0);
-			transition-delay: 0;
+			transition-delay: 0s;
+			transition-duration: 0.05s;
 
 			& rect {
 				pointer-events: all;

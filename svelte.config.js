@@ -24,7 +24,8 @@ const config = {
 			inspector: {
 				toggleButtonPos: 'bottom-left',
 				toggleKeyCombo: 'meta-shift',
-				showToggleButton: 'always',
+				/** @type {'always' | 'active' | 'never'} */
+				showToggleButton: 'active',
 				holdMode: true,
 			},
 		},
