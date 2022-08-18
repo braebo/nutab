@@ -4,8 +4,8 @@
 	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
 	import RandomWave from '$lib/graphics/RandomWave.svelte'
 
-	import { randomBackground } from '$lib/data/settings/randomBackground'
 	import { onMount, createEventDispatcher } from 'svelte'
+	import { randomBackground } from '$lib/utils'
 	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
 

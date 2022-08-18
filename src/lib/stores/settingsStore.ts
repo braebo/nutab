@@ -49,9 +49,6 @@ export const cMenu = writable({
 	pending: false,
 })
 
-export const settings = localStorageStore('settings', default_settings)
+export const settings = localStorageStore<Settings>('settings', default_settings)
 
 export const showSettings = writable(false)
-
-// Used to show grid borders while updating gridWidth
-export const showGuidelines = writable(false)

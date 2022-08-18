@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Data
 	import { activeBookmarks, activeFolder } from '$lib/data/dbStore'
-	import { settings } from '$lib/data/settings/settingsStore'
+	import { settings } from '$lib/stores'
 	import { init_db } from '$lib/data/transactions'
 
 	// Components

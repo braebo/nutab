@@ -10,10 +10,7 @@
 	export let top = '10%'
 	export let nub = '🛠'
 
-	const openState = $inspectorStore
-
-	console.log(openState)
-
+	// Persists the folded / unfolded state of the inspector submenus / groups
 	let keys = Object.keys(register)
 	let data = keys.map((key) => {
 		const isOpen = $inspectorStore[key] ?? false

@@ -1,5 +1,5 @@
 <script>
-	import { settings } from '$lib/data/settings/settingsStore'
+	import { settings } from '$lib/stores'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 
 	let locked = $settings?.lockBackground

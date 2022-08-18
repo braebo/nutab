@@ -2,7 +2,7 @@
 	import MacScrollbar from '$lib/ui/Scrollbar.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import { resize } from '$lib/utils/resizable'
-	import { OnMount, screenH } from 'fractils'
+	import { screenH } from 'fractils'
 
 	export let isOpen = false
 	export let right = false

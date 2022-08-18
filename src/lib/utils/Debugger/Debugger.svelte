@@ -1,7 +1,7 @@
-<script lang="ts">
-	import { showBookmarkEditor, bookmarkEditor, editorContext, folderEditor } from '$lib/stores/bookmarkEditor'
+<!-- <script lang="ts">
 	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from '$lib/data/dbStore'
-	import { settings, showSettings } from '$lib/data/settings/settingsStore'
+	import { showBookmarkEditor, bookmarkEditor, folderEditor } from '$lib/stores/bookmarkEditor'
+	import { settings, showSettings } from '$lib/stores'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
 	import { debug, showDebugger } from '$lib/stores/debug'
 	import { activeSection } from '$lib/stores/activeSection'
@@ -318,4 +318,4 @@
 			transform: translateX(-3px);
 		}
 	}
-</style>
+</style> -->

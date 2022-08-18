@@ -4,4 +4,4 @@ import { writable } from 'svelte/store'
 
 export const folderEditor: Writable<Folder> = writable()
 
-export const editorContext: Writable<'edit' | 'create'> = writable()
+export const folderEditorContext: Writable<'edit' | 'create'> = writable()

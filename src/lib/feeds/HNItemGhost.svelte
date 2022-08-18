@@ -2,7 +2,7 @@
 	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
 	import RandomWave from '$lib/graphics/RandomWave.svelte'
 
-	import { randomBackground } from '$lib/data/settings/randomBackground'
+	import { randomBackground } from '$lib/utils'
 	import { fade } from 'svelte/transition'
 </script>
 

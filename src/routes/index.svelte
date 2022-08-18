@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
-	import { showSettings } from '$lib/data/settings/settingsStore'
+	import { showSettings } from '$lib/stores'
 
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
 	import FolderEditor from '$lib/ui/Folders/FolderEditor.svelte'

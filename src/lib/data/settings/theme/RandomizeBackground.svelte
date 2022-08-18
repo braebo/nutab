@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { randomBackground } from './randomBackground'
-	import { settings } from './settingsStore'
+	import { randomBackground } from '$lib/utils/randomColor'
+	import { settings } from '$lib/stores'
 
 	let timer: NodeJS.Timeout
 	let animate = false

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { wait, mouse, screenH, clickOutside, mapRange, log } from 'fractils'
-	import { blurOverlay } from '$lib/stores/blurOverlay'
-	import { showSettings } from './settingsStore'
+	import { wait, mouse, screenH, clickOutside, mapRange } from 'fractils'
+	import { showSettings, blurOverlay } from '$lib/stores'
 
 	import { tweened, type Tweened } from 'svelte/motion'
 	import { quartInOut } from 'svelte/easing'
@@ -122,7 +121,7 @@
 	class="panel-container"
 	style:--width="{p.w}px"
 	style:--height="{p.h}px"
-	use:clickOutside={{ whitelist: ['.controls'] }}
+	use:clickOutside={{ whitelist: ['.controls', '#inspector', '.grabber'] }}
 	on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
 >
 	<div class="panel">

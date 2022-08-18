@@ -1,8 +1,8 @@
-<script>
-	let inspector
+<script lang="ts">
+	let inspector: HTMLElement
 	$: console.log(inspector)
 </script>
 
-<div bind:this={inspector}>
+<span bind:this={inspector}>
 	<slot />
-</div>
+</span>

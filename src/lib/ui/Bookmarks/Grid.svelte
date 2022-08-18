@@ -2,9 +2,9 @@
 	// Data
 	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
-	import { showGuidelines } from '$lib/data/settings/settingsStore'
 	import { swapBookmarks_db } from '$lib/data/transactions'
 	import { searchValue } from '$lib/search/searchStore'
+	import { showGuidelines } from '$lib/stores'
 
 	// Components
 	import Edit from '$lib/graphics/icons/Edit.svelte'

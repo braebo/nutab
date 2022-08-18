@@ -1,7 +1,8 @@
 <script lang="ts">
 	// Data
-	import { showBookmarkEditor, bookmarkEditor, editor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { showBookmarkEditor, bookmarkEditor, bookmarkEditorContext } from '$lib/stores'
 	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
+	import { editor } from '$lib/stores/bookmarkEditor'
 	import { reRender } from '$lib/stores/gridStore'
 	import { uniqueTags } from '$lib/data/dbStore'
 
@@ -48,7 +49,7 @@
 			urlInput.style.border = '1px solid transparent'
 			return
 		}
-		if ($editorContext === 'edit') {
+		if ($bookmarkEditorContext === 'edit') {
 			updateBookmark_db($bookmarkEditor)
 		} else {
 			await newBookmark_db($bookmarkEditor)
@@ -58,7 +59,7 @@
 	}
 
 	onMount(async () => {
-		if ($editorContext === 'create') titleInput?.select()
+		if ($bookmarkEditorContext === 'create') titleInput?.select()
 	})
 
 	let open = false // for ImageURL input

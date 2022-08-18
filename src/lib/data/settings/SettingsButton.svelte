@@ -1,7 +1,9 @@
+<!-- 
+	@component Toggles the visibility of a bookmark's settings editor panel.
+ -->
 <script>
+	import { cMenu } from '$lib/stores'
 	import { tick } from 'svelte'
-
-	import { cMenu } from './settingsStore'
 
 	const toggleCMenu = async () => {
 		if (!$cMenu.visible && !$cMenu.pending) {
@@ -47,7 +49,6 @@
 		top: 3px !important
 		gap: 10px !important
 
-
 	.dot
 		display: flex
 		flex-direction: row
@@ -60,5 +61,4 @@
 		background: var(--dark-c)
 
 		pointer-events: none
-
 </style>

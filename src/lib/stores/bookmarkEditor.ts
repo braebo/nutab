@@ -10,7 +10,7 @@ type EditorContext = 'edit' | 'create'
 type EditorType = 'bookmark' | 'folder'
 type EditorMode = [EditorContext, EditorType]
 
-export const editorContext = writable<EditorContext>()
+export const bookmarkEditorContext = writable<EditorContext>()
 export const editorType = writable<EditorType>()
 
 export const bookmarkEditor = writable<Bookmark>()
@@ -21,7 +21,7 @@ export const showBookmarkEditor = writable<boolean>(false)
 
 export const editorShown = derived(
 	[showBookmarkEditor, showFolderEditor],
-	([$showBookmarkEditor, $showFolderEditor]) => $showBookmarkEditor || $showFolderEditor
+	([$showBookmarkEditor, $showFolderEditor]) => $showBookmarkEditor || $showFolderEditor,
 )
 
 export const editor = {
@@ -51,16 +51,16 @@ export const editor = {
 				console.error('editor: Invalid mode provided:', mode)
 				break
 		}
-		editorContext.set(mode[0])
+		bookmarkEditorContext.set(mode[0])
 		editorType.set(mode[1])
 	},
 	hide: () => {
 		bookmarkEditor.set(null)
 		folderEditor.set(null)
-		editorContext.set(null)
+		bookmarkEditorContext.set(null)
 		editorType.set(null)
 		showFolderEditor.set(false)
 		showBookmarkEditor.set(false)
-	}
+	},
 }
 Object.freeze(editor)

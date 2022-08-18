@@ -27,7 +27,7 @@
 
 	function updateStore(value: boolean | string) {
 		// Single value
-		if (simple) {
+		if (simple && 'subscribe' in store) {
 			$store = value
 			// Array or Object
 		} else {

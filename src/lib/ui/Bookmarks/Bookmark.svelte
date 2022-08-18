@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
-	import { settings } from '$lib/data/settings/settingsStore'
+	import { settings } from '$lib/stores'
 	import { debounce } from '$lib/utils/debounce'
 
 	import BookmarkArt from './BookmarkArt.svelte'
@@ -49,11 +49,10 @@
 
 <div class="bookmark-container">
 	<a
-		target="_blank"
 		href={url}
-		draggable="false"
 		class:dragging
-		style:pointer-events="all"
+		target="_blank"
+		draggable="false"
 		on:contextmenu|stopPropagation|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
 	>
 		{#if image}

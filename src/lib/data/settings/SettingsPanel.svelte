@@ -1,77 +1,41 @@
 <script lang="ts">
-	import type { Writable } from 'svelte/store'
-
-	import { settings, showGuidelines } from './settingsStore'
-
-	import { fly } from 'svelte/transition'
-	import { onDestroy } from 'svelte'
-
-	import RandomizeBackground from './RandomizeBackground.svelte'
-	import { blurOverlay } from '$lib/stores/blurOverlay'
-	import Lock from '$lib/graphics/icons/Lock.svelte'
+	import ThemeSettings from './theme/ThemeSettings.svelte'
+	import GridSettings from './grid/GridSettings.svelte'
 	import FluidPanel from './FluidPanel.svelte'
-	import ShowTitle from './ShowTitle.svelte'
-	import Range from '$lib/ui/Range.svelte'
 
-	let timer: NodeJS.Timeout
-
-	function handleInput(e: Event, setting: string) {
-		$blurOverlay = true
-
-		// Show and hide "guidelines" when gridwidth changes
-		if (setting === 'gridWidth') $showGuidelines = true
-
-		clearTimeout(timer)
-
-		timer = setTimeout(() => {
-			$blurOverlay = false
-			$showGuidelines = false
-		}, 1000)
+	const sections = {
+		grid: GridSettings,
+		theme: ThemeSettings,
 	}
 
-	onDestroy(() => {
-		clearTimeout(timer)
-	})
+	let activeSection: typeof sections[keyof typeof sections] = sections['grid']
 </script>
 
 <FluidPanel>
 	<div class="control-panel">
-		<div class="controls">
-			{#each Object.keys($settings.ranges) as setting, i}
+		<nav>
+			{#each Object.entries(sections) as [section, component]}
 				<div
-					class="control"
-					in:fly={{ y: 25, duration: 300, delay: 33 * i }}
-					out:fly={{ y: 25, duration: 100 }}
+					role="link"
+					class:active={activeSection === component}
+					on:click={() => (activeSection = component)}
 				>
-					<label for={setting}>{$settings.ranges[setting].label}</label>
-
-					<Range
-						range={$settings.ranges[setting].range}
-						bind:setting={$settings.ranges[setting].value}
-						on:input={(e) => handleInput(e, setting)}
-						name={setting}
-					/>
+					{section}
 				</div>
 			{/each}
-
-			<div
-				class="buttons"
-				in:fly={{ y: 10, duration: 300, delay: 50 * Object.keys($settings.ranges).length }}
-				out:fly={{ y: 15, duration: 100 }}
-			>
-				<ShowTitle />
-				<div class="background">
-					<RandomizeBackground />
-					<Lock />
-				</div>
+		</nav>
+		{#key activeSection}
+			<div class="settings-section-component">
+				<svelte:component this={activeSection} />
 			</div>
-		</div>
+		{/key}
 	</div>
 </FluidPanel>
 
 <style lang="scss">
 	.control-panel {
 		display: flex;
+		flex-direction: column;
 		position: relative;
 
 		min-width: 100%;
@@ -81,52 +45,35 @@
 		pointer-events: all;
 	}
 
-	.controls {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-
-		width: 75%;
-		margin: auto;
-	}
-
-	.control {
-		display: flex;
-		justify-content: space-between;
-
-		height: max-content;
-		padding: 2px 15px;
-
-		border: 1px solid rgba(var(--light-c-rgb), 0.33);
-		background: rgba(var(--light-a-rgb), 0.25);
-		border-radius: 10px;
-
-		font-size: 16px;
-
-		pointer-events: all;
-	}
-
-	label {
-		position: relative;
-
-		width: max-content;
-		height: 100%;
-		margin: auto 0;
-	}
-
-	.buttons {
+	nav {
 		display: flex;
 		justify-content: center;
-		gap: 5rem;
+		align-items: flex-end;
+		height: 4rem;
+		gap: 3rem;
 
-		width: 100%;
+		font-variation-settings: 'wght' 100;
+		font-family: var(--font-a);
+		text-transform: uppercase;
+		letter-spacing: 3px;
+		font-size: 1.2rem;
+		font-weight: 100;
 
-		pointer-events: all;
+		div {
+			opacity: 0.5;
+			cursor: pointer;
+			user-select: none;
+
+			&.active {
+				opacity: 1;
+			}
+		}
 	}
 
-	.background {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
+	.settings-section-component {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		top: 6.5rem;
 	}
 </style>

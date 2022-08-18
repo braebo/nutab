@@ -1,33 +1,33 @@
 <script lang="ts">
-	import { randomColor } from '$lib/data/settings/randomBackground'
 	import { randomRange } from './randomRange'
+	import { randomColor } from '$lib/utils'
 
 	let defaults = [
 		{
 			id: 'spread',
 			min: 0,
-			max: 200
+			max: 200,
 		},
 		{
 			id: 'bend',
 			min: -500,
-			max: 0
+			max: 0,
 		},
 		{
 			id: 'mid',
 			min: -500,
-			max: 50
+			max: 50,
 		},
 		{
 			id: 'peak',
 			min: 100,
-			max: 300
+			max: 300,
 		},
 		{
 			id: 'cross',
 			min: 0,
-			max: 500
-		}
+			max: 500,
+		},
 	]
 
 	function randomInt(min: number, max: number) {

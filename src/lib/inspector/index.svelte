@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from '$lib/data/dbStore'
-	import { settings, showSettings } from '$lib/data/settings/settingsStore'
+	import { settings, showSettings } from '$lib/stores'
 	import { gridDimensions, grid } from '$lib/stores/gridStore'
 
 	import Inspector from './Inspector.svelte'

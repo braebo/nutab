@@ -20,13 +20,13 @@
 	}
 </script>
 
-{#if $store !== (null || 'undefined')}
+{#if 'subscribe' in store && $store !== (null || 'undefined')}
 	<h4 class:isOpen on:click={toggle}>
 		<span>▼</span>
 		{label}
 	</h4>
 
-	{#if isOpen}
+	{#if isOpen && 'subscribe' in store}
 		<div class="state-data" transition:slide>
 			{#key $store}
 				{#if $store === null}

@@ -144,6 +144,7 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 		if (styleEl) document.head.removeChild(styleEl)
 		grabber.style.cursor = cursor
 	}
+
 	document.addEventListener('mouseup', onUp)
 
 	function updateHeight() {
@@ -154,13 +155,6 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 	}
 
 	updateHeight()
-
-	// Add a mutation observer to the node
-	const observer = new MutationObserver((mutations) => {
-		mutations.forEach((mutation) => {
-			console.log({ mutation })
-		})
-	}).observe(node, { attributes: true })
 
 	return {
 		destroy: () => {

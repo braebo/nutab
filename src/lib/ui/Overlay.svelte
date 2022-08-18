@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
-	import { showSettings } from '$lib/data/settings/settingsStore'
+	import { showSettings } from '$lib/stores'
 	import { blurOverlay } from '$lib/stores/blurOverlay'
 
 	let overlay: HTMLDivElement

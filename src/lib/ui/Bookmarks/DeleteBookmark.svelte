@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { editorContext } from '$lib/stores/bookmarkEditor'
+	import { bookmarkEditorContext } from '$lib/stores/bookmarkEditor'
 	import { deleteBookmark_db } from '$lib/data/transactions'
 	import TrashIcon from '$lib/data/icons/TrashIcon.svelte'
 	import { reRender } from '$lib/stores/gridStore'
@@ -17,7 +17,7 @@
 	}
 </script>
 
-{#if $editorContext == 'edit'}
+{#if $bookmarkEditorContext == 'edit'}
 	<div class="delete" on:click={_delete}>
 		<Tooltip content="Delete" offset={[0, 10]} placement="top">
 			<TrashIcon />

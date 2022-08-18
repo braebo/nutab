@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { settings } from '$lib/data/settings/settingsStore'
+	import { settings } from '$lib/stores'
 	import { mapRange } from 'fractils'
 
 	export let title = '🔗'

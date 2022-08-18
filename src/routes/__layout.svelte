@@ -1,9 +1,9 @@
 <script lang="ts">
 	// Data
 	import { init_db } from '$lib/data/transactions'
+	import { settings } from '$lib/stores'
 
 	// Components
-	import { settings } from '$lib/data/settings/settingsStore'
 	import Settings from '$lib/data/settings/Settings.svelte'
 	import Inspector from '$lib/inspector/index.svelte'
 	import Themer from '$lib/theme/Themer.svelte'
@@ -13,7 +13,7 @@
 	import { Header } from '$lib/ui'
 
 	// Utils
-	import { randomBackground } from '$lib/data/settings/randomBackground'
+	import { randomBackground } from '$lib/utils'
 	import { Fractils } from 'fractils'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
@@ -58,11 +58,5 @@
 		max-height: 100vh;
 
 		overflow: hidden;
-	}
-
-	pre {
-		position: fixed;
-		top: 0;
-		left: 5rem;
 	}
 </style>

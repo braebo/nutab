@@ -3,14 +3,14 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import { editor, folderEditor, editorShown } from '$lib/stores/bookmarkEditor'
-	import { cMenu, showSettings } from '$lib/data/settings/settingsStore'
-	import { blurOverlay } from '$lib/stores/blurOverlay'
+	import { folderEditor, editorShown } from '$lib/stores'
 	import { getFolder_db } from '$lib/data/transactions'
+	import { editor } from '$lib/stores/bookmarkEditor'
+	import { cMenu, showSettings } from '$lib/stores'
 
 	// Utils
-	import { idFromClassList } from '$lib/utils'
 	import { clickOutside, wait } from 'fractils'
+	import { idFromClassList } from '$lib/utils'
 	import { fly } from 'svelte/transition'
 
 	export let options = [

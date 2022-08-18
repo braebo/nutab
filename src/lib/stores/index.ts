@@ -1,6 +1,15 @@
+export { settings, cMenu, showSettings } from './settingsStore'
 // export { grid, gridDimensions } from './gridStore'
-export { bookmarkEditor } from './bookmarkEditor'
+export {
+	editorType,
+	editorShown,
+	bookmarkEditor,
+	showFolderEditor,
+	showBookmarkEditor,
+	bookmarkEditorContext,
+} from './bookmarkEditor'
+export { folderEditorContext, folderEditor } from './folderEditor'
+export { showGuidelines } from './showGuidelines'
 export { activeSection } from './activeSection'
-export { folderEditor } from './folderEditor'
 export { blurOverlay } from './blurOverlay'
 export { debug } from './debug'

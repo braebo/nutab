@@ -1,6 +1,6 @@
 <script>
-	import { settings } from '$lib/data/settings/settingsStore'
 	import { fly } from 'svelte/transition'
+	import { settings } from '$lib/stores'
 </script>
 
 <label for="showTitle">

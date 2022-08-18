@@ -16,7 +16,7 @@ specifiers:
   cuid: ^2.1.8
   date-fns: ^2.29.1
   dexie: ^3.2.2
-  fractils: ^2.0.3
+  fractils: ^2.0.4
   greset: ^2.0.0
   highlight.js: ^11.6.0
   node-html-parser: ^5.4.1
@@ -58,7 +58,7 @@ devDependencies:
   cuid: 2.1.8
   date-fns: 2.29.1
   dexie: 3.2.2
-  fractils: 2.0.3
+  fractils: 2.0.4
   greset: 2.0.0
   highlight.js: 11.6.0
   node-html-parser: 5.4.1
@@ -1067,8 +1067,8 @@ packages:
       to-regex-range: 5.0.1
     dev: true
 
-  /fractils/2.0.3:
-    resolution: {integrity: sha512-w7pTqmBSogRHOmSM71e2MijrUsSnVR2hJTGrXr/gTPRyYyOaXqGL0Z+0LwVIRg0rA/PcWeeFoqgzO9w9WrVUhg==}
+  /fractils/2.0.4:
+    resolution: {integrity: sha512-q4si6qRit8g2meOE8c7RT2EBunW+MxSw6xgZ0DAHAEU9qfnWOrcitblMnVjxPAftllnK87iP1ELaRvYBsm2a9A==}
     dev: true
 
   /fraction.js/4.2.0:

@@ -4,7 +4,7 @@
 	import type { Bookmark } from '$lib/data/types'
 
 	// Data
-	import { folderEditor, editorContext } from '$lib/stores/bookmarkEditor'
+	import { folderEditor, bookmarkEditorContext } from '$lib/stores/bookmarkEditor'
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { uniqueTags } from '$lib/data/dbStore'
 	import {
@@ -12,7 +12,7 @@
 		getFolderCount_db,
 		updateFolder_db,
 		deleteFolder_db,
-		newFolder_db
+		newFolder_db,
 	} from '$lib/data/transactions'
 
 	// Components
@@ -33,7 +33,7 @@
 	$: deleteDisabled = folderCount === 1
 
 	async function handleSave() {
-		if ($editorContext === 'edit') {
+		if ($bookmarkEditorContext === 'edit') {
 			updateFolder_db($folderEditor)
 		} else {
 			// Save the current Folder along with the relevant bookmark id's of any selected tags.
@@ -52,7 +52,7 @@
 	}
 
 	onMount(async () => {
-		if ($editorContext === 'create') {
+		if ($bookmarkEditorContext === 'create') {
 			header = 'New Folder'
 			titleInput?.select()
 		} else {
@@ -84,7 +84,7 @@
 				)
 			.space-lg
 
-			+if('$editorContext === "create"')
+			+if('$bookmarkEditorContext === "create"')
 				.setting.tag-manager.scroller
 					.info Add bookmarks from tags (optional)
 					.tags

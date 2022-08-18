@@ -7,12 +7,13 @@ import {
 	folders,
 	lastActiveFolderId,
 	tagFilter,
-	uniqueTags
 } from './dbStore'
 import { log, wait } from 'fractils'
 import { get } from 'svelte/store'
 import cuid from 'cuid'
 import db from './db'
+
+let loopguard = 0
 
 /**
  ** Load bookmarks, or generate default bookmarks if none exist.
@@ -26,6 +27,27 @@ export async function init_db() {
 	// Populate stores
 	let lastActiveFolder: Folder | undefined
 	lastActiveFolder = await db.table('folders').where('folder_id').equals(id).first()
+	
+	// If no last active folder, use the first one
+	// All of this might not be necessary, but.. edge cases are.. edge cases
+	if (!lastActiveFolder) {
+		const defaultFolder = await db.table('folders').toArray()
+		if (defaultFolder.length > 0) {
+			localStorage.removeItem('lastActiveFolderId')
+			lastActiveFolder = defaultFolder[0]
+		} else {
+			localStorage.removeItem('lastActiveFolderId')
+			loopguard++
+			if (loopguard === 0) {
+				init_db()
+				return
+			} else {
+				console.error('❌ No folders found in database... this shouldn\'t happen.  Try clearing local storage to delete / reset all data.')
+				return
+			}
+		}
+	}
+	
 	activeFolder.set(lastActiveFolder)
 	activeBookmarks.set(await db.bookmarks.bulkGet(lastActiveFolder.bookmarks))
 	folders.set(await db.table('folders').toArray())
@@ -37,6 +59,7 @@ export async function init_db() {
  */
 export async function newBookmark_db(bookmark: Bookmark) {
 	log('🎬 Creating new bookmark: ', '#fa8', 'dimgray', 25)
+	
 	// Todo: Consolidate this into a single transaction?
 
 	// Add to bookmarks table
