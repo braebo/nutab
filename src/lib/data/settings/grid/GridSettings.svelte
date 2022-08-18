@@ -32,6 +32,7 @@
 			<label for={setting}>{$settings.ranges[setting].label}</label>
 
 			<Range
+				on:input={(e) => handleInput(e, setting)}
 				range={$settings.ranges[setting].range}
 				bind:setting={$settings.ranges[setting].value}
 				on:input={(e) => handleInput(e, setting)}
@@ -77,6 +78,8 @@
 
 	label {
 		position: relative;
+
+		color: var(--dark-d);
 
 		width: max-content;
 		height: 100%;

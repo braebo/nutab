@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { randomBackground } from '$lib/utils/randomColor'
+	import { randomizeBackground } from '$lib/stores/background'
 	import { settings } from '$lib/stores'
 
 	let timer: NodeJS.Timeout
 	let animate = false
 	const handleClick = () => {
 		if ($settings.lockBackground) return
-		$settings.background = randomBackground()
+		randomizeBackground()
 		clearTimeout(timer)
 		animate = true
 		timer = setTimeout(() => {
@@ -21,7 +21,7 @@
 	</div>
 {/key}
 
-<style>
+<style lang="scss">
 	.animate {
 		animation: colorize 1s infinite;
 	}
@@ -37,5 +37,10 @@
 	.locked {
 		opacity: 0.4;
 		cursor: default;
+
+		&:hover {
+			color: var(--dark-d);
+			cursor: not-allowed;
+		}
 	}
 </style>

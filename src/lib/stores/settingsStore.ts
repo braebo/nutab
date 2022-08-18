@@ -1,7 +1,7 @@
 import localStorageStore from '$lib/utils/localStorageStore'
 import { writable } from 'svelte/store'
 
-type Range = {
+interface Range {
 	label: string
 	value: number
 	range: { min: number; max: number }
@@ -20,9 +20,13 @@ export interface Settings {
 	background: string
 	lockBackground: boolean
 	// TODO #23 needs ui in settings
-	customBackground: boolean
+	customGradient: boolean
+	/** 6 Hex color (includes #) */
 	gradientA: string
+	/** 6 Hex color (includes #) */
 	gradientB: string
+	/** 2 Hex value between 00..FF */
+	gradientOpacity: string
 	invertDark?: boolean
 }
 
@@ -35,9 +39,10 @@ const default_settings: Settings = {
 	transparent: true,
 	showTitle: false,
 	background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
-	customBackground: false,
+	customGradient: false,
 	gradientA: '',
 	gradientB: '',
+	gradientOpacity: '30',
 	lockBackground: false,
 }
 

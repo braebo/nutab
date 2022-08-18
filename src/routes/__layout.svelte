@@ -13,7 +13,8 @@
 	import { Header } from '$lib/ui'
 
 	// Utils
-	import { randomBackground } from '$lib/utils'
+	import { randomizeBackground } from '$lib/stores/background'
+	import { gradientBackground } from '$lib/stores'
 	import { Fractils } from 'fractils'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
@@ -23,9 +24,9 @@
 	import '../styles/app.scss'
 	import 'greset/greset.css'
 
-	onMount(async () => {
+	onMount(() => {
 		if (!$settings.lockBackground) {
-			$settings.background = randomBackground()
+			randomizeBackground()
 		}
 		init_db()
 	})
@@ -40,7 +41,7 @@
 
 	+if('dev')
 		Inspector
-	
+
 	#app(style='{$settings.background}')
 		Themer(size='{50}')
 

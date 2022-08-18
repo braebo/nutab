@@ -5,7 +5,7 @@
 	import RandomWave from '$lib/graphics/RandomWave.svelte'
 
 	import { onMount, createEventDispatcher } from 'svelte'
-	import { randomBackground } from '$lib/utils'
+	import { randomColor } from '$lib/utils'
 	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
 
@@ -17,6 +17,8 @@
 		dispatch('showThread', { id: activeThread === null ? item.id : null })
 		activeThread = item.id
 	}
+
+	const background = `linear-gradient(to right, ${randomColor()}, ${randomColor()})`
 </script>
 
 <template lang="pug">
@@ -27,9 +29,9 @@
 				.image(style='background-image: url({item.meta.image})' in:fade)
 				+else
 					.random-thumbnail
-						.image(style='{randomBackground()}')
-						.random-wave
-							RandomWave
+						.image(style:background)
+						//- .random-wave
+							//- RandomWave
 
 		.content.col
 			.row.header
@@ -210,12 +212,12 @@
 		transition: filter 0.3s
 		filter: grayscale(75%)
 
-	.random-wave
-		position: absolute
-		inset: 0
+	// .random-wave
+	// 	position: absolute
+	// 	inset: 0
 		
-		width: 100%
-		height: 100%
+	// 	width: 100%
+	// 	height: 100%
 
 	.author, .since
 		flex-wrap: nowrap

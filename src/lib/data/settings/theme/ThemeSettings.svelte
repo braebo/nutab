@@ -15,10 +15,11 @@
 <style>
 	.theme-settings {
 		display: flex;
-		flex-direction: column;
+		/* flex-direction: column; */
 		justify-content: center;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.7rem;
+
 		height: 90%;
 	}
 
@@ -26,9 +27,5 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-	}
-
-	.shuffle {
-		/* margin-top: auto; */
 	}
 </style>

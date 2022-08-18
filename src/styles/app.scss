@@ -147,6 +147,7 @@ button:focus:not(:focus-visible) {
 	padding: 0.5rem 1rem;
 
 	border-radius: 10px;
+	color: var(--dark-d);
 	background: var(--light-a);
 	border: 1px solid var(--light-a);
 
@@ -155,6 +156,12 @@ button:focus:not(:focus-visible) {
 
 	user-select: none;
 	cursor: pointer;
+
+	transition: color 0.2s;
+
+	&:hover {
+		color: var(--dark-a);
+	}
 }
 
 @media (min-width: 720px) {

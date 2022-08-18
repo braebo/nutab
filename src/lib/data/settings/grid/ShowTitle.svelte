@@ -19,6 +19,9 @@
 	.title-toggle {
 		width: 110px;
 
+		color: var(--dark-d);
+		background-color: var(--light-a);
+
 		user-select: none;
 		overflow: hidden;
 

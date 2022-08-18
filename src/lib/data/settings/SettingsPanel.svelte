@@ -2,6 +2,8 @@
 	import ThemeSettings from './theme/ThemeSettings.svelte'
 	import GridSettings from './grid/GridSettings.svelte'
 	import FluidPanel from './FluidPanel.svelte'
+	import { fly, fade } from 'svelte/transition'
+	import { quintOut } from 'svelte/easing'
 
 	const sections = {
 		grid: GridSettings,
@@ -14,13 +16,15 @@
 <FluidPanel>
 	<div class="control-panel">
 		<nav>
-			{#each Object.entries(sections) as [section, component]}
+			{#each Object.entries(sections) as [title, component]}
 				<div
 					role="link"
 					class:active={activeSection === component}
 					on:click={() => (activeSection = component)}
+					out:fade={{ duration: 50 }}
+					in:fly={{ y: 5, duration: 500, delay: 200, easing: quintOut }}
 				>
-					{section}
+					{title}
 				</div>
 			{/each}
 		</nav>
@@ -51,6 +55,8 @@
 		align-items: flex-end;
 		height: 4rem;
 		gap: 3rem;
+
+		color: var(--dark-a);
 
 		font-variation-settings: 'wght' 100;
 		font-family: var(--font-a);
