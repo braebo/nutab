@@ -215,9 +215,9 @@
 		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
 			{#key $reRender}
 				<div
+					class="cell-{i} cell"
 					class:unfocused={$searchValue !== '' && !isRelevant(i)}
 					class:focused={$searchValue === '' || isRelevant(i)}
-					class="cell-{i} cell"
 					class:active={i == active}
 					class:target={target === i}
 					style="
