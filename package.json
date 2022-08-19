@@ -18,7 +18,8 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
-		"format": "prettier --write --plugin-search-dir=. ."
+		"format": "prettier --write --plugin-search-dir=. .",
+		"status": "vercel logs https://nutab.fractal-hq.com"
 	},
 	"dependencies": {
 		"@fontsource/fira-mono": "^4.5.9"

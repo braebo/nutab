@@ -49,6 +49,7 @@
 
 <div class="bookmark-container">
 	<a
+		class="item-{i} grid-item"
 		href={url}
 		class:dragging
 		target="_blank"
@@ -109,6 +110,8 @@
 
 		height: var(--size, 100%);
 		width: var(--size, 100%);
+
+		pointer-events: none;
 	}
 
 	.bookmark {
@@ -125,6 +128,8 @@
 		border-radius: 10px;
 
 		text-align: center;
+
+		pointer-events: none;
 	}
 
 	.icon {
@@ -166,6 +171,8 @@
 		color: var(--dark-a);
 
 		text-decoration: none;
+
+		pointer-events: all;
 	}
 
 	a.dragging {
@@ -179,5 +186,7 @@
 
 		max-width: 100%;
 		max-height: 100%;
+
+		pointer-events: none;
 	}
 </style>

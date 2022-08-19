@@ -43,7 +43,6 @@
 	const applyTagFilter = async (tag: string) => {
 		if (tag === $tagFilter || tag === null) {
 			$tagFilter = null
-			// $activeBookmarks = $activeFolderBookmarks
 		} else {
 			$tagFilter = tag
 		}
@@ -116,7 +115,7 @@
 
 
 			.new-folder(class:hovering on:click='{newFolder}')
-				Tooltip(content='New_Folder' position='right' offset='{[9,20]}')
+				Tooltip(content='New_Folder' placement='right' offset='{[9,20]}')
 					| +
 
 

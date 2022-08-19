@@ -14,7 +14,6 @@
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { debounce } from '$lib/utils/debounce'
 	import { scale } from 'svelte/transition'
-	import { goto } from '$app/navigation'
 
 	let hovering: number | null = null
 
@@ -199,7 +198,7 @@
 	}
 </script>
 
-<svelte:window on:mousedown={handleMouseDown} on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
+<svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
 
 <div
 	class="grid"
@@ -229,13 +228,14 @@
 					bind:this={cells[i]}
 				>
 					<div
-						class="item-{i} grid-item"
+						class="grid-item"
 						class:active={active === i}
-						class:target={target === i}
 						draggable="false"
+						class:target={target === i}
 						class:dragging
 						class:disableTransitions
 						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
+						on:mousedown|preventDefault|stopPropagation={handleMouseDown}
 						on:mouseover={() => handleItemMouseOver(i)}
 						on:mouseout={() => handleItemMouseOut(i)}
 						on:focus={() => handleItemMouseOver(i)}
@@ -322,7 +322,6 @@
 		color: white;
 
 		cursor: pointer;
-		pointer-events: all;
 
 		transition: 0.2s ease-in-out;
 
