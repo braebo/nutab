@@ -3,8 +3,9 @@ import { randomColor } from '$lib/utils'
 import { settings } from './'
 
 export const gradientBackground = derived([settings], ([$settings]) => {
-	return `background-image: linear-gradient(to bottom, ${$settings.gradientA + $settings.gradientOpacity}, ${
-		$settings.gradientB + $settings.gradientOpacity
+	const opacity = $settings.ranges.gradientOpacity?.value?.toString(16) ?? '30'
+	return `background-image: linear-gradient(to bottom, ${$settings.gradientA + opacity}, ${
+		$settings.gradientB + opacity
 	});`
 })
 

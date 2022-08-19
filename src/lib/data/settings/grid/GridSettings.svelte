@@ -23,21 +23,24 @@
 
 	onDestroy(() => {
 		clearTimeout(timer)
+		$blurOverlay = false
+		$showGuidelines = false
 	})
 </script>
 
 <div class="controls">
-	{#each Object.keys($settings.ranges) as setting, i}
+	{#each Object.keys($settings.ranges).filter((s) => ['gridWidth', 'gridGap', 'iconSize'].includes(s)) as setting, i}
 		<div class="control" in:fly={{ y: 25, duration: 300, delay: 33 * i }} out:fly={{ y: 25, duration: 100 }}>
 			<label for={setting}>{$settings.ranges[setting].label}</label>
 
-			<Range
-				on:input={(e) => handleInput(e, setting)}
-				range={$settings.ranges[setting].range}
-				bind:setting={$settings.ranges[setting].value}
-				on:input={(e) => handleInput(e, setting)}
-				name={setting}
-			/>
+			<div class="range">
+				<Range
+					on:input={(e) => handleInput(e, setting)}
+					bind:value={$settings.ranges[setting].value}
+					range={$settings.ranges[setting].range}
+					name={setting}
+				/>
+			</div>
 		</div>
 	{/each}
 
@@ -63,8 +66,9 @@
 	.control {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 
-		height: max-content;
+		height: 3.5rem;
 		padding: 2px 15px;
 
 		border: 1px solid rgba(var(--light-c-rgb), 0.33);
@@ -78,12 +82,19 @@
 
 	label {
 		position: relative;
+		display: flex;
+		align-items: center;
 
 		color: var(--dark-d);
 
 		width: max-content;
 		height: 100%;
 		margin: auto 0;
+	}
+
+	.range {
+		width: 85%;
+		padding: 18px 0;
 	}
 
 	.buttons {

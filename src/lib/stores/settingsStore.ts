@@ -8,12 +8,14 @@ interface Range {
 }
 
 export interface Settings {
+	[index: string]: string | boolean | Record<string, Range>
 	// [index: string]: string | boolean | Record<string, Range>
 	// TODO add theme, language, etc.
 	ranges: {
 		gridWidth: Range
 		gridGap: Range
 		iconSize: Range
+		gradientOpacity: Range
 	}
 	transparent: boolean
 	showTitle: boolean
@@ -25,16 +27,15 @@ export interface Settings {
 	gradientA: string
 	/** 6 Hex color (includes #) */
 	gradientB: string
-	/** 2 Hex value between 00..FF */
-	gradientOpacity: string
 	invertDark?: boolean
 }
 
-const default_settings: Settings = {
+export const default_settings: Settings = {
 	ranges: {
 		gridWidth: { label: 'Width', value: 1000, range: { min: 500, max: 2000 } },
 		iconSize: { label: 'Icon', value: 50, range: { min: 32, max: 90 } },
 		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } },
+		gradientOpacity: { label: 'Opacity', value: 48, range: { min: 0, max: 255 } },
 	},
 	transparent: true,
 	showTitle: false,
@@ -42,7 +43,6 @@ const default_settings: Settings = {
 	customGradient: false,
 	gradientA: '',
 	gradientB: '',
-	gradientOpacity: '30',
 	lockBackground: false,
 }
 

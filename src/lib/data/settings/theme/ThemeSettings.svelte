@@ -1,12 +1,17 @@
 <script lang="ts">
 	import RandomizeBackground from './RandomizeBackground.svelte'
 	import GradientEditor from './GradientEditor.svelte'
+	import Saturation from './Saturation.svelte'
 	import Lock from '../theme/Lock.svelte'
 </script>
 
 <div class="theme-settings">
 	<div class="row shuffle">
-		<RandomizeBackground />
+		<div class="col">
+			<Saturation />
+
+			<RandomizeBackground />
+		</div>
 		<Lock />
 	</div>
 	<GradientEditor />
@@ -25,6 +30,13 @@
 
 	.row {
 		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.col {
+		display: flex;
+		flex-direction: column;
 		align-items: center;
 		gap: 0.5rem;
 	}

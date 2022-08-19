@@ -1,3 +1,13 @@
+<!-- 
+	@component
+	A custom range input slider component.
+	
+	@prop `value: any` - The value to be controled by the slider.
+	@prop `range: { min: number, max: number }` - The range of the slider.
+	@prop `name: string` - The name of the value for its label.
+	@prop `step: number` - The amount to increment each change.
+	@prop `vertical?: boolean` - The amount to increment each change.
+ -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
 	import { mapRange } from 'fractils'
@@ -5,8 +15,14 @@
 
 	const dispatch = createEventDispatcher()
 
-	export let setting: any, name: string, range
-	const { min, max } = range as { min: number; max: number }
+	/** The value to be controled by the slider. */
+	export let value: any
+	export let name: string
+	export let range: { min: number; max: number }
+	export let vertical = false
+	// export let step = 0.1 // TODO
+
+	const { min, max } = range
 
 	let el: HTMLElement
 	let track: HTMLElement
@@ -14,17 +30,22 @@
 	let dragging = false
 	const thumbWidth = 12
 	$: clientWidth = el?.clientWidth ?? 100
-	$: progress = mapRange(setting, min, max, 1, clientWidth - thumbWidth)
+	$: progress = mapRange(value, min, max, 1, clientWidth - thumbWidth)
 
-	const setFromMouseX = (e: MouseEvent) => {
+	/*
+	 * Used to calculate progress when clicking the track (as opposed to dragging the thumb).
+	 */
+	const setFromMouse = (e: MouseEvent) => {
 		if (!el) return
-		const { clientX } = e
-		const { clientWidth } = el
+		const mouse = vertical ? e.clientY : e.clientX
 		const { left } = el.getBoundingClientRect()
-		const relativeX = clientX - left
-		// const normalized = (clientX - offset) / width
-		const normalizedProgress = mapRange(relativeX, 0, clientWidth, 0, 100)
-		setting = mapRange(normalizedProgress, 0, 100, min, max)
+		const relativeX = mouse - left
+
+		const normalizedProgress = mapRange(relativeX, 0, el.clientWidth, 0, 100)
+
+		value = Math.trunc(mapRange(normalizedProgress, 0, 100, min, max))
+
+		// Continue in case this is a drag operation
 		mouseDown()
 	}
 
@@ -53,12 +74,12 @@
 	const mouseMove = (e: MouseEvent) => {
 		if (!dragging || !el) return
 
-		setting += e.movementX * ((1 / clientWidth) * (max - min))
+		value += Math.trunc(e.movementX * ((1 / clientWidth) * (max - min)))
 
-		if (setting < min) setting = min
-		if (setting > max) setting = max
+		if (value < min) value = min
+		if (value > max) value = max
 
-		dispatch('input', { name, setting })
+		dispatch('input', { name, value })
 	}
 
 	onDestroy(() => {
@@ -69,13 +90,21 @@
 
 <div
 	class="range"
+	class:vertical
+	role="slider"
 	{name}
 	bind:this={el}
+	on:mousedown={setFromMouse}
 	style:--thumb-width="{thumbWidth}px"
 	draggable="false"
-	on:mousedown={setFromMouseX}
 >
-	<div class="thumb" bind:this={thumb} style:left="{progress}px" draggable="false" on:mousedown={mouseDown} />
+	<div
+		class="thumb"
+		bind:this={thumb}
+		on:mousedown|stopPropagation|capture={mouseDown}
+		style:left="{progress}px"
+		draggable="false"
+	/>
 	<div class="track" bind:this={track} style:clip-path="0 {progress} 0 0" draggable="false" />
 </div>
 
@@ -85,8 +114,6 @@
 		display: flex;
 
 		width: 100%;
-		max-width: 80%;
-		margin: 18px 0;
 
 		background: none;
 

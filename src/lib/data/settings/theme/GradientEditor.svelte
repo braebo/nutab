@@ -31,13 +31,16 @@
 	input {
 		$size: 5rem;
 		width: $size;
-		height: $size/2;
+		height: calc($size / 2);
 		border: none;
 		border-radius: 0.25rem;
 		background-color: var(--light-a);
 
+		cursor: pointer;
+
 		&:disabled {
 			opacity: 0.25;
+			cursor: not-allowed;
 		}
 	}
 </style>
