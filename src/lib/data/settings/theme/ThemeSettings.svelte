@@ -6,24 +6,22 @@
 </script>
 
 <div class="theme-settings">
+	<Saturation />
 	<div class="row shuffle">
 		<div class="col">
-			<Saturation />
-
 			<RandomizeBackground />
 		</div>
 		<Lock />
+		<GradientEditor />
 	</div>
-	<GradientEditor />
 </div>
 
 <style>
 	.theme-settings {
 		display: flex;
-		/* flex-direction: column; */
-		justify-content: center;
+		flex-direction: column;
 		align-items: center;
-		gap: 0.7rem;
+		gap: 1rem;
 
 		height: 90%;
 	}

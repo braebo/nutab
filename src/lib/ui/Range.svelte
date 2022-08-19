@@ -7,6 +7,7 @@
 	@prop `name: string` - The name of the value for its label.
 	@prop `step: number` - The amount to increment each change.
 	@prop `vertical?: boolean` - The amount to increment each change.
+	@prop `truncate?: boolean` - Rounds decimals into whole numbers.
  -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
@@ -20,7 +21,8 @@
 	export let name: string
 	export let range: { min: number; max: number }
 	export let vertical = false
-	// export let step = 0.1 // TODO
+	export let step = 0.0001 // TODO
+	export let truncate = false
 
 	const { min, max } = range
 
@@ -31,6 +33,9 @@
 	const thumbWidth = 12
 	$: clientWidth = el?.clientWidth ?? 100
 	$: progress = mapRange(value, min, max, 1, clientWidth - thumbWidth)
+
+	// Used to store the last value of the slider before it's truncated.
+	let targetValue = value
 
 	/*
 	 * Used to calculate progress when clicking the track (as opposed to dragging the thumb).
@@ -43,7 +48,8 @@
 
 		const normalizedProgress = mapRange(relativeX, 0, el.clientWidth, 0, 100)
 
-		value = Math.trunc(mapRange(normalizedProgress, 0, 100, min, max))
+		targetValue = mapRange(normalizedProgress, 0, 100, min, max)
+		updateValue(targetValue)
 
 		// Continue in case this is a drag operation
 		mouseDown()
@@ -74,12 +80,19 @@
 	const mouseMove = (e: MouseEvent) => {
 		if (!dragging || !el) return
 
-		value += Math.trunc(e.movementX * ((1 / clientWidth) * (max - min)))
+		targetValue += e.movementX * ((1 / clientWidth) * (max - min))
 
-		if (value < min) value = min
-		if (value > max) value = max
+		if (targetValue < min) targetValue = min
+		if (targetValue > max) targetValue = max
+
+		updateValue(targetValue)
 
 		dispatch('input', { name, value })
+	}
+
+	const updateValue = (v: number) => {
+		if (truncate) v = Math.round(v)
+		if (Math.abs(targetValue - value) > step) value = v
 	}
 
 	onDestroy(() => {
@@ -116,6 +129,8 @@
 		width: 100%;
 
 		background: none;
+
+		user-select: none;
 
 		&:focus {
 			outline: none;

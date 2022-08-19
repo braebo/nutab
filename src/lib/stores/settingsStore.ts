@@ -10,7 +10,6 @@ interface Range {
 export interface Settings {
 	[index: string]: string | boolean | Record<string, Range>
 	// [index: string]: string | boolean | Record<string, Range>
-	// TODO add theme, language, etc.
 	ranges: {
 		gridWidth: Range
 		gridGap: Range
@@ -21,7 +20,6 @@ export interface Settings {
 	showTitle: boolean
 	background: string
 	lockBackground: boolean
-	// TODO #23 needs ui in settings
 	customGradient: boolean
 	/** 6 Hex color (includes #) */
 	gradientA: string
