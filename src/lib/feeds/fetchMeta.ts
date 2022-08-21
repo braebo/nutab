@@ -15,12 +15,12 @@ const fetchHead = async (url: string) => {
 
 			// Stream and decode the response body until the closing <head/> tag is found.
 			reader.read().then(function next({ done, value }) {
-				const text = decoder.decode(value, { stream: !done })
+				const text = decoder.decode(value)
 				head += text
-				const headBody = head.toString().split('</head>')[0]
+				const headBody = head.toString().split('</head>')
 
-				if (headBody !== undefined) {
-					return resolve(`${headBody}</head></html>`)
+				if (headBody[1] !== undefined) {
+					return resolve(`${headBody[0]}</head></html>`)
 				}
 
 				if (done) return resolve('')
@@ -48,7 +48,7 @@ const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url
  * @returns A promise that resolves to the metadata.
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
-export const fetchMeta = async (url: string) => {
+export const fetchMeta = async (url: string, imgOnly = false) => {
 	const corsUrl = dev ? CORS + url : url
 
 	const head = await fetchHead(corsUrl)
@@ -63,6 +63,8 @@ export const fetchMeta = async (url: string) => {
 	}
 
 	for (const key in rulesets) {
+		if (imgOnly && key !== 'image') continue
+
 		for (const rule of rulesets[key].rules) {
 			const el = dom.querySelector(rule[0])
 
