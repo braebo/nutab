@@ -1,12 +1,17 @@
+export interface User {
+	phrase: string[]
+	email?: string
+}
+
 export type Bookmark = {
 	bookmark_id: string
 	url: string
-	title?: string
-	description?: string
-	image?: string | null
-	autoImage: boolean
-	background?: string | null
-	foreground?: string | null
+	title: string
+	description: string
+	useImage: boolean
+	image: string | null
+	background: string | null
+	foreground: string | null
 	tags: string[]
 	position: number
 }

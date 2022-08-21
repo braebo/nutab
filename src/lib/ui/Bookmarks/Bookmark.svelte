@@ -2,13 +2,15 @@
 	import type { Bookmark } from '$lib/data/types'
 
 	import { settings } from '$lib/stores'
-	import { debounce } from '$lib/utils/debounce'
+	import { activeBookmarks } from '$lib/data/dbStore'
 
 	import BookmarkArt from './BookmarkArt.svelte'
 
-	import { scale, fade } from 'svelte/transition'
-	import { onMount } from 'svelte'
 	import { editor } from '$lib/stores/bookmarkEditor'
+	import { scale, fade } from 'svelte/transition'
+	import { debounce } from '$lib/utils/debounce'
+	import { onMount } from 'svelte'
+	import { log } from 'fractils'
 
 	export let i: number
 	export let hovering: number
@@ -18,21 +20,35 @@
 
 	$: disableTransitions // is this necessary?
 	$: url = bookmark?.url
-	$: basename = bookmark?.url.split('://')[1]?.split('.')[0]
+	// $: basename = bookmark?.url?.replace('www.', '')?.split('://')[1]?.split('.')[0]
 
 	let iconError = false // toggled if img tag request returns an error
-	$: icon_found = basename.split('.')?.[0]
-	$: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}-icon.svg` : ''
-	$: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
+	// $: icon_found = basename.split('.')?.[0]
+	// $: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}.svg` : ''
+	// $: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
+	$: image = bookmark?.autoImage ? bookmark?.autoImageSrc : bookmark?.image
+	let giving_up = false // When all auto-image attempts fail
+
+	// $: if (!giving_up && iconError) {
+	// 	fetchMeta(url).then((meta) => {
+
+	// 	})
+	// }
+
+	const handleError = (e: Event) => {
+		log('error loading image: ')
+		log(e)
+		iconError = true
+	}
 
 	$: title = bookmark?.title
-	$: background = bookmark?.background || icon || ''
+	$: background = bookmark?.background ?? ''
 	$: foreground = bookmark?.foreground
 
 	let aspectRatio = '1'
 
 	// Get the aspect ratio of the image if it exists
-	onMount(() => {
+	onMount(async () => {
 		if (image) {
 			const img = new Image()
 			img.addEventListener('load', () => {
@@ -45,9 +61,13 @@
 			img.src = image
 		}
 	})
+
+	$: bg = bookmark?.autoImage ? bookmark?.autoImageSrc : bookmark?.useImage ? bookmark?.image : bookmark?.background
+
+	$: bgCss = bookmark?.useImage ? `background-image: url(${bg});` : `background: ${bg};`
 </script>
 
-<div class="bookmark-container">
+<div class="bookmark-container" style={bookmark?.autoImage ? 'overflow: visible;' : ''}>
 	<a
 		class="item-{i} grid-item"
 		href={url}
@@ -61,14 +81,15 @@
 				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
 				class="bookmark"
 				style="
-				width: {$settings.ranges.iconSize.value}px;
 				height: {$settings.ranges.iconSize.value}px;
-
 				color: {$settings.transparent ? 'transparent' : foreground};
-				background: {$settings.transparent ? 'transparent' : background};
+				{bgCss}
+				background-size: {bookmark?.autoImage ? 'cover' : 'contain'};
 				"
+				on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
+				on:focus={() => debounce(() => ($settings.showTitle = false))}
 			>
-				<img
+				<!-- <img
 					style:aspect-ratio={aspectRatio}
 					class="icon icon{i}"
 					draggable="false"
@@ -76,8 +97,8 @@
 					alt={title}
 					on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
 					on:focus={() => debounce(() => ($settings.showTitle = false))}
-					on:error={(e) => (iconError = true)}
-				/>
+					on:error={handleError}
+				/> -->
 				{#if $settings.showTitle || hovering == i}
 					{#if title && !dragging}
 						<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
@@ -87,14 +108,13 @@
 				{/if}
 			</div>
 		{:else}
-			<div class="bookmark" in:scale|once={{ duration: 200 + 50 * i }}>
+			<!-- <div class="bookmark" in:scale|once={{ duration: 200 + 50 * i }}>
 				<BookmarkArt
 					--foreground={foreground}
-					--background={`url(${icon})` || background}
+					--background={`url(${bookmark?.autoImageSrc})` || background}
 					--size="{$settings.ranges.iconSize.value + 5}px"
-					{title}
 				/>
-			</div>
+			</div> -->
 		{/if}
 	</a>
 </div>
@@ -124,6 +144,10 @@
 		width: var(--size, 100%);
 		height: var(--size, 100%);
 		margin: auto;
+
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
 
 		border-radius: 10px;
 

@@ -6,7 +6,7 @@ import cuid from 'cuid'
 
 const default_theme = {
 	background: '#1D1D1D',
-	foreground: '#F5F5F5'
+	foreground: '#F5F5F5',
 }
 
 export const emptyFolder = (current_folder_count: number): Folder => ({
@@ -16,7 +16,7 @@ export const emptyFolder = (current_folder_count: number): Folder => ({
 	title: 'My Folder',
 	bookmarks: [],
 	position: current_folder_count + 1,
-	active: true
+	active: true,
 })
 
 export const emptyBookmark = (current_folder: Folder): Bookmark => {
@@ -26,11 +26,11 @@ export const emptyBookmark = (current_folder: Folder): Bookmark => {
 		url: '',
 		title: '',
 		description: '',
+		useImage: false,
 		image: null,
-		autoImage: true,
 		tags: [title],
 		...default_theme,
-		position: current_folder.bookmarks.length + 1
+		position: current_folder.bookmarks.length + 1,
 	}
 }
 
@@ -40,90 +40,90 @@ export const defaultBookmarks: Bookmark[] = [
 		url: 'https://burakkarakan.com/devo/',
 		title: 'Devo',
 		description: 'Dev News Extensions',
+		useImage: true,
 		image: 'https://github.com/karakanb/devo/raw/master/img/logo.png',
-		autoImage: false,
 		tags: ['Dev', 'News'],
 		...default_theme,
-		position: 0
+		position: 0,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://openbase.io/',
 		title: 'OpenBase',
 		description: 'Repo Search Engine',
+		useImage: true,
 		image: 'https://d25hn4jiqx5f7l.cloudfront.net/companies/logos/medium/openbase_1601666331.png',
-		autoImage: false,
 		tags: ['Dev', 'Code'],
 		...default_theme,
-		position: 1
+		position: 1,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://www.reddit.com/',
 		title: 'Reddit',
 		description: 'Front Page of the Internet',
+		useImage: true,
 		image: 'https://www.redditinc.com/assets/images/site/reddit-logo.png',
-		autoImage: false,
 		tags: ['Entertainment', 'News'],
 		...default_theme,
-		position: 2
+		position: 2,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://www.youtube.com/',
 		title: 'Youtube',
 		description: '',
+		useImage: true,
 		image: 'https://cdn.svgporn.com/logos/youtube-icon.svg',
-		autoImage: false,
 		tags: ['Google', 'Video', 'Entertainment'],
 		...default_theme,
-		position: 3
+		position: 3,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://github.com',
 		title: 'Github',
 		description: '',
+		useImage: true,
 		// image: 'https://cdn.svgporn.com/logos/github-icon.svg',
 		image: 'https://cdn.iconscout.com/icon/free/png-256/github-159-721954.png',
-		autoImage: false,
 		tags: ['Dev', 'Github'],
 		...default_theme,
-		position: 4
+		position: 4,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://mail.google.com/mail',
 		title: 'Gmail',
 		description: 'Email',
+		useImage: true,
 		image: 'https://cdn.svgporn.com/logos/google-gmail.svg',
-		autoImage: false,
 		tags: ['Google', 'Email'],
 		...default_theme,
-		position: 5
+		position: 5,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://drive.google.com/drive/my-drive',
 		title: 'Drive',
 		description: 'Google Drive',
+		useImage: true,
 		image: 'https://cdn.svgporn.com/logos/google-drive.svg',
-		autoImage: false,
 		tags: ['Google', 'Storage'],
 		...default_theme,
-		position: 6
+		position: 6,
 	},
 	{
 		bookmark_id: cuid(),
 		url: 'https://photos.google.com/',
 		title: 'Photos',
-		description: 'Gogle Photos',
+		description: 'Google Photos',
+		useImage: true,
 		image: 'https://cdn.svgporn.com/logos/google-photos.svg',
-		autoImage: false,
 		tags: ['Google', 'Storage', 'Photos', 'Images'],
 		...default_theme,
-		position: 7
-	}
+		position: 7,
+	},
 ]
 
 export const defaultFolder: Folder = {
@@ -133,5 +133,5 @@ export const defaultFolder: Folder = {
 	title: 'General',
 	bookmarks: defaultBookmarks.map((b) => b.bookmark_id),
 	active: true,
-	position: 0
+	position: 0,
 }
