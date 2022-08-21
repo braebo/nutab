@@ -188,7 +188,7 @@
 
 	svg {
 		overflow: visible;
-		fill: rgba(var(--light-d-rgb), 0.4);
+		fill: rgba(var(--light-c-rgb), 0.5);
 		backface-visibility: hidden;
 		backdrop-filter: blur(10px);
 		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);

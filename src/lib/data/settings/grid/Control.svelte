@@ -2,10 +2,10 @@
 	import { fly } from 'svelte/transition'
 
 	export let label = ''
-	export let i = 0
+	export let i = 1
 </script>
 
-<div class="control" in:fly={{ y: 25, duration: 300, delay: 33 * i }} out:fly={{ y: 25, duration: 100 }}>
+<div class="control" in:fly={{ y: 15, duration: 300, delay: 33 * i }} out:fly={{ y: 25, duration: 100 }}>
 	<label for={label}>{label}</label>
 	<div class="range">
 		<slot />

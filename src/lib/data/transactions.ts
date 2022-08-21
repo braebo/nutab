@@ -1,12 +1,12 @@
 import type { Bookmark, Folder, FolderListItem } from './types'
 
 import {
+	activeFolderBookmarks,
+	lastActiveFolderId,
 	activeBookmarks,
 	activeFolder,
-	activeFolderBookmarks,
-	folders,
-	lastActiveFolderId,
 	tagFilter,
+	folders,
 } from './dbStore'
 import { log, wait } from 'fractils'
 import { get } from 'svelte/store'
@@ -47,7 +47,7 @@ export async function init_db() {
 			}
 		}
 	}
-	
+
 	activeFolder.set(lastActiveFolder)
 	activeBookmarks.set(await db.bookmarks.bulkGet(lastActiveFolder.bookmarks))
 	folders.set(await db.table('folders').toArray())
@@ -59,7 +59,7 @@ export async function init_db() {
  */
 export async function newBookmark_db(bookmark: Bookmark) {
 	log('🎬 Creating new bookmark: ', '#fa8', 'dimgray', 25)
-	
+
 	// Todo: Consolidate this into a single transaction?
 
 	// Add to bookmarks table

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SyncSettings from './sync/SyncSettings.svelte'
 	import ThemeSettings from './theme/ThemeSettings.svelte'
 	import GridSettings from './grid/GridSettings.svelte'
 	import FluidPanel from './FluidPanel.svelte'
@@ -8,6 +9,7 @@
 	const sections = {
 		grid: GridSettings,
 		theme: ThemeSettings,
+		sync: SyncSettings,
 	}
 
 	let activeSection: typeof sections[keyof typeof sections] = sections['grid']

@@ -31,7 +31,7 @@
 
 <div class="controls">
 	{#each Object.keys($settings.ranges).filter((s) => ['gridWidth', 'gridGap', 'iconSize'].includes(s)) as setting, i}
-		<Control label={$settings.ranges[setting].label}>
+		<Control label={$settings.ranges[setting].label} {i}>
 			<Range
 				on:input={(e) => handleInput(e, setting)}
 				bind:value={$settings.ranges[setting].value}
