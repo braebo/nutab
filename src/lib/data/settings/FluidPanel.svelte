@@ -188,17 +188,20 @@
 
 	svg {
 		overflow: visible;
-		fill: rgba(var(--light-c-rgb), 0.5);
+		fill: rgba(var(--light-a-rgb), 0.95);
+		background: rgba(var(--light-a-rgb), 0.5);
 		backface-visibility: hidden;
-		backdrop-filter: blur(10px);
+		border-radius: var(--radius);
+		backdrop-filter: blur(20px);
 		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);
 
-		transition: backdrop-filter 0.5s, box-shadow 0.5s;
+		transition: backdrop-filter 0.5s, box-shadow 0.5s, background 0.5s;
 
 		&.closed {
 			backdrop-filter: blur(0px);
 			box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0), 0 6px 20px 5px rgba(29, 29, 29, 0);
 			transition-duration: 0.05s;
+			background: rgba(var(--light-d-rgb), 0);
 
 			& rect {
 				pointer-events: all;

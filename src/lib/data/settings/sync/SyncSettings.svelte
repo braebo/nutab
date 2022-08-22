@@ -2,10 +2,10 @@
 	import { createUser } from '$lib/data/sync'
 
 	import { userPhrase, userEmail } from '$lib/data/user'
-	import Button from '$lib/ui/Button.svelte'
-	import Tooltip from '$lib/ui/Tooltip.svelte'
-	import { quintOut } from 'svelte/easing'
 	import { fade, fly } from 'svelte/transition'
+	import Tooltip from '$lib/ui/Tooltip.svelte'
+	import Button from '$lib/ui/Button.svelte'
+	import { quintOut } from 'svelte/easing'
 
 	let revealPhrase = false
 	let email = ''
@@ -56,8 +56,8 @@
 			{/if}
 		{/key}
 	{:else}
+		<p style:transform="translateY(-1.5rem)">Sync your data across browsers.</p>
 		<div class="account new">
-			<p>Sync your data across browsers.</p>
 			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
 			<div class="button">
 				<Button --width="10rem" --bgHover="var(--dark-a)" on:click={() => createUser(email)}>
@@ -81,6 +81,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		gap: 1rem;
 
 		min-height: 95%;
@@ -125,7 +126,7 @@
 
 	p {
 		font-family: var(--font-a);
-		color: var(--dark-d);
+		color: var(--light-d);
 
 		text-align: center;
 	}
@@ -169,5 +170,11 @@
 	.button {
 		margin: auto;
 		width: fit-content;
+	}
+
+	.account.new {
+		outline: 1px solid rgba(var(--light-d-rgb), 0.1);
+		outline-offset: 1.5rem;
+		border-radius: 0.25rem;
 	}
 </style>
