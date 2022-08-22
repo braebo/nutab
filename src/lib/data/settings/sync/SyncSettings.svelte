@@ -35,6 +35,20 @@
 						</div>
 					</Tooltip>
 				</div>
+				{#if !$userEmail}
+					<div class="email" transition:fade={{ duration: 150 }}>
+						<p>
+							Add a recovery email <span class="note">(optional)</span>
+						</p>
+
+						<input bind:value={email} placeholder="Email" type="email" required />
+
+						<!-- TODO -->
+						<!-- <button on:click={() => postUserEmail(email)}>Add</button> -->
+
+						<p class="note">A recovery email can be used to recover a lost passphrase.</p>
+					</div>
+				{/if}
 			{:else}
 				<div class="reveal" in:fade={{ delay: 750 }} out:fade={{ duration: 250 }}>
 					<Button --width="14rem" on:click={() => (revealPhrase = true)}>Reveal secret passphrase</Button>
@@ -42,26 +56,21 @@
 			{/if}
 		{/key}
 	{:else}
-		<div class="no-account">
-			<p>You don't have an account yet.</p>
+		<div class="account new">
+			<p>Sync your data across browsers.</p>
+			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
 			<div class="button">
-				<Button --width="10rem" on:click={() => createUser(email)}>Create Account</Button>
+				<Button --width="10rem" --bgHover="var(--dark-a)" on:click={() => createUser(email)}>
+					New Sync Code
+				</Button>
 			</div>
 		</div>
-	{/if}
-
-	{#if !$userEmail}
-		<div class="email" transition:fade={{ duration: 150 }}>
-			<p>
-				Add a recovery email <span class="note">(optional)</span>
-			</p>
-
-			<input bind:value={email} placeholder="Email" type="email" required />
-
-			<!-- TODO -->
-			<!-- <button on:click={() => postUserEmail(email)}>Add</button> -->
-
-			<p class="note">A recovery email can be used to recover a lost passphrase.</p>
+		<div class="br-md" />
+		<div class="account existing">
+			<p>Already have a Sync Code?</p>
+			<div class="button">
+				<Button --width="10rem" --bgHover="var(--dark-a)" on:click={() => createUser(email)}>Connect</Button>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -71,7 +80,6 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
 		align-items: center;
 		gap: 1rem;
 
@@ -115,6 +123,35 @@
 		height: 60%;
 	}
 
+	p {
+		font-family: var(--font-a);
+		color: var(--dark-d);
+
+		text-align: center;
+	}
+
+	input {
+		font-family: var(--font-a);
+		color: var(--dark-a);
+		background-color: rgba(var(--light-c-rgb), 0.25);
+		border: none;
+		border-radius: 0.5rem;
+		padding: 0.5rem 1rem;
+		width: 20rem;
+
+		&::placeholder {
+			color: var(--light-d);
+		}
+
+		&:focus {
+			outline: 1px solid var(--dark-a);
+			&::placeholder {
+				content: '';
+				color: transparent;
+			}
+		}
+	}
+
 	.email {
 		display: flex;
 		flex-direction: column;
@@ -124,31 +161,13 @@
 
 		margin-top: auto;
 
-		p {
-			font-family: var(--font-a);
-			color: var(--light-d);
-		}
-
-		input {
-			font-family: var(--font-a);
-			color: var(--dark-a);
-			background-color: rgba(var(--light-d-rgb), 0.5);
-			border: none;
-			border-radius: 0.5rem;
-			padding: 0.5rem 1rem;
-			width: 20rem;
-
-			&:focus {
-				outline: 1px solid var(--dark-a);
-				&::placeholder {
-					content: '';
-					color: transparent;
-				}
-			}
-		}
-
 		.note {
 			opacity: 0.5;
 		}
+	}
+
+	.button {
+		margin: auto;
+		width: fit-content;
 	}
 </style>

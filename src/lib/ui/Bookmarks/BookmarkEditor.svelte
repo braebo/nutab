@@ -55,85 +55,87 @@
 	})
 </script>
 
-{#if $showBookmarkEditor && $bookmarkEditor}
-	<div class="editor-container" out:fade={{ duration: 100 }}>
-		<BookmarkImageEditor />
+<div>
+	{#if $showBookmarkEditor && $bookmarkEditor}
+		<div class="editor-container" out:fade={{ duration: 100 }}>
+			<BookmarkImageEditor />
 
-		<div class="setting title">
-			<input
-				name="title"
-				placeholder="title"
-				bind:this={titleInput}
-				bind:value={$bookmarkEditor['title']}
-				on:click={() => titleInput.select()}
-				on:keydown={(e) => e.key === 'Enter' && handleSave()}
-			/>
-		</div>
-
-		<div class="setting description">
-			<input
-				name="description"
-				{placeholder}
-				type="text"
-				bind:this={descriptionInput}
-				bind:value={$bookmarkEditor['description']}
-				on:focus={() => {
-					descriptionFocused = true
-				}}
-				on:blur={() => {
-					descriptionFocused = false
-				}}
-			/>
-		</div>
-
-		<div class="setting">
-			<input
-				name="url"
-				type="text"
-				placeholder="url"
-				bind:this={urlInput}
-				on:click={() => urlInput.select()}
-				bind:value={$bookmarkEditor['url']}
-				autoComplete="off"
-			/>
-		</div>
-
-		<div class="setting">
-			<div name="tags" class="tags">
-				<Tags
-					on:updateTags={(e) => updateTags(e, i, $bookmarkEditor.bookmark_id)}
-					bind:tags={$bookmarkEditor['tags']}
-					placeholder={'new tag'}
-					on:tags={handleTags}
-					autoComplete={$uniqueTags ? $uniqueTags : false}
-					allowPaste={true}
-					onlyUnique={true}
-					removeKeys={[46]}
-					addKeys={[9, 13]}
-					allowDrop={true}
-					allowBlur={true}
-					splitWith={'/'}
-					name={'tags'}
-					maxTags={10}
-					minChars={2}
-					id="editor"
+			<div class="setting title">
+				<input
+					name="title"
+					placeholder="title"
+					bind:this={titleInput}
+					bind:value={$bookmarkEditor.title}
+					on:click={() => titleInput.select()}
+					on:keydown={(e) => e.key === 'Enter' && handleSave()}
 				/>
 			</div>
+
+			<div class="setting description">
+				<input
+					name="description"
+					{placeholder}
+					type="text"
+					bind:this={descriptionInput}
+					bind:value={$bookmarkEditor.description}
+					on:focus={() => {
+						descriptionFocused = true
+					}}
+					on:blur={() => {
+						descriptionFocused = false
+					}}
+				/>
+			</div>
+
+			<div class="setting">
+				<input
+					name="url"
+					type="text"
+					placeholder="url"
+					bind:this={urlInput}
+					on:click={() => urlInput.select()}
+					bind:value={$bookmarkEditor.url}
+					autoComplete="off"
+				/>
+			</div>
+
+			<div class="setting">
+				<div name="tags" class="tags">
+					<Tags
+						on:updateTags={(e) => updateTags(e, i, $bookmarkEditor.bookmark_id)}
+						bind:tags={$bookmarkEditor['tags']}
+						placeholder={'new tag'}
+						on:tags={handleTags}
+						autoComplete={$uniqueTags ? $uniqueTags : false}
+						allowPaste={true}
+						onlyUnique={true}
+						removeKeys={[46]}
+						addKeys={[9, 13]}
+						allowDrop={true}
+						allowBlur={true}
+						splitWith={'/'}
+						name={'tags'}
+						maxTags={10}
+						minChars={2}
+						id="editor"
+					/>
+				</div>
+			</div>
+
+			<div class="buttons">
+				<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}>
+					Cancel
+				</Button>
+
+				<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}>
+					Save
+				</Button>
+
+				<DeleteBookmark bookmark_id={$bookmarkEditor?.bookmark_id} on:close={() => editor.hide()} />
+			</div>
 		</div>
-
-		<div class="buttons">
-			<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}>
-				Cancel
-			</Button>
-
-			<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}>
-				Save
-			</Button>
-
-			<DeleteBookmark bookmark_id={$bookmarkEditor.bookmark_id} on:close={() => editor.hide()} />
-		</div>
-	</div>
-{/if}
+	{/if}
+</div>
 
 <style lang="scss">
 	.editor-container {
@@ -211,6 +213,8 @@
 
 	input[name='title'] {
 		font-size: 1.5rem;
+		font-family: var(--font-a);
+		letter-spacing: 1px;
 	}
 	input[name='url'] {
 		margin: auto;

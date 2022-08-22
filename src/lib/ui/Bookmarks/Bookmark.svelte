@@ -1,16 +1,12 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
-	import { settings } from '$lib/stores'
-	import { activeBookmarks } from '$lib/data/dbStore'
-
-	import BookmarkArt from './BookmarkArt.svelte'
-
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { scale, fade } from 'svelte/transition'
 	import { debounce } from '$lib/utils/debounce'
-	import { onMount } from 'svelte'
-	import { log } from 'fractils'
+	import BookmarkArt from './BookmarkArt.svelte'
+	import { bookmarkEditor } from '$lib/stores'
+	import { settings } from '$lib/stores'
 
 	export let i: number
 	export let hovering: number
@@ -20,54 +16,11 @@
 
 	$: disableTransitions // is this necessary?
 	$: url = bookmark?.url
-	// $: basename = bookmark?.url?.replace('www.', '')?.split('://')[1]?.split('.')[0]
-
-	let iconError = false // toggled if img tag request returns an error
-	// $: icon_found = basename.split('.')?.[0]
-	// $: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}.svg` : ''
-	// $: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
-	$: image = bookmark?.autoImage ? bookmark?.autoImageSrc : bookmark?.image
-	let giving_up = false // When all auto-image attempts fail
-
-	// $: if (!giving_up && iconError) {
-	// 	fetchMeta(url).then((meta) => {
-
-	// 	})
-	// }
-
-	const handleError = (e: Event) => {
-		log('error loading image: ')
-		log(e)
-		iconError = true
-	}
 
 	$: title = bookmark?.title
-	$: background = bookmark?.background ?? ''
-	$: foreground = bookmark?.foreground
-
-	let aspectRatio = '1'
-
-	// Get the aspect ratio of the image if it exists
-	onMount(async () => {
-		if (image) {
-			const img = new Image()
-			img.addEventListener('load', () => {
-				const width = img.naturalWidth
-				const height = img.naturalHeight
-				if (!isNaN(width) && !isNaN(height)) {
-					aspectRatio = `${width} / ${height}`
-				}
-			})
-			img.src = image
-		}
-	})
-
-	$: bg = bookmark?.autoImage ? bookmark?.autoImageSrc : bookmark?.useImage ? bookmark?.image : bookmark?.background
-
-	$: bgCss = bookmark?.useImage ? `background-image: url(${bg});` : `background: ${bg};`
 </script>
 
-<div class="bookmark-container" style={bookmark?.autoImage ? 'overflow: visible;' : ''}>
+<div class="bookmark-container">
 	<a
 		class="item-{i} grid-item"
 		href={url}
@@ -76,46 +29,22 @@
 		draggable="false"
 		on:contextmenu|stopPropagation|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
 	>
-		{#if image}
-			<div
-				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
-				class="bookmark"
-				style="
-				height: {$settings.ranges.iconSize.value}px;
-				color: {$settings.transparent ? 'transparent' : foreground};
-				{bgCss}
-				background-size: {bookmark?.autoImage ? 'cover' : 'contain'};
-				"
-				on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
-				on:focus={() => debounce(() => ($settings.showTitle = false))}
-			>
-				<!-- <img
-					style:aspect-ratio={aspectRatio}
-					class="icon icon{i}"
-					draggable="false"
-					src={image}
-					alt={title}
-					on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
-					on:focus={() => debounce(() => ($settings.showTitle = false))}
-					on:error={handleError}
-				/> -->
-				{#if $settings.showTitle || hovering == i}
-					{#if title && !dragging}
-						<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
-							{title}
-						</p>
-					{/if}
+		<div
+			class="bookmark"
+			in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
+			on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
+			on:focus={() => debounce(() => ($settings.showTitle = false))}
+		>
+			<BookmarkArt bind:bookmark />
+
+			{#if $settings.showTitle || hovering == i}
+				{#if title && !dragging}
+					<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
+						{title}
+					</p>
 				{/if}
-			</div>
-		{:else}
-			<!-- <div class="bookmark" in:scale|once={{ duration: 200 + 50 * i }}>
-				<BookmarkArt
-					--foreground={foreground}
-					--background={`url(${bookmark?.autoImageSrc})` || background}
-					--size="{$settings.ranges.iconSize.value + 5}px"
-				/>
-			</div> -->
-		{/if}
+			{/if}
+		</div>
 	</a>
 </div>
 
@@ -141,17 +70,16 @@
 		flex-direction: column;
 		justify-content: flex-end;
 
-		width: var(--size, 100%);
-		height: var(--size, 100%);
-		margin: auto;
+		/* width: var(--size, 100%); */
+		/* height: var(--size, 100%); */
+		/* margin: auto; */
 
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: center;
+		/* background-repeat: no-repeat; */
+		/* background-position: center; */
 
-		border-radius: 10px;
+		/* border-radius: 10px; */
 
-		text-align: center;
+		/* text-align: center; */
 
 		pointer-events: none;
 	}
@@ -202,15 +130,5 @@
 	a.dragging {
 		pointer-events: none;
 		cursor: inherit;
-	}
-
-	img {
-		position: absolute;
-		inset: 0;
-
-		max-width: 100%;
-		max-height: 100%;
-
-		pointer-events: none;
 	}
 </style>

@@ -93,9 +93,9 @@
 		move.y += e.movementY
 
 		// If we're hovering over a cell and not on cooldown
-		if (!cooldown && (e.target as Element).classList[0]?.split('-')[1] != null) {
+		if (!cooldown && (e.target as HTMLElement)?.dataset?.cell) {
 			// Store the target cell's index
-			target = parseInt((e.target as Element).classList[0]?.split('-')[1])
+			target = parseInt((e.target as HTMLElement)?.dataset?.cell)
 
 			// If our target cell has changed
 			if (lastTarget != null && lastTarget != target) {
@@ -105,7 +105,7 @@
 
 			// If the target cell isn't the current active cell
 			if (target != active) {
-				// Move it to our active's cell position
+				// Move it to our active cell's position
 				positionProxy[target] = $gridDimensions.positions[active]
 			} else {
 				// We have returned to the original cell, so we can reset all positions
@@ -165,7 +165,7 @@
 		clearTimeout(swapTimer)
 		swapTimer = setTimeout(async () => {
 			disableTransitions = false
-		}, 100)
+		}, 10)
 
 		return new Promise<void>(async (resolve, reject) => {
 			disableTransitions = true
@@ -214,7 +214,7 @@
 		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
 			{#key $reRender}
 				<div
-					class="cell-{i} cell"
+					class="cell"
 					class:unfocused={$searchValue !== '' && !isRelevant(i)}
 					class:focused={$searchValue === '' || isRelevant(i)}
 					class:active={i == active}
@@ -228,6 +228,7 @@
 					bind:this={cells[i]}
 				>
 					<div
+						data-cell={i}
 						class="grid-item"
 						class:active={active === i}
 						draggable="false"

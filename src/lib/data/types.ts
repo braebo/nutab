@@ -9,6 +9,7 @@ export type Bookmark = {
 	title: string
 	description: string
 	useImage: boolean
+	autoImage: boolean
 	image: string | null
 	background: string | null
 	foreground: string | null
