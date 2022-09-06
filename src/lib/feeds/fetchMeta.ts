@@ -4,7 +4,7 @@ import type { IMeta } from './types'
 import { parse } from 'node-html-parser'
 import { rulesets } from './rulesets'
 import { CORS } from './constants'
-import { dev } from '$app/env'
+import { dev } from '$app/environment'
 
 const fetchHead = async (url: string) => {
 	const read = async (body: ReadableStream<Uint8Array> | null): Promise<string> =>
