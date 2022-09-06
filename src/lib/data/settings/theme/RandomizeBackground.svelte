@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { randomizeBackground } from '$lib/stores/background'
-	import { settings } from '$lib/stores'
+	import { randomizeBackground } from '$lib/theme'
+	import { settings, type Settings } from '$lib/stores'
+
+	export let thisTheme: keyof Settings['theme']
 
 	let timer: NodeJS.Timeout
 	let animate = false
 	const handleClick = () => {
-		if ($settings.lockBackground) return
-		randomizeBackground()
+		if ($settings.theme[thisTheme].lockBackground) return
+		randomizeBackground(thisTheme)
 		clearTimeout(timer)
 		animate = true
 		timer = setTimeout(() => {
@@ -16,8 +18,13 @@
 </script>
 
 {#key animate}
-	<div class:animate class="btn randomize" class:locked={$settings.lockBackground} on:click={() => handleClick()}>
-		Shuffle Background
+	<div
+		class:animate
+		class="btn randomize"
+		class:locked={$settings.theme[thisTheme].lockBackground}
+		on:click={() => handleClick()}
+	>
+		Randomize
 	</div>
 {/key}
 

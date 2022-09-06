@@ -1,22 +1,27 @@
 <script lang="ts">
+	import type { Settings } from '$lib/stores/settingsStore'
 	import { settings, gradientBackground } from '$lib/stores'
 
-	const updateBg = (e: Event) => ($settings.background = $gradientBackground)
+	export let thisTheme: keyof Settings['theme']
+
+	const updateBg = (e: Event) => {
+		$settings.theme[thisTheme].background = $gradientBackground
+	}
 </script>
 
 <div class="gradient-editor">
 	<input
-		disabled={!$settings.lockBackground}
+		disabled={!$settings.theme[thisTheme].lockBackground}
 		class="a"
 		type="color"
-		bind:value={$settings.gradientA}
+		bind:value={$settings.theme[thisTheme].gradientA}
 		on:input={updateBg}
 	/>
 	<input
-		disabled={!$settings.lockBackground}
+		disabled={!$settings.theme[thisTheme].lockBackground}
 		class="b"
 		type="color"
-		bind:value={$settings.gradientB}
+		bind:value={$settings.theme[thisTheme].gradientB}
 		on:input={updateBg}
 	/>
 </div>
@@ -25,6 +30,7 @@
 	.gradient-editor {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 		gap: 0.5rem;
 	}
 
@@ -35,6 +41,7 @@
 		border: none;
 		border-radius: 0.25rem;
 		background-color: var(--light-a);
+		padding: 0;
 
 		cursor: pointer;
 

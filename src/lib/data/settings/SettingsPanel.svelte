@@ -56,23 +56,32 @@
 		justify-content: center;
 		align-items: flex-end;
 		height: 4rem;
-		gap: 3rem;
+		gap: 1rem;
 
 		color: var(--dark-a);
 
-		font-variation-settings: 'wght' 100;
-		font-family: var(--font-a);
-		text-transform: uppercase;
-		letter-spacing: 3px;
-		font-size: 1.2rem;
-		font-weight: 100;
-
 		div {
+			font-variation-settings: 'wght' 100;
+			font-family: var(--font-a);
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			font-size: 1.2rem;
+			font-variation-settings: 'wght' 100;
+
+			width: 100px;
+			text-align: center;
+
 			opacity: 0.5;
 			cursor: pointer;
 			user-select: none;
 
+			transition: 0.25s;
+
 			&.active {
+				opacity: 1;
+				font-variation-settings: 'wght' 400;
+			}
+			&:hover {
 				opacity: 1;
 			}
 		}

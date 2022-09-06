@@ -1,4 +1,4 @@
-export { settings, cMenu, showSettings } from './settingsStore'
+export { settings, cMenu, showSettings, activeTheme, type Settings } from './settingsStore'
 // export { grid, gridDimensions } from './gridStore'
 export {
 	editorType,
