@@ -29,11 +29,7 @@
 
 		init_db()
 	})
-
-	$: console.log($activeTheme)
 </script>
-
-<svelte:window on:click={(e) => console.log(e.target)} />
 
 <template lang="pug">
 

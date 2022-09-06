@@ -32,7 +32,9 @@
 		</nav>
 		{#key activeSection}
 			<div class="settings-section-component">
-				<svelte:component this={activeSection} />
+				{#key activeSection}
+					<svelte:component this={activeSection} />
+				{/key}
 			</div>
 		{/key}
 	</div>
@@ -75,11 +77,11 @@
 			cursor: pointer;
 			user-select: none;
 
-			transition: 0.25s;
+			transition: 0.2s;
 
 			&.active {
 				opacity: 1;
-				font-variation-settings: 'wght' 400;
+				font-variation-settings: 'wght' 500;
 			}
 			&:hover {
 				opacity: 1;
