@@ -1,4 +1,4 @@
-import { browser } from '$app/env'
+import { browser } from '$app/environment'
 import { log } from 'fractils'
 
 export const getClipboardUrl = async (): Promise<string> => {
