@@ -1,6 +1,7 @@
 @import './theme.scss';
 @import './utils.sass';
 @import './input.scss';
+@import './btn.scss';
 
 /*
  *
@@ -136,34 +137,6 @@ button:focus:not(:focus-visible) {
 	outline: none;
 }
 
-.btn {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: max-content;
-	height: max-content;
-	padding: 0.5rem 1rem;
-
-	border-radius: 10px;
-	color: var(--dark-d);
-	background: var(--light-a);
-	border: 1px solid var(--light-a);
-
-	font-family: var(--font-a);
-	word-spacing: 3px;
-
-	user-select: none;
-	cursor: pointer;
-
-	transition: color 0.2s;
-
-	&:hover {
-		color: var(--dark-a);
-	}
-}
-
 @media (min-width: 720px) {
 	h1 {
 		font-size: 2.4rem;
@@ -214,20 +187,4 @@ button:focus:not(:focus-visible) {
 	&.ghost:hover::-webkit-scrollbar-thumb {
 		background: rgba(var(--dark-d-rgb), 0);
 	}
-}
-
-.space-xs {
-	height: 0.5rem;
-}
-.space-sm {
-	height: 1rem;
-}
-.space-md {
-	height: 1.75rem;
-}
-.space-lg {
-	height: 3rem;
-}
-.space-xl {
-	height: 6rem;
 }

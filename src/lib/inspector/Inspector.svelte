@@ -44,24 +44,8 @@
 
 <style lang="scss">
 	.state {
-		--value-color: var(--brand-c);
-		--key-color: hsla(208, 99%, 33%, 1);
-		--font-small: 0.9em;
-	}
-
-	.dark {
-		--color: hsla(0, 0%, 80%, 1);
-		--background-int: hsla(241, 6%, 15%, 1);
-		--nub-bg: var(--background-int);
-		--highlight: hsla(0, 0%, 25%, 1);
-		--lowlight: hsla(0, 0%, 5%, 1);
-		--header-bg: hsla(0, 0%, 10%, 1);
-		--value-color: var(--brand-b);
-		--key-color: hsla(208, 99%, 73%, 1);
-	}
-
-	:global(.state) {
 		font-size: var(--state-tool-font-size, 14px);
 		font-family: 'MonoLisa', monospace;
+		overflow-x: hidden;
 	}
 </style>

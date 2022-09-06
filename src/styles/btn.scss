@@ -1,0 +1,28 @@
+.btn {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: max-content;
+	height: max-content;
+	padding: 0.5rem 1rem;
+
+	border-radius: 10px;
+	color: var(--dark-d);
+	background: var(--light-a);
+	border: 1px solid var(--light-a);
+
+	font-family: var(--font-a);
+	word-spacing: 3px;
+
+	user-select: none;
+	cursor: pointer;
+
+	transition: color 0.2s;
+
+	&:hover {
+		color: var(--light-a);
+		background: var(--dark-a);
+	}
+}
