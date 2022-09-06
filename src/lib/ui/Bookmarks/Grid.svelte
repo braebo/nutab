@@ -346,38 +346,6 @@
 		cursor: grabbing;
 	}
 
-	// .add-bookmark {
-	// 	position: absolute;
-	// 	left: 0;
-	// 	right: 0;
-
-	// 	width: fit-content;
-	// 	margin: auto;
-
-	// 	color: var(--dark-a);
-	// 	opacity: 0.025;
-
-	// 	font-size: 3rem;
-
-	// 	cursor: pointer;
-	// 	transition: opacity;
-	// 	transition-duration: 0.15s;
-	// 	transition-delay: 1s;
-
-	// 	&:hover {
-	// 		opacity: 0.75 !important;
-
-	// 		transition-duration: 1s;
-	// 		transition-delay: 0s;
-	// 	}
-	// }
-
-	// .grid:hover .add-bookmark {
-	// 	opacity: 0.25;
-	// 	transition-duration: 3s;
-	// 	transition-delay: 0s;
-	// }
-
 	.grid-image {
 		width: 100%;
 		height: 100%;

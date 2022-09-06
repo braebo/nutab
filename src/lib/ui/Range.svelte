@@ -10,7 +10,7 @@
 	@prop `truncate?: boolean` - Rounds decimals into whole numbers.
  -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte'
+	import { createEventDispatcher, tick } from 'svelte'
 	import { mapRange } from 'fractils'
 	import { onDestroy } from 'svelte'
 
@@ -37,14 +37,16 @@
 	// Used to store the last value of the slider before it's truncated.
 	let targetValue = value
 
-	/*
+	/**
 	 * Used to calculate progress when clicking the track (as opposed to dragging the thumb).
 	 */
 	const setFromMouse = (e: MouseEvent) => {
 		if (!el) return
-		const mouse = vertical ? e.clientY : e.clientX
+		// const mouse = vertical ? e.clientY : e.clientX
+		const mouse = e.clientX
 		const { left } = el.getBoundingClientRect()
 		const relativeX = mouse - left
+		console.log({ relativeX })
 
 		const normalizedProgress = mapRange(relativeX, 0, el.clientWidth, 0, 100)
 
@@ -77,8 +79,9 @@
 		thumb.style.cursor = 'grabbing'
 	}
 
-	const mouseMove = (e: MouseEvent) => {
+	const mouseMove = async (e: MouseEvent) => {
 		if (!dragging || !el) return
+		await tick()
 
 		targetValue += e.movementX * ((1 / clientWidth) * (max - min))
 

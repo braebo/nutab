@@ -9,7 +9,7 @@
 	import { localStorageStore, log } from 'fractils'
 	import { copy } from '$lib/utils/clipboardCopy'
 	import { fly, fade } from 'svelte/transition'
-	import { browser, dev } from '$app/env'
+	import { browser, dev } from '$app/environment'
 	import { onMount, tick } from 'svelte'
 
 	if (dev) {

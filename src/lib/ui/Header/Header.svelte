@@ -36,6 +36,7 @@
 		align-items: center;
 
 		width: 2rem;
+		height: 2rem;
 		margin: 2rem 1.4rem;
 	}
 
