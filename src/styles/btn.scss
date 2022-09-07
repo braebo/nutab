@@ -23,8 +23,6 @@
 	transition: 0.15s;
 
 	&:hover:not(:active, :focus) {
-		// color: var(--light-a);
-		// border-color: var(--dark-a);
 		box-shadow: var(--shadow-sm);
 		transform: scale(1.05);
 	}
