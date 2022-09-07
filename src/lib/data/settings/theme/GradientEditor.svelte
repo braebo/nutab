@@ -1,11 +1,12 @@
 <script lang="ts">
 	import type { Settings } from '$lib/stores/settingsStore'
-	import { settings, gradientBackground } from '$lib/stores'
+	import { settings } from '$lib/stores'
+	import { createGradient } from '$lib/theme'
 
 	export let thisTheme: keyof Settings['theme']
 
 	const updateBg = (e: Event) => {
-		$settings.theme[thisTheme].background = $gradientBackground
+		$settings.theme[thisTheme].background = createGradient(thisTheme)
 	}
 </script>
 

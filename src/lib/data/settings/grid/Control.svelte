@@ -26,7 +26,7 @@
 		margin: auto;
 
 		border: 1px solid rgba(var(--light-c-rgb), 0.33);
-		background: rgba(var(--light-a-rgb), 0.25);
+		background: rgba(var(--light-b-rgb), 0.5);
 		border-radius: 10px;
 
 		font-size: 16px;
@@ -39,11 +39,16 @@
 		display: flex;
 		align-items: center;
 
-		color: var(--dark-d);
+		color: var(--dark-a);
 
 		/* width: max-content; */
 		height: 100%;
 		margin: auto 0;
+
+		text-transform: lowercase;
+		font-family: var(--font-b);
+		letter-spacing: 2px;
+		font-variation-settings: 'wght' 600;
 	}
 
 	.range {
