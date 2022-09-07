@@ -58,7 +58,7 @@
 		justify-content: center;
 		gap: 1rem;
 
-		width: 81%;
+		width: 67%;
 	}
 
 	.transition {

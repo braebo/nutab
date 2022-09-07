@@ -12,6 +12,7 @@
 	color: var(--dark-d);
 	background: var(--light-a);
 	border: 1px solid var(--light-a);
+	box-shadow: var(--shadow-xs);
 
 	font-family: var(--font-a);
 	word-spacing: 3px;
@@ -19,10 +20,12 @@
 	user-select: none;
 	cursor: pointer;
 
-	transition: color 0.2s;
+	transition: 0.15s;
 
-	&:hover {
-		color: var(--light-a);
-		background: var(--dark-a);
+	&:hover:not(:active, :focus) {
+		// color: var(--light-a);
+		// border-color: var(--dark-a);
+		box-shadow: var(--shadow-sm);
+		transform: scale(1.05);
 	}
 }
