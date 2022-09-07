@@ -1,16 +1,10 @@
 <script>
-	export let size;
-	let radius = 2.5;
+	export let size = 100
+	let radius = 2.5
 </script>
 
 <div class="container" style="width: {size}px;">
-	<svg
-		width="100%"
-		height="100%"
-		viewBox="-5 -5 10 10"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
+	<svg width="100%" height="100%" viewBox="-5 -5 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<circle x="5" y="5" r={radius} fill="url(#SunGradient)" />
 		<circle x="5" y="5" r={radius * 2} fill="url(#SunGlow)" />
 		<defs>
