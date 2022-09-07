@@ -20,6 +20,7 @@ export interface ThemeSettings {
 }
 
 export interface Settings {
+	[index: string]: any
 	ranges: {
 		gridWidth: Range
 		gridGap: Range

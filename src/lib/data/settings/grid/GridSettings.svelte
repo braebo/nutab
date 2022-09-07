@@ -17,16 +17,19 @@
 		clearTimeout(timer)
 
 		timer = setTimeout(() => {
-			$blurOverlay = false
-			$showGuidelines = false
+			cleanup()
 		}, 1000)
 	}
 
 	onDestroy(() => {
 		clearTimeout(timer)
+		cleanup()
+	})
+
+	function cleanup() {
 		$blurOverlay = false
 		$showGuidelines = false
-	})
+	}
 </script>
 
 <div class="controls">
@@ -43,7 +46,7 @@
 
 	<div
 		class="buttons"
-		in:fly={{ y: 10, duration: 300, delay: 50 * Object.keys($settings.ranges).length }}
+		in:fly={{ y: 10, duration: 200, delay: 50 * Object.keys($settings.ranges).length }}
 		out:fly={{ y: 15, duration: 100 }}
 	>
 		<ShowTitle />

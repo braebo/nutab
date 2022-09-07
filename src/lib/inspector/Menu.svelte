@@ -105,7 +105,7 @@
 
 	.side-menu .nub {
 		position: absolute;
-		right: 100%;
+		right: 99%;
 		top: 20px;
 
 		padding: 10px;
