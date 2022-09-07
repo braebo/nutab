@@ -15,10 +15,10 @@
 		$settings.sharedTheme = !e.detail.index
 	}
 
-	const size = 75
+	const size = 60
 
-	const _in = (direction: Record<string, number>) => ({ ...direction, duration: 350, delay: 150 })
-	const _out = (direction: Record<string, number>) => ({ ...direction, duration: 350 })
+	const _in = (direction: Record<string, number>) => ({ ...direction, duration: 250, delay: 150 })
+	const _out = (direction: Record<string, number>) => ({ ...direction, duration: 250 })
 </script>
 
 <div class="theme-settings">
@@ -37,6 +37,7 @@
 			<div class="modes">
 				<div class="editor light" in:fly={_in({ x: -10 })} out:fly={_out({ x: -10 })}>
 					<div class="title">
+						<div class="h3">Light</div>
 						<div class="sun">
 							<Sun {size} />
 							<Clouds {size} t_in={{ x: -20, duration: 3000 }} />
@@ -46,6 +47,7 @@
 				</div>
 				<div class="editor dark" in:fly={_in({ x: 10 })} out:fly={_out({ x: 10 })}>
 					<div class="title">
+						<div class="h3">Dark</div>
 						<div class="moon">
 							<Moon {size} />
 							<Stars starSize={10} {size} />
@@ -72,7 +74,7 @@
 		align-items: center;
 		justify-content: space-between;
 
-		height: 100%;
+		height: 21rem;
 		width: 100%;
 	}
 
@@ -88,19 +90,25 @@
 		flex-direction: column;
 		gap: 2rem;
 		width: 100%;
-		margin-top: 5rem;
+		margin-top: 3rem;
 
 		&.light {
-			transform: translate(-2rem, -0.5rem);
+			// transform: translate(-2rem, -0.5rem);
+			.title {
+				margin-right: -3.5rem;
+			}
 			.sun {
-				transform: translate(150px, -80px);
+				transform: translate(120px, -45px);
 			}
 		}
 
 		&.dark {
-			transform: translate(2rem, -0.5rem);
+			// transform: translate(2rem, -0.5rem);
+			.title {
+				margin-right: 3rem;
+			}
 			.moon {
-				transform: translate(150px, -75px);
+				transform: translate(205px, -45px);
 			}
 		}
 	}

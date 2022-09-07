@@ -43,7 +43,7 @@
 		color: var(--light-d);
 
 		overflow: hidden;
-		transition: 0.25s;
+		transition: 0.05s;
 	}
 
 	.option {
@@ -58,12 +58,13 @@
 		text-align: center;
 
 		cursor: pointer;
-		transition: 0.25s;
+		transition: 0.05s;
 
 		&.active {
 			opacity: 1;
-			color: var(--dark-d);
+			color: var(--dark-a);
 			background: var(--light-a);
+			cursor: default;
 		}
 
 		&:hover:not(.active) {
