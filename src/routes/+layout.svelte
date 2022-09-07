@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Data
-	import { settings, activeTheme, type Settings as ISettings } from '$lib/stores'
+	import { settings, activeTheme, activeBackground, type Settings as ISettings } from '$lib/stores'
+	import { addMissingSettings } from '$lib/data/settings/addMissingSettings'
 	import { init_db } from '$lib/data/transactions'
 
 	// Components
@@ -14,7 +15,6 @@
 
 	// Utils
 	import { initBackground, randomizeBackground } from '$lib/theme/'
-	import { gradientBackground } from '$lib/stores'
 	import { Fractils, theme } from 'fractils'
 	import { dev } from '$app/environment'
 	import { page } from '$app/stores'
@@ -25,6 +25,8 @@
 	import 'greset/greset.css'
 
 	onMount(() => {
+		addMissingSettings()
+
 		initBackground()
 
 		init_db()
@@ -41,7 +43,7 @@
 	+if('dev')
 		Inspector
 
-	#app(style='{$activeTheme.background}')
+	#app(style='{$activeBackground}')
 		Themer(size='{50}')
 
 		Nav

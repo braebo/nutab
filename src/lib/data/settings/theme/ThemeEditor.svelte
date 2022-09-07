@@ -67,7 +67,7 @@
 		align-items: center;
 		justify-content: center;
 
-		height: 100px;
+		height: 5rem;
 		width: 7.5rem;
 
 		div {

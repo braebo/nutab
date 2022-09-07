@@ -15,7 +15,7 @@
 		$settings.sharedTheme = !e.detail.index
 	}
 
-	const size = 100
+	const size = 75
 
 	const _in = (direction: Record<string, number>) => ({ ...direction, duration: 350, delay: 150 })
 	const _out = (direction: Record<string, number>) => ({ ...direction, duration: 350 })
@@ -25,10 +25,10 @@
 	<div class="shared" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
 		<TabOptions options={['Shared', 'Separate']} bind:selected on:select={toggleShared} />
 	</div>
-	<div class="br-md" />
+
 	{#if $settings.sharedTheme}
 		<div class="content">
-			<div class="editor light" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
+			<div class="editor" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
 				<ThemeEditor thisTheme="shared" />
 			</div>
 		</div>
@@ -58,7 +58,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="scss">
 	.theme-settings {
 		position: relative;
 
@@ -71,7 +71,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: space-between;
-		gap: 1rem;
 
 		height: 100%;
 		width: 100%;
@@ -89,13 +88,21 @@
 		flex-direction: column;
 		gap: 2rem;
 		width: 100%;
-	}
+		margin-top: 5rem;
 
-	.sun {
-		transform: translate(150px, -75px);
-	}
-	.moon {
-		transform: translate(150px, -75px);
+		&.light {
+			transform: translate(-2rem, -0.5rem);
+			.sun {
+				transform: translate(150px, -80px);
+			}
+		}
+
+		&.dark {
+			transform: translate(2rem, -0.5rem);
+			.moon {
+				transform: translate(150px, -75px);
+			}
+		}
 	}
 
 	.title {
@@ -112,11 +119,9 @@
 	}
 
 	.shared {
-		/* position: absolute; */
 		inset: 0;
-		top: 0;
-		width: 33%;
 
-		margin: auto auto 0 auto;
+		width: 33%;
+		margin: auto;
 	}
 </style>
