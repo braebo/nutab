@@ -36,9 +36,9 @@
 	}
 
 	input {
-		$size: 5rem;
+		$size: 2rem;
 		width: $size;
-		height: calc($size / 2);
+		height: $size;
 		border: none;
 		border-radius: 0.25rem;
 		background-color: var(--light-a);

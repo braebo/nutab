@@ -41,14 +41,11 @@
 
 		color: var(--dark-a);
 
-		/* width: max-content; */
 		height: 100%;
 		margin: auto 0;
 
 		text-transform: lowercase;
-		font-family: var(--font-b);
 		letter-spacing: 2px;
-		font-variation-settings: 'wght' 600;
 	}
 
 	.range {
