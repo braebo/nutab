@@ -53,6 +53,16 @@
 	--font-c: 'merriweather', sans-serif;
 	--font-mono: 'mono', monospace;
 
+	--font-xxs: 0.5rem;
+	--font-xs: 0.75rem;
+	--font-sm: 0.8rem;
+	--font-md: 1rem;
+	--font-lg: 1.2rem;
+	--font-xl: 1.4rem;
+	--font-xxl: 1.6rem;
+	--font-xxxl: 2.5rem;
+	--font-xxxxl: 4rem;
+
 	--confirm: #00a2ff;
 	--warn: tomato;
 
@@ -107,7 +117,7 @@ li {
 	}
 
 	font-family: var(--font-a);
-	font-size: 1.2em;
+	font-size: var(--font-sm);
 	font-weight: 200;
 	line-height: 1.5;
 }

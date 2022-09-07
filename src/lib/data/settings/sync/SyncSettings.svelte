@@ -56,20 +56,17 @@
 			{/if}
 		{/key}
 	{:else}
-		<p style:transform="translateY(-1.5rem)">Sync your data across browsers.</p>
-		<div class="account new">
+		<div class="new" in:fly={{ y: 5, duration: 350, delay: 100 }} out:fly|local={{ y: 5, duration: 150 }}>
+			<p style:transform="translateY(-0.25rem)">Sync your data across browsers.</p>
 			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
 			<div class="button">
-				<Button --width="10rem" --bgHover="var(--dark-a)" on:click={() => createUser(email)}>
-					New Sync Code
-				</Button>
+				<div class="btn" on:click={() => createUser(email)}>New Sync Code</div>
 			</div>
 		</div>
-		<div class="br-md" />
-		<div class="account existing">
+		<div class="existing" in:fly={{ y: 5, duration: 350, delay: 150 }} out:fly|local={{ y: 5, duration: 150 }}>
 			<p>Already have a Sync Code?</p>
 			<div class="button">
-				<Button --width="10rem" --bgHover="var(--dark-a)" on:click={() => createUser(email)}>Connect</Button>
+				<div class="btn" on:click={() => createUser(email)}>Connect</div>
 			</div>
 		</div>
 	{/if}
@@ -77,14 +74,15 @@
 
 <style lang="scss">
 	.account {
+		margin-top: 3rem;
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 1rem;
+		gap: 3rem;
 
-		min-height: 95%;
+		height: 60%;
 	}
 
 	.phrase {
@@ -172,9 +170,16 @@
 		width: fit-content;
 	}
 
-	.account.new {
+	.new {
 		outline: 1px solid rgba(var(--light-d-rgb), 0.1);
 		outline-offset: 1.5rem;
 		border-radius: 0.25rem;
+	}
+
+	.new,
+	.existing {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 </style>

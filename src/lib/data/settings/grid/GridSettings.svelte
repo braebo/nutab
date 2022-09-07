@@ -45,7 +45,7 @@
 	{/each}
 
 	<div
-		class="buttons"
+		class="show-title"
 		in:fly={{ y: 10, duration: 200, delay: 50 * Object.keys($settings.ranges).length }}
 		out:fly={{ y: 15, duration: 100 }}
 	>
@@ -63,11 +63,11 @@
 		margin: 0 auto;
 	}
 
-	.buttons {
+	.show-title {
 		display: flex;
 		justify-content: center;
-		gap: 5rem;
 
+		margin-top: 2rem;
 		width: 100%;
 
 		pointer-events: all;

@@ -5,7 +5,7 @@
 	import { tweened, type Tweened } from 'svelte/motion'
 	import { quartInOut } from 'svelte/easing'
 
-	export let size = [800, 500]
+	export let size = [700, 400]
 
 	let closed = true
 	let closing = false

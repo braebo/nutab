@@ -68,7 +68,7 @@
 		}
 
 		&:hover:not(.active) {
-			opacity: 0.75;
+			opacity: 1;
 			color: var(--dark-d);
 			background: var(--light-b);
 		}

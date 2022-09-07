@@ -19,7 +19,7 @@
 		align-items: center;
 		gap: 1rem;
 
-		height: 3.5rem;
+		height: 2.5rem;
 		width: var(--width);
 		max-width: 100%;
 		padding: 2px 15px;

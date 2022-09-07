@@ -90,25 +90,25 @@
 		flex-direction: column;
 		gap: 2rem;
 		width: 100%;
-		margin-top: 3rem;
+		margin-top: 1rem;
 
 		&.light {
 			// transform: translate(-2rem, -0.5rem);
 			.title {
-				margin-right: -3.5rem;
+				margin-right: 5rem;
 			}
 			.sun {
-				transform: translate(120px, -45px);
+				transform: translate(3rem, -45px);
 			}
 		}
 
 		&.dark {
 			// transform: translate(2rem, -0.5rem);
 			.title {
-				margin-right: 3rem;
+				margin-right: -4rem;
 			}
 			.moon {
-				transform: translate(205px, -45px);
+				transform: translate(15rem, -45px);
 			}
 		}
 	}

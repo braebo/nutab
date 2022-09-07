@@ -33,7 +33,7 @@
 			<div class="controls">
 				<Saturation {thisTheme} />
 				{#if !custom}
-					<div class="transition">
+					<div class="randomize-btn">
 						<div
 							class:shared
 							class="shuffle-bg"
@@ -65,7 +65,7 @@
 		flex-direction: column;
 		align-items: center;
 
-		height: 90%;
+		height: 78%;
 		width: 100%;
 	}
 
@@ -75,12 +75,12 @@
 
 		height: 100%;
 		width: 80%;
-		margin-right: 10%;
+		margin-right: 30%;
 
 		&.dark {
 			flex-direction: row;
 			margin-right: unset;
-			margin-left: 10%;
+			margin-left: 30%;
 		}
 
 		&.shared {
@@ -131,7 +131,7 @@
 		}
 	}
 
-	.transition {
+	.randomize-btn {
 		position: relative;
 		display: flex;
 		align-items: center;
