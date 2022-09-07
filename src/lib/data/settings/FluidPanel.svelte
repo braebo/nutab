@@ -121,7 +121,7 @@
 	class="panel-container"
 	style:--width="{p.w}px"
 	style:--height="{p.h}px"
-	use:clickOutside={{ whitelist: ['.controls', '#inspector', '.grabber'] }}
+	use:clickOutside={{ whitelist: ['controls', 'nub', 'grabber', 'theme-toggle'] }}
 	on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
 >
 	<div class="panel">
