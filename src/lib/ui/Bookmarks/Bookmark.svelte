@@ -1,14 +1,12 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
-	import { settings } from '$lib/stores'
-	import { debounce } from '$lib/utils/debounce'
-
-	import BookmarkArt from './BookmarkArt.svelte'
-
-	import { scale, fade } from 'svelte/transition'
-	import { onMount } from 'svelte'
 	import { editor } from '$lib/stores/bookmarkEditor'
+	import { scale, fade } from 'svelte/transition'
+	import { debounce } from '$lib/utils/debounce'
+	import BookmarkArt from './BookmarkArt.svelte'
+	import { bookmarkEditor } from '$lib/stores'
+	import { settings } from '$lib/stores'
 
 	export let i: number
 	export let hovering: number
@@ -18,33 +16,8 @@
 
 	$: disableTransitions // is this necessary?
 	$: url = bookmark?.url
-	$: basename = bookmark?.url.split('://')[1]?.split('.')[0]
-
-	let iconError = false // toggled if img tag request returns an error
-	$: icon_found = basename.split('.')?.[0]
-	$: icon = icon_found ? `https://cdn.cdnlogo.com/logos/a/1/${icon_found}-icon.svg` : ''
-	$: image = bookmark?.autoImage && !iconError ? icon : bookmark?.image
 
 	$: title = bookmark?.title
-	$: background = bookmark?.background || icon || ''
-	$: foreground = bookmark?.foreground
-
-	let aspectRatio = '1'
-
-	// Get the aspect ratio of the image if it exists
-	onMount(() => {
-		if (image) {
-			const img = new Image()
-			img.addEventListener('load', () => {
-				const width = img.naturalWidth
-				const height = img.naturalHeight
-				if (!isNaN(width) && !isNaN(height)) {
-					aspectRatio = `${width} / ${height}`
-				}
-			})
-			img.src = image
-		}
-	})
 </script>
 
 <div class="bookmark-container">
@@ -56,46 +29,22 @@
 		draggable="false"
 		on:contextmenu|stopPropagation|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
 	>
-		{#if image}
-			<div
-				in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
-				class="bookmark"
-				style="
-				width: {$settings.ranges.iconSize.value}px;
-				height: {$settings.ranges.iconSize.value}px;
+		<div
+			class="bookmark"
+			in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
+			on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
+			on:focus={() => debounce(() => ($settings.showTitle = false))}
+		>
+			<BookmarkArt bind:bookmark />
 
-				color: {$settings.transparent ? 'transparent' : foreground};
-				background: {$settings.transparent ? 'transparent' : background};
-				"
-			>
-				<img
-					style:aspect-ratio={aspectRatio}
-					class="icon icon{i}"
-					draggable="false"
-					src={image}
-					alt={title}
-					on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
-					on:focus={() => debounce(() => ($settings.showTitle = false))}
-					on:error={(e) => (iconError = true)}
-				/>
-				{#if $settings.showTitle || hovering == i}
-					{#if title && !dragging}
-						<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
-							{title}
-						</p>
-					{/if}
+			{#if $settings.showTitle || hovering == i}
+				{#if title && !dragging}
+					<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
+						{title}
+					</p>
 				{/if}
-			</div>
-		{:else}
-			<div class="bookmark" in:scale|once={{ duration: 200 + 50 * i }}>
-				<BookmarkArt
-					--foreground={foreground}
-					--background={`url(${icon})` || background}
-					--size="{$settings.ranges.iconSize.value + 5}px"
-					{title}
-				/>
-			</div>
-		{/if}
+			{/if}
+		</div>
 	</a>
 </div>
 
@@ -121,13 +70,16 @@
 		flex-direction: column;
 		justify-content: flex-end;
 
-		width: var(--size, 100%);
-		height: var(--size, 100%);
-		margin: auto;
+		/* width: var(--size, 100%); */
+		/* height: var(--size, 100%); */
+		/* margin: auto; */
 
-		border-radius: 10px;
+		/* background-repeat: no-repeat; */
+		/* background-position: center; */
 
-		text-align: center;
+		/* border-radius: 10px; */
+
+		/* text-align: center; */
 
 		pointer-events: none;
 	}
@@ -178,15 +130,5 @@
 	a.dragging {
 		pointer-events: none;
 		cursor: inherit;
-	}
-
-	img {
-		position: absolute;
-		inset: 0;
-
-		max-width: 100%;
-		max-height: 100%;
-
-		pointer-events: none;
 	}
 </style>

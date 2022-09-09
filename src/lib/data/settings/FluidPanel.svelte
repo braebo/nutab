@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { wait, mouse, screenH, clickOutside, mapRange } from 'fractils'
-	import { showSettings, blurOverlay } from '$lib/stores'
+	import { showSettings, blurOverlay, activeSection } from '$lib/stores'
 
 	import { tweened, type Tweened } from 'svelte/motion'
 	import { quartInOut } from 'svelte/easing'
+	import { fade } from 'svelte/transition'
 
-	export let size = [800, 500]
+	export let size = [700, 400]
 
 	let closed = true
 	let closing = false
@@ -30,8 +31,8 @@
 		x: 45,
 		y: 92,
 		rx: 8,
-		width: 3,
-		height: 5,
+		width: 4,
+		height: 7,
 	}
 
 	// Transition duration for open() and close().
@@ -117,48 +118,51 @@
 	}
 </script>
 
-<div
-	class="panel-container"
-	style:--width="{p.w}px"
-	style:--height="{p.h}px"
-	use:clickOutside={{ whitelist: ['.controls', '#inspector', '.grabber'] }}
-	on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
->
-	<div class="panel">
-		<div class="settings">
-			{#if $showSettings}
-				{#key $showSettings}
-					<slot />
-				{/key}
-			{/if}
+{#if $activeSection === 'bookmarks'}
+	<div
+		class="panel-container"
+		style:--width="{p.w}px"
+		style:--height="{p.h}px"
+		use:clickOutside={{ whitelist: ['controls', 'nub', 'grabber', 'theme-toggle'] }}
+		on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
+		transition:fade
+	>
+		<div class="panel">
+			<div class="settings">
+				{#if $showSettings}
+					{#key $showSettings}
+						<slot />
+					{/key}
+				{/if}
+			</div>
+			<svg class:closed viewBox="0 0 {p.w} {p.h}" width="100%" height="100%">
+				<circle cx={p.w - 5} cy={p.w - 5} r={s.rx * 10} fill="white" />
+				<g>
+					<rect
+						x="{$x}%"
+						y="{closed ? $y : $y}%"
+						rx="{$rx}%"
+						width="{$width}%"
+						height="{$height}%"
+						opacity={$opacity}
+						on:click={() => ($showSettings = true)}
+					/>
+					<text
+						x="{42.75}%"
+						y="{$y + 4.5}%"
+						font-size="15"
+						fill="var(--dark-d)"
+						pointer-events="none"
+						font-family="var(--font-a)"
+						opacity={closed && !closing ? mapRange(adjust, 10, 20, 0, 1) : 0}
+					>
+						settings
+					</text>
+				</g>
+			</svg>
 		</div>
-		<svg class:closed viewBox="0 0 {p.w} {p.h}" width="100%" height="100%">
-			<circle cx={p.w - 5} cy={p.w - 5} r={s.rx * 10} fill="white" />
-			<g>
-				<rect
-					x="{$x}%"
-					y="{closed ? $y : $y}%"
-					rx="{$rx}%"
-					width="{$width}%"
-					height="{$height}%"
-					opacity={$opacity}
-					on:click={() => ($showSettings = true)}
-				/>
-				<text
-					x="{43}%"
-					y="{$y + 3.3}%"
-					font-size="15"
-					fill="var(--dark-d)"
-					pointer-events="none"
-					font-family="var(--font-a)"
-					opacity={closed && !closing ? mapRange(adjust, 10, 20, 0, 1) : 0}
-				>
-					settings
-				</text>
-			</g>
-		</svg>
 	</div>
-</div>
+{/if}
 
 <style lang="scss">
 	.panel-container {
@@ -188,17 +192,20 @@
 
 	svg {
 		overflow: visible;
-		fill: rgba(var(--light-d-rgb), 0.4);
+		fill: rgba(var(--light-a-rgb), 0.95);
+		background: rgba(var(--light-a-rgb), 0.5);
 		backface-visibility: hidden;
-		backdrop-filter: blur(10px);
+		border-radius: var(--radius);
+		backdrop-filter: blur(20px);
 		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);
 
-		transition: backdrop-filter 0.5s, box-shadow 0.5s;
+		transition: backdrop-filter 0.5s, box-shadow 0.5s, background 0.5s;
 
 		&.closed {
 			backdrop-filter: blur(0px);
 			box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0), 0 6px 20px 5px rgba(29, 29, 29, 0);
 			transition-duration: 0.05s;
+			background: rgba(var(--light-d-rgb), 0);
 
 			& rect {
 				pointer-events: all;

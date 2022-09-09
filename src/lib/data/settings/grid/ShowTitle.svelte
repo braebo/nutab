@@ -5,7 +5,7 @@
 
 <label for="showTitle">
 	<!-- <input type="checkbox" bind:checked={$settings.showTitle} /> -->
-	<div class="btn title-toggle" on:click={() => ($settings.showTitle = !$settings.showTitle)}>
+	<div class="btn" on:click={() => ($settings.showTitle = !$settings.showTitle)}>
 		{#key $settings.showTitle}
 			<div class="show-hide" in:fly={{ y: 30 }} out:fly={{ y: -30 }}>
 				{$settings.showTitle ? 'Hide' : 'Show'}
@@ -16,20 +16,13 @@
 </label>
 
 <style lang="scss">
-	.title-toggle {
+	.btn {
 		width: 110px;
-
-		color: var(--dark-d);
-		background-color: var(--light-a);
 
 		user-select: none;
 		overflow: hidden;
 
 		transition: 150ms;
-
-		&:hover {
-			border: 1px solid var(--light-c);
-		}
 
 		.show-hide {
 			position: absolute;

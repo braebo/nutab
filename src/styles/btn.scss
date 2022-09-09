@@ -1,0 +1,30 @@
+.btn {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: max-content;
+	height: max-content;
+	padding: 0.5rem 1rem;
+
+	border-radius: 10px;
+	color: var(--dark-d);
+	background: var(--light-a);
+	// border: 1px solid var(--light-a);
+	box-shadow: var(--shadow-xs);
+
+	font-size: var(--font-md);
+	font-family: var(--font-a);
+	word-spacing: 3px;
+
+	user-select: none;
+	cursor: pointer;
+
+	transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+
+	&:hover:not(:active, :focus) {
+		box-shadow: var(--shadow-sm);
+		transform: scale(1.05);
+	}
+}

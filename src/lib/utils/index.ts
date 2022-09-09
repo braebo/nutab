@@ -1,2 +1,2 @@
-export { randomColor } from './randomColor'
+export { randomColor, randomGradient, randomBackground } from './color'
 export * from './idFromClassList'

@@ -1,6 +1,7 @@
 @import './theme.scss';
 @import './utils.sass';
 @import './input.scss';
+@import './btn.scss';
 
 /*
  *
@@ -52,16 +53,34 @@
 	--font-c: 'merriweather', sans-serif;
 	--font-mono: 'mono', monospace;
 
+	--font-xxs: 0.5rem;
+	--font-xs: 0.75rem;
+	--font-sm: 0.8rem;
+	--font-md: 1rem;
+	--font-lg: 1.2rem;
+	--font-xl: 1.4rem;
+	--font-xxl: 1.6rem;
+	--font-xxxl: 2.5rem;
+	--font-xxxxl: 4rem;
+
 	--confirm: #00a2ff;
 	--warn: tomato;
 
 	--radius-sm: 0.25rem;
 	--radius: 0.5rem;
 
-	--shadow-sm: 0px 3px 5px -3px rgba(0, 0, 0, 0.15), 0px 4px 3px -1px rgba(0, 0, 0, 0.05),
-		0px 14px 15px -1px rgba(0, 0, 0, 0.04);
-	--shadow-md: 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09),
-		0px 14px 15px -1px rgba(0, 0, 0, 0.14);
+	--shadow-xs: 0px 0.5px 0.5px rgba(0, 0, 0, 0.01), 0px 2px 1.5px rgba(0, 0, 0, 0.01),
+		0px 1.5px 1px rgba(0, 0, 0, 0.01), 0px 1.5px 1.5px rgba(0, 0, 0, 0.03), 0px 3px 3px rgba(0, 0, 0, 0.015),
+		0px 3px 4px rgba(0, 0, 0, 0.05);
+	--shadow-sm: 0px 0.5px 0.75px rgba(0, 0, 0, 0.02), 0px 2px 1.5px rgba(0, 0, 0, 0.02),
+		0px 2.5px 2px rgba(0, 0, 0, 0.025), 0px 3px 3px rgba(0, 0, 0, 0.05), 0px 5px 5px rgba(0, 0, 0, 0.05),
+		0px 7px 10px rgba(0, 0, 0, 0.075);
+	--shadow-md: 0px 0.75px 1px rgba(0, 0, 0, 0.015), 0px 2.5px 2px rgba(0, 0, 0, 0.02),
+		0px 4.5px 3px rgba(0, 0, 0, 0.025), 0px 5px 5px rgba(0, 0, 0, 0.0325), 0px 10px 10px rgba(0, 0, 0, 0.045),
+		0px 10px 20px rgba(0, 0, 0, 0.05);
+	--shadow-lg: 0px 1.25px 1px rgba(0, 0, 0, 0.035), 0px 2.5px 2.5px rgba(0, 0, 0, 0.04),
+		0px 4.5px 5px rgba(0, 0, 0, 0.045), 0px 5px 8px rgba(0, 0, 0, 0.05), 0px 10px 15px rgba(0, 0, 0, 0.06),
+		0px 20px 30px rgba(0, 0, 0, 0.07);
 }
 
 body {
@@ -98,7 +117,7 @@ li {
 	}
 
 	font-family: var(--font-a);
-	font-size: 1.2em;
+	font-size: var(--font-sm);
 	font-weight: 200;
 	line-height: 1.5;
 }
@@ -134,34 +153,6 @@ button {
 
 button:focus:not(:focus-visible) {
 	outline: none;
-}
-
-.btn {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: max-content;
-	height: max-content;
-	padding: 0.5rem 1rem;
-
-	border-radius: 10px;
-	color: var(--dark-d);
-	background: var(--light-a);
-	border: 1px solid var(--light-a);
-
-	font-family: var(--font-a);
-	word-spacing: 3px;
-
-	user-select: none;
-	cursor: pointer;
-
-	transition: color 0.2s;
-
-	&:hover {
-		color: var(--dark-a);
-	}
 }
 
 @media (min-width: 720px) {
@@ -214,20 +205,4 @@ button:focus:not(:focus-visible) {
 	&.ghost:hover::-webkit-scrollbar-thumb {
 		background: rgba(var(--dark-d-rgb), 0);
 	}
-}
-
-.space-xs {
-	height: 0.5rem;
-}
-.space-sm {
-	height: 1rem;
-}
-.space-md {
-	height: 1.75rem;
-}
-.space-lg {
-	height: 3rem;
-}
-.space-xl {
-	height: 6rem;
 }

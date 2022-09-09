@@ -2,12 +2,12 @@
 	import { fly } from 'svelte/transition'
 
 	export let label = ''
-	export let i = 0
+	export let i = 1
 </script>
 
-<div class="control" in:fly={{ y: 25, duration: 300, delay: 33 * i }} out:fly={{ y: 25, duration: 100 }}>
-	<label for={label}>{label}</label>
-	<div class="range">
+<div class="control" in:fly={{ y: 10, duration: 300, delay: 100 + 33 * i }} out:fly={{ y: 10, duration: 100 }}>
+	{#if label}<label for={label}>{label}</label>{/if}
+	<div class="range" class:fullWidth={label}>
 		<slot />
 	</div>
 </div>
@@ -19,14 +19,14 @@
 		align-items: center;
 		gap: 1rem;
 
-		height: 3.5rem;
+		height: 2.5rem;
 		width: var(--width);
 		max-width: 100%;
 		padding: 2px 15px;
 		margin: auto;
 
 		border: 1px solid rgba(var(--light-c-rgb), 0.33);
-		background: rgba(var(--light-a-rgb), 0.25);
+		background: rgba(var(--light-b-rgb), 0.5);
 		border-radius: 10px;
 
 		font-size: 16px;
@@ -39,15 +39,20 @@
 		display: flex;
 		align-items: center;
 
-		color: var(--dark-d);
+		color: var(--dark-a);
 
-		/* width: max-content; */
 		height: 100%;
 		margin: auto 0;
+
+		text-transform: lowercase;
+		letter-spacing: 2px;
 	}
 
 	.range {
-		width: 85%;
+		width: 100%;
 		padding: 18px 0;
+	}
+	.range.fullWidth {
+		width: 85%;
 	}
 </style>

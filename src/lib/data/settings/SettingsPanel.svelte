@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SyncSettings from './sync/SyncSettings.svelte'
 	import ThemeSettings from './theme/ThemeSettings.svelte'
 	import GridSettings from './grid/GridSettings.svelte'
 	import FluidPanel from './FluidPanel.svelte'
@@ -8,6 +9,7 @@
 	const sections = {
 		grid: GridSettings,
 		theme: ThemeSettings,
+		sync: SyncSettings,
 	}
 
 	let activeSection: typeof sections[keyof typeof sections] = sections['grid']
@@ -30,7 +32,9 @@
 		</nav>
 		{#key activeSection}
 			<div class="settings-section-component">
-				<svelte:component this={activeSection} />
+				{#key activeSection}
+					<svelte:component this={activeSection} />
+				{/key}
 			</div>
 		{/key}
 	</div>
@@ -54,23 +58,32 @@
 		justify-content: center;
 		align-items: flex-end;
 		height: 4rem;
-		gap: 3rem;
+		gap: 1rem;
 
 		color: var(--dark-a);
 
-		font-variation-settings: 'wght' 100;
-		font-family: var(--font-a);
-		text-transform: uppercase;
-		letter-spacing: 3px;
-		font-size: 1.2rem;
-		font-weight: 100;
-
 		div {
+			font-variation-settings: 'wght' 100;
+			font-family: var(--font-a);
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			font-size: 1.2rem;
+			font-variation-settings: 'wght' 100;
+
+			width: 100px;
+			text-align: center;
+
 			opacity: 0.5;
 			cursor: pointer;
 			user-select: none;
 
+			transition: 0.2s;
+
 			&.active {
+				opacity: 1;
+				font-variation-settings: 'wght' 500;
+			}
+			&:hover {
 				opacity: 1;
 			}
 		}

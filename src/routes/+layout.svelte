@@ -1,33 +1,34 @@
 <script lang="ts">
 	// Data
+	import { settings, activeTheme, activeBackground, type Settings as ISettings } from '$lib/stores'
+	import { addMissingSettings } from '$lib/data/settings/addMissingSettings'
 	import { init_db } from '$lib/data/transactions'
-	import { settings } from '$lib/stores'
 
 	// Components
 	import Settings from '$lib/data/settings/Settings.svelte'
 	import Inspector from '$lib/inspector/index.svelte'
-	import Themer from '$lib/theme/Themer.svelte'
+	import Themer from '$lib/theme/ThemeToggle.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
 	import Main from '$lib/ui/Main.svelte'
 	import Nav from '$lib/ui/Nav.svelte'
 	import { Header } from '$lib/ui'
 
 	// Utils
-	import { randomizeBackground } from '$lib/stores/background'
-	import { gradientBackground } from '$lib/stores'
-	import { Fractils } from 'fractils'
+	import { initBackground, randomizeBackground } from '$lib/theme/'
+	import { Fractils, theme } from 'fractils'
+	import { dev } from '$app/environment'
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
-	import { dev } from '$app/env'
 
 	// Styles
 	import '../styles/app.scss'
 	import 'greset/greset.css'
 
 	onMount(() => {
-		if (!$settings.lockBackground) {
-			randomizeBackground()
-		}
+		addMissingSettings()
+
+		initBackground()
+
 		init_db()
 	})
 </script>
@@ -42,7 +43,7 @@
 	+if('dev')
 		Inspector
 
-	#app(style='{$settings.background}')
+	#app(style='{$activeBackground}')
 		Themer(size='{50}')
 
 		Nav

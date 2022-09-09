@@ -93,9 +93,9 @@
 		move.y += e.movementY
 
 		// If we're hovering over a cell and not on cooldown
-		if (!cooldown && (e.target as Element).classList[0]?.split('-')[1] != null) {
+		if (!cooldown && (e.target as HTMLElement)?.dataset?.cell) {
 			// Store the target cell's index
-			target = parseInt((e.target as Element).classList[0]?.split('-')[1])
+			target = parseInt((e.target as HTMLElement)?.dataset?.cell)
 
 			// If our target cell has changed
 			if (lastTarget != null && lastTarget != target) {
@@ -105,7 +105,7 @@
 
 			// If the target cell isn't the current active cell
 			if (target != active) {
-				// Move it to our active's cell position
+				// Move it to our active cell's position
 				positionProxy[target] = $gridDimensions.positions[active]
 			} else {
 				// We have returned to the original cell, so we can reset all positions
@@ -165,7 +165,7 @@
 		clearTimeout(swapTimer)
 		swapTimer = setTimeout(async () => {
 			disableTransitions = false
-		}, 100)
+		}, 10)
 
 		return new Promise<void>(async (resolve, reject) => {
 			disableTransitions = true
@@ -214,7 +214,7 @@
 		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
 			{#key $reRender}
 				<div
-					class="cell-{i} cell"
+					class="cell"
 					class:unfocused={$searchValue !== '' && !isRelevant(i)}
 					class:focused={$searchValue === '' || isRelevant(i)}
 					class:active={i == active}
@@ -228,6 +228,7 @@
 					bind:this={cells[i]}
 				>
 					<div
+						data-cell={i}
 						class="grid-item"
 						class:active={active === i}
 						draggable="false"
@@ -323,7 +324,7 @@
 
 		cursor: pointer;
 
-		transition: 0.2s ease-in-out;
+		// transition: 0.2s ease-in-out;
 
 		&.active {
 			pointer-events: none;
@@ -343,38 +344,6 @@
 
 	.dragging {
 		cursor: grabbing;
-	}
-
-	.add-bookmark {
-		position: absolute;
-		left: 0;
-		right: 0;
-
-		width: fit-content;
-		margin: auto;
-
-		color: var(--dark-a);
-		opacity: 0.025;
-
-		font-size: 3rem;
-
-		cursor: pointer;
-		transition: opacity;
-		transition-duration: 0.15s;
-		transition-delay: 1s;
-
-		&:hover {
-			opacity: 0.75 !important;
-
-			transition-duration: 1s;
-			transition-delay: 0s;
-		}
-	}
-
-	.grid:hover .add-bookmark {
-		opacity: 0.25;
-		transition-duration: 3s;
-		transition-delay: 0s;
 	}
 
 	.grid-image {

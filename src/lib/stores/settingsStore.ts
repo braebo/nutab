@@ -1,5 +1,7 @@
 import localStorageStore from '$lib/utils/localStorageStore'
-import { writable } from 'svelte/store'
+import { derived, writable } from 'svelte/store'
+import { randomBackground, randomColor, randomGradient } from '$lib/utils'
+import { theme } from 'fractils'
 
 interface Range {
 	label: string
@@ -7,17 +9,7 @@ interface Range {
 	range: { min: number; max: number }
 }
 
-export interface Settings {
-	[index: string]: string | boolean | Record<string, Range>
-	// [index: string]: string | boolean | Record<string, Range>
-	ranges: {
-		gridWidth: Range
-		gridGap: Range
-		iconSize: Range
-		gradientOpacity: Range
-	}
-	transparent: boolean
-	showTitle: boolean
+export interface ThemeSettings {
 	background: string
 	lockBackground: boolean
 	customGradient: boolean
@@ -25,23 +17,67 @@ export interface Settings {
 	gradientA: string
 	/** 6 Hex color (includes #) */
 	gradientB: string
+	gradientOpacity: Range
+}
+
+export interface Settings {
+	[index: string]: any
+	ranges: {
+		gridWidth: Range
+		gridGap: Range
+		iconSize: Range
+	}
+	transparent: boolean
+	showTitle: boolean
+	/** Whether or not the light and dark modes share a background */
+	sharedTheme: boolean
+	theme: {
+		shared: ThemeSettings
+		light: ThemeSettings
+		dark: ThemeSettings
+	}
 	invertDark?: boolean
 }
 
+const sharedBG = randomBackground()
+const lightBG = randomBackground()
+const darkBG = randomBackground()
+
 export const default_settings: Settings = {
 	ranges: {
-		gridWidth: { label: 'Width', value: 1000, range: { min: 500, max: 2000 } },
+		gridWidth: { label: 'Width', value: 1300, range: { min: 500, max: 2000 } },
 		iconSize: { label: 'Icon', value: 50, range: { min: 32, max: 90 } },
-		gridGap: { label: 'Spacing', value: 25, range: { min: 0, max: 100 } },
-		gradientOpacity: { label: 'Opacity', value: 48, range: { min: 0, max: 255 } },
+		gridGap: { label: 'Spacing', value: 45, range: { min: 0, max: 100 } },
 	},
 	transparent: true,
 	showTitle: false,
-	background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
-	customGradient: false,
-	gradientA: '',
-	gradientB: '',
-	lockBackground: false,
+	sharedTheme: true,
+	theme: {
+		shared: {
+			background: sharedBG.gradient,
+			lockBackground: false,
+			customGradient: false,
+			gradientA: sharedBG.a,
+			gradientB: sharedBG.b,
+			gradientOpacity: { label: 'Opacity', value: sharedBG.opacity, range: { min: 0, max: 255 } },
+		},
+		light: {
+			background: lightBG.gradient,
+			lockBackground: false,
+			customGradient: false,
+			gradientA: lightBG.a,
+			gradientB: lightBG.b,
+			gradientOpacity: { label: 'Opacity', value: lightBG.opacity, range: { min: 0, max: 255 } },
+		},
+		dark: {
+			background: darkBG.gradient,
+			lockBackground: false,
+			customGradient: false,
+			gradientA: darkBG.a,
+			gradientB: darkBG.b,
+			gradientOpacity: { label: 'Opacity', value: darkBG.opacity, range: { min: 0, max: 255 } },
+		},
+	},
 }
 
 export const cMenu = writable({
@@ -55,3 +91,11 @@ export const cMenu = writable({
 export const settings = localStorageStore<Settings>('settings', default_settings)
 
 export const showSettings = writable(false)
+
+export const activeTheme = derived([settings, theme], ([$settings, $theme]) => {
+	$theme
+	if ($settings.sharedTheme) {
+		return $settings.theme.shared
+	}
+	return $settings.theme[$theme as 'light' | 'dark']
+})

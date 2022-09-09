@@ -1,12 +1,25 @@
+<!-- 
+	@component
+	A simple button with a `<slot/>`
+	@event on:click
+	@styleprop width ?? `max-content`
+	@styleprop bg ?? `var(--light-a)`
+	@styleprop color ?? `var(--dark-a)`
+	@styleprop border ?? `1px solid transparent`
+	@styleprop bgHover
+	@styleprop borderHover ?? `1px solid var(--dark-a)`
+	@styleprop colorHover
+ -->
+
 <button on:click>
 	<slot>Click Me</slot>
 </button>
 
 <style>
 	button {
-		width: var(--width, 4rem);
+		width: var(--width, max-content);
 		min-width: max-content;
-		height: 2rem;
+		height: 2.3rem;
 
 		/* padding: 0.5em 1em; */
 
@@ -25,7 +38,7 @@
 	}
 	button:hover {
 		background: var(--bgHover);
-		border: var(--borderHover);
+		border: var(--borderHover, 1px solid var(--dark-d));
 		color: var(--colorHover);
 		box-shadow: 0 4px 8px #00000015;
 

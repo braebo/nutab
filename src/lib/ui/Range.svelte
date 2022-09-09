@@ -10,7 +10,7 @@
 	@prop `truncate?: boolean` - Rounds decimals into whole numbers.
  -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte'
+	import { createEventDispatcher, tick } from 'svelte'
 	import { mapRange } from 'fractils'
 	import { onDestroy } from 'svelte'
 
@@ -37,14 +37,16 @@
 	// Used to store the last value of the slider before it's truncated.
 	let targetValue = value
 
-	/*
+	/**
 	 * Used to calculate progress when clicking the track (as opposed to dragging the thumb).
 	 */
 	const setFromMouse = (e: MouseEvent) => {
 		if (!el) return
-		const mouse = vertical ? e.clientY : e.clientX
+		// const mouse = vertical ? e.clientY : e.clientX
+		const mouse = e.clientX
 		const { left } = el.getBoundingClientRect()
 		const relativeX = mouse - left
+		console.log({ relativeX })
 
 		const normalizedProgress = mapRange(relativeX, 0, el.clientWidth, 0, 100)
 
@@ -77,17 +79,23 @@
 		thumb.style.cursor = 'grabbing'
 	}
 
-	const mouseMove = (e: MouseEvent) => {
+	const { performance } = globalThis
+	let last = performance.now()
+	const mouseMove = async (e: MouseEvent) => {
 		if (!dragging || !el) return
+		await tick()
+		e.preventDefault()
 
 		targetValue += e.movementX * ((1 / clientWidth) * (max - min))
 
 		if (targetValue < min) targetValue = min
 		if (targetValue > max) targetValue = max
 
-		updateValue(targetValue)
-
-		dispatch('input', { name, value })
+		const now = performance.now()
+		if (now > last + 1) {
+			updateValue(targetValue)
+		}
+		last = now
 	}
 
 	const updateValue = (v: number) => {
@@ -135,17 +143,21 @@
 		&:focus {
 			outline: none;
 		}
+		&:hover .track {
+			border-color: var(--light-d);
+		}
 	}
 
 	.track {
 		width: 100%;
 		height: 15px;
 
-		border: 0.2px solid var(--light-a);
+		border: 0.2px solid var(--light-c);
 		border-radius: 50px;
 		background: var(--light-b);
 
 		cursor: pointer;
+		transition: 200ms;
 	}
 
 	.thumb {
@@ -157,9 +169,9 @@
 		width: var(--thumb-width);
 		height: var(--thumb-width);
 
-		border: 1px solid var(--light-a);
+		border: 1px solid var(--dark-d);
 		border-radius: 20px;
-		background: var(--light-d);
+		background: var(--dark-a);
 
 		cursor: grab;
 		transition: background 0.3s;

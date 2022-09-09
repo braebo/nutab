@@ -14,9 +14,6 @@ const config = {
 	kit: {
 		adapter,
 		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
-		prerender: {
-			default: true,
-		},
 	},
 	vitePlugin: {
 		experimental: {

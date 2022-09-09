@@ -5,6 +5,7 @@ import { activeFolderBookmarks, activeFolder } from '$lib/data/dbStore'
 import { emptyBookmark, emptyFolder } from '$lib/data/bookmarks/defaults'
 import { writable, derived, get } from 'svelte/store'
 import { log } from 'fractils'
+import { debounce } from '$lib/utils/debounce'
 
 type EditorContext = 'edit' | 'create'
 type EditorType = 'bookmark' | 'folder'
@@ -55,12 +56,13 @@ export const editor = {
 		editorType.set(mode[1])
 	},
 	hide: () => {
-		bookmarkEditor.set(null)
 		folderEditor.set(null)
 		bookmarkEditorContext.set(null)
 		editorType.set(null)
 		showFolderEditor.set(false)
 		showBookmarkEditor.set(false)
+		// Avoids flases during out:transition
+		debounce(() => bookmarkEditor.set(null), 250)
 	},
 }
 Object.freeze(editor)

@@ -23,9 +23,10 @@ export const uniqueTags = liveQuery(async () => await db.bookmarks.orderBy('tags
 export const tagFilter = writable<string | null>(null)
 
 /** The active folder's bookmarks, filtered by tag if applicable */
-export const activeFolderBookmarks = derived<Writable<Folder | string>[], Bookmark[]>(
-	[activeFolder, tagFilter],
-	([$activeFolder, $tagFilter], set) => {
+export const activeFolderBookmarks = derived<[Writable<Bookmark[]>, Writable<Folder>, Writable<string>], Bookmark[]>(
+	[activeBookmarks, activeFolder, tagFilter],
+	([$activeBookmarks, $activeFolder, $tagFilter], set) => {
+		$activeBookmarks // Is this helping trigger updates?
 		if ($tagFilter === null) {
 			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks).then((b) => set(b))
 		} else {
@@ -53,5 +54,5 @@ export const activeFolderBookmarks = derived<Writable<Folder | string>[], Bookma
 		return () => {
 			set = () => {}
 		}
-	}
+	},
 )

@@ -1,9 +1,7 @@
-//@ts-nocheck   TODO: type this (again)
+//@ts-nocheck
 const attr = (element, attribute) => element.getAttribute(attribute)
 
-type aFuckingObject = Record<string, any>
-
-export const rulesets: aFuckingObject = {
+export const rulesets: Record<string, any> = {
 	title: {
 		rules: [
 			['meta[property="og:title"]', (e) => attr(e, 'content')],
@@ -23,10 +21,7 @@ export const rulesets: aFuckingObject = {
 	icon: {
 		rules: [
 			['link[rel="apple-touch-icon"]', (e) => attr(e, 'href')],
-			[
-				'link[rel="apple-touch-icon-precomposed"]',
-				(e) => attr(e, 'href'),
-			],
+			['link[rel="apple-touch-icon-precomposed"]', (e) => attr(e, 'href')],
 			['link[rel="icon" i]', (e) => attr(e, 'href')],
 		],
 		defaultValue: 'favicon.ico',

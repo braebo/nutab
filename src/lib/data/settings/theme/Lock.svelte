@@ -1,17 +1,11 @@
-<script>
-	import { settings } from '$lib/stores'
+<script lang="ts">
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 
-	let locked = $settings?.lockBackground
-
-	const toggleLock = () => {
-		$settings.lockBackground = !$settings.lockBackground
-		locked = !locked
-	}
+	export let locked: boolean
 </script>
 
 <Tooltip content="{locked ? 'Unlock' : 'Lock'}_Background" delay={[250, 150]} offset={[0, 10]}>
-	<div class="lock" on:click={toggleLock}>
+	<div class="lock" on:click>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="100%"

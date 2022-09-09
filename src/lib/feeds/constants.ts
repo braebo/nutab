@@ -1,6 +1,6 @@
 import type { ICategory, IHNItem } from './types'
 
-import { dev } from '$app/env'
+import { dev } from '$app/environment'
 
 export const DEFAULT_CATEGORY: ICategory = 'topstories'
 
@@ -24,6 +24,6 @@ export const MOCK_HN_ITEM: IHNItem = {
 		title: '&nbsp;',
 		description: '&nbsp;',
 		icon: '&nbsp;',
-		image: ''
-	}
+		image: '',
+	},
 }

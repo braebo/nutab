@@ -107,6 +107,7 @@
 		justify-content: center;
 		box-sizing: border-box;
 		height: fit-content;
+		width: 100%;
 	}
 	.key {
 		font-size: var(--font-small);
@@ -124,7 +125,7 @@
 	}
 
 	input {
-		flex-grow: 0;
+		flex-grow: 1;
 
 		background: var(--background-int);
 		color: var(--value-color);
@@ -134,6 +135,7 @@
 		/* outline-offset: 1px; */
 
 		min-width: 100%;
+		width: 100%;
 
 		font-size: var(--font-small);
 		font-family: 'MonoLisa', monospace;

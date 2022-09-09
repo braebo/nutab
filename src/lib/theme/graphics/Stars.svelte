@@ -4,11 +4,12 @@
 	import { onMount } from 'svelte'
 
 	export let size
+	export let starSize = 5
 	let mounted = false
 	onMount(() => (mounted = true))
 
 	const p = (max) => Math.floor(Math.random() * Math.floor(max)) // random star position
-	const s = (max) => (Math.random() * Math.floor(max)).toFixed(2) // random star size
+	const s = () => (Math.random() * Math.floor(starSize)).toFixed(2) // random star size
 </script>
 
 {#if mounted}
@@ -20,7 +21,7 @@
 	>
 		{#each Array(15).fill() as star}
 			<!-- prettier-ignore -->
-			<div style="--star-size: {String(s(3) / 3) + 'px'}">
+			<div style="--star-size: {String(s() / 3) + 'px'}">
 			<figure style="top:{p(100)}%;left:{p(100)}%;animation-delay:{p(3)}s;" class="star">
         	    <figure class="star-top" />
         	    <figure class="star-bottom" />

@@ -1,0 +1,15 @@
+{
+  "alias": {
+    "$lib": "src/lib",
+    "$lib/*": "src/lib/*"
+  },
+  "resolveExtensions": [
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".vue",
+    ".scss",
+    ".less"
+  ]
+}

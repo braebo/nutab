@@ -67,16 +67,19 @@
 </div>
 
 <style lang="scss">
-	:root[theme='dark'] {
-		--color: hsla(0, 0%, 80%, 1);
-		--header-color: hsla(0, 0%, 80%, 1);
-		--background-int: hsla(241, 6%, 15%, 1);
+	#inspector-side-menu {
+		--color: var(--dark-a);
 		--nub-bg: var(--background-int);
-		--highlight: hsla(0, 0%, 25%, 1);
-		--lowlight: hsla(0, 0%, 5%, 1);
-		--header-bg: hsla(0, 0%, 10%, 1);
+		--highlight: var(--light-c);
+		--lowlight: var(--light-b);
+		--background-int: var(--light-a);
+		--nub-bg: var(--background-int);
+		--header-bg: var(--light-b);
+		--header-color: var(--dark-c);
+		--value-color: rgb(238, 135, 0);
+		--key-color: rgb(31, 102, 133);
+		--font-small: 0.9em;
 	}
-
 	.side-menu {
 		position: fixed;
 		/* top: var(--sm-top); */
@@ -94,11 +97,6 @@
 		z-index: var(--z, 2001);
 
 		border-radius: 5px;
-		// overflow-x: visible;
-		// overflow-y: hidden;
-		// overflow-x: visible;
-
-		// scrollbar-width: 0px;
 	}
 
 	.side-menu.isOpen {
@@ -107,7 +105,7 @@
 
 	.side-menu .nub {
 		position: absolute;
-		right: 100%;
+		right: 99%;
 		top: 20px;
 
 		padding: 10px;
