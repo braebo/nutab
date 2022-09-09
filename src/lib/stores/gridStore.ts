@@ -1,16 +1,22 @@
 import { activeFolderBookmarks } from '$lib/data/dbStore'
 import { writable, derived } from 'svelte/store'
 import { settings } from '$lib/stores'
+import { screenW } from 'fractils'
 
 // Used to trigger the grid's {#key} block
 export const reRender = writable(false)
 
-export const grid = derived([activeFolderBookmarks, settings], ([$activeFolderBookmarks, $settings]) => ({
-	gridWidth: $settings.ranges.gridWidth.value,
-	iconSize: $settings.ranges.iconSize.value,
-	gridGap: $settings.ranges.gridGap.value,
-	items: $activeFolderBookmarks,
-}))
+export const grid = derived(
+	[activeFolderBookmarks, settings, screenW],
+	([$activeFolderBookmarks, $settings, $screenW]) => {
+		return {
+			gridWidth: Math.min($settings.ranges.gridWidth.value, $screenW),
+			iconSize: $settings.ranges.iconSize.value,
+			gridGap: $settings.ranges.gridGap.value,
+			items: $activeFolderBookmarks,
+		}
+	},
+)
 
 export const gridDimensions = derived(grid, ($grid) => {
 	const { iconSize, gridGap, gridWidth } = $grid
