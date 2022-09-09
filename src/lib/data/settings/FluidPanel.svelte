@@ -30,8 +30,8 @@
 		x: 45,
 		y: 92,
 		rx: 8,
-		width: 3,
-		height: 5,
+		width: 4,
+		height: 7,
 	}
 
 	// Transition duration for open() and close().
@@ -145,8 +145,8 @@
 					on:click={() => ($showSettings = true)}
 				/>
 				<text
-					x="{43}%"
-					y="{$y + 3.3}%"
+					x="{42.75}%"
+					y="{$y + 4.5}%"
 					font-size="15"
 					fill="var(--dark-d)"
 					pointer-events="none"

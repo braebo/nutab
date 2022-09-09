@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Settings } from '$lib/stores/settingsStore'
 
-	import { settings } from '$lib/stores'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import Control from '../grid/Control.svelte'
-	import Range from '$lib/ui/Range.svelte'
 	import { createGradient } from '$lib/theme'
+	import Range from '$lib/ui/Range.svelte'
+	import { settings } from '$lib/stores'
 
 	export let thisTheme: keyof Settings['theme']
 
