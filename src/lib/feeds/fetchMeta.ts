@@ -55,9 +55,9 @@ const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url
  * @returns A promise that resolves to the metadata.
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
-export const fetchMeta = async (url: string, imgOnly = false) => {
+export const fetchMeta = async (url: string, imgOnly = false, proxy = false) => {
 	// const corsUrl = dev ? CORS + url : url
-	const corsUrl = CORS + url
+	const corsUrl = proxy ? CORS + url : url
 
 	const head = await fetchHead(corsUrl)
 	const dom = parse(head)
