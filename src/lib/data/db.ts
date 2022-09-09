@@ -27,10 +27,10 @@ db.on('populate', async () => {
 	log('🎬 Adding default Bookmark Folder: ', '#fa8', 'dimgray', 25)
 
 	// Add default bookmarks
-	await db.bookmarks.bulkAdd(defaultBookmarks)
+	await db.bookmarks.bulkAdd(defaultBookmarks).catch((e) => console.warn('Error adding default bookmarks', e))
 
 	// Add default folder
-	await db.folders.add(defaultFolder)
+	await db.folders.add(defaultFolder).catch((e) => console.warn('Error adding default folder', e))
 
 	// Store folder ID in localStorage
 	lastActiveFolderId.set(defaultFolder.folder_id)

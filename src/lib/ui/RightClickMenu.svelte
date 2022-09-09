@@ -3,6 +3,7 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
+	import { exportBookmarks, importBookmarks } from '$lib/data/importExport'
 	import { folderEditor, editorShown } from '$lib/stores'
 	import { getFolder_db } from '$lib/data/transactions'
 	import { editor } from '$lib/stores/bookmarkEditor'
@@ -22,6 +23,18 @@
 			text: 'Settings',
 			action: () => {
 				$showSettings = true
+			},
+		},
+		{
+			text: 'Download Bookmarks',
+			action: async () => {
+				await exportBookmarks()
+			},
+		},
+		{
+			text: 'Upload Bookmarks',
+			action: async () => {
+				await importBookmarks()
 			},
 		},
 	]

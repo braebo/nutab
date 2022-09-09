@@ -43,6 +43,7 @@
 		"cuid": "^2.1.8",
 		"date-fns": "^2.29.2",
 		"dexie": "^3.2.2",
+		"dexie-export-import": "^1.0.3",
 		"fractils": "^3.0.2",
 		"froebel": "^0.21.3",
 		"greset": "^2.0.0",

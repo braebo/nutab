@@ -63,7 +63,7 @@ export async function newBookmark_db(bookmark: Bookmark) {
 	// Todo: Consolidate this into a single transaction?
 
 	// Add to bookmarks table
-	await db.bookmarks.add(bookmark)
+	await db.bookmarks.put(bookmark).catch((e) => console.warn('Error adding bookmark', e, bookmark))
 
 	// Add id to activeFolder store
 	activeFolder.update((f) => {
@@ -71,13 +71,13 @@ export async function newBookmark_db(bookmark: Bookmark) {
 		return f
 	})
 
+	const folder = get(activeFolder)
 	// Replace Folder table's bookmarks with new array
-	await db.folders.update(get(activeFolder), {
-		bookmarks: get(activeFolder).bookmarks
-	})
+	await db.folders.update(folder, {
+		bookmarks: folder.bookmarks
+	}).catch((e) => console.warn('Error updating folder', e, folder))
 
 	// Update activeBookmarks store
-	console.log(get(tagFilter))
 	if (get(tagFilter) === null) {
 		activeBookmarks.set(get(activeFolderBookmarks))
 	}
