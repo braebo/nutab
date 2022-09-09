@@ -33,7 +33,7 @@ const fetchHead = async (url: string) => {
 		const res = await fetch(url, {
 			mode: 'cors',
 			headers: {
-				'Content-Type': 'text/html; charset=UTF-8',
+				'Content-Type': 'text/html',
 				Accept: 'text/html',
 			},
 		})

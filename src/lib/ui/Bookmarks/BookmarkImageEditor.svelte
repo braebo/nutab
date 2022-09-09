@@ -3,9 +3,9 @@
 	import ImageURL from './ImageURL.svelte'
 	import Tooltip from '../Tooltip.svelte'
 
-	import { fly, fade } from 'svelte/transition'
 	import { bookmarkEditor } from '$lib/stores'
 	import fetchMeta from '$lib/feeds/fetchMeta'
+	import { fly } from 'svelte/transition'
 	import { log } from 'fractils'
 
 	$: autoImageError = false
