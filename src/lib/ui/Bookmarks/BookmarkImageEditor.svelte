@@ -26,12 +26,11 @@
 	async function getAutoImage() {
 		loading = true
 
-		const url = $bookmarkEditor?.url.startsWith('https://')
-			? $bookmarkEditor?.url
-			: 'https://' + $bookmarkEditor?.url
+		let url = $bookmarkEditor?.url.startsWith('https://') ? $bookmarkEditor?.url : 'https://' + $bookmarkEditor?.url
 
-		const meta = await fetchMeta(url, true)
-		log({ meta })
+		url = url.replace('http://', '')
+
+		const meta = await fetchMeta(url, true, true)
 
 		if (meta?.image) {
 			$bookmarkEditor.image = meta.image
