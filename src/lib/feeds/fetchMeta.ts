@@ -31,11 +31,10 @@ const fetchHead = async (url: string) => {
 
 	try {
 		const res = await fetch(url, {
-			mode: 'cors',
+			mode: 'no-cors',
 			headers: {
 				'Content-Type': 'text/html',
 				Accept: 'text/html',
-				'Access-Control-Allow-Origin': '*',
 			},
 		})
 		if (!res.ok) return ''
