@@ -25,7 +25,6 @@
 		class="item-{i} grid-item"
 		href={url}
 		class:dragging
-		target="_blank"
 		draggable="false"
 		on:contextmenu|stopPropagation|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
 	>
