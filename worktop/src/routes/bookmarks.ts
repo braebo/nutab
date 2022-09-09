@@ -15,10 +15,17 @@ export const post_bookmarks: Handler<WorktopContext> = async (req, ctx) => {
 			message: 'Missing a json body 🤨',
 		})
 
-	// Write bookmarks to kv
+	// Get the phrase
 	const phrase = ctx.params.phrase
 
 	// If no phrase, return error
+	if (!phrase)
+		return reply(400, {
+			error: 'Bad Request',
+			message: 'Missing a user phrase 🤨',
+		})
+
+	// Write bookmarks to kv
 	await kv.write<Bookmarks>(ctx.bindings.BOOKMARKS, phrase, body)
 
 	// Return success

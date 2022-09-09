@@ -20,7 +20,8 @@
 	}
 </script>
 
-<div class="account">
+<comingSoon in:fly={{ y: 10, delay: 150 }} out:fly|local={{ y: 2, duration: 200 }}>Coming Soon</comingSoon>
+<div class="account DISABLED">
 	{#if $userPhrase?.length}
 		{#key revealPhrase}
 			{#if revealPhrase}
@@ -85,6 +86,26 @@
 </div>
 
 <style lang="scss">
+	.DISABLED {
+		opacity: 0.25;
+		pointer-events: none;
+	}
+	comingSoon {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		z-index: 999;
+		font-size: 1.5rem;
+		color: var(--dark-c);
+		top: -9.75rem;
+		font-family: var(--font-a);
+		letter-spacing: 1px;
+		pointer-events: none;
+	}
+
 	.account {
 		margin-top: 1rem;
 		position: relative;
