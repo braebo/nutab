@@ -9,6 +9,15 @@
 
 	let revealPhrase = false
 	let email = ''
+
+	const handleConnect = () => {
+		//...
+	}
+
+	const handleCreate = () => {
+		createUser(email)
+		if (!$userEmail) $userEmail = email
+	}
 </script>
 
 <div class="account">
@@ -20,7 +29,7 @@
 						<div
 							class="word"
 							in:fly={{ y: 5, delay: 100 + 10 * i, duration: 750 }}
-							out:fly={{ y: -5, delay: 10 * ($userPhrase.length - i), duration: 750 }}
+							out:fly={{ y: -5, delay: 10 * ($userPhrase.length - i), duration: 350 }}
 						>
 							{word}
 						</div>
@@ -34,9 +43,16 @@
 							👁
 						</div>
 					</Tooltip>
+					<p class="note" in:fly={{ y: 3, delay: 300 }} out:fly={{ y: 3, duration: 250 }}>
+						Store your phrase in a safe place and use it to sync your devices.
+					</p>
+				</div>
+			{:else}
+				<div class="reveal" in:fade={{ delay: 750 }} out:fade={{ duration: 250 }}>
+					<Button --width="14rem" on:click={() => (revealPhrase = true)}>Reveal secret passphrase</Button>
 				</div>
 				{#if !$userEmail}
-					<div class="email" transition:fade={{ duration: 150 }}>
+					<div class="email" in:fade={{ duration: 150, delay: 300 }} out:fade|local={{ duration: 50 }}>
 						<p>
 							Add a recovery email <span class="note">(optional)</span>
 						</p>
@@ -49,10 +65,6 @@
 						<p class="note">A recovery email can be used to recover a lost passphrase.</p>
 					</div>
 				{/if}
-			{:else}
-				<div class="reveal" in:fade={{ delay: 750 }} out:fade={{ duration: 250 }}>
-					<Button --width="14rem" on:click={() => (revealPhrase = true)}>Reveal secret passphrase</Button>
-				</div>
 			{/if}
 		{/key}
 	{:else}
@@ -60,13 +72,13 @@
 			<p style:transform="translateY(-0.25rem)">Sync your data across browsers.</p>
 			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
 			<div class="button">
-				<div class="btn" on:click={() => createUser(email)}>New Sync Code</div>
+				<div class="btn" on:click={handleCreate}>New Sync Code</div>
 			</div>
 		</div>
 		<div class="existing" in:fly={{ y: 5, duration: 350, delay: 150 }} out:fly|local={{ y: 5, duration: 150 }}>
 			<p>Already have a Sync Code?</p>
 			<div class="button">
-				<div class="btn" on:click={() => createUser(email)}>Connect</div>
+				<div class="btn" on:click={handleConnect}>Connect</div>
 			</div>
 		</div>
 	{/if}
@@ -74,7 +86,7 @@
 
 <style lang="scss">
 	.account {
-		margin-top: 3rem;
+		margin-top: 1rem;
 		position: relative;
 		display: flex;
 		flex-direction: column;
@@ -112,6 +124,21 @@
 				filter: saturate(1);
 			}
 		}
+
+		.note {
+			font-size: 0.9rem;
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: -4.5rem;
+
+			cursor: default;
+			transition: opacity 0.1s;
+
+			&:hover {
+				opacity: 1 !important;
+			}
+		}
 	}
 
 	.reveal {
@@ -130,20 +157,27 @@
 	}
 
 	input {
-		font-family: var(--font-a);
+		padding: 0.5rem 1rem;
+		width: 20rem;
+
 		color: var(--dark-a);
 		background-color: rgba(var(--light-c-rgb), 0.25);
 		border: none;
 		border-radius: 0.5rem;
-		padding: 0.5rem 1rem;
-		width: 20rem;
+
+		font-family: var(--font-a);
+		font-variation-settings: 'wght' 300;
 
 		&::placeholder {
 			color: var(--light-d);
 		}
 
+		&:hover {
+			outline: 1px solid var(--light-d);
+		}
+
 		&:focus {
-			outline: 1px solid var(--dark-a);
+			outline: 1px solid var(--dark-d);
 			&::placeholder {
 				content: '';
 				color: transparent;
@@ -152,17 +186,18 @@
 	}
 
 	.email {
+		position: absolute;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		gap: 1rem;
 
-		margin-top: auto;
+		bottom: -4rem;
+	}
 
-		.note {
-			opacity: 0.5;
-		}
+	.note {
+		opacity: 0.5;
 	}
 
 	.button {
@@ -170,10 +205,18 @@
 		width: fit-content;
 	}
 
+	.btn {
+		border: 1px solid var(--light-a);
+	}
+	.btn:hover {
+		border: 1px solid var(--dark-d);
+	}
+
 	.new {
 		outline: 1px solid rgba(var(--light-d-rgb), 0.1);
 		outline-offset: 1.5rem;
 		border-radius: 0.25rem;
+		margin-top: 5rem;
 	}
 
 	.new,

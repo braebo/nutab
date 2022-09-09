@@ -34,6 +34,8 @@
 		loading = true
 
 		const newStories = await fetchStories($items.length)
+		if (newStories.length === 0) return
+
 		$items = [...$items, ...newStories]
 
 		loaded = Math.min(loaded + BATCH_SIZE, get(list).length)
