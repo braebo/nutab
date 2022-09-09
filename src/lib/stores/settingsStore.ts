@@ -1,5 +1,6 @@
 import localStorageStore from '$lib/utils/localStorageStore'
 import { derived, writable } from 'svelte/store'
+import { randomBackground, randomColor, randomGradient } from '$lib/utils'
 import { theme } from 'fractils'
 
 interface Range {
@@ -38,6 +39,10 @@ export interface Settings {
 	invertDark?: boolean
 }
 
+const sharedBG = randomBackground()
+const lightBG = randomBackground()
+const darkBG = randomBackground()
+
 export const default_settings: Settings = {
 	ranges: {
 		gridWidth: { label: 'Width', value: 1300, range: { min: 500, max: 2000 } },
@@ -49,28 +54,28 @@ export const default_settings: Settings = {
 	sharedTheme: true,
 	theme: {
 		shared: {
-			background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
+			background: sharedBG.gradient,
 			lockBackground: false,
 			customGradient: false,
-			gradientA: '',
-			gradientB: '',
-			gradientOpacity: { label: 'Opacity', value: 48, range: { min: 0, max: 255 } },
+			gradientA: sharedBG.a,
+			gradientB: sharedBG.b,
+			gradientOpacity: { label: 'Opacity', value: sharedBG.opacity, range: { min: 0, max: 255 } },
 		},
 		light: {
-			background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
+			background: lightBG.gradient,
 			lockBackground: false,
 			customGradient: false,
-			gradientA: '',
-			gradientB: '',
-			gradientOpacity: { label: 'Opacity', value: 48, range: { min: 0, max: 255 } },
+			gradientA: lightBG.a,
+			gradientB: lightBG.b,
+			gradientOpacity: { label: 'Opacity', value: lightBG.opacity, range: { min: 0, max: 255 } },
 		},
 		dark: {
-			background: 'background-image: linear-gradient(to top, rgba(24, 38, 213, 0.1), rgba(51, 105, 207, 0.1));',
+			background: darkBG.gradient,
 			lockBackground: false,
 			customGradient: false,
-			gradientA: '',
-			gradientB: '',
-			gradientOpacity: { label: 'Opacity', value: 48, range: { min: 0, max: 255 } },
+			gradientA: darkBG.a,
+			gradientB: darkBG.b,
+			gradientOpacity: { label: 'Opacity', value: darkBG.opacity, range: { min: 0, max: 255 } },
 		},
 	},
 }

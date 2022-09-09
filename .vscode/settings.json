@@ -243,5 +243,6 @@
 		"**/CVS": true,
 		"**/.DS_Store": true,
 		"**.svelte-kit": true
-	}
+	},
+	"testing.automaticallyOpenPeekView": "never"
 }
