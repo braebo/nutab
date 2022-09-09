@@ -56,7 +56,8 @@ const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
 export const fetchMeta = async (url: string, imgOnly = false) => {
-	const corsUrl = dev ? CORS + url : url
+	// const corsUrl = dev ? CORS + url : url
+	const corsUrl = CORS + url
 
 	const head = await fetchHead(corsUrl)
 	const dom = parse(head)
