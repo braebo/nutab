@@ -19,7 +19,6 @@
 		input(
 			type='text'
 			bind:value='{img}'
-			on:blur!='{() => open = false}'
 			on:input='{handleChange}'
 			placeholder='Paste a custom image url here'
 			transition:slide

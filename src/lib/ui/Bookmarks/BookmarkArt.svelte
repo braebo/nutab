@@ -10,12 +10,12 @@
 		bookmark?.title?.split(' ').reduce((p: string, c: string) => {
 			return c.length > p.length ? c : p
 		}, '').length ?? 0
-	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 12, 20, 5)
+	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 15, 17, 5)
 	$: fontSizeScaled = (fontSize * $settings.ranges.iconSize.value) / 80
 
 	$: backgroundImage = bookmark?.useImage ? `url(${bookmark?.image})` : 'none'
 	$: backgroundColor = bookmark?.useImage ? `inherit` : bookmark?.background
-	$: color = $settings.transparent ? 'transparent' : bookmark?.foreground
+	$: color = bookmark?.foreground
 </script>
 
 <div
@@ -53,6 +53,7 @@
 		overflow: hidden;
 	}
 	.title {
+		padding: 5px;
 		font-weight: 500;
 		word-wrap: break-word;
 		overflow: hidden;

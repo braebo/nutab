@@ -6,13 +6,13 @@
 		$bookmarkEditor?.title?.split(' ').reduce((p: string, c: string) => {
 			return c.length > p.length ? c : p
 		}, '').length ?? 0
-	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 12, 20, 5)
+	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 15, 33, 5)
 	$: fontSizeScaled = (fontSize * $settings.ranges.iconSize.value) / 80
 
 	$: backgroundImage = $bookmarkEditor?.useImage ? `url(${$bookmarkEditor?.image})` : 'inherit'
 	$: backgroundColor = $bookmarkEditor?.useImage ? `inherit` : $bookmarkEditor?.background
 
-	$: color = $settings.transparent ? 'transparent' : $bookmarkEditor?.foreground
+	$: color = $bookmarkEditor?.foreground
 
 	$: imageStyle = `
 		width: var(--size, ${$settings.ranges.iconSize.value}px);
@@ -60,6 +60,7 @@
 		overflow: hidden;
 	}
 	.title {
+		padding: 5px;
 		font-weight: 500;
 		word-wrap: break-word;
 		overflow: hidden;

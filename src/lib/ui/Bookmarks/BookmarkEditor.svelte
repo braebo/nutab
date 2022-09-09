@@ -41,6 +41,9 @@
 			urlInput.style.border = '1px solid transparent'
 			return
 		}
+		if (!$bookmarkEditor.image && $bookmarkEditor.useImage) {
+			$bookmarkEditor.useImage = false
+		}
 		if ($bookmarkEditorContext === 'edit') {
 			updateBookmark_db($bookmarkEditor)
 		} else {
