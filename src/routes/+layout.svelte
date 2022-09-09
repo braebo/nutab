@@ -14,7 +14,7 @@
 	import { Header } from '$lib/ui'
 
 	// Utils
-	import { initBackground, randomizeBackground } from '$lib/theme/'
+	import { initBackground, randomizeBackground } from '$lib/theme'
 	import { Fractils, theme } from 'fractils'
 	import { dev } from '$app/environment'
 	import { page } from '$app/stores'
@@ -24,8 +24,8 @@
 	import '../styles/app.scss'
 	import 'greset/greset.css'
 
-	onMount(() => {
-		addMissingSettings()
+	onMount(async () => {
+		await addMissingSettings()
 
 		initBackground()
 

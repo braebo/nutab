@@ -1,11 +1,6 @@
 <script lang="ts">
 	import { dev } from '$app/environment'
 	import { page } from '$app/stores'
-
-	export let status: string
-	export let error: Record<string, any>
-
-	if (dev) console.log(error)
 </script>
 
 <template lang="pug">
