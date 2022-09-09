@@ -22,12 +22,12 @@ export async function init_db() {
 	// Get the last active folder
 	log('🏁 Database found.', '#fa8', 'dimgray', 25)
 	await wait(100)
-	const id = localStorage.getItem('lastActiveFolderId')
+	const id = get(lastActiveFolderId)
 
 	// Populate stores
 	let lastActiveFolder: Folder | undefined
 	lastActiveFolder = await db.table('folders').where('folder_id').equals(id).first()
-	
+
 	// If no last active folder, use the first one
 	// All of this might not be necessary, but.. edge cases are.. edge cases
 	if (!lastActiveFolder) {

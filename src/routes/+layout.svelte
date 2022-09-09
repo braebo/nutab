@@ -27,9 +27,9 @@
 	onMount(async () => {
 		await addMissingSettings()
 
-		initBackground()
+		await init_db()
 
-		init_db()
+		initBackground()
 	})
 </script>
 
