@@ -24,7 +24,7 @@
 
 	main(bind:this='{main}')
 		.col
-			.news(use:visibility!='{{ threshold: 0.05, margin: "20px" }}' on:f-enter='{handleChange}')
+			.news(use:visibility!='{{ threshold: 0.05, margin: "20px" }}' on:v-change='{handleChange}')
 				+if('newsVisible')
 					News
 
