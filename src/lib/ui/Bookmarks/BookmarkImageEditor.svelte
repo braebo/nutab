@@ -35,6 +35,9 @@
 		if (meta?.image) {
 			$bookmarkEditor.image = meta.image
 			$bookmarkEditor.autoImage = true
+		} else if (meta?.icon) {
+			$bookmarkEditor.image = meta.icon
+			$bookmarkEditor.autoImage = true
 		} else {
 			autoImageError = true
 			log('No image found for bookmark: ' + $bookmarkEditor?.title, 'tomato')

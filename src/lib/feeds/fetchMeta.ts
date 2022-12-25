@@ -31,7 +31,7 @@ const fetchHead = async (url: string) => {
 
 	try {
 		const res = await fetch(url, {
-			mode: 'no-cors',
+			mode: 'cors',
 			headers: {
 				'Content-Type': 'text/html',
 				Accept: 'text/html',
@@ -70,7 +70,7 @@ export const fetchMeta = async (url: string, imgOnly = false, proxy = false) => 
 	}
 
 	for (const key in rulesets) {
-		if (imgOnly && key !== 'image') continue
+		if (imgOnly && key !== ('image' || 'icon')) continue
 
 		for (const rule of rulesets[key].rules) {
 			const el = dom.querySelector(rule[0])
@@ -87,6 +87,7 @@ export const fetchMeta = async (url: string, imgOnly = false, proxy = false) => 
 			metadata[key] = makeUrlAbsolute(url, rulesets[key].defaultValue)
 		}
 	}
+	console.log({ metadata })
 	return metadata
 }
 
