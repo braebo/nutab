@@ -36,13 +36,13 @@
 		.content.col
 			.row.header
 				.col
-					a.article-link(href='{item.url ? item.url : ``}' target='_blank')
+					a.article-link(href='{item.url ? item.url : ``}' target='_blank' rel='noreferrer')
 						h2 {item.title}
 
 					.row.info
 						.since {item.days_ago}
 						span.dot · 
-						a.author(target='_blank' href!='{`https://news.ycombinator.com/user?id=${item.by}`}') {item.by}
+						a.author(target='_blank' href!='{`https://news.ycombinator.com/user?id=${item.by}`}' rel='noreferrer') {item.by}
 
 			.row
 				p.description {item.meta.description || ''}
