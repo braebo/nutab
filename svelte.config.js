@@ -1,3 +1,5 @@
+import { awesomePugPre, awesomePugPost } from 'svelte-awesome-pug'
+// import { vitePreprocess } from '@sveltejs/kit/vite'
 import vercel from '@sveltejs/adapter-vercel'
 import browser_extension from './adapter.js'
 import preprocess from 'svelte-preprocess'
@@ -9,28 +11,29 @@ const ignoreWarnings = ['a11y-click-events-have-key-events']
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: [
+		awesomePugPre,
+		// vitePreprocess(),
+		/** @type {import('vite-plugin-svelte').preprocess} */
 		preprocess({
-			postcss: true,
+			pug: true,
+			scss: true,
+			sass: true,
 		}),
+		awesomePugPost,
 	],
 	kit: {
 		adapter,
 		appDir: 'ext', //* This is important - chrome extensions can't handle the default _app directory name.
 	},
 	vitePlugin: {
-		experimental: {
-			// https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/config.md#inspector
-			inspector: {
-				toggleButtonPos: 'bottom-left',
-				toggleKeyCombo: 'meta-shift',
-				/** @type {'always' | 'active' | 'never'} */
-				showToggleButton: 'active',
-				holdMode: true,
-			},
+		inspector: {
+			toggleButtonPos: 'bottom-left',
+			toggleKeyCombo: 'control-meta',
+			showToggleButton: 'active',
+			holdMode: true,
 		},
 	},
 	onwarn: (warning, handler) => {
-		// if (warning.code.startsWith('a11y-')) {
 		if (ignoreWarnings.includes(warning.code)) {
 			return
 		}

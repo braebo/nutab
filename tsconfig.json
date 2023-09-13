@@ -6,7 +6,8 @@
 		"target": "esnext",
 		"module": "esnext",
 		"lib": ["esnext"],
-		"types": ["node", "bun-types", "tippy.js"],
+		// "types": ["node", "bun-types", "tippy.js"],
+		"types": ["bun-types"],
 		"paths": {
 			"$lib": ["src/lib"],
 			"$lib/*": ["src/lib/*"]
@@ -19,23 +20,25 @@
 		"checkJs": true,
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
+		"moduleDetection": "force",
 
 		"strict": true,
 		"skipLibCheck": true,
 		// "strictNullChecks": false,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["src/**/**/**/*.ts", "src/**/*.svelte", "src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/*.d.ts"],
-	"exclude": [
-		// "src/lib/ui/Bookmarks/Tags.svelte", // This component isn't typed
-		".vercel_build_output/*",
-		"mdsvex.config.js",
-		"node_modules/*",
-		".svelte-kit/*",
-		"functions/*",
-		"coverage/*",
-		".svelte/*",
-		"build/*",
-		"dist/*"
-	]
+	// "include": ["src/**/**/**/*.ts", "src/**/*.svelte", "src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/*.d.ts"],
+	// "exclude": [
+	// 	// "src/lib/ui/Bookmarks/Tags.svelte", // This component isn't typed
+	// 	".vercel_build_output/*",
+	// 	"mdsvex.config.js",
+	// 	"node_modules/*",
+	// 	".svelte-kit/*",
+	// 	"functions/*",
+	// 	"coverage/*",
+	// 	".svelte/*",
+	// 	"build/*",
+	// 	"dist/*"
+	// ]
+	"exclude": ["worktop"]
 }

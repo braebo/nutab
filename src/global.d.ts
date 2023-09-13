@@ -1,6 +1,7 @@
 /// <reference types="@sveltejs/kit" />
 /// <reference lib="dom.iterable" />
 /// <reference lib="vite/client" />
+/// <reference lib="tippy.js" />
 /// <reference lib="node" />
 /// <reference lib="dom" />
 

@@ -10,7 +10,7 @@ const fetchHead = async (url: string) => {
 	const read = async (body: ReadableStream<Uint8Array> | null): Promise<string> =>
 		new Promise(async (resolve) => {
 			let head = ''
-			const reader = body.getReader()
+			const reader = body!.getReader()
 			const decoder = new TextDecoder()
 
 			// Stream and decode the response body until the closing <head/> tag is found.
@@ -33,10 +33,10 @@ const fetchHead = async (url: string) => {
 		const res = await fetch(url, {
 			mode: 'cors',
 			headers: {
-				'Content-Type': 'text/html',
 				Accept: 'text/html',
 			},
 		})
+
 		if (!res.ok) return ''
 
 		return read(res.body)
@@ -55,8 +55,8 @@ const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
 export const fetchMeta = async (url: string, imgOnly = false, proxy = false) => {
-	// const corsUrl = dev ? CORS + url : url
-	const corsUrl = proxy ? CORS + url : url
+	const corsUrl = dev ? CORS + url : url
+	// const corsUrl = proxy ? CORS + url : url
 
 	const head = await fetchHead(corsUrl)
 	const dom = parse(head)
