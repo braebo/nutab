@@ -60,7 +60,7 @@
 
 <div>
 	{#if $showBookmarkEditor && $bookmarkEditor}
-		<div class="editor-container" out:fade={{ duration: 100 }}>
+		<div class="editor-container" out:fade|global={{ duration: 100 }}>
 			<BookmarkImageEditor />
 
 			<div class="setting title">

@@ -9,8 +9,8 @@
 		id="NU"
 		class="logo-text"
 		tabindex="-1"
-		in:fly={{ y: 10, duration: 1000, delay: 420, easing: backOut }}
-		out:fly={{ y: -10, duration: 1000, delay: 420, easing: quintIn }}
+		in:fly|global={{ y: 10, duration: 1000, delay: 420, easing: backOut }}
+		out:fly|global={{ y: -10, duration: 1000, delay: 420, easing: quintIn }}
 	>
 		NU
 	</span>
@@ -18,8 +18,8 @@
 	<span
 		id="TAB"
 		class="logo-text"
-		in:fly={{ y: -10, duration: 1000, delay: 420, easing: backOut }}
-		out:fly={{ y: 10, duration: 1000, delay: 420, easing: quintIn }}
+		in:fly|global={{ y: -10, duration: 1000, delay: 420, easing: backOut }}
+		out:fly|global={{ y: 10, duration: 1000, delay: 420, easing: quintIn }}
 	>
 		TAB
 	</span>

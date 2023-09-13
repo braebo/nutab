@@ -12,12 +12,12 @@
 
 <div class="login-container">
 	{#if $status != 'invalid'}
-		<div class="message" transition:fly={{ y: 100 }}>
+		<div class="message" transition:fly|global={{ y: 100 }}>
 			{#if $status == 'success'}
 				<!-- <span on:load={updateAllCollectionsList()} /> -->
-				<div class="success-message" in:slide>{$successMessage}</div>
+				<div class="success-message" in:slide|global>{$successMessage}</div>
 			{:else if $status == 'error'}
-				<div class="error-message" transition:slide>
+				<div class="error-message" transition:slide|global>
 					{#await $error?.message then err}
 						{err} 🤔
 					{/await}

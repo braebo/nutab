@@ -22,7 +22,7 @@
 	})
 </script>
 
-<div class="container" transition:fly|local={{ y: -10, duration: 250 }}>
+<div class="container" transition:fly={{ y: -10, duration: 250 }}>
 	<div class="emoji-picker scroller">
 		<input bind:this={searchBar} type="text" class="search" bind:value={search} placeholder="Search" />
 

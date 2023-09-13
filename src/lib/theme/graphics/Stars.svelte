@@ -16,8 +16,8 @@
 	<div
 		class="star-container"
 		style="width:{size * 1.5}px; height: {size}px"
-		out:fade
-		in:fade={{ delay: 750, duration: 2000 }}
+		out:fade|global
+		in:fade|global={{ delay: 750, duration: 2000 }}
 	>
 		{#each Array(15).fill() as star}
 			<!-- prettier-ignore -->

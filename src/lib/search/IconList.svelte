@@ -56,8 +56,8 @@
 				class="icon"
 				class:hovering={hovering[i] || searchFocused}
 				style="transform: translateX(-{i * 50}px);"
-				in:fly={{ x: 10 * i }}
-				out:fly={{ x: 10 * i, duration: 300 - 50 * i }}
+				in:fly|global={{ x: 10 * i }}
+				out:fly|global={{ x: 10 * i, duration: 300 - 50 * i }}
 				on:mouseover={() => mouseover(i)}
 				on:focus={() => mouseover(i)}
 				on:mouseout={() => mouseout(i)}
@@ -71,8 +71,8 @@
 
 	{#key hoverTarget}
 		<div
-			in:fly={{ delay: 50, y: 4 }}
-			out:fly={{ duration: 150, y: -4 }}
+			in:fly|global={{ delay: 50, y: 4 }}
+			out:fly|global={{ duration: 150, y: -4 }}
 			class="tooltipText"
 			class:bright={hovering[hoverTarget]}
 		>

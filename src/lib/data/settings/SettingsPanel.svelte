@@ -23,8 +23,8 @@
 					role="link"
 					class:active={activeSection === component}
 					on:click={() => (activeSection = component)}
-					out:fade={{ duration: 50 }}
-					in:fly={{ y: 5, duration: 500, delay: 200, easing: quintOut }}
+					out:fade|global={{ duration: 50 }}
+					in:fly|global={{ y: 5, duration: 500, delay: 200, easing: quintOut }}
 				>
 					{title}
 				</div>

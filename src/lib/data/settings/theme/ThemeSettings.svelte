@@ -22,20 +22,20 @@
 </script>
 
 <div class="theme-settings">
-	<div class="shared" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
+	<div class="shared" in:fly|global={_in({ y: 10 })} out:fly|global={_out({ y: 10 })}>
 		<TabOptions options={['Shared', 'Separate']} bind:selected on:select={toggleShared} />
 	</div>
 
 	{#if $settings.sharedTheme}
 		<div class="content">
-			<div class="editor" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
+			<div class="editor" in:fly|global={_in({ y: 10 })} out:fly|global={_out({ y: 10 })}>
 				<ThemeEditor thisTheme="shared" />
 			</div>
 		</div>
 	{:else}
 		<div class="content">
 			<div class="modes">
-				<div class="editor light" in:fly={_in({ x: -10 })} out:fly={_out({ x: -10 })}>
+				<div class="editor light" in:fly|global={_in({ x: -10 })} out:fly|global={_out({ x: -10 })}>
 					<div class="title">
 						<div class="h3">Light</div>
 						<div class="sun">
@@ -45,7 +45,7 @@
 					</div>
 					<ThemeEditor thisTheme="light" />
 				</div>
-				<div class="editor dark" in:fly={_in({ x: 10 })} out:fly={_out({ x: 10 })}>
+				<div class="editor dark" in:fly|global={_in({ x: 10 })} out:fly|global={_out({ x: 10 })}>
 					<div class="title">
 						<div class="h3">Dark</div>
 						<div class="moon">

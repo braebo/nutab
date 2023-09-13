@@ -30,7 +30,7 @@
 	>
 		<div
 			class="bookmark"
-			in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
+			in:scale|global={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
 			on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
 			on:focus={() => debounce(() => ($settings.showTitle = false))}
 		>
@@ -38,7 +38,7 @@
 
 			{#if $settings.showTitle || hovering == i}
 				{#if title && !dragging}
-					<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
+					<p transition:fade|global={{ duration: disableTransitions ? 0 : 100 }}>
 						{title}
 					</p>
 				{/if}

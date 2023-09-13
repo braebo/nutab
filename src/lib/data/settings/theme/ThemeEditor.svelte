@@ -37,8 +37,8 @@
 						<div
 							class:shared
 							class="shuffle-bg"
-							in:fly|local={{ y: 10, duration: 250, delay: 200 }}
-							out:fly|local={{ y: 10, duration: 250 }}
+							in:fly={{ y: 10, duration: 250, delay: 200 }}
+							out:fly={{ y: 10, duration: 250 }}
 						>
 							<ShuffleBackground {thisTheme} />
 						</div>
@@ -50,8 +50,8 @@
 			<div
 				class="color-pickers"
 				class:shared
-				in:fly={{ ...gradientIn, duration: 150, delay: 250 }}
-				out:fly|local={{ x: 5 * direction, duration: 10 }}
+				in:fly|global={{ ...gradientIn, duration: 150, delay: 250 }}
+				out:fly={{ x: 5 * direction, duration: 10 }}
 			>
 				<GradientEditor {thisTheme} />
 			</div>

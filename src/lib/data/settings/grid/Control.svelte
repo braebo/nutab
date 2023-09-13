@@ -5,7 +5,7 @@
 	export let i = 1
 </script>
 
-<div class="control" in:fly={{ y: 10, duration: 300, delay: 100 + 33 * i }} out:fly={{ y: 10, duration: 100 }}>
+<div class="control" in:fly|global={{ y: 10, duration: 300, delay: 100 + 33 * i }} out:fly|global={{ y: 10, duration: 100 }}>
 	{#if label}<label for={label}>{label}</label>{/if}
 	<div class="range" class:fullWidth={label}>
 		<slot />

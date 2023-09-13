@@ -9,7 +9,7 @@
 </script>
 
 {#if showModal}
-	<div class="background" style="background-color: {background};" transition:fade={{ duration: 150 }}>
+	<div class="background" style="background-color: {background};" transition:fade|global={{ duration: 150 }}>
 		<div class="wrapper" use:clickOutside on:click_outside={() => editor.hide()}>
 			<slot />
 		</div>

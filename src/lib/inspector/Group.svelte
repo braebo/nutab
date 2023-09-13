@@ -27,7 +27,7 @@
 	</h4>
 
 	{#if isOpen && 'subscribe' in store}
-		<div class="state-data" transition:slide>
+		<div class="state-data" transition:slide|global>
 			{#key $store}
 				{#if $store === null}
 					<div class="null">null</div>

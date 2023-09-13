@@ -21,7 +21,7 @@
 			bind:value='{img}'
 			on:input='{handleChange}'
 			placeholder='Paste a custom image url here'
-			transition:slide
+			transition:slide|global
 		)
 
 </template>

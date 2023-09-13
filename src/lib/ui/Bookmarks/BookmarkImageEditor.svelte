@@ -61,7 +61,7 @@
 	<div class="icon-display-options" class:hovering>
 		<div class="icon-mode-container">
 			{#if $bookmarkEditor?.useImage}
-				<div class="auto-image-btn" class:loading in:fly={{ x: 10 }} out:fly={{ x: 10, duration: 100 }}>
+				<div class="auto-image-btn" class:loading in:fly|global={{ x: 10 }} out:fly|global={{ x: 10, duration: 100 }}>
 					{#if !autoImageError}
 						{#if !loading}
 							<Tooltip

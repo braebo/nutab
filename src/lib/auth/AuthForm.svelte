@@ -83,13 +83,13 @@
 <span style="--status-color: {statusColor}">
 	{#if $showAuthForm}
 		<div
-			in:fade
-			out:slide
+			in:fade|global
+			out:slide|global
 			class="auth-container"
 			style={`--width: ${width}; border: solid 1px ${statusColor};`}
 			class:formValid
 		>
-			<nav in:fly={{ y: 10, delay: 200 }} class="auth-nav">
+			<nav in:fly|global={{ y: 10, delay: 200 }} class="auth-nav">
 				<ul class="login-signup">
 					<li>
 						<h2 class="anim-link" class:activeTab={active == 'login'} on:click={() => (active = 'login')}>
@@ -109,7 +109,7 @@
 					<div {width}>
 						<input
 							bind:this={emailInput}
-							in:bounce={{
+							in:bounce|global={{
 								easing: elasticOut,
 								delay: 50,
 								duration: 750
@@ -127,7 +127,7 @@
 						/>
 						<input
 							bind:this={passwordInput}
-							in:bounce={{
+							in:bounce|global={{
 								easing: elasticOut,
 								delay: 250,
 								duration: 750
@@ -145,7 +145,7 @@
 							autocomplete="current-password"
 						/>
 						{#if password}
-							<div class="eye-icon" on:click={() => (showPassword = !showPassword)} transition:fade>
+							<div class="eye-icon" on:click={() => (showPassword = !showPassword)} transition:fade|global>
 								<EyeIcon active={showPassword} />
 							</div>
 						{/if}
@@ -160,13 +160,13 @@
 							<input
 								class:formValid
 								type="submit"
-								in:scale={{
+								in:scale|global={{
 									y: 100,
 									delay: 200,
 									easing: quintOut,
 									duration: 400
 								}}
-								out:fly={{ y: 100, duration: 750 }}
+								out:fly|global={{ y: 100, duration: 750 }}
 								on:click|preventDefault={() =>
 									active == 'login' ? dispatch('signin') : dispatch('signup')}
 								value={active == 'login' ? 'Login' : 'Sign Up'}
@@ -177,8 +177,8 @@
 			</form>
 			<div
 				class="github-icon"
-				in:scale={{ delay: 300, easing: quintOut, duration: 400 }}
-				out:fly={{ y: -400, duration: 750 }}
+				in:scale|global={{ delay: 300, easing: quintOut, duration: 400 }}
+				out:fly|global={{ y: -400, duration: 750 }}
 				on:click|preventDefault={handleGithub}
 			>
 				<GithubIcon />

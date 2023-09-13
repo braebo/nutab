@@ -48,7 +48,7 @@
 			</span>
 		</div>
 
-		<p class="body" in:fly={{ y: 5 }}>
+		<p class="body" in:fly|global={{ y: 5 }}>
 			{@html pulseCheck(comment, comment.text)}
 		</p>
 

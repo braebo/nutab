@@ -26,8 +26,8 @@
 			<span style:pointer-events="none">
 				{#if $theme == 'light'}
 					<div
-						out:fade
-						in:fly={{
+						out:fade|global
+						in:fly|global={{
 							y: first ? -40 : 1,
 							duration: first ? 2000 : 750,
 							opacity: first ? 1 : 0,
@@ -40,8 +40,8 @@
 				{:else if $theme == 'dark'}
 					<Stars {size} />
 					<div
-						out:fade
-						in:fly={{
+						out:fade|global
+						in:fly|global={{
 							y: first ? -40 : 1,
 							duration: first ? 2000 : 750,
 							opacity: first ? 1 : 0,

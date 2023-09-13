@@ -260,7 +260,7 @@
 								on:focus={() => handleItemMouseOver(i)}
 								on:blur={() => handleItemMouseOut(i)}
 								class="edit"
-								transition:scale={{ duration: 150 }}
+								transition:scale|global={{ duration: 150 }}
 								on:click|preventDefault|stopPropagation={() => editor.show(['edit', 'bookmark'], i)}
 							>
 								<Edit />

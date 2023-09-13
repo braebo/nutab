@@ -17,7 +17,7 @@
 		LoadingDots
 
 		+then('item')
-			article.item(out:fly='{{ y: -10, duration: transitionDuration }}' in:fly='{{ y: -10, delay: transitionDuration }}')
+			article.item(out:fly='{{ y: -10, duration: transitionDuration }}' in:fly|global='{{ y: -10, delay: transitionDuration }}')
 				a(class='main-link' href='{item.url}' target="_blank")
 					h1 {item.title}
 

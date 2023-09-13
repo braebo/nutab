@@ -7,7 +7,7 @@
 	<!-- <input type="checkbox" bind:checked={$settings.showTitle} /> -->
 	<div class="btn" on:click={() => ($settings.showTitle = !$settings.showTitle)}>
 		{#key $settings.showTitle}
-			<div class="show-hide" in:fly={{ y: 30 }} out:fly={{ y: -30 }}>
+			<div class="show-hide" in:fly|global={{ y: 30 }} out:fly|global={{ y: -30 }}>
 				{$settings.showTitle ? 'Hide' : 'Show'}
 			</div>
 		{/key}

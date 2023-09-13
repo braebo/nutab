@@ -140,7 +140,7 @@
 
 	+if('hovering || !!$debug')
 		// svelte-ignore a11y-mouse-events-have-key-events
-		button(on:click='{toggle}' on:mouseover='{mouseover}' transition:fly='{{ y: 50 }}')
+		button(on:click='{toggle}' on:mouseover='{mouseover}' transition:fly|global='{{ y: 50 }}')
 			.bug 🐞
 
 </template>

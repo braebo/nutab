@@ -46,8 +46,8 @@
 
 	<div
 		class="show-title"
-		in:fly={{ y: 10, duration: 200, delay: 50 * Object.keys($settings.ranges).length }}
-		out:fly={{ y: 15, duration: 100 }}
+		in:fly|global={{ y: 10, duration: 200, delay: 50 * Object.keys($settings.ranges).length }}
+		out:fly|global={{ y: 15, duration: 100 }}
 	>
 		<ShowTitle />
 	</div>

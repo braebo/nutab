@@ -122,8 +122,8 @@
 			+if ('$uniqueTags && smoothHovering || $tagFilter')
 
 				.tags(
-					in:fly='{{ x: -10, duration: 300 }}'
-					out:fly='{{ x: -20, duration: 600 }}'
+					in:fly|global='{{ x: -10, duration: 300 }}'
+					out:fly|global='{{ x: -20, duration: 600 }}'
 				)
 
 					+if('$uniqueTags')

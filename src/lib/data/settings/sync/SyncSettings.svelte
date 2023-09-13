@@ -20,7 +20,7 @@
 	}
 </script>
 
-<comingSoon in:fly={{ y: 10, delay: 150 }} out:fly|local={{ y: 2, duration: 200 }}>Coming Soon</comingSoon>
+<comingSoon in:fly|global={{ y: 10, delay: 150 }} out:fly={{ y: 2, duration: 200 }}>Coming Soon</comingSoon>
 <div class="account DISABLED">
 	{#if $userPhrase?.length}
 		{#key revealPhrase}
@@ -29,8 +29,8 @@
 					{#each $userPhrase as word, i}
 						<div
 							class="word"
-							in:fly={{ y: 5, delay: 100 + 10 * i, duration: 750 }}
-							out:fly={{ y: -5, delay: 10 * ($userPhrase.length - i), duration: 350 }}
+							in:fly|global={{ y: 5, delay: 100 + 10 * i, duration: 750 }}
+							out:fly|global={{ y: -5, delay: 10 * ($userPhrase.length - i), duration: 350 }}
 						>
 							{word}
 						</div>
@@ -38,22 +38,22 @@
 					<Tooltip content="Hide_Passphrase" delay={[300, 100]}>
 						<div
 							class="hide"
-							transition:fly={{ x: 10, delay: 250, duration: 200, easing: quintOut }}
+							transition:fly|global={{ x: 10, delay: 250, duration: 200, easing: quintOut }}
 							on:click={() => (revealPhrase = false)}
 						>
 							👁
 						</div>
 					</Tooltip>
-					<p class="note" in:fly={{ y: 3, delay: 300 }} out:fly={{ y: 3, duration: 250 }}>
+					<p class="note" in:fly|global={{ y: 3, delay: 300 }} out:fly|global={{ y: 3, duration: 250 }}>
 						Store your phrase in a safe place and use it to sync your devices.
 					</p>
 				</div>
 			{:else}
-				<div class="reveal" in:fade={{ delay: 750 }} out:fade={{ duration: 250 }}>
+				<div class="reveal" in:fade|global={{ delay: 750 }} out:fade|global={{ duration: 250 }}>
 					<Button --width="14rem" on:click={() => (revealPhrase = true)}>Reveal secret passphrase</Button>
 				</div>
 				{#if !$userEmail}
-					<div class="email" in:fade={{ duration: 150, delay: 300 }} out:fade|local={{ duration: 50 }}>
+					<div class="email" in:fade|global={{ duration: 150, delay: 300 }} out:fade={{ duration: 50 }}>
 						<p>
 							Add a recovery email <span class="note">(optional)</span>
 						</p>
@@ -69,14 +69,14 @@
 			{/if}
 		{/key}
 	{:else}
-		<div class="new" in:fly={{ y: 5, duration: 350, delay: 100 }} out:fly|local={{ y: 5, duration: 150 }}>
+		<div class="new" in:fly|global={{ y: 5, duration: 350, delay: 100 }} out:fly={{ y: 5, duration: 150 }}>
 			<p style:transform="translateY(-0.25rem)">Sync your data across browsers.</p>
 			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
 			<div class="button">
 				<div class="btn" on:click={handleCreate}>New Sync Code</div>
 			</div>
 		</div>
-		<div class="existing" in:fly={{ y: 5, duration: 350, delay: 150 }} out:fly|local={{ y: 5, duration: 150 }}>
+		<div class="existing" in:fly|global={{ y: 5, duration: 350, delay: 150 }} out:fly={{ y: 5, duration: 150 }}>
 			<p>Already have a Sync Code?</p>
 			<div class="button">
 				<div class="btn" on:click={handleConnect}>Connect</div>

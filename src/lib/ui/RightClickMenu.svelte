@@ -96,8 +96,8 @@
 		style="left: {$cMenu.x}px;top: {$cMenu.y}px;"
 		use:clickOutside
 		on:outclick={handleClickOutside}
-		in:fly={{ y: 5, duration: 250 }}
-		out:fly={{ y: 5, duration: 150 }}
+		in:fly|global={{ y: 5, duration: 250 }}
+		out:fly|global={{ y: 5, duration: 150 }}
 	>
 		{#each options as { text }, i}
 			<div class="option" on:click={(e) => handleAction(e, i)}>

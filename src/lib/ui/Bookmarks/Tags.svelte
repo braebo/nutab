@@ -343,7 +343,7 @@
 </div>
 
 {#if autoComplete && arrelementsmatch.length > 0 && !blurred}
-	<div class="input-matchs-parent" transition:fly|local={{ y: 3, duration: 150 }}>
+	<div class="input-matchs-parent" transition:fly={{ y: 3, duration: 150 }}>
 		<ul id="{id}_matchs" class="input-matchs">
 			{#each arrelementsmatch as element, index}
 				<li

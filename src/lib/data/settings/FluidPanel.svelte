@@ -125,7 +125,7 @@
 		style:--height="{p.h}px"
 		use:clickOutside={{ whitelist: ['controls', 'nub', 'grabber', 'theme-toggle'] }}
 		on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
-		transition:fade
+		transition:fade|global
 	>
 		<div class="panel">
 			<div class="settings">
