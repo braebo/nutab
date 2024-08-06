@@ -43,12 +43,13 @@
 		overflow-y: auto
 		scroll-snap-type: y mandatory
 
-		// Chrome
-		&::-webkit-scrollbar
-			display: none
 		
 		// Firefox
 		scrollbar-width: none
+
+		// Chrome
+		&::-webkit-scrollbar
+			display: none
 
 	.col
 		min-height: 200vh

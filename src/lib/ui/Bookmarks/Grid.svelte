@@ -287,14 +287,14 @@
 
 		transition: border 0.2s ease-in-out;
 
+		z-index: 3;
+		user-select: none;
+
 		&.showGuidelines {
 			border: 1px solid rgba(var(--dark-d-rgb), 0.5);
 			border-bottom: none;
 			border-top: none;
 		}
-
-		z-index: 3;
-		user-select: none;
 	}
 
 	.cell {

@@ -197,6 +197,8 @@
 		min-width: max-content;
 		max-width: 90%;
 
+		font-size: 1.25rem;
+
 		border: 1px solid rgba(var(--dark-a-rgb), 0.1);
 		&:hover {
 			border: 1px solid rgba(var(--dark-a-rgb), 0.5);
@@ -204,8 +206,6 @@
 		&:focus {
 			border: 1px solid rgba(var(--dark-a-rgb), 1);
 		}
-
-		font-size: 1.25rem;
 	}
 
 	.title {
@@ -227,6 +227,9 @@
 		height: 40px;
 		margin: auto;
 
+		cursor: pointer;
+		transform: translateX(-2rem);
+
 		border-radius: 4px;
 		border: 1px solid rgba(var(--dark-a-rgb), 0.1);
 		&:hover {
@@ -235,9 +238,6 @@
 		&:focus {
 			border: 1px solid rgba(var(--dark-a-rgb), 1);
 		}
-
-		cursor: pointer;
-		transform: translateX(-2rem);
 	}
 
 	.emoji-picker {

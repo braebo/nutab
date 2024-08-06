@@ -219,12 +219,12 @@
 		padding: 0;
 
 		opacity: 0.2;
+		transition: opacity 0.2s;
+		cursor: pointer;
+
 		&:hover {
 			opacity: 1;
 		}
-
-		transition: opacity 0.2s;
-		cursor: pointer;
 	}
 
 	/* 3d CSS Float Down Animation */

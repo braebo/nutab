@@ -112,14 +112,15 @@ h2 {
 p,
 li {
 	color: var(--dark-a, --text-color);
-	& a {
-		color: var(--dark-c);
-	}
-
+	
 	font-family: var(--font-a);
 	font-size: var(--font-sm);
 	font-weight: 200;
 	line-height: 1.5;
+	
+	& a {
+		color: var(--dark-c);
+	}
 }
 
 a {

@@ -203,13 +203,13 @@
 				}
 			}
 			& .folder-icon {
+				transition: filter 0.25s;
+				pointer-events: none;
+
 				font-size: 1.5rem;
 				&:not(.active) {
 					filter: saturate(0);
 				}
-
-				transition: filter 0.25s;
-				pointer-events: none;
 			}
 		}
 		&.hovering {
