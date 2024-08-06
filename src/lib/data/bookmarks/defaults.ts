@@ -51,18 +51,6 @@ export const defaultBookmarks: Bookmark[] = [
 	},
 	{
 		bookmark_id: cuid(),
-		url: 'https://openbase.io/',
-		title: 'OpenBase',
-		description: 'Repo Search Engine',
-		useImage: true,
-		autoImage: false,
-		image: 'https://d25hn4jiqx5f7l.cloudfront.net/companies/logos/medium/openbase_1601666331.png',
-		tags: ['Dev', 'Code'],
-		...default_theme,
-		position: 1,
-	},
-	{
-		bookmark_id: cuid(),
 		url: 'https://www.reddit.com/',
 		title: 'Reddit',
 		description: 'Front Page of the Internet',

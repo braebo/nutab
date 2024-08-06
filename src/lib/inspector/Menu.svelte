@@ -132,16 +132,14 @@
 		box-shadow: var(--level-4, 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22));
 		border-radius: 5px 0 0 5px;
 
-		// overflow: hidden;
 		overflow-y: scroll;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
 
 		&::-webkit-scrollbar {
 			width: 0px;
 			display: none;
 		}
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-		/* overflow-y: scroll; */
 	}
 
 	h4 {

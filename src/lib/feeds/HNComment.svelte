@@ -78,15 +78,16 @@
 		padding: 0.5rem 1rem
 
 		border-radius: 0.25rem
+		
+		font-family: var(--font-mono)
+		
+		transition: background 0.25s
+		cursor: pointer
+		
 		&:hover
 			background: rgba(var(--light-d-rgb), 0.15)
 			& .collapse-icon
 				opacity: 1
-
-		font-family: var(--font-mono)
-
-		transition: background 0.25s
-		cursor: pointer
 
 	.collapse-icon
 		left: 0

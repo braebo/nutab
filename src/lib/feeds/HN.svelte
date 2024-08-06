@@ -168,12 +168,13 @@
 		padding-bottom: 10rem
 		min-width: 600px
 
+		pointer-events: all
+
 		opacity: 0.75
 		transition: opacity 0.2s
 		&:hover
 			opacity: 1
 
-		pointer-events: all
 	
 	.story-previews.activeThread
 		width: 40%

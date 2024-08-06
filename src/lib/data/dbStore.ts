@@ -28,7 +28,7 @@ export const activeFolderBookmarks = derived<[Writable<Bookmark[]>, Writable<Fol
 	([$activeBookmarks, $activeFolder, $tagFilter], set) => {
 		$activeBookmarks // Is this helping trigger updates?
 		if ($tagFilter === null) {
-			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks).then((b) => set(b))
+			db.bookmarks.bulkGet(($activeFolder as Folder)?.bookmarks || []).then((b) => set(b))
 		} else {
 			db.bookmarks
 				.where('tags')

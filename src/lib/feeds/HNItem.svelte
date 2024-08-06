@@ -75,6 +75,9 @@
 
 		transition: transform 0.2s, box-shadow 0.2s
 		
+		cursor: pointer
+		backface-visibility: hidden
+
 		&.active
 			border: 1px solid var(--dark-d)
 		
@@ -85,8 +88,6 @@
 			& .random-thumbnail, .image
 				filter: grayscale(0%)
 
-		cursor: pointer
-		backface-visibility: hidden
 
 	.header
 		margin-bottom: 0.5rem
