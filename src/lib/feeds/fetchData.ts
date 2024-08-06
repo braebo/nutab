@@ -27,7 +27,7 @@ export const fetchItem = async (id: IHNItem['id']): Promise<IHNItem> => {
 	const item = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
 		.then((res) => res.json())
 		.catch((e) => console.error(`Hmm.. problem fetching story ${id}: `, e))
-	return item
+	return item as IHNItem
 }
 
 let first = true
@@ -54,7 +54,7 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 
 	// fetch opengraph metadata
 	for (const story of stories) {
-		if (!story.url) return
+		if (!story.url) continue;
 
 		story.days_ago = daysAgo(new Date(story.time * 1000)).string
 
