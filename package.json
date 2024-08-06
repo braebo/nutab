@@ -61,6 +61,7 @@
 		"sass": "^1.77.8",
 		"sjcl": "^1.0.8",
 		"svelte": "4.2.18",
+		"svelte-preprocess": "^5.1.4",
 		"tiny-glob": "^0.2.9",
 		"tippy.js": "^6.3.7",
 		"tslib": "^2.6.3",
