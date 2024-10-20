@@ -4,14 +4,9 @@
 		 * Important extentions
 		 */
 		"christian-kohler.path-intellisense",
-		"ms-vscode.vscode-typescript-next",
-		"fivethree.vscode-svelte-snippets",
 		"aaron-bond.better-comments",
-		// "stylelint.vscode-stylelint",
-		"pivaszbs.svelte-autoimport",
 		"dbaeumer.vscode-eslint",
-		"svelte.svelte-vscode", //? Svelte
-		"silvenon.mdx" //? MDSvex Language Support
+		"svelte.svelte-vscode"
 
 		/*
 		 * Honorable mentions
