@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	export let size = 100
 	let radius = 2.5
 </script>

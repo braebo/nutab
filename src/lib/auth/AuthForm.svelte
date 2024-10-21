@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { authStore, showAuthForm } from './authStore'
 	import isStrongPassword from 'validator/es/lib/isStrongPassword'
 	import { elasticOut, quintOut } from 'svelte/easing'

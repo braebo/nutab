@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { clickOutside } from '../utils/clickOutside'
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { fade } from 'svelte/transition'

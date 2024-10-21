@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { fly } from 'svelte/transition'
 	import { settings } from '$lib/stores'
 </script>

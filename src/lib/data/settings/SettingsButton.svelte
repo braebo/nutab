@@ -1,7 +1,7 @@
 <!-- 
 	@component Toggles the visibility of a bookmark's settings editor panel.
  -->
-<script>
+<script lang="ts">
 	import { cMenu } from '$lib/stores'
 	import { tick } from 'svelte'
 

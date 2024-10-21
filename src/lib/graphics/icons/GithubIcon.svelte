@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 </script>
 

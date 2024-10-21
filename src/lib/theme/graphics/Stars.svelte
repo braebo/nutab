@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	// @ts-nocheck
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'

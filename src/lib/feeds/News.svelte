@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import HN from '$lib/feeds/HN.svelte'
 </script>
 
