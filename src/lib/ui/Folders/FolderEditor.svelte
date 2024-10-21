@@ -25,12 +25,12 @@
 	import cuid from 'cuid'
 
 	let emoji = '📌'
-	let showEmojiPicker = false
+	let showEmojiPicker = $state(false)
 	let titleInput: HTMLInputElement
-	let header = ''
-	let selectedTags: boolean[] = []
-	let folderCount = 0
-	$: deleteDisabled = folderCount === 1
+	let header = $state('')
+	let selectedTags: boolean[] = $state([])
+	let folderCount = $state(0)
+	let deleteDisabled = $derived(folderCount === 1)
 
 	async function handleSave() {
 		if ($bookmarkEditorContext === 'edit') {

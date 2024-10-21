@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition'
 
-	export let size = 35
-	export let t_in = { x: -size, duration: 3000 }
-	export let t_out = { x: -size, duration: 6000, opacity: 1 }
+	interface Props {
+		size?: number;
+		t_in?: any;
+		t_out?: any;
+	}
+
+	let { size = 35, t_in = { x: -size, duration: 3000 }, t_out = { x: -size, duration: 6000, opacity: 1 } }: Props = $props();
 </script>
 
 <div class="container" style="width: {size}px;" in:fly={t_in} out:fly|local={t_out}>

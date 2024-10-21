@@ -3,8 +3,12 @@
 
 	const dispatch = createEventDispatcher()
 
-	export let options: string[]
-	export let selected: number
+	interface Props {
+		options: string[];
+		selected: number;
+	}
+
+	let { options, selected = $bindable() }: Props = $props();
 
 	const handleClick = (option: typeof options[number], index: number) => {
 		if (index !== selected) {
@@ -20,7 +24,7 @@
 
 <div class="tabs">
 	{#each options as option, i}
-		<div class="option" class:active={option === options[selected]} on:click={(e) => handleClick(option, i)}>
+		<div class="option" class:active={option === options[selected]} onclick={(e) => handleClick(option, i)}>
 			{option}
 		</div>
 	{/each}

@@ -4,13 +4,17 @@
 	import { emojis } from './emojis'
 	import { onMount } from 'svelte'
 
-	export let showEmojiPicker: boolean
-	export let emoji: string
-	export let autofocus = false
+	interface Props {
+		showEmojiPicker: boolean;
+		emoji: string;
+		autofocus?: boolean;
+	}
+
+	let { showEmojiPicker = $bindable(), emoji = $bindable(), autofocus = false }: Props = $props();
 
 	let emojiCount: number
-	let search = ''
-	let searchBar: HTMLInputElement
+	let search = $state('')
+	let searchBar: HTMLInputElement = $state()
 
 	const handleClick = (char: string) => {
 		emoji = char
@@ -29,7 +33,7 @@
 		<div class="emojis">
 			{#each emojis as e, i}
 				{#if !search || e.name.includes(search)}
-					<div class="emoji" on:click={() => handleClick(e.char)} tabindex="0">{e.char}</div>
+					<div class="emoji" onclick={() => handleClick(e.char)} tabindex="0">{e.char}</div>
 				{/if}
 			{/each}
 		</div>

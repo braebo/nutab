@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { activeEngine, searchValue } from './searchStore'
 	import { defaultEngines } from './Engines.svelte'
 	import Icons from './IconList.svelte'
@@ -6,13 +8,19 @@
 	import '$lib/utils/rotateArray'
 	import { wait } from 'fractils'
 
-	let engines = Array.from(defaultEngines)
-	let startPosition = $activeEngine
-	let input: HTMLInputElement
+	let engines = $state(Array.from(defaultEngines))
+	let startPosition = $state($activeEngine)
+	let input: HTMLInputElement = $state()
 
-	$: engines
-	$: aliases = []
-	$: query = engines[0].url + $searchValue
+	run(() => {
+		engines
+	});
+	let aliases = $state([]);
+	
+	let query;
+	run(() => {
+		query = engines[0].url + $searchValue
+	});
 
 	onMount(async () => {
 		setTimeout(() => {
@@ -37,11 +45,13 @@
 		select(startPosition)
 	}
 
-	$: if (!aliases.includes($searchValue)) {
-		if (input && $searchValue == '') deselectAlias()
-	} else {
-		selectAlias()
-	}
+	run(() => {
+		if (!aliases.includes($searchValue)) {
+			if (input && $searchValue == '') deselectAlias()
+		} else {
+			selectAlias()
+		}
+	});
 
 	// Key commands
 	function hotkey(e: KeyboardEvent['key']) {
@@ -79,7 +89,7 @@
 		input?.focus()
 	}
 
-	let targetPosition = engines.find((engine) => engine.position == startPosition).position
+	let targetPosition = $state(engines.find((engine) => engine.position == startPosition).position)
 	// Rotate array based on users default setting.
 	const rotateEngines = (target = $activeEngine) => {
 		targetPosition = engines.find((engine) => engine.position == target).position
@@ -88,22 +98,22 @@
 	}
 
 	const debug = false
-	let searchFocused = true
+	let searchFocused = $state(true)
 </script>
 
 <div class="search-wrapper">
 	<Icons bind:engines on:newSelection={(e) => select(e.detail.position)} {searchFocused} />
 
-	<!-- svelte-ignore a11y-autofocus -->
+	<!-- svelte-ignore a11y_autofocus -->
 	<input
 		type="text"
 		id="search"
 		autocomplete="off"
 		bind:this={input}
 		bind:value={$searchValue}
-		on:keydown={(e) => hotkey(e.key)}
-		on:focus={() => (searchFocused = true)}
-		on:blur={() => (searchFocused = false)}
+		onkeydown={(e) => hotkey(e.key)}
+		onfocus={() => (searchFocused = true)}
+		onblur={() => (searchFocused = false)}
 	/>
 </div>
 

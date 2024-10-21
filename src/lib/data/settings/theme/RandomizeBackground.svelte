@@ -5,7 +5,11 @@
 	import { onDestroy } from 'svelte'
 	import { theme } from 'fractils'
 
-	export let thisTheme: keyof Settings['theme']
+	interface Props {
+		thisTheme: keyof Settings['theme'];
+	}
+
+	let { thisTheme }: Props = $props();
 
 	let timer: NodeJS.Timeout
 	let targetHue = 0
@@ -32,13 +36,13 @@
 		clearTimeout(timer)
 	})
 
-	$: darkText = `hsl(${Math.floor($hue % 360)}, 50%, ${100 - $animate * 10}%)`
-	$: lightText = `hsl(${Math.floor($hue % 360)}, 50%, ${$animate * 10}%)`
+	let darkText = $derived(`hsl(${Math.floor($hue % 360)}, 50%, ${100 - $animate * 10}%)`)
+	let lightText = $derived(`hsl(${Math.floor($hue % 360)}, 50%, ${$animate * 10}%)`)
 </script>
 
 <div
 	class="btn randomize"
-	on:click={() => handleClick()}
+	onclick={() => handleClick()}
 	style="
 		filter: hue-rotate({Math.floor($hue)}deg) saturate(10);
 		color: {$theme === 'dark' ? darkText : lightText}

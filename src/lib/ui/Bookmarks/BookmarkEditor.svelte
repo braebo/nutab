@@ -18,13 +18,17 @@
 
 	import { wait } from 'fractils'
 
-	export let i: number = 0
+	interface Props {
+		i?: number;
+	}
 
-	let titleInput: HTMLInputElement
-	let urlInput: HTMLInputElement
-	let descriptionInput: HTMLInputElement
-	let descriptionFocused = false
-	$: placeholder = descriptionFocused ? '' : 'description'
+	let { i = 0 }: Props = $props();
+
+	let titleInput: HTMLInputElement = $state()
+	let urlInput: HTMLInputElement = $state()
+	let descriptionInput: HTMLInputElement = $state()
+	let descriptionFocused = $state(false)
+	let placeholder = $derived(descriptionFocused ? '' : 'description')
 
 	let tag = ''
 	function handleTags(event: CustomEvent) {
@@ -69,8 +73,8 @@
 					placeholder="title"
 					bind:this={titleInput}
 					bind:value={$bookmarkEditor.title}
-					on:click={() => titleInput.select()}
-					on:keydown={(e) => e.key === 'Enter' && handleSave()}
+					onclick={() => titleInput.select()}
+					onkeydown={(e) => e.key === 'Enter' && handleSave()}
 				/>
 			</div>
 
@@ -81,10 +85,10 @@
 					type="text"
 					bind:this={descriptionInput}
 					bind:value={$bookmarkEditor.description}
-					on:focus={() => {
+					onfocus={() => {
 						descriptionFocused = true
 					}}
-					on:blur={() => {
+					onblur={() => {
 						descriptionFocused = false
 					}}
 				/>
@@ -96,7 +100,7 @@
 					type="text"
 					placeholder="url"
 					bind:this={urlInput}
-					on:click={() => urlInput.select()}
+					onclick={() => urlInput.select()}
 					bind:value={$bookmarkEditor.url}
 					autoComplete="off"
 				/>

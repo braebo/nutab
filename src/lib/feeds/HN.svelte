@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	// Types
 	import type { IHNItem } from './types'
 
@@ -42,15 +44,17 @@
 		loading = false
 	}
 
-	let scrollProgress = 0
+	let scrollProgress = $state(0)
 	const handleScroll = ({ target }: Event) => {
 		const { scrollTop, scrollHeight, offsetHeight } = target as HTMLDivElement
 		scrollProgress = Math.round((scrollTop / (scrollHeight - offsetHeight)) * 100)
 	}
 
-	$: if (scrollProgress > 90) loadMore()
+	run(() => {
+		if (scrollProgress > 90) loadMore()
+	});
 
-	let activeThread: IHNItem['id'] = null
+	let activeThread: IHNItem['id'] = $state(null)
 
 	let showThread = (e: CustomEvent) => {
 		activeThread = null
@@ -73,7 +77,7 @@
 		})
 	}
 
-	let firstLoad = true
+	let firstLoad = $state(true)
 	onMount(async () => {
 		$items = await fetchStories()
 		loading = false
@@ -81,10 +85,13 @@
 		firstLoad = false
 	})
 
-	let animEl: HTMLElement
+	let animEl: HTMLElement = $state()
 	let windowWidth: number
 	let offsetWidth: number
-	$: left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
+	let left;
+	run(() => {
+		left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
+	});
 
 	const handleResize = () => {
 		checkFullscreen()

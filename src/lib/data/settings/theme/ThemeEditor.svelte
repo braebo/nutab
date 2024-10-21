@@ -7,15 +7,19 @@
 	import Saturation from './Saturation.svelte'
 	import { fly } from 'svelte/transition'
 
-	export let thisTheme: keyof Settings['theme']
+	interface Props {
+		thisTheme: keyof Settings['theme'];
+	}
 
-	let selected = $settings.theme[thisTheme].lockBackground ? 1 : 0
+	let { thisTheme }: Props = $props();
+
+	let selected = $state($settings.theme[thisTheme].lockBackground ? 1 : 0)
 
 	export const toggleMode = (e: CustomEvent) => {
 		$settings.theme[thisTheme].lockBackground = !!e.detail.index
 	}
 
-	$: custom = $settings.theme[thisTheme].lockBackground
+	let custom = $derived($settings.theme[thisTheme].lockBackground)
 
 	const direction = thisTheme === 'dark' ? 1 : -1
 

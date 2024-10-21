@@ -1,27 +1,43 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import MacScrollbar from '$lib/ui/Scrollbar.svelte'
 	import { createEventDispatcher } from 'svelte'
 	import { resize } from '$lib/utils/resizable'
 	import { screenH } from 'fractils'
 
-	export let isOpen = false
-	export let right = false
-	export let top = '10px'
-	export let theme = ''
-	export let nub = '🚀'
 
 	interface Link {
 		text: string
 		path?: string
 	}
 
-	export let links: Link[]
-	export let position = {
+	interface Props {
+		isOpen?: boolean;
+		right?: boolean;
+		top?: string;
+		theme?: string;
+		nub?: string;
+		links: Link[];
+		position?: any;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		isOpen = $bindable(false),
+		right = false,
+		top = '10px',
+		theme = '',
+		nub = '🚀',
+		links,
+		position = {
 		top: '7vh',
 		right: null as string | null,
 		bottom: null as string | null,
 		left: null as string | null,
-	}
+	},
+		children
+	}: Props = $props();
 	const css = Object.entries(position).reduce((a, b) => (b[1] ? `${a + b.join(':')};` : a), '')
 
 	const dispatch = createEventDispatcher()
@@ -33,13 +49,15 @@
 		})
 	}
 
-	let content: HTMLElement
+	let content: HTMLElement = $state()
 
-	$: if (content) {
-		content.style.maxHeight = $screenH - content.getBoundingClientRect().top * 2 + 'px'
-	}
+	run(() => {
+		if (content) {
+			content.style.maxHeight = $screenH - content.getBoundingClientRect().top * 2 + 'px'
+		}
+	});
 
-	let e: Event
+	let e: Event = $state()
 </script>
 
 <div
@@ -50,8 +68,8 @@
 	class:isOpen
 	class:right
 >
-	<div class="nub" on:click={toggle}>{nub}</div>
-	<div class="side-menu-content" bind:this={content} on:scroll={(ev) => (e = ev)}>
+	<div class="nub" onclick={toggle}>{nub}</div>
+	<div class="side-menu-content" bind:this={content} onscroll={(ev) => (e = ev)}>
 		<MacScrollbar root=".side-menu-content" {e} --mac-scrollbar-color="#131315" />
 		<nav>
 			{#each links as link}
@@ -62,7 +80,7 @@
 				{/if}
 			{/each}
 		</nav>
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 

@@ -1,3 +1,16 @@
+<script>
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
+	/**
+	 * @typedef {Object} Props
+	 * @property {import('svelte').Snippet} [children]
+	 */
+
+	/** @type {Props} */
+	let { children } = $props();
+</script>
+
 <!-- 
 	@component
 	A simple button with a `<slot/>`
@@ -11,8 +24,8 @@
 	@styleprop colorHover
  -->
 
-<button on:click>
-	<slot>Click Me</slot>
+<button onclick={bubble('click')}>
+	{#if children}{@render children()}{:else}Click Me{/if}
 </button>
 
 <style>

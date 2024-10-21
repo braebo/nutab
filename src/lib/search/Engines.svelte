@@ -1,5 +1,5 @@
 <!-- svelte:options immutable={true} -->
-<script context="module" lang="ts">
+<script module lang="ts">
 	import StackOverflow from './icons/StackOverflow.svelte'
 	import DuckDuckGo from './icons/DuckDuckGo.svelte'
 	import HackerNews from './icons/HackerNews.svelte'

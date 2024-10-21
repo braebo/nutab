@@ -1,4 +1,5 @@
 <script lang="ts">
+	import HNComment from './HNComment.svelte';
 	import type { IHNItem } from './types'
 
 	import CollapseIcon from '$lib/graphics/icons/CollapseIcon.svelte'
@@ -7,11 +8,15 @@
 	import { fly } from 'svelte/transition'
 	import { fetchItem } from './fetchData'
 
-	export let commentId: number
+	interface Props {
+		commentId: number;
+	}
 
-	let hidden = false
-	let dead = false
-	let deleted = false
+	let { commentId }: Props = $props();
+
+	let hidden = $state(false)
+	let dead = $state(false)
+	let deleted = $state(false)
 
 	const pulseCheck = (comment: IHNItem, _default: string) => {
 		if (comment.dead) {
@@ -29,7 +34,7 @@
 	<LoadingDots />
 {:then comment}
 	<article class="comment" class:hidden class:dead class:deleted>
-		<div class="meta-bar" on:click={() => (hidden = !hidden)}>
+		<div class="meta-bar" onclick={() => (hidden = !hidden)}>
 			<span class="meta">
 				<div class="collapse-icon">
 					<CollapseIcon bind:hidden />
@@ -55,7 +60,7 @@
 		{#if comment.kids?.length > 0}
 			<ul class="children">
 				{#each comment.kids as child}
-					<li><svelte:self commentId={child} /></li>
+					<li><HNComment commentId={child} /></li>
 				{/each}
 			</ul>
 		{/if}

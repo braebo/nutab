@@ -9,7 +9,7 @@
 	import Moon from '$lib/theme/graphics/Moon.svelte'
 	import Sun from '$lib/theme/graphics/Sun.svelte'
 
-	let selected = $settings.sharedTheme ? 0 : 1
+	let selected = $state($settings.sharedTheme ? 0 : 1)
 
 	const toggleShared = (e: CustomEvent) => {
 		$settings.sharedTheme = !e.detail.index

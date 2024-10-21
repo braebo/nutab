@@ -1,15 +1,28 @@
 <script lang="ts">
+	import Row from './Row.svelte';
 	import type { Writable, Readable } from 'svelte/store'
 
 	import { nanoid } from 'nanoid'
 
-	export let key: string
-	export let value: unknown
-	export let store: Writable<any> | Readable<any>
-	export let path: string
-	export let simple = false
-	export let label = true
-	export let depth = 0
+	interface Props {
+		key: string;
+		value: unknown;
+		store: Writable<any> | Readable<any>;
+		path: string;
+		simple?: boolean;
+		label?: boolean;
+		depth?: number;
+	}
+
+	let {
+		key,
+		value,
+		store,
+		path,
+		simple = false,
+		label = true,
+		depth = $bindable(0)
+	}: Props = $props();
 	depth++
 
 	const uid = nanoid(4)
@@ -50,7 +63,7 @@
 				{/if}
 				<!-- Array -->
 				{#each value as nestedValue, index}
-					<svelte:self {key} {store} label={false} value={nestedValue} path={path + '[' + index + ']'} />
+					<Row {key} {store} label={false} value={nestedValue} path={path + '[' + index + ']'} />
 				{/each}
 			{:else}
 				{#if label}
@@ -58,7 +71,7 @@
 				{/if}
 				<div class="nested">
 					{#each Object.entries(value) as [nestedKey, nestedValue]}
-						<svelte:self
+						<Row
 							key={nestedKey}
 							value={nestedValue}
 							{store}
@@ -74,13 +87,13 @@
 					<div class="key">{key}{':'}</div>
 				{/if}
 				{#if typeof value === 'string'}
-					<input id={path} type="text" {value} on:input={(e) => updateStore(e.currentTarget.value)} />
+					<input id={path} type="text" {value} oninput={(e) => updateStore(e.currentTarget.value)} />
 				{:else if typeof value === 'boolean'}
 					<input
 						id="{path}-{uid}"
 						type="checkbox"
 						checked={value}
-						on:change={(e) => {
+						onchange={(e) => {
 							updateStore(e.currentTarget.checked)
 						}}
 					/>
@@ -89,7 +102,7 @@
 						id={path}
 						type="number"
 						{value}
-						on:change={(e) => {
+						onchange={(e) => {
 							updateStore(e.currentTarget.value)
 						}}
 					/>

@@ -6,7 +6,11 @@
 	import HNComment from './HNComment.svelte'
 	import { fetchItem } from './fetchData'
 
-	export let threadId: number
+	interface Props {
+		threadId: number;
+	}
+
+	let { threadId }: Props = $props();
 
 	let transitionDuration = 200
 </script>

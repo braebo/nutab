@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let hidden = false
+	interface Props {
+		hidden?: boolean;
+	}
+
+	let { hidden = false }: Props = $props();
 </script>
 
 <svg width="10" height="8" viewBox="0 0 85 70" fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible">

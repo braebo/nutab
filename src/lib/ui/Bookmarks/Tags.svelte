@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
 	import { fly } from 'svelte/transition'
 	import Tooltip from '$lib/ui/Tooltip.svelte'

@@ -1,21 +1,35 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte'
 
-	export let position = { x: 0, y: 0 }
-	export let bounds = { x: 100, y: 100 }
-	export let outOfBounds
-	// Size of the grabbable border
-	export let grabZone = 20
-	export let panelWidth = 200
-	export let panelHeight = 200
+	
+	interface Props {
+		position?: any;
+		bounds?: any;
+		outOfBounds: any;
+		Size of the grabbable border
+		grabZone?: number;
+		panelWidth?: number;
+		panelHeight?: number;
+		children?: import('svelte').Snippet;
+	}
 
-	let panel: Element,
-		dragging = false,
+	let {
+		position = $bindable({ x: 0, y: 0 }),
+		bounds = { x: 100, y: 100 },
+		outOfBounds = $bindable(),
+		grabZone = 20,
+		panelWidth = 200,
+		panelHeight = 200,
+		children
+	}: Props = $props();
+
+	let panel: Element = $state(),
+		dragging = $state(false),
 		lastPosition,
 		boundary = {}
-	let innerWidth: number, innerHeight: number
+	let innerWidth: number = $state(), innerHeight: number = $state()
 
-	let inZone = false
+	let inZone = $state(false)
 	let mouse = { x: 0, y: 0 }
 	let dragLock = false
 
@@ -64,12 +78,12 @@
 	}
 </script>
 
-<svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} bind:innerWidth bind:innerHeight />
+<svelte:window onmouseup={handleMouseUp} onmousemove={handleMouseMove} bind:innerWidth bind:innerHeight />
 
 <div
 	bind:this={panel}
 	class="floating-window container"
-	on:mousedown={handleMouseDown}
+	onmousedown={handleMouseDown}
 	style="
 						transform: translate({position.x}px, {position.y}px);
 						box-shadow: 0 0 0 {grabZone}px var(--light-b, black) inset;
@@ -81,7 +95,7 @@
 	class:dragging
 	class:inZone
 >
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

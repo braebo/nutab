@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition'
 
-	export let label = ''
-	export let i = 1
+	interface Props {
+		label?: string;
+		i?: number;
+		children?: import('svelte').Snippet;
+	}
+
+	let { label = '', i = 1, children }: Props = $props();
 </script>
 
 <div class="control" in:fly={{ y: 10, duration: 300, delay: 100 + 33 * i }} out:fly={{ y: 10, duration: 100 }}>
 	{#if label}<label for={label}>{label}</label>{/if}
 	<div class="range" class:fullWidth={label}>
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 

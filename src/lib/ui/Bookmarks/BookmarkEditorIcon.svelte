@@ -2,32 +2,32 @@
 	import { settings, bookmarkEditor } from '$lib/stores'
 	import { mapRange } from 'fractils'
 
-	$: longestWord =
-		$bookmarkEditor?.title?.split(' ').reduce((p: string, c: string) => {
+	let longestWord =
+		$derived($bookmarkEditor?.title?.split(' ').reduce((p: string, c: string) => {
 			return c.length > p.length ? c : p
-		}, '').length ?? 0
-	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 15, 33, 5)
-	$: fontSizeScaled = (fontSize * $settings.ranges.iconSize.value) / 80
+		}, '').length ?? 0)
+	let fontSize = $derived(mapRange(Math.min(longestWord, 12), 6, 15, 33, 5))
+	let fontSizeScaled = $derived((fontSize * $settings.ranges.iconSize.value) / 80)
 
-	$: backgroundImage = $bookmarkEditor?.useImage ? `url(${$bookmarkEditor?.image})` : 'inherit'
-	$: backgroundColor = $bookmarkEditor?.useImage ? `inherit` : $bookmarkEditor?.background
+	let backgroundImage = $derived($bookmarkEditor?.useImage ? `url(${$bookmarkEditor?.image})` : 'inherit')
+	let backgroundColor = $derived($bookmarkEditor?.useImage ? `inherit` : $bookmarkEditor?.background)
 
-	$: color = $bookmarkEditor?.foreground
+	let color = $derived($bookmarkEditor?.foreground)
 
-	$: imageStyle = `
+	let imageStyle = $derived(`
 		width: var(--size, ${$settings.ranges.iconSize.value}px);
 		height: var(--size, ${$settings.ranges.iconSize.value}px);
 		background-size: ${$bookmarkEditor?.autoImage ? 'cover' : 'contain'};
 		background-image: ${backgroundImage};
 		color: ${color};
-	`
-	$: colorStyle = `
+	`)
+	let colorStyle = $derived(`
 		width: var(--size, ${$settings.ranges.iconSize.value}px);
 		height: var(--size, ${$settings.ranges.iconSize.value}px);
 		background-size: ${$bookmarkEditor?.autoImage ? 'cover' : 'contain'};
 		background-color: ${backgroundColor};
 		color: ${color};
-	`
+	`)
 </script>
 
 {#if $bookmarkEditor?.useImage}

@@ -8,10 +8,11 @@
 	import { fly } from 'svelte/transition'
 	import { log } from 'fractils'
 
-	$: autoImageError = false
+	let autoImageError = $state(false);
+	
 
 	let colorMode = !$bookmarkEditor?.useImage
-	let hovering = false
+	let hovering = $state(false)
 
 	function useImage() {
 		$bookmarkEditor.useImage = true
@@ -21,7 +22,7 @@
 		$bookmarkEditor.useImage = false
 	}
 
-	let loading = false
+	let loading = $state(false)
 
 	async function getAutoImage() {
 		loading = true
@@ -53,10 +54,10 @@
 
 <div
 	class="image-container"
-	on:mouseout={() => (hovering = false)}
-	on:blur={() => (hovering = false)}
-	on:mouseover={() => (hovering = true)}
-	on:focus={() => (hovering = true)}
+	onmouseout={() => (hovering = false)}
+	onblur={() => (hovering = false)}
+	onmouseover={() => (hovering = true)}
+	onfocus={() => (hovering = true)}
 >
 	<div class="icon-display-options" class:hovering>
 		<div class="icon-mode-container">
@@ -70,7 +71,7 @@
 								offset={[0, 42]}
 								delay={[400, 100]}
 							>
-								<div class:error={autoImageError} on:click={getAutoImage}>Auto</div>
+								<div class:error={autoImageError} onclick={getAutoImage}>Auto</div>
 							</Tooltip>
 						{:else if loading}
 							<div class:error={autoImageError}>loading...</div>
@@ -87,17 +88,17 @@
 
 		<div class="checkboxes">
 			<Tooltip content="Color_Background" placement="left" offset={[0, 5]} delay={[0, 0]}>
-				<div class="color checkbox" on:click={useColor} class:active={colorMode}>
+				<div class="color checkbox" onclick={useColor} class:active={colorMode}>
 					<div class="radio">
-						<div class="circle" class:checked={!$bookmarkEditor?.useImage} />
+						<div class="circle" class:checked={!$bookmarkEditor?.useImage}></div>
 					</div>
 				</div>
 			</Tooltip>
 
 			<Tooltip content="Image_Background" placement="right" offset={[0, 10]} delay={[0, 0]}>
-				<div class="image checkbox" on:click={useImage} class:active={$bookmarkEditor?.useImage}>
+				<div class="image checkbox" onclick={useImage} class:active={$bookmarkEditor?.useImage}>
 					<div class="radio">
-						<div class="circle" class:checked={$bookmarkEditor?.useImage} />
+						<div class="circle" class:checked={$bookmarkEditor?.useImage}></div>
 					</div>
 				</div>
 			</Tooltip>

@@ -6,8 +6,8 @@
 
 	const { githubSignIn, signIn, signUp, status, successMessage, error } = authStore
 
-	let email = null,
-		password = null
+	let email = $state(null),
+		password = $state(null)
 </script>
 
 <div class="login-container">

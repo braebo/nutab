@@ -1,11 +1,18 @@
 <script lang="ts">
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 
-	export let locked: boolean
+	interface Props {
+		locked: boolean;
+	}
+
+	let { locked }: Props = $props();
 </script>
 
 <Tooltip content="{locked ? 'Unlock' : 'Lock'}_Background" delay={[250, 150]} offset={[0, 10]}>
-	<div class="lock" on:click>
+	<div class="lock" onclick={bubble('click')}>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="100%"

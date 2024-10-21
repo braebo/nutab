@@ -37,7 +37,7 @@
 	let hovering = false
 	let sidebar: HTMLElement
 
-	$: isActive = (id: Folder['folder_id']) => id === $activeFolder?.folder_id
+	let isActive = $derived((id: Folder['folder_id']) => id === $activeFolder?.folder_id)
 
 	// Filters bookmark grid by tag
 	const applyTagFilter = async (tag: string) => {
@@ -89,7 +89,7 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <template lang="pug">
 
 	.folder-sidebar-container

@@ -3,9 +3,13 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
-	export let size
-	export let starSize = 5
-	let mounted = false
+	interface Props {
+		size: any;
+		starSize?: number;
+	}
+
+	let { size, starSize = 5 }: Props = $props();
+	let mounted = $state(false)
 	onMount(() => (mounted = true))
 
 	const p = (max) => Math.floor(Math.random() * Math.floor(max)) // random star position
@@ -23,8 +27,8 @@
 			<!-- prettier-ignore -->
 			<div style="--star-size: {String(s() / 3) + 'px'}">
 			<figure style="top:{p(100)}%;left:{p(100)}%;animation-delay:{p(3)}s;" class="star">
-        	    <figure class="star-top" />
-        	    <figure class="star-bottom" />
+        	    <figure class="star-top"></figure>
+        	    <figure class="star-bottom"></figure>
         	</figure>
 		</div>
 		{/each}

@@ -32,8 +32,8 @@
 		"@hapi/hoek": "^11.0.4",
 		"@sveltejs/adapter-static": "3.0.2",
 		"@sveltejs/adapter-vercel": "5.4.1",
-		"@sveltejs/kit": "2.5.20",
-		"@sveltejs/vite-plugin-svelte": "^3.1.1",
+		"@sveltejs/kit": "^2.5.27",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/node": "^22.1.0",
 		"@types/sjcl": "^1.0.34",
 		"autoprefixer": "^10.4.20",
@@ -60,12 +60,12 @@
 		"rimraf": "^6.0.1",
 		"sass": "^1.77.8",
 		"sjcl": "^1.0.8",
-		"svelte": "4.2.18",
-		"svelte-preprocess": "^5.1.4",
+		"svelte": "^5.0.0",
+		"svelte-preprocess": "^6.0.0",
 		"tiny-glob": "^0.2.9",
 		"tippy.js": "^6.3.7",
 		"tslib": "^2.6.3",
 		"typescript": "^5.5.4",
-		"vite": "^5.3.5"
+		"vite": "^5.4.4"
 	}
 }

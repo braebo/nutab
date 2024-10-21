@@ -8,7 +8,11 @@
 
 	const dispatch = createEventDispatcher()
 
-	export let bookmark_id: string
+	interface Props {
+		bookmark_id: string;
+	}
+
+	let { bookmark_id }: Props = $props();
 
 	function _delete() {
 		deleteBookmark_db(bookmark_id)
@@ -18,7 +22,7 @@
 </script>
 
 {#if $bookmarkEditorContext == 'edit'}
-	<div class="delete" on:click={_delete}>
+	<div class="delete" onclick={_delete}>
 		<Tooltip content="Delete" offset={[0, 10]} placement="top">
 			<TrashIcon />
 		</Tooltip>

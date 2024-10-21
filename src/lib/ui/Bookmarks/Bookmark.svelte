@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault, stopPropagation } from 'svelte/legacy';
+
 	import type { Bookmark } from '$lib/data/types'
 
 	import { editor } from '$lib/stores/bookmarkEditor'
@@ -8,16 +10,28 @@
 	import { bookmarkEditor } from '$lib/stores'
 	import { settings } from '$lib/stores'
 
-	export let i: number
-	export let hovering: number
-	export let dragging = false
-	export let bookmark: Bookmark
-	export let disableTransitions = false
+	interface Props {
+		i: number;
+		hovering: number;
+		dragging?: boolean;
+		bookmark: Bookmark;
+		disableTransitions?: boolean;
+	}
 
-	$: disableTransitions // is this necessary?
-	$: url = bookmark?.url
+	let {
+		i,
+		hovering,
+		dragging = false,
+		bookmark = $bindable(),
+		disableTransitions = false
+	}: Props = $props();
 
-	$: title = bookmark?.title
+	run(() => {
+		disableTransitions
+	}); // is this necessary?
+	let url = $derived(bookmark?.url)
+
+	let title = $derived(bookmark?.title)
 </script>
 
 <div class="bookmark-container">
@@ -26,13 +40,13 @@
 		href={url}
 		class:dragging
 		draggable="false"
-		on:contextmenu|stopPropagation|preventDefault={() => editor.show(['edit', 'bookmark'], i)}
+		oncontextmenu={stopPropagation(preventDefault(() => editor.show(['edit', 'bookmark'], i)))}
 	>
 		<div
 			class="bookmark"
 			in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
-			on:mouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
-			on:focus={() => debounce(() => ($settings.showTitle = false))}
+			onmouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
+			onfocus={() => debounce(() => ($settings.showTitle = false))}
 		>
 			<BookmarkArt bind:bookmark />
 

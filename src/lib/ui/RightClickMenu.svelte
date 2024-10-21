@@ -14,7 +14,11 @@
 	import { idFromClassList } from '$lib/utils'
 	import { fly } from 'svelte/transition'
 
-	export let options = [
+	interface Props {
+		options?: any;
+	}
+
+	let { options = [
 		{
 			text: 'New Bookmark',
 			action: () => editor.show(['create', 'bookmark']),
@@ -37,7 +41,7 @@
 				await importBookmarks()
 			},
 		},
-	]
+	] }: Props = $props();
 
 	async function show(e: MouseEvent) {
 		if ($editorShown) return
@@ -87,7 +91,7 @@
 	}
 </script>
 
-<svelte:window on:contextmenu={(e) => show(e)} />
+<svelte:window oncontextmenu={(e) => show(e)} />
 
 {#if $cMenu.visible}
 	<div
@@ -95,12 +99,12 @@
 		class="cMenu"
 		style="left: {$cMenu.x}px;top: {$cMenu.y}px;"
 		use:clickOutside
-		on:outclick={handleClickOutside}
+		onoutclick={handleClickOutside}
 		in:fly={{ y: 5, duration: 250 }}
 		out:fly={{ y: 5, duration: 150 }}
 	>
 		{#each options as { text }, i}
-			<div class="option" on:click={(e) => handleAction(e, i)}>
+			<div class="option" onclick={(e) => handleAction(e, i)}>
 				{text}
 			</div>
 		{/each}

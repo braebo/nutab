@@ -9,8 +9,12 @@
 	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
 
-	export let item: IHNItem
-	export let activeThread: IHNItem['id']
+	interface Props {
+		item: IHNItem;
+		activeThread: IHNItem['id'];
+	}
+
+	let { item, activeThread = $bindable() }: Props = $props();
 
 	const dispatch = createEventDispatcher()
 	const showThread = () => {

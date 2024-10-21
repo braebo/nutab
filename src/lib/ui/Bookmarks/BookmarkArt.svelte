@@ -4,18 +4,22 @@
 	import { settings, bookmarkEditor } from '$lib/stores'
 	import { mapRange } from 'fractils'
 
-	export let bookmark: Bookmark = $bookmarkEditor
+	interface Props {
+		bookmark?: Bookmark;
+	}
 
-	$: longestWord =
-		bookmark?.title?.split(' ').reduce((p: string, c: string) => {
+	let { bookmark = $bookmarkEditor }: Props = $props();
+
+	let longestWord =
+		$derived(bookmark?.title?.split(' ').reduce((p: string, c: string) => {
 			return c.length > p.length ? c : p
-		}, '').length ?? 0
-	$: fontSize = mapRange(Math.min(longestWord, 12), 6, 15, 17, 5)
-	$: fontSizeScaled = (fontSize * $settings.ranges.iconSize.value) / 80
+		}, '').length ?? 0)
+	let fontSize = $derived(mapRange(Math.min(longestWord, 12), 6, 15, 17, 5))
+	let fontSizeScaled = $derived((fontSize * $settings.ranges.iconSize.value) / 80)
 
-	$: backgroundImage = bookmark?.useImage ? `url(${bookmark?.image})` : 'none'
-	$: backgroundColor = bookmark?.useImage ? `inherit` : bookmark?.background
-	$: color = bookmark?.foreground
+	let backgroundImage = $derived(bookmark?.useImage ? `url(${bookmark?.image})` : 'none')
+	let backgroundColor = $derived(bookmark?.useImage ? `inherit` : bookmark?.background)
+	let color = $derived(bookmark?.foreground)
 </script>
 
 <div

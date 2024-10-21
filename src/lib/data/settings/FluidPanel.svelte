@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { wait, mouse, screenH, clickOutside, mapRange } from 'fractils'
 	import { showSettings, blurOverlay, activeSection } from '$lib/stores'
 
@@ -6,12 +8,16 @@
 	import { quartInOut } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
 
-	export let size = [700, 400]
+	interface Props {
+		size?: any;
+		children?: import('svelte').Snippet;
+	}
 
-	let closed = true
-	let closing = false
+	let { size = [700, 400], children }: Props = $props();
 
-	$: $showSettings ? open() : close()
+	let closed = $state(true)
+	let closing = $state(false)
+
 
 	/** Settings Panel */
 	let p = {
@@ -46,36 +52,11 @@
 	const height = tweened(closedState.height)
 	const opacity = tweened(0, { duration: 250 })
 
-	let adjust: number
+	let adjust: number = $state()
 
-	// Runs on mousemove (maybe debounce this?)
-	$: if (closed && !closing) {
-		adjust = Math.max(
-			// When the mouse drops below the center of the screen, this uses the ratio between
-			// the window height and the panel width to grow the circle up to 20% of the
-			// final width (closedState.width).
-			mapRange($mouse.y, 0 + $screenH / 1.5, $screenH, closedState.width, openState.width * 0.2),
-
-			// Don't allow the circle to shrink below it's starting size.
-			closedState.width,
-		)
-
-		// Widen the circle as the mouse approaches it.
-		width.set(adjust)
-
-		// Keep the circle centered.
-		$x = closedState.x - (adjust - closedState.width) * 0.5
-
-		// Inch the radius towards its open state.
-		$rx = Math.max(closedState.rx - adjust * 0.75, openState.rx)
-
-		// Fade in the button.
-		$opacity = mapRange($mouse.y, $screenH / 2, $screenH / 1.5, 0.2, 0.25)
-	} else $opacity = 0.25
 
 	/** current state */
-	let s = closedState
-	$: s = !closed ? closedState : openState
+	let s = $state(closedState)
 	/** quarter duration */
 	const q = dur / 4
 	/** third of a quarter duration */
@@ -116,6 +97,38 @@
 		if (delay) await wait(delay)
 		store.set(value, { delay, duration, easing })
 	}
+	run(() => {
+		$showSettings ? open() : close()
+	});
+	// Runs on mousemove (maybe debounce this?)
+	run(() => {
+		if (closed && !closing) {
+			adjust = Math.max(
+				// When the mouse drops below the center of the screen, this uses the ratio between
+				// the window height and the panel width to grow the circle up to 20% of the
+				// final width (closedState.width).
+				mapRange($mouse.y, 0 + $screenH / 1.5, $screenH, closedState.width, openState.width * 0.2),
+
+				// Don't allow the circle to shrink below it's starting size.
+				closedState.width,
+			)
+
+			// Widen the circle as the mouse approaches it.
+			width.set(adjust)
+
+			// Keep the circle centered.
+			$x = closedState.x - (adjust - closedState.width) * 0.5
+
+			// Inch the radius towards its open state.
+			$rx = Math.max(closedState.rx - adjust * 0.75, openState.rx)
+
+			// Fade in the button.
+			$opacity = mapRange($mouse.y, $screenH / 2, $screenH / 1.5, 0.2, 0.25)
+		} else $opacity = 0.25
+	});
+	run(() => {
+		s = !closed ? closedState : openState
+	});
 </script>
 
 {#if $activeSection === 'bookmarks'}
@@ -124,14 +137,14 @@
 		style:--width="{p.w}px"
 		style:--height="{p.h}px"
 		use:clickOutside={{ whitelist: ['controls', 'nub', 'grabber', 'theme-toggle'] }}
-		on:outclick={() => (!closed ? ($showSettings = false) : void 0)}
+		onoutclick={() => (!closed ? ($showSettings = false) : void 0)}
 		transition:fade
 	>
 		<div class="panel">
 			<div class="settings">
 				{#if $showSettings}
 					{#key $showSettings}
-						<slot />
+						{@render children?.()}
 					{/key}
 				{/if}
 			</div>
@@ -145,7 +158,7 @@
 						width="{$width}%"
 						height="{$height}%"
 						opacity={$opacity}
-						on:click={() => ($showSettings = true)}
+						onclick={() => ($showSettings = true)}
 					/>
 					<text
 						x="{42.75}%"

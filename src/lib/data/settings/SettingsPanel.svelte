@@ -12,17 +12,18 @@
 		sync: SyncSettings,
 	}
 
-	let activeSection: typeof sections[keyof typeof sections] = sections['grid']
+	let activeSection: typeof sections[keyof typeof sections] = $state(sections['grid'])
 </script>
 
 <FluidPanel>
+	{@const SvelteComponent = activeSection}
 	<div class="control-panel">
 		<nav>
 			{#each Object.entries(sections) as [title, component]}
 				<div
 					role="link"
 					class:active={activeSection === component}
-					on:click={() => (activeSection = component)}
+					onclick={() => (activeSection = component)}
 					out:fade={{ duration: 50 }}
 					in:fly={{ y: 5, duration: 500, delay: 200, easing: quintOut }}
 				>
@@ -33,7 +34,7 @@
 		{#key activeSection}
 			<div class="settings-section-component">
 				{#key activeSection}
-					<svelte:component this={activeSection} />
+					<SvelteComponent />
 				{/key}
 			</div>
 		{/key}

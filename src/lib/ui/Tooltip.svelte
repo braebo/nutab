@@ -1,21 +1,36 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import tippy, { sticky } from 'tippy.js'
 	import { onMount } from 'svelte'
 
-	export let content = 'Tooltip'
-	export let placement = 'right'
-	/**
+	
+	
+	interface Props {
+		content?: string;
+		placement?: string;
+		/**
 	 * @param delay - Intro & outro delay in ms.  Default [750, 100]
 	 */
-	export let delay: [number, number] = [750, 100]
-	export let interactive = false
-	export let arrow = true
-	/**
-	 * @param offset - Y and X offset in px.  Default [0, 0]
-	 */
-	export let offset = [0, 0]
-	export let display = ''
-	let instance: any
+		delay?: [number, number];
+		interactive?: boolean;
+		arrow?: boolean;
+		offset?: any;
+		display?: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		content = 'Tooltip',
+		placement = 'right',
+		delay = [750, 100],
+		interactive = false,
+		arrow = true,
+		offset = [0, 0],
+		display = '',
+		children
+	}: Props = $props();
+	let instance: any = $state()
 
 	onMount(() => {
 		tippy.setDefaultProps({
@@ -39,11 +54,13 @@
 		instance = container?._tippy
 	})
 
-	$: if (tippy && instance) instance.setContent(content.split('_').join(' '))
+	run(() => {
+		if (tippy && instance) instance.setContent(content.split('_').join(' '))
+	});
 </script>
 
 <span id={content} style="display: {display};" class="tippy-container">
-	<slot />
+	{@render children?.()}
 </span>
 
 <style>

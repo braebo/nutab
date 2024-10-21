@@ -3,7 +3,11 @@
 	import { settings } from '$lib/stores'
 	import { createGradient } from '$lib/theme'
 
-	export let thisTheme: keyof Settings['theme']
+	interface Props {
+		thisTheme: keyof Settings['theme'];
+	}
+
+	let { thisTheme }: Props = $props();
 
 	const updateBg = (e: Event) => {
 		$settings.theme[thisTheme].background = createGradient(thisTheme)
@@ -17,7 +21,7 @@
 			class="a"
 			type="color"
 			bind:value={$settings.theme[thisTheme].gradientA}
-			on:input={updateBg}
+			oninput={updateBg}
 		/>
 	</div>
 	<div class="picker">
@@ -26,7 +30,7 @@
 			class="b"
 			type="color"
 			bind:value={$settings.theme[thisTheme].gradientB}
-			on:input={updateBg}
+			oninput={updateBg}
 		/>
 	</div>
 </div>

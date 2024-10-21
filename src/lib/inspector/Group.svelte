@@ -5,9 +5,13 @@
 	import { slide } from 'svelte/transition'
 	import Row from './Row.svelte'
 
-	export let store: Writable<any> | Readable<any>
-	export let isOpen: boolean
-	export let label: string
+	interface Props {
+		store: Writable<any> | Readable<any>;
+		isOpen: boolean;
+		label: string;
+	}
+
+	let { store, isOpen = $bindable(), label }: Props = $props();
 
 	const dispatch = createEventDispatcher()
 
@@ -21,7 +25,7 @@
 </script>
 
 {#if 'subscribe' in store && $store !== (null || 'undefined')}
-	<h4 class:isOpen on:click={toggle}>
+	<h4 class:isOpen onclick={toggle}>
 		<span>▼</span>
 		{label}
 	</h4>

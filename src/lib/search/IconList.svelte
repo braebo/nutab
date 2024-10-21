@@ -1,18 +1,26 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Engine } from '$lib/data/types'
 	import { createEventDispatcher } from 'svelte'
 	import { fly } from 'svelte/transition'
 
-	export let engines: Engine[] = []
-	export let searchFocused = true
+	interface Props {
+		engines?: Engine[];
+		searchFocused?: boolean;
+	}
 
-	let hovering = Array(engines.length).fill(false)
+	let { engines = [], searchFocused = true }: Props = $props();
+
+	let hovering = $state(Array(engines.length).fill(false))
 	let disableShowAll = false
-	let hoverTarget = 0
-	let showAll = false
+	let hoverTarget = $state(0)
+	let showAll = $state(false)
 	let timer: NodeJS.Timeout
 
-	$: hovering
+	run(() => {
+		hovering
+	});
 
 	const mouseover = (i: number) => {
 		if (disableShowAll) return
@@ -52,19 +60,20 @@
 <div class="engines">
 	{#each engines as { position, icon }, i}
 		{#if isActiveEngine(i) || showAll}
+			{@const SvelteComponent = icon}
 			<div
 				class="icon"
 				class:hovering={hovering[i] || searchFocused}
 				style="transform: translateX(-{i * 50}px);"
 				in:fly={{ x: 10 * i }}
 				out:fly={{ x: 10 * i, duration: 300 - 50 * i }}
-				on:mouseover={() => mouseover(i)}
-				on:focus={() => mouseover(i)}
-				on:mouseout={() => mouseout(i)}
-				on:blur={() => mouseout(i)}
-				on:click={() => handleClick(position)}
+				onmouseover={() => mouseover(i)}
+				onfocus={() => mouseover(i)}
+				onmouseout={() => mouseout(i)}
+				onblur={() => mouseout(i)}
+				onclick={() => handleClick(position)}
 			>
-				<svelte:component this={icon} />
+				<SvelteComponent />
 			</div>
 		{/if}
 	{/each}

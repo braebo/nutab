@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { authStore, showAuthForm } from './authStore'
 	import isStrongPassword from 'validator/es/lib/isStrongPassword'
 	import { elasticOut, quintOut } from 'svelte/easing'
@@ -14,36 +16,45 @@
 
 	const dispatch = createEventDispatcher()
 
-	let active = 'login',
-		showPassword = false,
+	let active = $state('login'),
+		showPassword = $state(false),
 		width = '300px',
-		emailInput,
-		passwordInput,
-		statusColor,
-		passwordValid = false
+		emailInput = $state(),
+		passwordInput = $state(),
+		statusColor = $state('var(--light-c)'),
+		passwordValid = $state(false)
 
-	export let email, password
-
-	$: statusColor = 'var(--light-c)'
-
-	$: switch ($status) {
-		case 'invalid':
-			statusColor = 'var(--light-c)'
-			break
-		case 'valid':
-			statusColor = 'var(--primary)'
-			break
-		case 'error':
-			statusColor = 'var(--error)'
-			break
-		default:
-			statusColor = 'var(--light-c)'
-			break
+	interface Props {
+		email: any;
+		password: any;
 	}
 
-	$: emailValid = email ? isEmail(email) : false
-	$: formValid = emailValid && passwordValid
-	$: $status = emailValid && formValid ? 'valid' : 'invalid'
+	let { email = $bindable(), password = $bindable() }: Props = $props();
+
+	
+
+	run(() => {
+		switch ($status) {
+			case 'invalid':
+				statusColor = 'var(--light-c)'
+				break
+			case 'valid':
+				statusColor = 'var(--primary)'
+				break
+			case 'error':
+				statusColor = 'var(--error)'
+				break
+			default:
+				statusColor = 'var(--light-c)'
+				break
+		}
+	});
+
+	let emailValid = $derived(email ? isEmail(email) : false)
+	let formValid = $derived(emailValid && passwordValid)
+	run(() => {
+		$status = emailValid && formValid ? 'valid' : 'invalid'
+	});
 
 	function checkPassword(e) {
 		password = e.target.value
@@ -77,7 +88,9 @@
 		}
 	}
 
-	$: if ($authenticated) $showAuthForm = false
+	run(() => {
+		if ($authenticated) $showAuthForm = false
+	});
 </script>
 
 <span style="--status-color: {statusColor}">
@@ -92,12 +105,12 @@
 			<nav in:fly={{ y: 10, delay: 200 }} class="auth-nav">
 				<ul class="login-signup">
 					<li>
-						<h2 class="anim-link" class:activeTab={active == 'login'} on:click={() => (active = 'login')}>
+						<h2 class="anim-link" class:activeTab={active == 'login'} onclick={() => (active = 'login')}>
 							Login
 						</h2>
 					</li>
 					<li>
-						<h2 class="anim-link" class:activeTab={active == 'signup'} on:click={() => (active = 'signup')}>
+						<h2 class="anim-link" class:activeTab={active == 'signup'} onclick={() => (active = 'signup')}>
 							Sign Up
 						</h2>
 					</li>
@@ -137,15 +150,15 @@
 							value={password}
 							placeholder="Password"
 							type={showPassword ? 'text' : 'password'}
-							on:input={(e) => checkPassword(e)}
-							on:change={(e) => checkPassword(e)}
+							oninput={(e) => checkPassword(e)}
+							onchange={(e) => checkPassword(e)}
 							class:passwordValid
 							minlength="5"
 							maxlength="30"
 							autocomplete="current-password"
 						/>
 						{#if password}
-							<div class="eye-icon" on:click={() => (showPassword = !showPassword)} transition:fade>
+							<div class="eye-icon" onclick={() => (showPassword = !showPassword)} transition:fade>
 								<EyeIcon active={showPassword} />
 							</div>
 						{/if}
@@ -167,8 +180,8 @@
 									duration: 400
 								}}
 								out:fly={{ y: 100, duration: 750 }}
-								on:click|preventDefault={() =>
-									active == 'login' ? dispatch('signin') : dispatch('signup')}
+								onclick={preventDefault(() =>
+									active == 'login' ? dispatch('signin') : dispatch('signup'))}
 								value={active == 'login' ? 'Login' : 'Sign Up'}
 							/>
 						{/if}
@@ -179,7 +192,7 @@
 				class="github-icon"
 				in:scale={{ delay: 300, easing: quintOut, duration: 400 }}
 				out:fly={{ y: -400, duration: 750 }}
-				on:click|preventDefault={handleGithub}
+				onclick={preventDefault(handleGithub)}
 			>
 				<GithubIcon />
 			</div>

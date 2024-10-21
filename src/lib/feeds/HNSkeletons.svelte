@@ -9,7 +9,11 @@
 	const b = tweened(0)
 	const c = tweened(100)
 
-	export let count: number
+	interface Props {
+		count: number;
+	}
+
+	let { count }: Props = $props();
 
 	let stageTimer: NodeJS.Timeout
 

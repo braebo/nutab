@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { theme, initTheme, toggleTheme, OnMount } from 'fractils'
 
 	import { fade, fly } from 'svelte/transition'
@@ -9,11 +11,15 @@
 	import Moon from './graphics/Moon.svelte'
 	import Sun from './graphics/Sun.svelte'
 
-	let first = true
+	let first = $state(true)
 
 	initTheme()
 
-	export let size: number
+	interface Props {
+		size: number;
+	}
+
+	let { size }: Props = $props();
 	function handleToggle() {
 		toggleTheme()
 		first = false
@@ -22,7 +28,7 @@
 
 <OnMount>
 	{#key $theme}
-		<div class="theme-toggle" on:click|preventDefault={handleToggle}>
+		<div class="theme-toggle" onclick={preventDefault(handleToggle)}>
 			<span style:pointer-events="none">
 				{#if $theme == 'light'}
 					<div

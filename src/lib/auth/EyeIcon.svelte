@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let active = false
+	interface Props {
+		active?: boolean;
+	}
+
+	let { active = false }: Props = $props();
 </script>
 
 <svg

@@ -7,7 +7,11 @@
 	import Range from '$lib/ui/Range.svelte'
 	import { settings } from '$lib/stores'
 
-	export let thisTheme: keyof Settings['theme']
+	interface Props {
+		thisTheme: keyof Settings['theme'];
+	}
+
+	let { thisTheme }: Props = $props();
 
 	const updateBg = (e: Event) => {
 		$settings.theme[thisTheme].background = createGradient(thisTheme)

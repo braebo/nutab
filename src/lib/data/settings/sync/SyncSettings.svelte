@@ -7,8 +7,8 @@
 	import Button from '$lib/ui/Button.svelte'
 	import { quintOut } from 'svelte/easing'
 
-	let revealPhrase = false
-	let email = ''
+	let revealPhrase = $state(false)
+	let email = $state('')
 
 	const handleConnect = () => {
 		//...
@@ -39,7 +39,7 @@
 						<div
 							class="hide"
 							transition:fly={{ x: 10, delay: 250, duration: 200, easing: quintOut }}
-							on:click={() => (revealPhrase = false)}
+							onclick={() => (revealPhrase = false)}
 						>
 							👁
 						</div>
@@ -73,13 +73,13 @@
 			<p style:transform="translateY(-0.25rem)">Sync your data across browsers.</p>
 			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
 			<div class="button">
-				<div class="btn" on:click={handleCreate}>New Sync Code</div>
+				<div class="btn" onclick={handleCreate}>New Sync Code</div>
 			</div>
 		</div>
 		<div class="existing" in:fly={{ y: 5, duration: 350, delay: 150 }} out:fly|local={{ y: 5, duration: 150 }}>
 			<p>Already have a Sync Code?</p>
 			<div class="button">
-				<div class="btn" on:click={handleConnect}>Connect</div>
+				<div class="btn" onclick={handleConnect}>Connect</div>
 			</div>
 		</div>
 	{/if}

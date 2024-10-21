@@ -3,15 +3,25 @@
 	import { editor } from '$lib/stores/bookmarkEditor'
 	import { fade } from 'svelte/transition'
 
-	export let showModal = false
-	export let opacity = 0.3
-	export let background = `rgba(var(--light-d-rgb), ${opacity})`
+	interface Props {
+		showModal?: boolean;
+		opacity?: number;
+		background?: any;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		showModal = false,
+		opacity = 0.3,
+		background = `rgba(var(--light-d-rgb), ${opacity})`,
+		children
+	}: Props = $props();
 </script>
 
 {#if showModal}
 	<div class="background" style="background-color: {background};" transition:fade={{ duration: 150 }}>
-		<div class="wrapper" use:clickOutside on:click_outside={() => editor.hide()}>
-			<slot />
+		<div class="wrapper" use:clickOutside onclick_outside={() => editor.hide()}>
+			{@render children?.()}
 		</div>
 	</div>
 {/if}

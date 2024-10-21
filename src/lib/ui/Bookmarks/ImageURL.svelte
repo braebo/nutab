@@ -6,7 +6,11 @@
 
 	let img = $bookmarkEditor?.image || ''
 
-	export let open = false
+	interface Props {
+		open?: boolean;
+	}
+
+	let { open = false }: Props = $props();
 
 	const handleChange = (e: InputEvent) => {
 		$bookmarkEditor.image = (e.target as HTMLInputElement).value

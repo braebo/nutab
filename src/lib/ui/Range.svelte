@@ -10,29 +10,43 @@
 	@prop `truncate?: boolean` - Rounds decimals into whole numbers.
  -->
 <script lang="ts">
+	import { stopPropagation } from 'svelte/legacy';
+
 	import { createEventDispatcher, tick } from 'svelte'
 	import { mapRange } from 'fractils'
 	import { onDestroy } from 'svelte'
 
 	const dispatch = createEventDispatcher()
 
-	/** The value to be controled by the slider. */
-	export let value: any
-	export let name: string
-	export let range: { min: number; max: number }
-	export let vertical = false
-	export let step = 0.0001 // TODO
-	export let truncate = false
+	
+	interface Props {
+		/** The value to be controled by the slider. */
+		value: any;
+		name: string;
+		range: { min: number; max: number };
+		vertical?: boolean;
+		step?: number;
+		truncate?: boolean;
+	}
+
+	let {
+		value = $bindable(),
+		name,
+		range,
+		vertical = false,
+		step = 0.0001,
+		truncate = false
+	}: Props = $props();
 
 	const { min, max } = range
 
-	let el: HTMLElement
-	let track: HTMLElement
-	let thumb: HTMLElement
+	let el: HTMLElement = $state()
+	let track: HTMLElement = $state()
+	let thumb: HTMLElement = $state()
 	let dragging = false
 	const thumbWidth = 12
-	$: clientWidth = el?.clientWidth ?? 100
-	$: progress = mapRange(value, min, max, 1, clientWidth - thumbWidth)
+	let clientWidth = $derived(el?.clientWidth ?? 100)
+	let progress = $derived(mapRange(value, min, max, 1, clientWidth - thumbWidth))
 
 	// Used to store the last value of the slider before it's truncated.
 	let targetValue = value
@@ -115,18 +129,18 @@
 	role="slider"
 	{name}
 	bind:this={el}
-	on:mousedown={setFromMouse}
+	onmousedown={setFromMouse}
 	style:--thumb-width="{thumbWidth}px"
 	draggable="false"
 >
 	<div
 		class="thumb"
 		bind:this={thumb}
-		on:mousedown|stopPropagation|capture={mouseDown}
+		onmousedowncapture={stopPropagation(mouseDown)}
 		style:left="{progress}px"
 		draggable="false"
-	/>
-	<div class="track" bind:this={track} style:clip-path="0 {progress} 0 0" draggable="false" />
+	></div>
+	<div class="track" bind:this={track} style:clip-path="0 {progress} 0 0" draggable="false"></div>
 </div>
 
 <style lang="scss">

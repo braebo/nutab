@@ -6,9 +6,13 @@
 	import Menu from './Menu.svelte'
 	import { theme } from 'fractils'
 
-	export let register: Record<string, Writable<unknown> | Readable<unknown>>
-	export let top = '10%'
-	export let nub = '🛠'
+	interface Props {
+		register: Record<string, Writable<unknown> | Readable<unknown>>;
+		top?: string;
+		nub?: string;
+	}
+
+	let { register, top = '10%', nub = '🛠' }: Props = $props();
 
 	// Persists the folded / unfolded state of the inspector submenus / groups
 	let keys = Object.keys(register)

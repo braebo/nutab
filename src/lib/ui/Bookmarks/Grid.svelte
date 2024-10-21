@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault, stopPropagation } from 'svelte/legacy';
+
 	// Data
 	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
 	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
@@ -15,22 +17,22 @@
 	import { debounce } from '$lib/utils/debounce'
 	import { scale } from 'svelte/transition'
 
-	let hovering: number | null = null
+	let hovering: number | null = $state(null)
 
-	let dragging = false
+	let dragging = $state(false)
 
 	// The element to drag
-	let active: number = null
+	let active: number = $state(null)
 
 	// The element to swap with
-	let target: number = null
+	let target: number = $state(null)
 	let lastTarget: number = null
 
 	// Mouse movement for dragging active element
-	let move = { x: 0, y: 0 }
+	let move = $state({ x: 0, y: 0 })
 
 	// Temporary positions for animations while dragging
-	let positionProxy = Array($gridDimensions.positions.length).fill(null)
+	let positionProxy = $state(Array($gridDimensions.positions.length).fill(null))
 
 	// Cell transition animation duration in ms
 	const transitionDuration = 250
@@ -39,19 +41,21 @@
 	let cooldown = false
 
 	// Temporarily disables transitions
-	let disableTransitions = false
+	let disableTransitions = $state(false)
 
 	// A ref to each cell
-	let cells: HTMLElement[] = []
+	let cells: HTMLElement[] = $state([])
 
 	// Hides and shows the edit icon for each bookmark.
-	let showEditIcon: boolean[] = Array($grid.items?.length).fill(false)
+	let showEditIcon: boolean[] = $state(Array($grid.items?.length).fill(false))
 	// Ugly hack $grid.items is not defined on first render
-	let first = false
-	$: if (!first && showEditIcon.length < $grid?.items?.length) {
-		first = true
-		showEditIcon = Array($grid.items.length).fill(false)
-	}
+	let first = $state(false)
+	run(() => {
+		if (!first && showEditIcon.length < $grid?.items?.length) {
+			first = true
+			showEditIcon = Array($grid.items.length).fill(false)
+		}
+	});
 
 	const handleMouseUp = async (e: MouseEvent) => {
 		// If we have a target, swap the elements
@@ -135,10 +139,12 @@
 	}
 
 	// Hide edit icon while dragging
-	$: if (dragging) {
-		hovering = null
-		showEditIcon.fill(false)
-	}
+	run(() => {
+		if (dragging) {
+			hovering = null
+			showEditIcon.fill(false)
+		}
+	});
 
 	let cooldownTimer: NodeJS.Timeout
 	function setCooldown() {
@@ -149,15 +155,17 @@
 		}, transitionDuration * 0.75)
 	}
 
-	$: getCellPosition = (i: number) => {
+	let getCellPosition = $derived((i: number) => {
 		if (positionProxy[i] != null) {
 			return `translate(${positionProxy[i].x}px, ${positionProxy[i].y}px)`
 		} else {
 			return `translate(${$gridDimensions.positions[i].x}px, ${$gridDimensions.positions[i].y}px)`
 		}
-	}
+	})
 
-	$: $gridDimensions
+	run(() => {
+		$gridDimensions
+	});
 
 	let swapTimer: NodeJS.Timeout
 	const swap = async (a: number, b: number) => {
@@ -198,7 +206,7 @@
 	}
 </script>
 
-<svelte:window on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
+<svelte:window onmouseup={handleMouseUp} onmousemove={handleMouseMove} />
 
 <div
 	class="grid"
@@ -236,11 +244,11 @@
 						class:dragging
 						class:disableTransitions
 						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
-						on:mousedown|preventDefault|stopPropagation={handleMouseDown}
-						on:mouseover={() => handleItemMouseOver(i)}
-						on:mouseout={() => handleItemMouseOut(i)}
-						on:focus={() => handleItemMouseOver(i)}
-						on:blur={() => handleItemMouseOut(i)}
+						onmousedown={stopPropagation(preventDefault(handleMouseDown))}
+						onmouseover={() => handleItemMouseOver(i)}
+						onmouseout={() => handleItemMouseOut(i)}
+						onfocus={() => handleItemMouseOver(i)}
+						onblur={() => handleItemMouseOut(i)}
 					>
 						<div class="grid-image">
 							<Bookmark
@@ -255,13 +263,13 @@
 						</div>
 						{#if showEditIcon[i] && !dragging}
 							<div
-								on:mouseover={() => handleItemMouseOver(i)}
-								on:mouseout={() => handleItemMouseOut(i)}
-								on:focus={() => handleItemMouseOver(i)}
-								on:blur={() => handleItemMouseOut(i)}
+								onmouseover={() => handleItemMouseOver(i)}
+								onmouseout={() => handleItemMouseOut(i)}
+								onfocus={() => handleItemMouseOver(i)}
+								onblur={() => handleItemMouseOut(i)}
 								class="edit"
 								transition:scale={{ duration: 150 }}
-								on:click|preventDefault|stopPropagation={() => editor.show(['edit', 'bookmark'], i)}
+								onclick={stopPropagation(preventDefault(() => editor.show(['edit', 'bookmark'], i)))}
 							>
 								<Edit />
 							</div>

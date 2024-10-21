@@ -5,7 +5,7 @@
 
 <label for="showTitle">
 	<!-- <input type="checkbox" bind:checked={$settings.showTitle} /> -->
-	<div class="btn" on:click={() => ($settings.showTitle = !$settings.showTitle)}>
+	<div class="btn" onclick={() => ($settings.showTitle = !$settings.showTitle)}>
 		{#key $settings.showTitle}
 			<div class="show-hide" in:fly={{ y: 30 }} out:fly={{ y: -30 }}>
 				{$settings.showTitle ? 'Hide' : 'Show'}

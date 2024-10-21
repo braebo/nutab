@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let size = 100
+	interface Props {
+		size?: number;
+	}
+
+	let { size = 100 }: Props = $props();
 	let radius = 2.5
 </script>
 
