@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte'
 
-	
 	interface Props {
-		position?: any;
-		bounds?: any;
-		outOfBounds: any;
-		Size of the grabbable border
-		grabZone?: number;
-		panelWidth?: number;
-		panelHeight?: number;
-		children?: import('svelte').Snippet;
+		position?: any
+		bounds?: any
+		outOfBounds: any
+		/**
+		 * Size of the grabbable border
+		 */
+		grabZone?: number
+		panelWidth?: number
+		panelHeight?: number
+		children?: import('svelte').Snippet
 	}
 
 	let {
@@ -20,14 +21,13 @@
 		grabZone = 20,
 		panelWidth = 200,
 		panelHeight = 200,
-		children
-	}: Props = $props();
+		children,
+	}: Props = $props()
 
-	let panel: Element = $state(),
-		dragging = $state(false),
-		lastPosition,
-		boundary = {}
-	let innerWidth: number = $state(), innerHeight: number = $state()
+	let panel: Element = $state()
+	let dragging = $state(false)
+	let innerWidth = $state<number>()
+	let innerHeight = $state<number>()
 
 	let inZone = $state(false)
 	let mouse = { x: 0, y: 0 }
@@ -38,8 +38,7 @@
 		position = { x, y }
 	})
 
-	// @ts-ignore
-	const handleMouseDown = ({ clientX, clientY }) => {
+	const handleMouseDown = (/*{ clientX, clientY }*/) => {
 		dragging = inZone
 	}
 	const handleMouseUp = () => {
@@ -48,7 +47,7 @@
 		const { x, y } = panel.getBoundingClientRect()
 	}
 
-	const handleMouseMove = async (e: MouseEvent) => {
+	const handleMouseMove = async (e: PointerEvent) => {
 		await tick
 		mouse.x = e.clientX
 		mouse.y = e.clientY
@@ -56,16 +55,22 @@
 		inZone =
 			e.target === panel
 				? inRange(mouse.x, x, x + grabZone) ||
-				  inRange(mouse.x, x + width - grabZone, x + width) ||
-				  inRange(mouse.y, y, y + grabZone) ||
-				  inRange(mouse.y, y + height - grabZone, y + height)
+					inRange(mouse.x, x + width - grabZone, x + width) ||
+					inRange(mouse.y, y, y + grabZone) ||
+					inRange(mouse.y, y + height - grabZone, y + height)
 				: false
 		if ((!dragLock && !inZone) || !dragging) return
 		dragLock = true
 		const targetPositionY = position.y + e.movementY
 		const targetPositionX = position.x + e.movementX
-		position.y = Math.max(Math.min(targetPositionY, window.innerHeight - bounds.y), bounds.y - height)
-		position.x = Math.max(Math.min(targetPositionX, window.innerWidth - bounds.x), bounds.x - width)
+		position.y = Math.max(
+			Math.min(targetPositionY, window.innerHeight - bounds.y),
+			bounds.y - height,
+		)
+		position.x = Math.max(
+			Math.min(targetPositionX, window.innerWidth - bounds.x),
+			bounds.x - width,
+		)
 		outOfBounds =
 			position.x == bounds.x - width ||
 			position.x == window.innerWidth - bounds.x ||
@@ -78,12 +83,17 @@
 	}
 </script>
 
-<svelte:window onmouseup={handleMouseUp} onmousemove={handleMouseMove} bind:innerWidth bind:innerHeight />
+<svelte:window
+	onpointerup={handleMouseUp}
+	onpointermove={handleMouseMove}
+	bind:innerWidth
+	bind:innerHeight
+/>
 
 <div
 	bind:this={panel}
 	class="floating-window container"
-	onmousedown={handleMouseDown}
+	onpointerdown={handleMouseDown}
 	style="
 						transform: translate({position.x}px, {position.y}px);
 						box-shadow: 0 0 0 {grabZone}px var(--light-b, black) inset;
