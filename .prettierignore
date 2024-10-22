@@ -1,5 +1,15 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# SvelteKit
 .svelte-kit/**
 static/**
 build/**
+
+# Node
 node_modules/**
+
+# Misc
 src/lib/data/transactions.ts

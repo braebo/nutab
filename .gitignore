@@ -1,11 +1,35 @@
-/.vercel_build_output
-myBookmarks.ts
-.pnpm.debug.log
-/node_modules
-/.svelte-kit
-/functions
+# OS
 .DS_Store
-/build
+Thumbs.db
+
+# Env
 .env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# NPM
+node_modules
+package-lock.json
+.pnpm.debug.log
+
+# SvelteKit
+.output
+/build
+/.svelte-kit
+
+# Vercel
+.vercel
+/functions
+/.vercel_build_output
+
+# Test
+test-results
+
+# Browser Extensions
 build.crx
 build.pem

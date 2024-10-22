@@ -1,32 +1,31 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
+	import { run } from 'svelte/legacy'
 
-	import { scrollY, mobile, mapRange, log } from 'fractils'
-	import { onMount, onDestroy, tick } from 'svelte'
-
-	
-	
-
-	
-
-	interface Props {
-		/**
-	 * The element to add the scrollbar to.  Can be a selector or an element.
-	 */
-		root: string | Element | HTMLElement;
-		Manually removes the scrollbar.
-		disabled?: boolean;
-		% of padding to add to the scrollbar track's start and end.
-		padding?: number;
-		e: Event;
-	}
+	import { onMount, onDestroy } from 'svelte'
+	import { mapRange, log } from 'fractils'
 
 	let {
 		root = $bindable(),
 		disabled = $bindable(false),
 		padding = 0.7,
-		e = $bindable()
-	}: Props = $props();
+		e = $bindable(),
+	}: {
+		/**
+		 * The element to add the scrollbar to.  Can be a selector or an element.
+		 */
+		root: string | Element | HTMLElement
+		/**
+		 * Manually removes the scrollbar.
+		 * @default false
+		 */
+		disabled?: boolean
+		/**
+		 * % of padding to add to the scrollbar track's start and end.
+		 * @default 0.7
+		 */
+		padding?: number
+		e: Event
+	} = $props()
 
 	let viewHeight: number = $state()
 	let containerHeight: number = $state()
@@ -40,7 +39,10 @@
 		if (typeof root === 'string') {
 			const rootEl = document.querySelector(root)
 			if (!rootEl) {
-				return log(`<Scrollbar /> error: root element with selector "${root}" not found`, 'tomato')
+				return log(
+					`<Scrollbar /> error: root element with selector "${root}" not found`,
+					'tomato',
+				)
 			}
 			root = rootEl
 		}
@@ -57,7 +59,6 @@
 
 	onDestroy(() => (disabled = true))
 
-
 	let reveal = $state(false)
 	let timer: NodeJS.Timeout | null = null
 
@@ -68,12 +69,17 @@
 			reveal = false
 		}, 1000)
 	}
-	run(() => {
+	$effect(() => {
 		disabled = disabled ?? false
-	});
-	run(() => {
+	})
+	$effect(() => {
 		if (e) {
-			if (!disabled && root instanceof HTMLElement && e instanceof Event && 'currentTarget' in e) {
+			if (
+				!disabled &&
+				root instanceof HTMLElement &&
+				e instanceof Event &&
+				'currentTarget' in e
+			) {
 				const target = e.currentTarget as HTMLElement
 				containerHeight = root?.clientHeight
 				viewHeight = root.clientHeight
@@ -94,7 +100,7 @@
 
 			showScrollbar()
 		}
-	});
+	})
 </script>
 
 <!-- <svelte:window on:scroll={() => update()} /> -->
