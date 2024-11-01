@@ -1,19 +1,21 @@
-import type { Bookmark, Folder } from '../../src/lib/data/types'
+import type { Bookmark, Folder, Settings } from '../../src/lib/data/types'
 import type { Env as HonoEnv } from 'hono'
 
 //? Hono env config
 export interface Env extends HonoEnv {
 	Bindings: {
-		USERS: KVNamespace
-		BOOKMARKS: KVNamespace
+		USER_DATA: KVNamespace
 	}
 }
 
-export interface User {
+/**
+ * All data store
+ */
+export type UserData = {
 	email?: string
-}
-
-export interface Bookmarks {
-	bookmarks: Bookmark[]
-	folders: Folder[]
+	data: {
+		bookmarks: Bookmark[]
+		folders: Folder[]
+		settings?: Settings
+	}
 }

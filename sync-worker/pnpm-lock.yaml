@@ -11,6 +11,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20241022.0
         version: 4.20241022.0
+      esm-env:
+        specifier: ^1.1.4
+        version: 1.1.4
       hono:
         specifier: ^4.6.8
         version: 4.6.8
@@ -291,6 +294,9 @@ packages:
   escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+
+  esm-env@1.1.4:
+    resolution: {integrity: sha512-oO82nKPHKkzIj/hbtuDYy/JHqBHFlMIW36SDiPCVsj87ntDLcWN+sJ1erdVryd4NxODacFTsdrIE3b7IamqbOg==}
 
   estree-walker@0.6.1:
     resolution: {integrity: sha512-SqmZANLWS0mnatqbSfRP5g8OXZC12Fgg1IwNtLsyHDzJizORW4khDfjPqJZsemPWBB2uqykUah5YpQ6epsqC/w==}
@@ -712,6 +718,8 @@ snapshots:
       '@esbuild/win32-x64': 0.17.19
 
   escape-string-regexp@4.0.0: {}
+
+  esm-env@1.1.4: {}
 
   estree-walker@0.6.1: {}
 

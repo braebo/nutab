@@ -3,6 +3,5 @@ account_id = "ea348805594121ba01589915fdb64d47"
 compatibility_date = "2024-10-31"
 
 kv_namespaces = [
-	{ binding = "USERS", id = "17ba7a207de246debc4263101387a344" },
-	{ binding = "BOOKMARKS", id = "a4a4663274da45dcaf7e550ed3eb5403" }
+	{ binding = "USER_DATA", id = "cf5423949eb840799d39148e7fbdce33" }
 ]

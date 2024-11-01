@@ -1,19 +1,17 @@
 import type { Env } from './types'
 
-import { post_bookmarks, get_bookmarks } from './routes/bookmarks'
-import { new_user } from './routes/user'
+import { new_user, save_user_data, get_user_data } from './routes/user'
 import { logger } from 'hono/logger'
 import { cors } from 'hono/cors'
 import { Hono } from 'hono'
 
 const app = new Hono<Env>()
+	.use('*', logger())
+	.use('*', cors())
+	.post('/user', new_user)
+	.post('/user/:phrase', save_user_data)
+	.get('/user/:phrase', get_user_data)
 
-app.use('*', logger())
-app.use('*', cors())
-
-app.post('/user', new_user)
-
-app.post('/:phrase/bookmarks', post_bookmarks)
-app.get('/:phrase/bookmarks', get_bookmarks)
+export type SyncWorker = typeof app
 
 export default app

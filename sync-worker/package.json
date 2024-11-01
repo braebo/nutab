@@ -6,6 +6,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20241022.0",
+		"esm-env": "^1.1.4",
 		"hono": "^4.6.8",
 		"wrangler": "^3.84.1"
 	}
