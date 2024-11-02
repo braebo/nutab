@@ -4,6 +4,7 @@
 	import Row from './Row.svelte'
 
 	let {
+		// state = $bindable(),
 		state,
 		isOpen = $bindable(),
 		label,
@@ -22,40 +23,25 @@
 			isOpen,
 		})
 	}
-
-	console.log(state)
 </script>
 
-{#if state}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<h4 class:isOpen onclick={toggle}>
-		<span>▼</span>
-		{label}
-	</h4>
+<h4 class:isOpen onclick={toggle}>
+	<span>▼</span>
+	{label}
+</h4>
 
-	{#if isOpen && typeof state === 'object'}
-		<div class="state-data" transition:slide={{ duration: 200, easing: quintOut }}>
-			{#key state}
-				{#if state === null}
-					<div class="null">null</div>
-				{:else if typeof state === 'object'}
-					{#each Object.entries(state) as [key, value]}
-						<Row {key} {value} {state} path={key} />
-					{/each}
-				{:else}
-					<Row
-						{state}
-						key={label}
-						value={state}
-						path={label}
-						simple={true}
-						label={false}
-					/>
-				{/if}
-			{/key}
-		</div>
-	{/if}
+{#if isOpen}
+	<div class="state-data" transition:slide={{ duration: 200, easing: quintOut }}>
+		{#key state}
+			{#if typeof state === 'object' && state !== null}
+				{#each Object.entries(state) as [key, value]}
+					<Row {key} {value} {state} path={key} />
+				{/each}
+			{:else}
+				<Row {state} key={label} value={state} path={label} simple={true} label={false} />
+			{/if}
+		{/key}
+	</div>
 {/if}
 
 <style lang="scss">
@@ -107,10 +93,10 @@
 		}
 	}
 
-	.null {
-		font-size: var(--font-small);
-		font-family: 'MonoLisa', monospace;
+	// .null {
+	// 	font-size: var(--font-small);
+	// 	font-family: 'MonoLisa', monospace;
 
-		color: var(--value-color);
-	}
+	// 	color: var(--value-color);
+	// }
 </style>

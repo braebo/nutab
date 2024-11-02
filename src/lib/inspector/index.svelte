@@ -1,38 +1,43 @@
 <script lang="ts">
-	import Inspector from './Inspector.svelte'
-	// import {
-	// 	activeFolderBookmarks,
-	// 	activeBookmarks,
-	// 	activeFolder,
-	// 	tagFilter,
-	// } from '$lib/data/dbStore'
-
-	import { db } from '$lib/data/db.svelte'
-
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	import { folderEditor } from '$lib/stores/folderEditor.svelte'
 	import { settings, cMenu } from '$lib/stores/settings.svelte'
+	import { blurOverlay } from '$lib/stores/blurOverlay.svelte'
 	import { grid } from '$lib/stores/grid.svelte'
-	// import * as stores from '$lib/stores'
+	import Inspector from './Inspector.svelte'
+	import { db } from '$lib/data/db.svelte'
+	import { onMount } from 'svelte'
+
+	let mounted = false
+	onMount(async () => {
+		await new Promise((resolve) => setTimeout(resolve, 100))
+		mounted = true
+	})
 </script>
 
-<Inspector
-	register={{
-		// ...stores,
-		activeBookmarks: db.activeBookmarks,
-		activeFolder: db.activeFolder,
-		tagFilter: db.tagFilter,
-		cMenu: cMenu,
-		settings: settings,
-		// gridDimensions: grid.dimensions,
-		// width: grid.width,
-		// iconSize: grid.iconSize,
-		// gap: grid.gap,
-		// items: grid.items,
-		grid: {
-			dimensions: grid.dimensions,
-			width: grid.width,
-			iconSize: grid.iconSize,
-			gap: grid.gap,
-			items: grid.items,
-		},
-	}}
-/>
+{#if mounted}
+	<Inspector
+		register={{
+			uniqueTags: db.uniqueTags,
+			activeBookmarks: db.activeBookmarks,
+			activeFolder: db.activeFolder,
+			tagFilter: db.tagFilter,
+			cMenu,
+			settings,
+			grid: {
+				dimensions: grid.dimensions,
+				width: grid.width,
+				iconSize: grid.iconSize,
+				gap: grid.gap,
+			},
+			bookmarkEditor: {
+				blurOverlay,
+				editorType: bookmarkEditor.editorType,
+				editorShown: bookmarkEditor.editorShown,
+				showBookmarkEditor: bookmarkEditor.showBookmarkEditor,
+				showFolderEditor: bookmarkEditor.showFolderEditor,
+			},
+			folderEditor: folderEditor,
+		}}
+	/>
+{/if}

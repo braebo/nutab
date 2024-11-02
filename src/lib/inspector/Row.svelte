@@ -7,6 +7,7 @@
 	let {
 		key,
 		value,
+		// state = $bindable(),
 		state,
 		path,
 		// simple = false,
@@ -33,7 +34,7 @@
 	 * Sets the value at the given path in the object.
 	 */
 	const set = (obj: Record<string, unknown>, path: string | string[], value: unknown) => {
-		// Regex explained: https://regexr.com/58j0k
+		// https://regexr.com/58j0k
 		const pathArray = Array.isArray(path) ? path : path.match(/([^[.\]])+/g)
 
 		pathArray?.reduce((acc: Record<string, unknown>, key, i) => {
@@ -53,72 +54,88 @@
 </script>
 
 <div class="kv" style:--hue={depth % 360}>
-	{#if value !== null}
-		{#if typeof value === 'object'}
-			{#if Array.isArray(value)}
-				{#if label}
-					<div class="key">{key}{':'}</div>
-				{/if}
-				<!-- Array -->
-				{#each value as nestedValue, index}
+	<!-- {#if value !== null} -->
+	{#if typeof value === 'object' && value !== null}
+		{#if Array.isArray(value)}
+			{#if label}
+				<div class="key">{key}{':'}</div>
+			{/if}
+			<!-- Array -->
+			{#each value as nestedValue, index}
+				<Row
+					{key}
+					bind:state
+					label={false}
+					value={nestedValue}
+					path={path + '[' + index + ']'}
+				/>
+			{/each}
+		{:else}
+			{#if label}
+				<div class="key">{key}{':'}</div>
+			{/if}
+			<div class="nested">
+				{#each Object.entries(value) as [nestedKey, nestedValue]}
 					<Row
-						{key}
-						{state}
-						label={false}
+						key={nestedKey}
 						value={nestedValue}
-						path={path + '[' + index + ']'}
+						bind:state
+						path={path + '.' + nestedKey}
+						{depth}
 					/>
 				{/each}
-			{:else}
-				{#if label}
-					<div class="key">{key}{':'}</div>
-				{/if}
-				<div class="nested">
-					{#each Object.entries(value) as [nestedKey, nestedValue]}
-						<Row
-							key={nestedKey}
-							value={nestedValue}
-							{state}
-							path={path + '.' + nestedKey}
-							{depth}
-						/>
-					{/each}
-				</div>
-			{/if}
-		{:else}
-			<label class="store-container" for="{path}-{uid}">
-				{#if label}
-					<div class="key">{key}{':'}</div>
-				{/if}
-				{#if typeof value === 'string'}
-					<input
-						id={path}
-						type="text"
-						{value}
-						oninput={(e) => updateState(e.currentTarget.value)}
-					/>
-				{:else if typeof value === 'boolean'}
-					<input
-						id="{path}-{uid}"
-						type="checkbox"
-						checked={value}
-						onchange={(e) => {
-							updateState(e.currentTarget.checked)
-						}}
-					/>
-				{:else if typeof value === 'number'}
-					<input
-						id={path}
-						type="number"
-						{value}
-						onchange={(e) => {
-							updateState(e.currentTarget.value)
-						}}
-					/>
-				{/if}
-			</label>
+			</div>
 		{/if}
+	{:else}
+		<label class="store-container" for="{path}-{uid}">
+			{#if label}
+				<div class="key">{key}{':'}</div>
+			{/if}
+			<!-- {#if typeof value === 'string'} -->
+			<!-- <input
+					id={path}
+					type="text"
+					{value}
+					oninput={(e) => updateState(e.currentTarget.value)}
+				/> -->
+			<!-- {:else if typeof value === 'boolean'} -->
+			{#if typeof value === 'boolean'}
+				<input
+					id="{path}-{uid}"
+					type="checkbox"
+					checked={value}
+					onchange={(e) => {
+						updateState(e.currentTarget.checked)
+					}}
+				/>
+			{:else if typeof value === 'number'}
+				<input
+					id={path}
+					type="number"
+					{value}
+					onchange={(e) => {
+						updateState(e.currentTarget.value)
+					}}
+				/>
+			{:else if value === ''}
+				<input
+					id={path}
+					type="text"
+					{value}
+					oninput={(e) => updateState(e.currentTarget.value)}
+					placeholder="[empty string]"
+				/>
+			{:else}
+				<input
+					id={path}
+					type="text"
+					{value}
+					oninput={(e) => updateState(e.currentTarget.value)}
+				/>
+			{/if}
+		</label>
 	{/if}
+	<!-- {/if} -->
 </div>
 
 <style lang="scss">
