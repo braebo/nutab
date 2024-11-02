@@ -44,6 +44,7 @@ const config = {
 		}
 		handler(warning)
 	},
+	warningFilter: (ree) => !ree.code.startsWith('a11y'),
 }
 
 export default config
