@@ -1,4 +1,3 @@
-import { defaultBookmarks } from '$lib/data/bookmarks/defaults'
 import { settings } from '$lib/stores/settings.svelte'
 import { device } from './device.svelte'
 import { db } from '$lib/data/db.svelte'
@@ -12,7 +11,7 @@ class Grid {
 	iconSize = $derived(settings.ranges.iconSize)
 	gap = $derived(settings.ranges.gridGap)
 	dimensions = $derived.by(() => {
-		const itemCount = db.activeBookmarks?.length ?? defaultBookmarks.length
+		const itemCount = db.activeBookmarks.length
 
 		// Icon size should include padding.
 		const totalItemSize = this.iconSize + this.gap * 2
@@ -49,21 +48,24 @@ class Grid {
 		const gridCenter = this.width / 2 - totalItemSize / 2
 
 		//* Calculate the positions of each item.
-		const positions = Array(itemCount).fill('')
+		const positions = Array.from({ length: itemCount }, () => ({ x: 0, y: 0 }))
 		const updatePositions = () => {
 			// Get x position.
 			const getPositionInRow = (i: number) => {
-				if (totalRows > 1 || itemCount > 2)
-					// This covers any grid with 3+ items.
+				// This covers any grid with 3+ items.
+				if (itemCount > 2) {
 					return (
 						((cellSize * i) % (cellSize * totalColumns - 0.1)) + remainingSpacePerItem
 					)
-				// But 1 and 2 item grids need some help.
-				else if (itemCount === 1) {
-					// Very center.
+				}
+
+				// 1 should be centered.
+				if (itemCount === 1) {
 					return gridCenter
-				} else if (itemCount === 2) {
-					// Center minus or plus padding.
+				}
+
+				// 2 should be centered +/- padding.
+				if (itemCount === 2) {
 					const minGap = Math.max(this.gap, 40)
 					const offset = i === 0 ? minGap * -1.5 : minGap * 1.5
 					return gridCenter + offset
@@ -78,12 +80,12 @@ class Grid {
 			}
 
 			// Store the positions.
-			positions.forEach((_, i) => {
+			for (let i = 0; i < itemCount; i++) {
 				positions[i] = {
 					x: Math.floor(getPositionInRow(i) ?? 0),
 					y: Math.floor(getPositionInColumn(i) ?? 0),
 				}
-			})
+			}
 		}
 		updatePositions()
 

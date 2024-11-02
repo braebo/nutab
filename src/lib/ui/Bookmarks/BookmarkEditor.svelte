@@ -48,9 +48,9 @@
 			bookmarkEditor.editor.useImage = false
 		}
 		if (bookmarkEditor.bookmarkEditorContext === 'edit') {
-			updateBookmark_db(bookmarkEditor.editor)
+			updateBookmark_db($state.snapshot(bookmarkEditor.editor))
 		} else {
-			await addBookmark_db(bookmarkEditor.editor)
+			await addBookmark_db($state.snapshot(bookmarkEditor.editor))
 		}
 		bookmarkEditor.hide()
 		grid.reRender()
