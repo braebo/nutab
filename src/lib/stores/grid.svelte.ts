@@ -12,9 +12,11 @@ class Grid {
 	width = $derived(Math.min(settings.ranges.gridWidth, device.width))
 	iconSize = $derived(settings.ranges.iconSize)
 	gap = $derived(settings.ranges.gridGap)
-	items = $derived(db.activeBookmarks)
+	// items = $derived(db.activeBookmarks)
+	// items = $derived(db.filteredBookmarks)
 	dimensions = $derived.by(() => {
-		const itemCount = this.items?.length ?? defaultBookmarks.length
+		// const itemCount = this.items?.length ?? defaultBookmarks.length
+		const itemCount = db.activeBookmarks?.length ?? defaultBookmarks.length
 
 		// iconSize should include padding
 		const totalItemSize = this.iconSize + this.gap * 2

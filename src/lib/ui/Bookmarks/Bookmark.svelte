@@ -3,8 +3,8 @@
 
 	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 	import { settings } from '$lib/stores/settings.svelte'
+	import { smoothToggle } from '$lib/utils/smoothToggle'
 	import { scale, fade } from 'svelte/transition'
-	import { debounce } from '$lib/utils/debounce'
 	import BookmarkArt from './BookmarkArt.svelte'
 
 	let {
@@ -25,6 +25,8 @@
 
 	let url = $derived(bookmark?.url ?? '')
 	let title = $derived(bookmark?.title ?? '')
+
+	const toggleTitle = smoothToggle((s) => (settings.showTitle = s), [1500, 0])
 </script>
 
 <div class="bookmark-container">
@@ -45,8 +47,8 @@
 			tabindex="0"
 			class="bookmark"
 			in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
-			onmouseover={() => debounce(() => (settings.showTitle = true), 1500)}
-			onfocus={() => debounce(() => (settings.showTitle = false))}
+			onmouseover={() => toggleTitle(true)}
+			onfocus={() => toggleTitle(false)}
 		>
 			<BookmarkArt bind:bookmark />
 

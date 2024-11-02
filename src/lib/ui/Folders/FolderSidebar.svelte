@@ -3,35 +3,20 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	// import {
-	// 	activeBookmarks,
-	// 	activeFolder,
-	// 	activeFolderBookmarks,
-	// 	lastActiveFolderId,
-	// 	tagFilter,
-	// 	uniqueTags,
-	// 	folders,
-	// } from '$lib/data/dbStore'
-	import { db } from '$lib/data/db.svelte'
-	// import { getFolder_db } from '$lib/data/transactions.svelte'
 	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	import dexie from '$lib/data/dexie.svelte'
+	import { db } from '$lib/data/db.svelte'
 
 	// Utils
+	import { smoothToggle } from '$lib/utils/smoothToggle'
 	import { grid } from '$lib/stores/grid.svelte'
-	import { debounce } from '$lib/utils/debounce'
 	import { Logger } from '$lib/utils/logger'
 	import { fly } from 'svelte/transition'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
-	import dexie from '$lib/data/dexie.svelte'
-	// import { log } from 'fractils'
 
 	const { log } = new Logger('FolderSidebar')
-
-	// onMount(async () => {
-	// 	db.folders = await getAllFolders_db()
-	// })
 
 	let hovering = $state(false)
 
@@ -40,41 +25,35 @@
 	// Filters bookmark grid by tag
 	const applyTagFilter = async (tag: string | null) => {
 		if (tag === db.tagFilter || tag === null) {
-			db.tagFilter = null
+			db.tagFilter = ''
 		} else {
 			db.tagFilter = tag
 		}
-		// reRender()
-		log('applyTagFilter:  Tag filter = ' + db.tagFilter)
+		// log('🟠 FolderSidebar.applyTagFilter:  Tag filter = ' + db.tagFilter)
 		grid.reRender()
+		// log('🟠 db.filteredBookmarks:', $state.snapshot(db.filteredBookmarks))
 	}
 
 	// Debounced mouse hover for show / hide / animations
 	let smoothHovering = $state(false)
 
-	const mouseOver = async () => {
+	const smoothHover = smoothToggle((state) => (smoothHovering = state), [0, 500])
+
+	const mouseOver = () => {
 		hovering = true
-		debounce(() => (smoothHovering = true), 0)
+		smoothHover(true)
 	}
 
 	const mouseOut = () => {
 		hovering = false
-		debounce(() => (smoothHovering = false), 500)
+		smoothHover(false)
 	}
 
 	// Selects a folder
 	const handleFolderClick = async (id: Folder['folder_id']) => {
-		if (db.tagFilter != null) applyTagFilter(null)
+		if (db.tagFilter) applyTagFilter('')
 		if (!isActive(id)) {
-			// db.activeFolder = (await getFolder_db(id)) ?? null
-
 			await dexie.settings.put({ key: 'activeFolderId', value: id })
-
-			// This is a gnarly hack to wait for "activeFolderBookmarks"
-			// derived store to update to the new activeFolder...
-			setTimeout(() => {
-				// db.activeBookmarks = db.activeFolderBookmarks
-			}, 100)
 
 			// db.lastActiveFolderId = id
 			grid.reRender()
@@ -87,13 +66,10 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-<div class="folder-sidebar-container">
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="folder-sidebar" class:hovering onmouseover={mouseOver} onmouseout={mouseOut}>
+<div class="folder-sidebar-container" onpointerover={mouseOver} onpointerleave={mouseOut}>
+	<div class="folder-sidebar" class:hovering>
 		{#if db.folders}
 			{#each db.folders as { folder_id, icon, title }, i}
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
 					class="_folder_"
 					id={folder_id}
@@ -108,7 +84,6 @@
 			{/each}
 		{/if}
 
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div class="new-folder" class:hovering onclick={newFolder}>
 			<Tooltip content="New_Folder" placement="right" offset={[9, 20]}>+</Tooltip>
 		</div>
@@ -126,7 +101,6 @@
 							class:active={db.tagFilter === tag}
 							class:inactive={db.tagFilter && db.tagFilter !== tag}
 						>
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<div
 								role="button"
 								tabindex={i}
@@ -147,16 +121,20 @@
 
 <style lang="scss">
 	.folder-sidebar-container {
-		position: absolute;
+		position: fixed;
 		display: flex;
-		align-items: center;
 		left: 0;
 		top: 0;
+		bottom: 0;
 
 		height: 100vh;
 		width: 200px;
+		margin: auto;
 
-		z-index: 0;
+		z-index: 10;
+
+		top: clamp(200px, 20vh, 20rem);
+		height: clamp(200px, 30vh, 30rem);
 	}
 
 	.folder-sidebar {
@@ -168,6 +146,8 @@
 		height: max-content;
 		min-width: 200px;
 		padding: 3rem 2rem 3rem 2rem;
+
+		z-index: 10;
 
 		& ._folder_ {
 			display: flex;

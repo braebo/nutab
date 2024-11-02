@@ -95,7 +95,7 @@ export async function addFolder_db(folder: Folder) {
 	log('🎬 Creating new folder:', folder)
 
 	// Clear any filters
-	db.tagFilter = null
+	db.tagFilter = ''
 
 	// Add to folders table
 	await dexie.folders.add(folder)
@@ -179,6 +179,7 @@ export const getFolderCount_db = () => dexie.folders.count()
  */
 export const swapBookmarks_db = async (bookmarks: Bookmark[]) => {
 	return new Promise((resolve) => {
+		console.log('swapBookmarks_db(): bookmarks:', bookmarks)
 		// Update each bookmark to store the new position
 		bookmarks.forEach((b) => {
 			dexie.bookmarks.put(b)

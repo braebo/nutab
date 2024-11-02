@@ -12,7 +12,7 @@
 
 	// Utils
 	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
-	import { debounce } from '$lib/utils/debounce'
+	import { smoothToggle } from '$lib/utils/smoothToggle'
 	import { scale } from 'svelte/transition'
 	import { untrack } from 'svelte'
 
@@ -46,17 +46,17 @@
 	let cells: HTMLElement[] = $state([])
 
 	/** Hides and shows the edit icon for each bookmark. */
-	let showEditIcon: boolean[] = $state(Array(grid.items?.length).fill(false))
+	let showEditIcon: boolean[] = $state(Array(db.activeBookmarks?.length).fill(false))
 
 	// Ugly hack (grid.items is not defined on first render)
 	let first = $state(false)
 	$effect(() => {
 		grid
-		grid.items
+		db.activeBookmarks
 		untrack(() => {
-			if (!first && showEditIcon.length < (grid?.items?.length ?? 0)) {
+			if (!first && showEditIcon.length < (db.activeBookmarks?.length ?? 0)) {
 				first = true
-				showEditIcon = Array(grid?.items?.length ?? 0).fill(false)
+				showEditIcon = Array(db.activeBookmarks?.length ?? 0).fill(false)
 			}
 		})
 	})
@@ -85,12 +85,13 @@
 		if (db.tagFilter) return
 
 		e.stopPropagation()
-		e.preventDefault()
+		// e.preventDefault()
 
 		// Store index of active item located in its classname. i.e. - "item-3"
 		const activeClass = (e.target as Element).classList[0]
 		if (activeClass?.startsWith('item-')) {
 			active = parseInt(activeClass.split('-')[1])
+		} else {
 		}
 	}
 
@@ -131,23 +132,23 @@
 		}
 	}
 
-	function toggleShowEditIcon(bool: boolean, i: number) {
-		showEditIcon = showEditIcon.map((_, index) => (index === i ? bool : !bool))
-	}
+	const toggleEditIcon = smoothToggle((s, i: number) => (showEditIcon[i] = s), [500])
 
 	function handleItemMouseOver(i: number) {
 		hovering = i
-		debounce(() => toggleShowEditIcon(true, i), 500)
+		toggleEditIcon(true, i)
 	}
 
 	function handleItemMouseOut(i: number) {
 		hovering = null
-		debounce(() => (showEditIcon[i] = false))
+		toggleEditIcon(false, i)
 	}
 
 	// Hide edit icon while dragging
 	$effect(() => {
-		if (dragging) {
+		dragging
+		hovering
+		if (dragging && hovering !== null) {
 			hovering = null
 			showEditIcon.fill(false)
 		}
@@ -186,8 +187,8 @@
 			}
 
 			// Swap the elements and update stores / db
-			const _a = db.activeBookmarks[a]
-			const _b = db.activeBookmarks[b]
+			const _a = $state.snapshot(db.activeBookmarks[a])
+			const _b = $state.snapshot(db.activeBookmarks[b])
 			if (!_a || !_b) return
 
 			const aPosition = _a.position
@@ -198,8 +199,8 @@
 				return reject(console.error('Error: Bookmarks are in the same position'))
 			}
 
-			db.activeBookmarks[a] = _b
-			db.activeBookmarks[b] = _a
+			// db.activeBookmarks[a] = _b
+			// db.activeBookmarks[b] = _a
 			await swapBookmarks_db([_a, _b])
 
 			resolve()
@@ -227,9 +228,9 @@
 		--item-size: {grid.iconSize}px;
 	"
 >
-	{#if grid.items}
-		{#each grid.items as bookmark, i (bookmark.bookmark_id)}
-			{#key grid.reRender}
+	{#if db.activeBookmarks}
+		{#each db.activeBookmarks as bookmark, i (bookmark.bookmark_id)}
+			{#key grid.key}
 				<div
 					class="cell"
 					class:unfocused={search_state.searchValue !== '' && !isRelevant(i)}

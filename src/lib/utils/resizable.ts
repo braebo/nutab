@@ -115,7 +115,7 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 	node.addEventListener('mouseover', updateHeight)
 
-	const debouncedUpdate = debounce(() => {
+	const [debouncedUpdate] = debounce(() => {
 		inspectorSize.set(px(node.offsetWidth))
 	}, 50)
 
@@ -144,9 +144,6 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 		onResize()
 
-		// debounce(() => {
-		// 	inspectorSize.set(px(node.offsetWidth))
-		// }, 50)
 		debouncedUpdate()
 	}
 

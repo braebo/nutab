@@ -86,7 +86,7 @@ export const fetchMeta = async (url: string, imgOnly = false, proxy = true) => {
 			metadata[key] = makeUrlAbsolute(url, rulesets[key].defaultValue)
 		}
 	}
-	console.log({ metadata })
+	// console.log({ metadata })
 	return metadata
 }
 
