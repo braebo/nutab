@@ -184,6 +184,8 @@
 						height="{$height}%"
 						opacity={$opacity}
 						onClick={() => (settings.showSettings = true)}
+						stroke="var(--fg-d)"
+						stroke-width="1.5"
 					/>
 					<text
 						x="{42.75}%"

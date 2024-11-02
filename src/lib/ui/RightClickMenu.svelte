@@ -127,6 +127,7 @@
 		background: var(--fg-a);
 		color: var(--bg-c);
 		box-shadow: 1px 2px 5px #00000022;
+		outline: 1px solid var(--fg-b);
 
 		overflow: hidden;
 

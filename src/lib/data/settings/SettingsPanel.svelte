@@ -20,20 +20,22 @@
 	<div class="control-panel">
 		<nav>
 			{#each Object.entries(sections) as [title, component]}
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
 					class:active={activeSection === component}
 					onclick={() => (activeSection = component)}
+					in:fly|global={{ y: 5, duration: 500, delay: 150, easing: quintOut }}
 					out:fade={{ duration: 50 }}
-					in:fly={{ y: 5, duration: 500, delay: 200, easing: quintOut }}
 				>
 					{title}
 				</div>
 			{/each}
 		</nav>
+
 		{#key activeSection}
-			<div class="settings-section-component">
+			<div
+				class="settings-section-component"
+				in:fly|global={{ y: 5, duration: 500, delay: 200, easing: quintOut }}
+			>
 				{#key activeSection}
 					<SvelteComponent />
 				{/key}
@@ -59,7 +61,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
-		height: 4rem;
+		height: 3.5rem;
 		gap: 1rem;
 
 		color: var(--bg-a);

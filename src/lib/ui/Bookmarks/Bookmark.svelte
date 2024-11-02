@@ -4,7 +4,7 @@
 	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 	import { settings } from '$lib/stores/settings.svelte'
 	import { smoothToggle } from '$lib/utils/smoothToggle'
-	import { scale, fade } from 'svelte/transition'
+	import { scale, fade, fly } from 'svelte/transition'
 	import BookmarkArt from './BookmarkArt.svelte'
 
 	let {
@@ -52,12 +52,10 @@
 		>
 			<BookmarkArt bind:bookmark />
 
-			{#if settings.showTitle || hovering == i}
-				{#if title && !dragging}
-					<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
-						{title}
-					</p>
-				{/if}
+			{#if (settings.showTitle || hovering == i) && title && !dragging}
+				<p transition:fly={{ y: 3, duration: disableTransitions ? 0 : 100 }}>
+					{title}
+				</p>
 			{/if}
 		</div>
 	</a>
