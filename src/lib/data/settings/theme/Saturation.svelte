@@ -1,20 +1,20 @@
 <script lang="ts">
-	import type { Settings } from '$lib/stores/settingsStore'
+	import type { Settings } from '$lib/data/types'
 
+	import { settings } from '$lib/stores/settings.svelte'
+	import { createGradient } from '$lib/theme_og'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import Control from '../grid/Control.svelte'
-	import { createGradient } from '$lib/theme'
 	import Range from '$lib/ui/Range.svelte'
-	import { settings } from '$lib/stores'
 
 	interface Props {
-		thisTheme: keyof Settings['theme'];
+		thisTheme: keyof Settings['theme']
 	}
 
-	let { thisTheme }: Props = $props();
+	let { thisTheme }: Props = $props()
 
-	const updateBg = (e: Event) => {
-		$settings.theme[thisTheme].background = createGradient(thisTheme)
+	const updateBg = () => {
+		settings.theme[thisTheme].background = createGradient(thisTheme)
 	}
 </script>
 
@@ -23,9 +23,9 @@
 		<Tooltip content="Saturation" placement="left" offset={[0, 15]} delay={[350, 100]}>
 			<Range
 				name="saturation"
-				range={$settings.theme[thisTheme].gradientOpacity.range}
-				bind:value={$settings.theme[thisTheme].gradientOpacity.value}
-				on:input={updateBg}
+				range={{ min: 0, max: 255 }}
+				bind:value={settings.theme[thisTheme].gradientOpacity}
+				oninput={updateBg}
 				vertical
 				truncate
 			/>

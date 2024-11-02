@@ -10,13 +10,12 @@
 	const c = tweened(100)
 
 	interface Props {
-		count: number;
+		count: number
 	}
 
-	let { count }: Props = $props();
+	let { count }: Props = $props()
 
-	let stageTimer: NodeJS.Timeout
-
+	let stageTimer: ReturnType<typeof setTimeout>
 	let t = 1
 	const animate = async () => {
 		await tick()
@@ -55,38 +54,43 @@
 	}
 	animate()
 
-	onDestroy(() => (stageTimer = null))
+	onDestroy(() => clearTimeout(stageTimer))
 </script>
 
-<template lang="pug">
+<div class="ghost-previews">
+	{#each Array.from({ length: count }) as _, i}
+		<div class="item" in:fly={{ duration: 250 + i * 50, delay: i * 50, y: 10 + i }}>
+			<HNItemGhost
+				--background-image="linear-gradient(to right, var(--fg-b) {$a}%,
+				var(--fg-a) {$b}%, var(--fg-b) {$c}%);"
+			/>
+		</div>
+	{/each}
+</div>
 
-	.ghost-previews
-		+each('Array(count).fill() as phantom, i')
-			.item(in:fly='{{duration: 250 + (i * 50), delay: i * 50, y: 10 + i}}')
-					HNItemGhost('--background-image'!='linear-gradient(to right, var(--light-b) {$a}%, var(--light-a) {$b}%, var(--light-b) {$c}%)')
+<style lang="scss">
+	.ghost-previews {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 
-</template>
+		height: 100%;
+		max-height: 100%;
+		// padding-top: 5rem;
+		// padding-bottom: 10rem;
+		min-width: 800px;
 
-<style lang="sass">
-	.ghost-previews
-		flex-direction: column
-		align-items: center
-		justify-content: center
+		opacity: 0.75;
+		transition: opacity 0.2s;
+		&:hover {
+			opacity: 1;
+		}
+	}
 
-		height: 100%
-		max-height: 100%
-		// padding-top: 5rem
-		// padding-bottom: 10rem
-		min-width: 800px
-		
-		opacity: 0.75
-		transition: opacity 0.2s
-		&:hover
-			opacity: 1
+	.item {
+		display: flex;
+		flex-direction: column;
 
-	.item
-		display: flex
-		flex-direction: column
-
-		width: 100%
+		width: 100%;
+	}
 </style>

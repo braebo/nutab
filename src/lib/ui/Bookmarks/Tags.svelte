@@ -1,56 +1,115 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-	import { fly } from 'svelte/transition'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
-	import { createEventDispatcher } from 'svelte'
-	const dispatch = createEventDispatcher()
+	import { fly } from 'svelte/transition'
 
-	let tag = ''
-	let arrelementsmatch: any[] = []
+	let tag = $state('')
+	let arrelementsmatch: any[] = $state([])
 	let regExpEscape = (s: string) => {
 		return s.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&')
 	}
-	let blurred = true
+	let blurred = $state(true)
 
-	export let tags: string[] = []
-	export let addKeys = [13]
-	export let maxTags: boolean | number = false
-	export let onlyUnique = false
-	export let removeKeys = [8]
-	export let placeholder = ''
-	export let allowPaste = false
-	export let allowDrop = false
-	export let splitWith = ','
-	export let autoComplete: string[] | Function | boolean | unknown = false
-	export let autoCompleteKey: number = 0
-	export let name = 'svelte-tags-input'
-	export let id = uniqueID()
-	export let allowBlur = false
-	export let disable = false
-	export let minChars = 1
-	export let onlyAutocomplete = false
-	export let labelText = name
-	export let labelShow = false
-	$: tags
-	$: addKeys
-	$: maxTags
-	$: onlyUnique
-	$: removeKeys
-	$: placeholder
-	$: allowPaste
-	$: allowDrop
-	$: splitWith
-	$: autoComplete
-	$: autoCompleteKey
-	$: name
-	$: id
-	$: allowBlur
-	$: disable
-	$: minChars
-	$: onlyAutocomplete
-	$: labelText
-	$: labelShow
-	$: matchsID = id + '_matchs'
+	let {
+		tags = $bindable([]),
+		addKeys = ['Enter'],
+		maxTags = false,
+		onlyUnique = false,
+		removeKeys = ['Backspace'],
+		placeholder = $bindable(''),
+		allowPaste = false,
+		allowDrop = false,
+		splitWith = ',',
+		autoComplete = false,
+		autoCompleteKey = 0,
+		name = 'svelte-tags-input',
+		id = uniqueID(),
+		allowBlur = false,
+		disable = false,
+		minChars = 1,
+		onlyAutocomplete = false,
+		onclick = () => {},
+		onTagChange = () => {},
+	}: {
+		tags?: string[]
+		addKeys?: any
+		maxTags?: boolean | number
+		onlyUnique?: boolean
+		removeKeys?: any
+		placeholder?: string
+		allowPaste?: boolean
+		allowDrop?: boolean
+		splitWith?: string
+		autoComplete?: string[] | Function | boolean | unknown
+		autoCompleteKey?: number
+		name?: string
+		id?: any
+		allowBlur?: boolean
+		disable?: boolean
+		minChars?: number
+		onlyAutocomplete?: boolean
+		labelText?: any
+		labelShow?: boolean
+		onclick?: (e: MouseEvent) => void
+		onTagChange?: (tags: string[]) => void
+	} = $props()
+	// run(() => {
+	// 	tags
+	// })
+	// run(() => {
+	// 	addKeys
+	// })
+	// run(() => {
+	// 	maxTags
+	// })
+	// run(() => {
+	// 	onlyUnique
+	// })
+	// run(() => {
+	// 	removeKeys
+	// })
+	// run(() => {
+	// 	placeholder
+	// })
+	// run(() => {
+	// 	allowPaste
+	// })
+	// run(() => {
+	// 	allowDrop
+	// })
+	// run(() => {
+	// 	splitWith
+	// })
+	// run(() => {
+	// 	autoComplete
+	// })
+	// run(() => {
+	// 	autoCompleteKey
+	// })
+	// run(() => {
+	// 	name
+	// })
+	// run(() => {
+	// 	id
+	// })
+	// run(() => {
+	// 	allowBlur
+	// })
+	// run(() => {
+	// 	disable
+	// })
+	// run(() => {
+	// 	minChars
+	// })
+	// run(() => {
+	// 	onlyAutocomplete
+	// })
+	// run(() => {
+	// 	labelText
+	// })
+	// run(() => {
+	// 	labelShow
+	// })
+	let matchsID = $derived(id + '_matchs')
 
 	let storePlaceholder = placeholder
 
@@ -58,8 +117,8 @@
 		const currentTag = (e.target as HTMLInputElement).value
 
 		if (addKeys) {
-			addKeys.forEach((key) => {
-				if (key === e.keyCode) {
+			addKeys.forEach((key: string) => {
+				if (key === e.key) {
 					if (currentTag) e.preventDefault()
 
 					/* switch (input.keyCode) {
@@ -76,7 +135,12 @@
 						break;
 					} */
 					if (autoComplete && document.getElementById(matchsID)) {
-						addTag(document.getElementById(matchsID).querySelectorAll('li')[0].textContent)
+						const firstChildText = document
+							.getElementById(matchsID)
+							?.querySelectorAll('li')[0]?.textContent
+						if (firstChildText) {
+							addTag(firstChildText)
+						}
 					} else {
 						addTag(currentTag)
 					}
@@ -85,28 +149,29 @@
 		}
 
 		if (removeKeys) {
-			removeKeys.forEach((key) => {
-				if (key === e.keyCode && tag === '') {
+			removeKeys.forEach((key: string) => {
+				if (key === e.key && tag === '') {
 					tags.pop()
 					tags = tags
-					dispatch('tags', {
-						tags: tags,
-					})
+					onTagChange?.(tags)
 					arrelementsmatch = []
 					;(document.getElementById(id) as HTMLInputElement).readOnly = false
 					placeholder = storePlaceholder
-					document.getElementById(id).focus()
+					document.getElementById(id)?.focus()
 				}
 			})
 		}
-		// ArrowDown : focus on first element of the autocomplete
-		if (e.keyCode === 40 && autoComplete && document.getElementById(matchsID)) {
+
+		if (e.key === 'ArrowDown' && autoComplete && document.getElementById(matchsID)) {
 			e.preventDefault()
-			;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLLIElement).focus()
-		} // ArrowUp : focus on last element of the autocomplete
-		else if (e.keyCode === 38 && autoComplete && document.getElementById(matchsID)) {
+			;(
+				document.getElementById(matchsID)?.querySelector('li:first-child') as HTMLLIElement
+			)?.focus()
+		} else if (e.key === 'ArrowUp' && autoComplete && document.getElementById(matchsID)) {
 			e.preventDefault()
-			;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLLIElement).focus()
+			;(
+				document.getElementById(matchsID)?.querySelector('li:last-child') as HTMLLIElement
+			)?.focus()
 		}
 	}
 
@@ -114,7 +179,9 @@
 		let currentObjTags
 		if (typeof currentTag === 'object' && currentTag) {
 			if (!autoCompleteKey) {
-				return console.error("'autoCompleteKey' is necessary if 'autoComplete' result is an array of objects")
+				return console.error(
+					"'autoCompleteKey' is necessary if 'autoComplete' result is an array of objects",
+				)
 			}
 			currentObjTags = currentTag
 			// @ts-ignore
@@ -132,14 +199,12 @@
 		tags.push(currentObjTags ? currentObjTags : currentTag)
 		tags = tags
 		tag = ''
-		dispatch('tags', {
-			tags: tags,
-		})
+		onTagChange?.(tags)
 
 		// Hide autocomplete list
 		// Focus on svelte tags input
 		arrelementsmatch = []
-		document.getElementById(id).focus()
+		document.getElementById(id)?.focus()
 		if (maxTags && tags.length == maxTags) {
 			;(document.getElementById(id) as HTMLInputElement).readOnly = true
 			placeholder = ''
@@ -149,9 +214,7 @@
 	function removeTag(i: number) {
 		tags.splice(i, 1)
 		tags = tags
-		dispatch('tags', {
-			tags: tags,
-		})
+		onTagChange?.(tags)
 
 		// Hide autocomplete list
 		arrelementsmatch = []
@@ -165,29 +228,30 @@
 		if (!allowPaste) return
 		e.preventDefault()
 		const data = getClipboardData(e)
-		const tags = splitTags(data).map((tag: string) => addTag(tag))
+		splitTags(data).map((tag: string) => addTag(tag))
 	}
 
 	function onDrop(e: DragEvent) {
 		if (!allowDrop) return
 		e.preventDefault()
-		const data = e.dataTransfer.getData('Text')
-		const tags = splitTags(data).map((tag: string) => addTag(tag))
+		const data = e.dataTransfer?.getData('Text')
+		if (!data) return
+		splitTags(data).map((tag: string) => addTag(tag))
 	}
 
-	function onBlur(e: Event, tag: string) {
+	function onBlur(e: Event, _tag: string) {
 		if (!document.getElementById(matchsID) && allowBlur) {
 			e.preventDefault()
 			// I think adding tags on:blur is a bad idea
-			// if (tag) addTag(tag)
+			// if (_tag) addTag(_tag)
 		}
 		// blurred = true
 		placeholder = 'new tag'
 	}
 
 	function getClipboardData(e: ClipboardEvent) {
-		if ((<any>window).clipboardData) {
-			return (<any>window).clipboardData.getData('Text')
+		if ((globalThis.window as any).clipboardData) {
+			return (globalThis.window as any).clipboardData.getData('Text')
 		}
 		if (e.clipboardData) {
 			return e.clipboardData.getData('text/plain')
@@ -218,18 +282,21 @@
 		let value = (input.target as HTMLInputElement).value
 		let matchs
 
-		// Escape
-		if (value == '' || input.keyCode === 27 || value.length < minChars) {
+		if (value == '' || input.key === 'Escape' || value.length < minChars) {
 			arrelementsmatch = []
 			return
 		}
 
 		if (typeof autoCompleteValues[0] === 'object' && autoCompleteValues !== null) {
 			if (!autoCompleteKey) {
-				return console.error("'autoCompleteValue' is necessary if 'autoComplete' result is an array of objects")
+				return console.error(
+					"'autoCompleteValue' is necessary if 'autoComplete' result is an array of objects",
+				)
 			}
 			matchs = autoCompleteValues
-				.filter((e: string) => e[autoCompleteKey].toLowerCase().includes(value.toLowerCase()))
+				.filter((e: string) =>
+					e[autoCompleteKey].toLowerCase().includes(value.toLowerCase()),
+				)
 				.map((matchTag: string) => {
 					return {
 						label: matchTag,
@@ -245,7 +312,10 @@
 				.map((matchTag: string) => {
 					return {
 						label: matchTag,
-						search: matchTag.replace(RegExp(regExpEscape(value.toLowerCase()), 'i'), '<strong>$&</strong>'),
+						search: matchTag.replace(
+							RegExp(regExpEscape(value.toLowerCase()), 'i'),
+							'<strong>$&</strong>',
+						),
 					}
 				})
 		}
@@ -265,29 +335,33 @@
 		if (!autoComplete) return
 
 		e.preventDefault()
-		// ArrowDown
-		if (e.keyCode === 40) {
+		if (e.key === 'ArrowDown') {
 			// Last element on the list ? Go to the first
 			if (autoCompleteIndex + 1 === autoCompleteLength) {
-				;(document.getElementById(matchsID).querySelector('li:first-child') as HTMLLIElement).focus()
+				;(
+					document
+						.getElementById(matchsID)
+						?.querySelector('li:first-child') as HTMLLIElement
+				)?.focus()
 				return
 			}
-			document.getElementById(matchsID).querySelectorAll('li')[autoCompleteIndex + 1].focus()
-		} else if (e.keyCode === 38) {
-			// ArrowUp
+			document.getElementById(matchsID)?.querySelectorAll('li')[autoCompleteIndex + 1].focus()
+		} else if (e.key === 'ArrowUp') {
 			// First element on the list ? Go to the last
 			if (autoCompleteIndex === 0) {
-				;(document.getElementById(matchsID).querySelector('li:last-child') as HTMLLIElement).focus()
+				;(
+					document
+						.getElementById(matchsID)
+						?.querySelector('li:last-child') as HTMLLIElement
+				)?.focus()
 				return
 			}
-			document.getElementById(matchsID).querySelectorAll('li')[autoCompleteIndex - 1].focus()
-		} else if (e.keyCode === 13) {
-			// Enter
+			document.getElementById(matchsID)?.querySelectorAll('li')[autoCompleteIndex - 1].focus()
+		} else if (e.key === 'Enter') {
 			addTag(autoCompleteElement)
-		} else if (e.keyCode === 27) {
-			// Escape
+		} else if (e.key === 'Escape') {
 			arrelementsmatch = []
-			document.getElementById(id).focus()
+			document.getElementById(id)?.focus()
 		}
 	}
 
@@ -317,7 +391,18 @@
 				{/if}
 				{#if !disable}
 					<Tooltip content="Delete" placement="top" offset={[0, 8]} delay={[1000, 150]}>
-						<div class="input-tag-remove" on:click|stopPropagation={() => removeTag(i)}>&#215;</div>
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="input-tag-remove"
+							role="button"
+							tabindex="0"
+							onclick={(e) => {
+								e.stopPropagation()
+								removeTag(i)
+							}}
+						>
+							&#215;
+						</div>
 					</Tooltip>
 				{/if}
 			</span>
@@ -329,13 +414,13 @@
 		{name}
 		{id}
 		bind:value={tag}
-		on:keydown={setTag}
-		on:keyup={getMatchElements}
-		on:paste={onPaste}
-		on:drop={onDrop}
-		on:focus={handleFocus}
-		on:blur={(e) => handleBlur(e)}
-		on:click|stopPropagation
+		onkeydown={setTag}
+		onkeyup={getMatchElements}
+		onpaste={onPaste}
+		ondrop={onDrop}
+		onfocus={handleFocus}
+		onblur={(e) => handleBlur(e)}
+		{onclick}
 		class="input new-tag"
 		{placeholder}
 		disabled={disable}
@@ -347,10 +432,15 @@
 	<div class="input-matchs-parent" transition:fly|local={{ y: 3, duration: 150 }}>
 		<ul id="{id}_matchs" class="input-matchs">
 			{#each arrelementsmatch as element, index}
+				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<li
 					tabindex="-1"
-					on:keydown={(e) => navigateAutoComplete(e, index, arrelementsmatch.length, element.label)}
-					on:click|stopPropagation={() => addTag(element.label)}
+					onkeydown={(e) =>
+						navigateAutoComplete(e, index, arrelementsmatch.length, element.label)}
+					onclick={(e) => {
+						e.stopPropagation()
+						addTag(element.label)
+					}}
 				>
 					{@html element.search}
 				</li>
@@ -363,7 +453,7 @@
 	.hashtag {
 		padding: 0 2px;
 
-		color: var(--light-b);
+		color: var(--fg-b);
 
 		font-size: 14px;
 
@@ -398,7 +488,7 @@
 		max-width: 100%;
 		margin: auto;
 
-		border: solid 1px rgba(var(--light-b-rgb), 0);
+		border: solid 1px color-mix(in srgb, var(--fg-b) 50%, transparent);
 		border-radius: 2px;
 	}
 
@@ -408,8 +498,8 @@
 
 		margin: auto;
 
-		border: solid 1px rgba(var(--light-b-rgb), 0);
-		color: var(--light-c);
+		border: solid 1px color-mix(in srgb, var(--fg-b) 0%, transparent);
+		color: var(--fg-c);
 		border-radius: 4px;
 
 		font-family: inherit;
@@ -427,7 +517,7 @@
 	}
 
 	.input-layout:hover .input::-webkit-input-placeholder {
-		color: var(--light-c);
+		color: var(--fg-c);
 
 		text-align: center;
 
@@ -447,7 +537,7 @@
 		width: fit-content;
 		padding: 1rem 0.5rem;
 
-		border: 1px solid rgba(var(--brand-a-rgb), 0);
+		border: 1px solid color-mix(in srgb, var(--theme-a) 0%, transparent);
 
 		text-align: center;
 
@@ -458,7 +548,7 @@
 	.input-layout:hover .new-tag,
 	.new-tag:focus,
 	.new-tag:active {
-		border-color: rgba(var(--confirm-rgb), 0.25);
+		border-color: color-mix(in srgb, var(--confirm) 25%, transparent);
 	}
 
 	.input-tag {
@@ -466,7 +556,7 @@
 
 		list-style: none;
 
-		color: var(--light-d);
+		color: var(--fg-d);
 		border-radius: 2px;
 
 		white-space: nowrap;
@@ -475,7 +565,7 @@
 	}
 
 	.input-tag-remove {
-		color: rgba(var(--light-c-rgb), 0);
+		color: color-mix(in srgb, var(--fg-c) 0%, transparent);
 
 		cursor: pointer;
 		transition: 0.2s;
@@ -489,7 +579,7 @@
 
 	.input-layout:focus .input-tag-remove,
 	.input-layout:hover .input-tag-remove {
-		color: rgba(var(--light-c-rgb), 0.5);
+		color: color-mix(in srgb, var(--fg-c) 50%, transparent);
 	}
 
 	@keyframes spin {
@@ -502,7 +592,7 @@
 	}
 
 	.input-tag-remove:hover {
-		color: rgba(var(--dark-c-rgb), 1) !important;
+		color: color-mix(in srgb, var(--bg-c) 100%, transparent) !important;
 
 		font-weight: 700;
 	}
@@ -525,9 +615,11 @@
 		margin: 3px auto;
 		padding: 1rem 1.5rem;
 
-		background: var(--light-a);
+		background: var(--fg-a);
 		border-radius: 5px;
-		box-shadow: 0px 3px 6.1px rgba(0, 0, 0, 0.05), 0px 12.7px 20.5px rgba(0, 0, 0, 0.018),
+		box-shadow:
+			0px 3px 6.1px rgba(0, 0, 0, 0.05),
+			0px 12.7px 20.5px rgba(0, 0, 0, 0.018),
 			0px 57px 92px rgba(0, 0, 0, 0.03);
 
 		overflow-x: auto;
@@ -544,26 +636,26 @@
 
 	.input-matchs li:hover,
 	.input-matchs li:focus {
-		background: var(--dark-a);
-		color: var(--light-a);
+		background: var(--bg-a);
+		color: var(--fg-a);
 		outline: none;
 	}
 
 	/* input disabled */
 	.input-layout.sti-layout-disable,
 	.input:disabled {
-		background: var(--light-b);
+		background: var(--fg-b);
 
 		cursor: not-allowed;
 	}
 
 	.input-layout.sti-layout-disable:hover,
 	.input-layout.sti-layout-disable:focus {
-		border-color: var(--light-c);
+		border-color: var(--fg-c);
 	}
 
 	.input-layout.sti-layout-disable .input-tag {
-		background: var(--light-d);
+		background: var(--fg-d);
 	}
 
 	.input-layout.sti-layout-disable .input-tag-remove {

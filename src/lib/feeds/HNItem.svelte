@@ -2,19 +2,19 @@
 	import type { IHNItem } from './types'
 
 	import CommentIcon from '$lib/graphics/icons/CommentIcon.svelte'
-	import RandomWave from '$lib/graphics/RandomWave.svelte'
+	// import RandomWave from '$lib/graphics/RandomWave.svelte'
 
-	import { onMount, createEventDispatcher } from 'svelte'
+	import { createEventDispatcher } from 'svelte'
+	// import { daysAgo } from '$lib/utils/daysAgo'
 	import { randomColor } from '$lib/utils'
-	import { daysAgo } from '$lib/utils/daysAgo'
 	import { fade } from 'svelte/transition'
 
 	interface Props {
-		item: IHNItem;
-		activeThread: IHNItem['id'];
+		item: IHNItem
+		activeThread: IHNItem['id'] | null
 	}
 
-	let { item, activeThread = $bindable() }: Props = $props();
+	let { item, activeThread = $bindable(null) }: Props = $props()
 
 	const dispatch = createEventDispatcher()
 	const showThread = () => {
@@ -25,217 +25,272 @@
 	const background = `linear-gradient(to right, ${randomColor()}, ${randomColor()})`
 </script>
 
-<template lang="pug">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<article class="article" onclick={showThread} class:active={activeThread === item.id}>
+	<div class="image-container">
+		{#if item.meta?.image}
+			<div class="image" style="background-image: url({item.meta.image})" in:fade></div>
+		{:else}
+			<div class="random-thumbnail">
+				<div class="image" style:background></div>
+				<!-- <div class="random-wave">
+					<RandomWave />
+				</div> -->
+			</div>
+		{/if}
+	</div>
 
-	div.article(on:click='{showThread}' class:active='{activeThread === item.id}')
-		.image-container
-			+if('item.meta?.image')
-				.image(style='background-image: url({item.meta.image})' in:fade)
-				+else
-					.random-thumbnail
-						.image(style:background)
-						//- .random-wave
-							//- RandomWave
+	<div class="content col">
+		<div class="row header">
+			<div class="col">
+				<a
+					class="article-link"
+					href={item.url ? item.url : ``}
+					target="_blank"
+					rel="noreferrer"
+				>
+					<h2>{item.title}</h2>
+				</a>
 
-		.content.col
-			.row.header
-				.col
-					a.article-link(href='{item.url ? item.url : ``}' target='_blank' rel='noreferrer')
-						h2 {item.title}
+				<div class="row info">
+					<div class="since">{item.days_ago}</div>
+					<span class="dot">·</span>
+					<a
+						class="author"
+						target="_blank"
+						href="https://news.ycombinator.com/user?id={item.by}"
+						rel="noreferrer">{item.by}</a
+					>
+				</div>
+			</div>
+		</div>
 
-					.row.info
-						.since {item.days_ago}
-						span.dot · 
-						a.author(target='_blank' href!='{`https://news.ycombinator.com/user?id=${item.by}`}' rel='noreferrer') {item.by}
+		<div class="row">
+			<p class="description">{item.meta?.description || ''}</p>
+		</div>
+	</div>
 
-			.row
-				p.description {item.meta.description || ''}
+	<div class="comments">
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div class="comment-count" onclick={showThread}>
+			{item.kids ? item.kids.length : 0}
+		</div>
+		<div class="comment-icon">
+			<CommentIcon />
+		</div>
+	</div>
+</article>
 
-		.comments
-			.comment-count(on:click='{showThread}')
-				| {item.kids ? item.kids.length : 0}
-			.comment-icon
-				CommentIcon
+<style lang="scss">
+	.article {
+		display: flex;
+		position: relative;
+		box-sizing: border-box;
+		align-items: space-between;
+		gap: 1.5rem;
 
-</template>
+		max-width: min(800px, 90vw);
+		min-height: 112px;
+		padding: 0.75rem;
+		margin: 0.75rem 10%;
 
-<style lang="sass">
-	.article
-		display: flex
-		position: relative
-		box-sizing: border-box
-		align-items: space-between
-		gap: 1.5rem
+		background: var(--fg-a);
+		border-radius: var(--radius);
+		border: 1px solid transparent;
+		box-shadow:
+			0px 0.9px 0.7px rgba(0, 0, 0, 0.008),
+			0px 2.1px 1.8px rgba(0, 0, 0, 0.012),
+			0px 3.9px 3.4px rgba(0, 0, 0, 0.015),
+			0px 6.9px 6px rgba(0, 0, 0, 0.018),
+			0px 13px 11.3px rgba(0, 0, 0, 0.022),
+			0px 31px 27px rgba(0, 0, 0, 0.03);
 
-		max-width: min(800px, 90vw)
-		min-height: 112px
-		padding: 0.75rem
-		margin: 0.75rem 10%
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
 
-		background: var(--light-a)
-		border-radius: var(--radius)
-		border: 1px solid transparent
-		box-shadow: 0px 0.9px 0.7px rgba(0, 0, 0, 0.008), 0px 2.1px 1.8px rgba(0, 0, 0, 0.012), 0px 3.9px 3.4px rgba(0, 0, 0, 0.015), 0px 6.9px 6px rgba(0, 0, 0, 0.018), 0px 13px 11.3px rgba(0, 0, 0, 0.022), 0px 31px 27px rgba(0, 0, 0, 0.03)		
+		cursor: pointer;
+		backface-visibility: hidden;
 
-		transition: transform 0.2s, box-shadow 0.2s
-		
-		cursor: pointer
-		backface-visibility: hidden
+		&.active {
+			border: 1px solid var(--bg-d);
+		}
 
-		&.active
-			border: 1px solid var(--dark-d)
-		
-		&:hover, &.active
-			transform: scale(1.025)
-			box-shadow: 0px 1.8px 0.7px rgba(0, 0, 0, 0.006), 0px 4.3px 1.8px rgba(0, 0, 0, 0.008), 0px 8.1px 3.4px rgba(0, 0, 0, 0.01), 0px 14.5px 6px rgba(0, 0, 0, 0.012), 0px 27.2px 11.3px rgba(0, 0, 0, 0.014), 0px 65px 27px rgba(0, 0, 0, 0.02)
+		&:hover,
+		&.active {
+			transform: scale(1.025);
+			box-shadow:
+				0px 1.8px 0.7px rgba(0, 0, 0, 0.006),
+				0px 4.3px 1.8px rgba(0, 0, 0, 0.008),
+				0px 8.1px 3.4px rgba(0, 0, 0, 0.01),
+				0px 14.5px 6px rgba(0, 0, 0, 0.012),
+				0px 27.2px 11.3px rgba(0, 0, 0, 0.014),
+				0px 65px 27px rgba(0, 0, 0, 0.02);
 
-			& .random-thumbnail, .image
-				filter: grayscale(0%)
+			.random-thumbnail,
+			.image {
+				filter: grayscale(0%);
+			}
+		}
+	}
 
+	.header {
+		margin-bottom: 0.5rem;
+		padding-right: 1rem;
+	}
 
-	.header
-		margin-bottom: 0.5rem
-		padding-right: 1rem
+	h2 {
+		width: max-content;
+		max-width: min(100%, 60vw);
 
-	h2
-		width: max-content
-		max-width: min(100%, 60vw)
-		
-		color: var(--dark-a)
-		
-		font-variation-settings: 'wght' 500
-		font-family: var(--font-a)
-		font-size: 1rem
-		word-spacing: 0px
-		line-height: 1.5rem
-		letter-spacing: 0.5px
+		color: var(--bg-a);
 
-		transition: 0.25s
+		font-variation-settings: 'wght' 500;
+		font-family: var(--font-a);
+		font-size: 1rem;
+		word-spacing: 0px;
+		line-height: 1.5rem;
+		letter-spacing: 0.5px;
 
-	a
-		text-decoration: none
-		
-		&:hover
-			text-decoration: underline
-		&.article-link
-			text-decoration: none
+		transition: 0.25s;
+	}
 
-	.info
-		margin: 0
+	a {
+		text-decoration: none;
 
-		color: var(--dark-d)
+		&:hover {
+			text-decoration: underline;
+		}
+		&.article-link {
+			text-decoration: none;
+		}
+	}
 
-		font-size: 0.8em
-		font-weight: 300
+	.info {
+		margin: 0;
 
-	.col
-		display: flex
-		flex-direction: column
-		flex-grow: 1
+		color: var(--bg-d);
 
-		width: 100%
-		height: 100%
+		font-size: 0.8em;
+		font-weight: 300;
+	}
 
-	.row
-		display: flex
-		width: 100%
+	.col {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
 
-	.content
-		width: 75%
+		width: 100%;
+		height: 100%;
+	}
 
-	.article-link
-		text-decoration: none
+	.row {
+		display: flex;
+		width: 100%;
+	}
 
-	.description
-		width: 90%
-		max-width: min(550px, 90%)
-		height: 1.2rem
+	.content {
+		width: 75%;
+	}
 
-		color: var(--dark-d)
+	.article-link {
+		text-decoration: none;
+	}
 
-		font-weight: 400
-		font-family: var(--font-a)
-		font-size: 0.9rem
-		text-overflow: ellipsis
-		white-space: nowrap
-		overflow: hidden
+	.description {
+		width: 90%;
+		max-width: min(550px, 90%);
+		height: 1.2rem;
 
-		opacity: 0.9
-		transition: opacity 0.2s
-		
-		&:hover
-			opacity: 1
+		color: var(--bg-d);
 
-	.comments
-		display: flex
-		align-items: center
-		gap: 0.25rem
+		font-weight: 400;
+		font-family: var(--font-a);
+		font-size: 0.9rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 
-		position: absolute
-		right: 0.5rem
-		bottom: 0.5rem
+		opacity: 0.9;
+		transition: opacity 0.2s;
 
-		color: var(--light-d)
+		&:hover {
+			opacity: 1;
+		}
+	}
 
-		font-family: var(--font-mono)
-		font-size: 0.8rem
-		
-		&:hover .comment-icon
-			transform: scale(1.2)
+	.comments {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
 
-	.comment-icon
-		width: 22px
-		height: 22px
-		margin-right: 0.25rem
+		position: absolute;
+		right: 0.5rem;
+		bottom: 0.5rem;
 
-		transition: transform 0.2s ease-out
+		color: var(--fg-d);
 
-	.image-container
-		min-width: 125px
-		min-height: 100px
-		max-width: 125px
-		max-height: 100px
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
 
-	.random-thumbnail
-		position: relative
+		&:hover .comment-icon {
+			transform: scale(1.2);
+		}
+	}
 
-		min-width: 125px
-		min-height: 100px
+	.comment-icon {
+		width: 22px;
+		height: 22px;
+		margin-right: 0.25rem;
 
-		filter: grayscale(0%)
-		transition: filter 0.3s
+		transition: transform 0.2s ease-out;
+	}
 
-	.image
-		min-width: 125px
-		min-height: 100px
+	.image-container {
+		min-width: 125px;
+		min-height: 100px;
+		max-width: 125px;
+		max-height: 100px;
+	}
 
-		background-size: cover
-		background-position: center
-		background-repeat: no-repeat
-		border-radius: var(--radius-sm)
+	.random-thumbnail {
+		position: relative;
 
-		transition: filter 0.3s
-		filter: grayscale(75%)
+		min-width: 125px;
+		min-height: 100px;
 
-	// .random-wave
-	// 	position: absolute
-	// 	inset: 0
-		
-	// 	width: 100%
-	// 	height: 100%
+		filter: grayscale(0%);
+		transition: filter 0.3s;
+	}
 
-	.author, .since
-		flex-wrap: nowrap
+	.image {
+		min-width: 125px;
+		min-height: 100px;
 
-		width: max-content
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		border-radius: var(--radius-sm);
 
-		color: var(--light-d)
+		transition: filter 0.3s;
+		filter: grayscale(75%);
+	}
 
-		word-wrap: none
-		word-spacing: -1px
-		white-space: nowrap
+	.author,
+	.since {
+		flex-wrap: nowrap;
 
-	.dot
-		margin: 0 0.25rem
+		width: max-content;
 
+		color: var(--fg-d);
+
+		word-wrap: none;
+		word-spacing: -1px;
+		white-space: nowrap;
+	}
+
+	.dot {
+		margin: 0 0.25rem;
+	}
 </style>

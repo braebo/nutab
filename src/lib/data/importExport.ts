@@ -1,13 +1,13 @@
-import cuid from 'cuid'
+import { addBookmark_db } from './transactions.svelte'
 import { exportDB } from 'dexie-export-import'
-import db from './db'
-import { newBookmark_db } from './transactions'
+import { nanoid } from '$lib/utils/nanoid'
+import dexie from './dexie.svelte'
 
 /**
  * Saves the current bookmarks to a json file.
  */
 export const exportBookmarks = async () => {
-	const blob = await exportDB(db, { prettyJson: true })
+	const blob = await exportDB(dexie, { prettyJson: true })
 	const a = document.createElement('a')
 	a.href = URL.createObjectURL(blob)
 	a.download = 'nutab-bookmarks.json'
@@ -27,18 +27,21 @@ export const importBookmarks = async () => {
 	fileEl.click()
 	fileEl.onchange = async () => {
 		try {
-			const file = fileEl.files[0]
+			const file = fileEl.files?.[0]
+			if (!file) return console.error('No file selected.')
 			const blob = file.slice(0, file.size, 'application/json')
 			const json = JSON.parse(await blob.text())
 			const { data } = json.data
 
-			const bookmarks = data?.filter((t: Record<string, any>) => t.tableName === 'bookmarks')?.[0]?.rows
+			const bookmarks = data?.filter(
+				(t: Record<string, unknown>) => t.tableName === 'bookmarks',
+			)?.[0]?.rows
 
 			if (!bookmarks) return console.error('No bookmarks found in file.')
 
 			for (const bookmark of bookmarks) {
-				bookmark.bookmark_id = cuid()
-				newBookmark_db(bookmark)
+				bookmark.bookmark_id = nanoid()
+				addBookmark_db(bookmark)
 			}
 		} catch (e) {
 			console.error(e)

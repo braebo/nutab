@@ -18,7 +18,7 @@ function hash_script(s: string) {
 function generate_csp(html: string) {
 	const $ = cheerio.load(html)
 	const csp_hashes = $('script[type="module"]')
-		// @ts-ignore
+		// @ts-expect-error - ...
 		.map((i, el) => hash_script($(el).get()[0].children[0].data))
 		.toArray()
 		.map((h) => `'sha256-${h}'`)
@@ -26,7 +26,7 @@ function generate_csp(html: string) {
 	return `script-src 'self' ${csp_hashes}; object-src 'self'`
 }
 
-function generate_manifest(html, manifest_version) {
+function generate_manifest(html: string, manifest_version: number) {
 	const project_placeholders = {
 		name: 'TODO',
 		version: '0.1',
@@ -77,13 +77,23 @@ function externalizeScript(html: string, assets: string) {
 	)
 }
 
-export default function ({ pages = 'build', assets = pages, fallback = undefined, manifestVersion = 3 } = {}): Adapter {
+export default function (options: {
+	pages?: string
+	assets?: string
+	fallback?: string
+	manifestVersion?: number
+}): Adapter {
+	const { pages = 'build', assets = pages, fallback, manifestVersion = 3 } = options
+
 	return {
 		name: 'sveltekit-adapter-browser-extension',
 
 		async adapt(builder: Builder) {
+			// @ts-expect-error - ...
 			if (!fallback && !builder.config.kit.prerender.default) {
-				builder.log.warn('You should set `config.kit.prerender.default` to `true` if no fallback is specified')
+				builder.log.warn(
+					'You should set `config.kit.prerender.default` to `true` if no fallback is specified',
+				)
 			}
 
 			const provided_manifest = load_manifest()
@@ -93,6 +103,7 @@ export default function ({ pages = 'build', assets = pages, fallback = undefined
 
 			builder.writeClient(assets)
 
+			// @ts-expect-error - ...
 			builder.writePrerendered(pages, { fallback })
 
 			const index_page = join(assets, 'index.html')
@@ -102,7 +113,12 @@ export default function ({ pages = 'build', assets = pages, fallback = undefined
 			Until kit implements a config option (#1776) to externalize scripts, the below code block should do 
 			for a quick and dirty externalization of the scripts' contents **/
 			if (manifestVersion === 3) {
-				const HTML_files = await glob('**/*.html', { cwd: pages, dot: true, absolute: true, filesOnly: true })
+				const HTML_files = await glob('**/*.html', {
+					cwd: pages,
+					dot: true,
+					absolute: true,
+					filesOnly: true,
+				})
 				HTML_files.forEach((path) => {
 					let html = readFileSync(path, { encoding: 'utf8' })
 					html = externalizeScript(html, assets)
@@ -111,7 +127,10 @@ export default function ({ pages = 'build', assets = pages, fallback = undefined
 			}
 
 			const generated_manifest = generate_manifest(index.toString(), manifestVersion)
-			const merged_manifest = applyToDefaults(generated_manifest, provided_manifest, { nullOverride: true })
+			// @ts-expect-error - ...
+			const merged_manifest = applyToDefaults(generated_manifest, provided_manifest, {
+				nullOverride: true,
+			})
 
 			writeFileSync(join(assets, manifest_filename), JSON.stringify(merged_manifest))
 			builder.rimraf(join(assets, '_app'))

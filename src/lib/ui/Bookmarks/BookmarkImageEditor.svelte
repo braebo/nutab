@@ -3,23 +3,24 @@
 	import ImageURL from './ImageURL.svelte'
 	import Tooltip from '../Tooltip.svelte'
 
-	import { bookmarkEditor } from '$lib/stores'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 	import fetchMeta from '$lib/feeds/fetchMeta'
 	import { fly } from 'svelte/transition'
 	import { log } from 'fractils'
 
-	let autoImageError = $state(false);
-	
+	let autoImageError = $state(false)
 
-	let colorMode = !$bookmarkEditor?.useImage
+	let colorMode = !bookmarkEditor.editor?.useImage
 	let hovering = $state(false)
 
 	function useImage() {
-		$bookmarkEditor.useImage = true
+		if (!bookmarkEditor.editor) return
+		bookmarkEditor.editor.useImage = true
 	}
 
 	function useColor() {
-		$bookmarkEditor.useImage = false
+		if (!bookmarkEditor.editor) return
+		bookmarkEditor.editor.useImage = false
 	}
 
 	let loading = $state(false)
@@ -27,24 +28,28 @@
 	async function getAutoImage() {
 		loading = true
 
-		let url = $bookmarkEditor?.url.startsWith('https://') ? $bookmarkEditor?.url : 'https://' + $bookmarkEditor?.url
+		if (!bookmarkEditor.editor) return
+
+		let url = bookmarkEditor.editor?.url.startsWith('https://')
+			? bookmarkEditor.editor?.url
+			: 'https://' + bookmarkEditor.editor?.url
 
 		url = url.replace('http://', '')
 
 		const meta = await fetchMeta(url, true, true)
 
 		if (meta?.image) {
-			$bookmarkEditor.image = meta.image
-			$bookmarkEditor.autoImage = true
+			bookmarkEditor.editor.image = meta.image
+			bookmarkEditor.editor.autoImage = true
 		} else if (meta?.icon) {
-			$bookmarkEditor.image = meta.icon
-			$bookmarkEditor.autoImage = true
+			bookmarkEditor.editor.image = meta.icon
+			bookmarkEditor.editor.autoImage = true
 		} else {
 			autoImageError = true
-			log('No image found for bookmark: ' + $bookmarkEditor?.title, 'tomato')
-			$bookmarkEditor.autoImage = false
+			log('No image found for bookmark: ' + bookmarkEditor.editor?.title, 'tomato')
+			bookmarkEditor.editor.autoImage = false
 			// TODO: Add an error toast?
-			if (!$bookmarkEditor?.url) {
+			if (!bookmarkEditor.editor?.url) {
 				alert('Please enter a url first.')
 			} else alert('No image found for the provided url.')
 		}
@@ -53,6 +58,7 @@
 </script>
 
 <div
+	role="region"
 	class="image-container"
 	onmouseout={() => (hovering = false)}
 	onblur={() => (hovering = false)}
@@ -61,8 +67,13 @@
 >
 	<div class="icon-display-options" class:hovering>
 		<div class="icon-mode-container">
-			{#if $bookmarkEditor?.useImage}
-				<div class="auto-image-btn" class:loading in:fly={{ x: 10 }} out:fly={{ x: 10, duration: 100 }}>
+			{#if bookmarkEditor.editor?.useImage}
+				<div
+					class="auto-image-btn"
+					class:loading
+					in:fly={{ x: 10 }}
+					out:fly={{ x: 10, duration: 100 }}
+				>
 					{#if !autoImageError}
 						{#if !loading}
 							<Tooltip
@@ -71,13 +82,26 @@
 								offset={[0, 42]}
 								delay={[400, 100]}
 							>
-								<div class:error={autoImageError} onclick={getAutoImage}>Auto</div>
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<div
+									role="button"
+									tabindex="0"
+									class:error={autoImageError}
+									onclick={getAutoImage}
+								>
+									Auto
+								</div>
 							</Tooltip>
 						{:else if loading}
 							<div class:error={autoImageError}>loading...</div>
 						{/if}
 					{:else if autoImageError}
-						<Tooltip content="No_image_found_for_url" placement="left" offset={[0, 42]} delay={[400, 100]}>
+						<Tooltip
+							content="No_image_found_for_url"
+							placement="left"
+							offset={[0, 42]}
+							delay={[400, 100]}
+						>
 							<div class:error={autoImageError}>Not Found</div>
 						</Tooltip>
 					{/if}
@@ -88,17 +112,31 @@
 
 		<div class="checkboxes">
 			<Tooltip content="Color_Background" placement="left" offset={[0, 5]} delay={[0, 0]}>
-				<div class="color checkbox" onclick={useColor} class:active={colorMode}>
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div
+					role="button"
+					tabindex="0"
+					class="color checkbox"
+					onclick={useColor}
+					class:active={colorMode}
+				>
 					<div class="radio">
-						<div class="circle" class:checked={!$bookmarkEditor?.useImage}></div>
+						<div class="circle" class:checked={!bookmarkEditor.editor?.useImage}></div>
 					</div>
 				</div>
 			</Tooltip>
 
 			<Tooltip content="Image_Background" placement="right" offset={[0, 10]} delay={[0, 0]}>
-				<div class="image checkbox" onclick={useImage} class:active={$bookmarkEditor?.useImage}>
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div
+					role="button"
+					tabindex="0"
+					class="image checkbox"
+					onclick={useImage}
+					class:active={bookmarkEditor.editor?.useImage}
+				>
 					<div class="radio">
-						<div class="circle" class:checked={$bookmarkEditor?.useImage}></div>
+						<div class="circle" class:checked={bookmarkEditor.editor?.useImage}></div>
 					</div>
 				</div>
 			</Tooltip>
@@ -107,16 +145,24 @@
 
 	<div class="bookmark-art-container">
 		<BookmarkEditorIcon
-			--foreground={$bookmarkEditor?.foreground}
-			--background={$bookmarkEditor?.background}
+			--foreground={bookmarkEditor.editor?.foreground}
+			--background={bookmarkEditor.editor?.background}
 			--size="100px"
 			--shadow=" 0px 4.7px 10px -3px rgba(0, 0, 0, 0.275), 0px 7.3px 5.6px -1px rgba(0, 0, 0, 0.09), 0px 14px 15px -1px rgba(0, 0, 0, 0.14)"
 		/>
 
 		<div class="color-settings">
-			{#if $bookmarkEditor && !$bookmarkEditor?.useImage}
-				<input name="background" type="color" bind:value={$bookmarkEditor.background} />
-				<input name="foreground" type="color" bind:value={$bookmarkEditor.foreground} />
+			{#if bookmarkEditor.editor && !bookmarkEditor.editor?.useImage}
+				<input
+					name="background"
+					type="color"
+					bind:value={bookmarkEditor.editor.background}
+				/>
+				<input
+					name="foreground"
+					type="color"
+					bind:value={bookmarkEditor.editor.foreground}
+				/>
 			{/if}
 		</div>
 	</div>
@@ -159,7 +205,7 @@
 		white-space: nowrap;
 		font-size: 0.75rem;
 		opacity: 0.5;
-		outline: 1px solid var(--light-d);
+		outline: 1px solid color-mix(in srgb, var(--fg-d) 100%, transparent);
 		border-radius: 0.25rem;
 		transition: opacity 0.2s;
 		cursor: pointer;

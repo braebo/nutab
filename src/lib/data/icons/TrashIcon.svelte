@@ -1,5 +1,11 @@
 <div>
-	<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" viewBox="0 0 24 25">
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="100%"
+		height="100%"
+		fill="currentColor"
+		viewBox="0 0 24 25"
+	>
 		<g class="Trash / 24 / Outline">
 			<g class="Frame 21">
 				<path
@@ -24,7 +30,7 @@
 		max-width: var(--size, 24px);
 		max-height: var(--size, 25px);
 
-		color: var(--color, rgba(var(--dark-d-rgb), 0.3));
+		color: color-mix(in srgb, var(--bg-d) 30%, transparent);
 
 		cursor: pointer;
 		transition: color 0.15s;

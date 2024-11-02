@@ -1,22 +1,38 @@
 <script lang="ts">
-	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from '$lib/data/dbStore'
-	import { settings, showSettings } from '$lib/stores'
-	import { gridDimensions, grid } from '$lib/stores/gridStore'
-
 	import Inspector from './Inspector.svelte'
-	import * as stores from '$lib/stores'
+	// import {
+	// 	activeFolderBookmarks,
+	// 	activeBookmarks,
+	// 	activeFolder,
+	// 	tagFilter,
+	// } from '$lib/data/dbStore'
+
+	import { db } from '$lib/data/db.svelte'
+
+	import { settings, cMenu } from '$lib/stores/settings.svelte'
+	import { grid } from '$lib/stores/grid.svelte'
+	// import * as stores from '$lib/stores'
 </script>
 
 <Inspector
 	register={{
-		...stores,
-		activeBookmarks,
-		activeFolder,
-		activeFolderBookmarks,
-		tagFilter,
-		settings,
-		showSettings,
-		gridDimensions,
-		grid,
+		// ...stores,
+		activeBookmarks: db.activeBookmarks,
+		activeFolder: db.activeFolder,
+		tagFilter: db.tagFilter,
+		cMenu: cMenu,
+		settings: settings,
+		// gridDimensions: grid.dimensions,
+		// width: grid.width,
+		// iconSize: grid.iconSize,
+		// gap: grid.gap,
+		// items: grid.items,
+		grid: {
+			dimensions: grid.dimensions,
+			width: grid.width,
+			iconSize: grid.iconSize,
+			gap: grid.gap,
+			items: grid.items,
+		},
 	}}
 />

@@ -13,3 +13,4 @@ node_modules/**
 
 # Misc
 src/lib/data/transactions.ts
+src/lib/utils/keyboardEvents.ts

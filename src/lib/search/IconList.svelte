@@ -1,26 +1,23 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Engine } from '$lib/data/types'
-	import { createEventDispatcher } from 'svelte'
+
 	import { fly } from 'svelte/transition'
 
-	interface Props {
-		engines?: Engine[];
-		searchFocused?: boolean;
-	}
-
-	let { engines = [], searchFocused = true }: Props = $props();
+	let {
+		engines = $bindable([]),
+		searchFocused = true,
+		onSelect,
+	}: {
+		engines?: Engine[]
+		searchFocused?: boolean
+		onSelect?: (e: { position: number }) => void
+	} = $props()
 
 	let hovering = $state(Array(engines.length).fill(false))
 	let disableShowAll = false
 	let hoverTarget = $state(0)
 	let showAll = $state(false)
-	let timer: NodeJS.Timeout
-
-	run(() => {
-		hovering
-	});
+	let timer: ReturnType<typeof setTimeout>
 
 	const mouseover = (i: number) => {
 		if (disableShowAll) return
@@ -41,9 +38,8 @@
 		}, 400)
 	}
 
-	const dispatch = createEventDispatcher()
 	const handleClick = (i: number) => {
-		dispatch('newSelection', { position: i })
+		onSelect?.({ position: i })
 
 		disableShowAll = true
 		showAll = false
@@ -61,6 +57,7 @@
 	{#each engines as { position, icon }, i}
 		{#if isActiveEngine(i) || showAll}
 			{@const SvelteComponent = icon}
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div
 				class="icon"
 				class:hovering={hovering[i] || searchFocused}
@@ -72,6 +69,8 @@
 				onmouseout={() => mouseout(i)}
 				onblur={() => mouseout(i)}
 				onclick={() => handleClick(position)}
+				role="button"
+				tabindex={0}
 			>
 				<SvelteComponent />
 			</div>
@@ -126,7 +125,9 @@
 	.tooltipText.bright {
 		opacity: 1;
 
-		transition-delay: opacity 1.5s, transform 0.2s;
+		transition-delay:
+			opacity 1.5s,
+			transform 0.2s;
 	}
 
 	.tooltipText {
@@ -138,10 +139,12 @@
 		font-family: var(--font-a);
 
 		opacity: 0;
-		color: var(--dark-d) !important;
+		color: var(--bg-d) !important;
 
 		transform: translate(7px, 50px);
 		transition: 0.2s ease-out;
-		transition-delay: opacity 0.5s, transform 0.2s;
+		transition-delay:
+			opacity 0.5s,
+			transform 0.2s;
 	}
 </style>

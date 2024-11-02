@@ -1,55 +1,53 @@
 <script lang="ts">
-	import Row from './Row.svelte';
-	import type { Writable, Readable } from 'svelte/store'
+	// import type { Writable, Readable } from 'svelte/store'
 
-	import { nanoid } from 'nanoid'
-
-	interface Props {
-		key: string;
-		value: unknown;
-		store: Writable<any> | Readable<any>;
-		path: string;
-		simple?: boolean;
-		label?: boolean;
-		depth?: number;
-	}
+	import { nanoid } from '$lib/utils/nanoid'
+	import Row from './Row.svelte'
 
 	let {
 		key,
 		value,
-		store,
+		state,
 		path,
-		simple = false,
+		// simple = false,
 		label = true,
-		depth = $bindable(0)
-	}: Props = $props();
+		depth = $bindable(0),
+	}: {
+		key: string
+		value: unknown
+		state: unknown
+		path: string
+		simple?: boolean
+		label?: boolean
+		depth?: number
+	} = $props()
+
 	depth++
 
+	/**
+	 * A unique identifier for the row.
+	 */
 	const uid = nanoid(4)
 
-	const set = (obj: Writable<any>, path: string | string[], value: unknown) => {
+	/**
+	 * Sets the value at the given path in the object.
+	 */
+	const set = (obj: Record<string, unknown>, path: string | string[], value: unknown) => {
 		// Regex explained: https://regexr.com/58j0k
 		const pathArray = Array.isArray(path) ? path : path.match(/([^[.\]])+/g)
 
-		pathArray.reduce((acc: Record<string, any>, key, i) => {
+		pathArray?.reduce((acc: Record<string, unknown>, key, i) => {
 			if (acc[key] === undefined) acc[key] = {}
 			if (i === pathArray.length - 1) acc[key] = value
-			return acc[key]
+			return acc[key] as Record<string, unknown>
 		}, obj)
 	}
 
-	function updateStore(value: boolean | string) {
-		// Single value
-		if (simple && 'subscribe' in store) {
-			$store = value
-			// Array or Object
+	function updateState(value: boolean | string) {
+		if (typeof state === 'object') {
+			set(state as Record<string, unknown>, path, value)
 		} else {
-			if ('update' in store)
-				store.update((u) => {
-					let newData = { ...u }
-					set(newData, path, value)
-					return newData
-				})
+			state = value
 		}
 	}
 </script>
@@ -63,7 +61,13 @@
 				{/if}
 				<!-- Array -->
 				{#each value as nestedValue, index}
-					<Row {key} {store} label={false} value={nestedValue} path={path + '[' + index + ']'} />
+					<Row
+						{key}
+						{state}
+						label={false}
+						value={nestedValue}
+						path={path + '[' + index + ']'}
+					/>
 				{/each}
 			{:else}
 				{#if label}
@@ -74,7 +78,7 @@
 						<Row
 							key={nestedKey}
 							value={nestedValue}
-							{store}
+							{state}
 							path={path + '.' + nestedKey}
 							{depth}
 						/>
@@ -87,14 +91,19 @@
 					<div class="key">{key}{':'}</div>
 				{/if}
 				{#if typeof value === 'string'}
-					<input id={path} type="text" {value} oninput={(e) => updateStore(e.currentTarget.value)} />
+					<input
+						id={path}
+						type="text"
+						{value}
+						oninput={(e) => updateState(e.currentTarget.value)}
+					/>
 				{:else if typeof value === 'boolean'}
 					<input
 						id="{path}-{uid}"
 						type="checkbox"
 						checked={value}
 						onchange={(e) => {
-							updateStore(e.currentTarget.checked)
+							updateState(e.currentTarget.checked)
 						}}
 					/>
 				{:else if typeof value === 'number'}
@@ -103,7 +112,7 @@
 						type="number"
 						{value}
 						onchange={(e) => {
-							updateStore(e.currentTarget.value)
+							updateState(e.currentTarget.value)
 						}}
 					/>
 				{/if}
@@ -112,29 +121,32 @@
 	{/if}
 </div>
 
-<style>
+<style lang="scss">
 	.kv {
 		display: flex;
 		flex-direction: column;
-		/* align-items: center; */
 		justify-content: center;
 		box-sizing: border-box;
+
 		height: fit-content;
 		width: 100%;
 	}
 	.key {
-		font-size: var(--font-small);
+		width: 100%;
+
 		color: var(--key-color);
 		opacity: 0.9;
-		width: 100%;
+
+		font-size: var(--font-small);
 	}
 
 	.store-container {
 		display: flex;
 		align-items: baseline;
 		justify-content: flex-start;
-		margin-bottom: 2px;
+
 		width: 100%;
+		margin-bottom: 2px;
 	}
 
 	input {
@@ -145,7 +157,6 @@
 		border: 0;
 		border-radius: 1px;
 		border-bottom: 1px solid var(--balue-);
-		/* outline-offset: 1px; */
 
 		min-width: 100%;
 		width: 100%;
@@ -154,7 +165,7 @@
 		font-family: 'MonoLisa', monospace;
 	}
 
-	/* Chrome, Safari, Edge, Opera */
+	// Chrome, Safari, Edge, Opera
 	input::-webkit-outer-spin-button,
 	input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
@@ -174,9 +185,10 @@
 		filter: brightness(1);
 	}
 
-	/* Firefox */
+	// Firefox
 	input[type='number'] {
 		-moz-appearance: textfield;
+		appearance: textfield;
 	}
 
 	[type='number'] {

@@ -4,7 +4,7 @@ import { dev } from '$app/environment'
 
 export const DEFAULT_CATEGORY: ICategory = 'topstories'
 
-export const CORS = dev ? 'http://localhost:8080/' : 'https://cors.fractal.workers.dev/?'
+export const CORS = dev ? 'http://localhost:8000/?q=' : 'https://cors.fractal.workers.dev/?q='
 // export const CORS = 'https://cors.fractal.workers.dev/?'
 
 export const INITIAL_SIZE = 10

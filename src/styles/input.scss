@@ -29,7 +29,7 @@ $size: 0.75rem;
 	outline: none;
 
 	background: transparent;
-	border: 1px solid var(--dark-a);
+	border: 1px solid var(--bg-a);
 	border-radius: 1rem;
 
 	cursor: pointer;
@@ -43,7 +43,7 @@ $size: 0.75rem;
 		margin: auto;
 		border-radius: 1rem;
 
-		background: var(--dark-a);
+		background: var(--bg-a);
 		transform: scale(0);
 		transition: 0.1s ease-out;
 		&.checked {

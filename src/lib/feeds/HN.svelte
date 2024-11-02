@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
+	// import { run } from 'svelte/legacy'
 
 	// Types
 	import type { IHNItem } from './types'
@@ -10,9 +10,8 @@
 
 	// Svelte
 	import { fly } from 'svelte/transition'
-	import { onMount, tick } from 'svelte'
-	import { flip } from 'svelte/animate'
 	import { get } from 'svelte/store'
+	import { onMount } from 'svelte'
 
 	// Components
 	import LoadingDots from '$lib/graphics/LoadingDots.svelte'
@@ -20,9 +19,8 @@
 	import HNItem from './HNItem.svelte'
 
 	// Utils
-	import { fetchCategory, fetchItem, fetchStories } from './fetchData'
-	import { fetchMeta } from '$lib/feeds/fetchMeta'
-	import { wait } from 'fractils'
+	import { fetchStories } from './fetchData'
+	import { wait } from '$lib/utils/wait'
 
 	let loaded = INITIAL_SIZE
 	let loading = true
@@ -50,11 +48,11 @@
 		scrollProgress = Math.round((scrollTop / (scrollHeight - offsetHeight)) * 100)
 	}
 
-	run(() => {
+	$effect(() => {
 		if (scrollProgress > 90) loadMore()
-	});
+	})
 
-	let activeThread: IHNItem['id'] = $state(null)
+	let activeThread = $state<IHNItem['id'] | null>(null)
 
 	let showThread = (e: CustomEvent) => {
 		activeThread = null
@@ -62,6 +60,7 @@
 	}
 
 	// Fullscreen screws up the layout, so we need to check for it
+	// svelte-ignore non_reactive_update
 	let height = '100vh'
 	let fullscreen = false
 	const checkFullscreen = () => {
@@ -85,145 +84,165 @@
 		firstLoad = false
 	})
 
-	let animEl: HTMLElement = $state()
-	let windowWidth: number
-	let offsetWidth: number
-	let left;
-	run(() => {
-		left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
-	});
+	let animEl = $state<HTMLElement>()
+	let windowWidth = $state(0)
+	let offsetWidth = $state(0)
+	let left = $state(-1000)
+	$effect(() => {
+		windowWidth = window.innerWidth
+		offsetWidth = animEl?.offsetWidth ?? 0
+		left = !!activeThread ? 0 : (windowWidth - offsetWidth) / 2
+	})
+	// let left = $derived(!!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`)
+	// run(() => {
+	// 	left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
+	// })
 
 	const handleResize = () => {
 		checkFullscreen()
-		left = `${(windowWidth - offsetWidth) / 2}px`
+		// left = `${(windowWidth - offsetWidth) / 2}px`
 	}
 
-	const calcLeft = async (node: HTMLElement) => {
-		left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
-		await wait(100)
-		animEl.style.transition = 'left 500ms cubic-bezier(.36,.57,.01,.99)'
-	}
+	// const calcLeft = async (node: HTMLElement) => {
+	// 	// left = !!activeThread ? `0` : `${(windowWidth - offsetWidth) / 2}px`
+	// 	await wait(100)
+	// 	animEl.style.transition = 'left 500ms cubic-bezier(.36,.57,.01,.99)'
+	// }
 </script>
 
-<template lang="pug">
-	svelte:window(on:resize='{handleResize}' bind:innerWidth='{windowWidth}')
+<svelte:window on:resize={handleResize} bind:innerWidth={windowWidth} />
 
-	.hn-container(style:height)
+<div class="hn-container" style:height>
+	<div
+		class="news-anim-container"
+		bind:this={animEl}
+		bind:offsetWidth
+		style="left: {left}px;"
+		class:activeThread
+	>
+		<div class="story-previews scroller ghost" onscroll={handleScroll} class:activeThread>
+			{#if !$items?.length}
+				<LoadingDots />
+			{:else}
+				<span></span>
+				{#each $items as item, i}
+					<div
+						class="item"
+						in:fly={{
+							y: 10 + i,
+							duration: 250 + i * 50,
+							delay: i * 50 * (firstLoad ? 1 : 0),
+						}}
+					>
+						<HNItem {item} bind:activeThread on:showThread={showThread} />
+					</div>
+				{/each}
+			{/if}
+		</div>
+	</div>
 
-		.news-anim-container(bind:this='{animEl}' bind:offsetWidth style='left: {left};' class:activeThread)
+	{#if activeThread}
+		<div class="story-previews-buffer"></div>
 
-			.story-previews.scroller.ghost(on:scroll='{handleScroll}' class:activeThread)
+		<div class="story-thread" transition:fly={{ x: 20, duration: 750, delay: 0 }}>
+			<HnThread threadId={activeThread} />
 
-				+if('!$items?.length')
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div role="button" tabindex="0" class="to-top" onclick={scrollToTop}>🔝</div>
+		</div>
+	{/if}
+</div>
 
-					LoadingDots
+<style>
+	.hn-container {
+		display: flex;
+		position: relative;
+		justify-content: center;
+		width: 100vw;
+		border-bottom: 1px solid var(--fg-a);
+	}
 
-					+else
+	.news-anim-container {
+		position: absolute;
+		display: flex;
+		height: 100vh;
+		backface-visibility: hidden;
+		pointer-events: none;
+	}
 
-						span(use:calcLeft)
+	.news-anim-container.activeThread {
+		width: 100%;
+	}
 
-						+each('$items as item, i')
+	.story-previews,
+	.story-previews-buffer {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		max-height: 100%;
+		padding-top: 5rem;
+		padding-bottom: 10rem;
+		min-width: 600px;
+		pointer-events: all;
+		opacity: 0.75;
+		transition: opacity 0.2s;
+	}
 
-							.item(in:fly='{{ y: 10 + i, duration: 250 + (i * 50), delay: i * 50 * (firstLoad ? 1 : 0) }}')
+	.story-previews:hover,
+	.story-previews-buffer:hover {
+		opacity: 1;
+	}
 
-								HNItem({item} bind:activeThread on:showThread='{showThread}')
+	.story-previews.activeThread {
+		width: 40%;
+	}
 
-		+if('activeThread')
+	.story-previews-buffer {
+		width: 45%;
+	}
 
-			.story-previews-buffer
+	.story-thread {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		width: 60%;
+		height: 100%;
+		padding-top: 5rem;
+		padding-bottom: 10rem;
+		overflow-y: auto;
+		margin-right: 4%;
+		padding-right: 1%;
+	}
 
-			.story-thread(transition:fly='{{ x: 20, duration: 750, delay: 0 }}')
+	.story-thread::-webkit-scrollbar-track,
+	.story-thread :global(pre)::-webkit-scrollbar-track {
+		background: transparent;
+	}
 
-				HnThread(threadId='{activeThread}')
+	.story-thread::-webkit-scrollbar,
+	.story-thread :global(pre)::-webkit-scrollbar {
+		width: 0.5rem;
+		height: 0.5rem;
+		background: transparent;
+	}
 
-				.to-top(on:click='{scrollToTop}') 🔝
+	.story-thread::-webkit-scrollbar-thumb,
+	.story-thread :global(pre)::-webkit-scrollbar-thumb {
+		background: color-mix(in srgb, var(--fg-d) 50%, transparent);
+		border-radius: 5px;
+	}
 
-</template>
+	.item {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
 
-<style lang="sass">
-	$scrollbarOffset: 10%
-
-	.hn-container
-		display: flex
-		position: relative
-		justify-content: center
-
-		width: 100vw
-
-		border-bottom: 1px solid var(--light-a)
-
-	.news-anim-container
-		position: absolute
-		display: flex
-
-		height: 100vh
-
-		backface-visibility: hidden
-		pointer-events: none
-
-		&.activeThread
-			width: 100%
-
-	.story-previews, .story-previews-buffer
-		flex-direction: column
-		align-items: center
-		justify-content: center
-
-		height: 100%
-		max-height: 100%
-		padding-top: 5rem
-		padding-bottom: 10rem
-		min-width: 600px
-
-		pointer-events: all
-
-		opacity: 0.75
-		transition: opacity 0.2s
-		&:hover
-			opacity: 1
-
-	
-	.story-previews.activeThread
-		width: 40%
-
-	.story-previews-buffer
-		width: 45%
-
-	.story-thread
-		display: flex
-		flex-direction: column
-		align-items: flex-start
-
-		width: 60%
-		height: 100%
-		padding-top: 5rem
-		padding-bottom: 10rem
-
-		overflow-y: auto
-
-		margin-right: 4%	// offset the srollbar...
-		padding-right: 1%	// ...just a bit
-
-		&, :global(pre)
-			&::-webkit-scrollbar-track
-				background: transparent
-			&::-webkit-scrollbar
-				width: 0.5rem
-				height: 0.5rem
-				background: transparent
-			&::-webkit-scrollbar-thumb
-				background: rgba(var(--light-d-rgb), 0.5)
-				border-radius: 5px
-
-	.item
-		display: flex
-		flex-direction: column
-
-		width: 100%
-
-	.to-top
-		font-size: 2rem
-		text-align: center
-		margin: 2rem auto 0 auto
-		cursor: pointer
+	.to-top {
+		font-size: 2rem;
+		text-align: center;
+		margin: 2rem auto 0 auto;
+		cursor: pointer;
+	}
 </style>

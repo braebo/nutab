@@ -15,7 +15,7 @@
 >
 	<style>
 		.st0 {
-			fill: var(--dark-a);
+			fill: var(--bg-a);
 		}
 	</style>
 	<g id="XMLID_37_">

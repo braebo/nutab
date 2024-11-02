@@ -1,21 +1,23 @@
 <script lang="ts">
 	import type { Bookmark } from '$lib/data/types'
 
-	import { settings, bookmarkEditor } from '$lib/stores'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	import { settings } from '$lib/stores/settings.svelte'
 	import { mapRange } from 'fractils'
 
-	interface Props {
-		bookmark?: Bookmark;
-	}
+	let {
+		bookmark = $bindable(bookmarkEditor.editor),
+	}: {
+		bookmark?: Bookmark | null
+	} = $props()
 
-	let { bookmark = $bookmarkEditor }: Props = $props();
-
-	let longestWord =
-		$derived(bookmark?.title?.split(' ').reduce((p: string, c: string) => {
+	let longestWord = $derived(
+		bookmark?.title?.split(' ').reduce((p: string, c: string) => {
 			return c.length > p.length ? c : p
-		}, '').length ?? 0)
+		}, '').length ?? 0,
+	)
 	let fontSize = $derived(mapRange(Math.min(longestWord, 12), 6, 15, 17, 5))
-	let fontSizeScaled = $derived((fontSize * $settings.ranges.iconSize.value) / 80)
+	let fontSizeScaled = $derived((fontSize * settings.ranges.iconSize) / 80)
 
 	let backgroundImage = $derived(bookmark?.useImage ? `url(${bookmark?.image})` : 'none')
 	let backgroundColor = $derived(bookmark?.useImage ? `inherit` : bookmark?.background)
@@ -25,8 +27,8 @@
 <div
 	class="art"
 	style="
-		width: var(--size, {$settings.ranges.iconSize.value}px);
-		height: var(--size, {$settings.ranges.iconSize.value}px);
+		width: var(--size, {settings.ranges.iconSize}px);
+		height: var(--size, {settings.ranges.iconSize}px);
 		background-size: {bookmark?.autoImage ? 'cover' : 'contain'};
 		background-image: {backgroundImage};
 		background-color: {backgroundColor};
@@ -34,8 +36,8 @@
 	"
 	style:font-size="{fontSizeScaled}px"
 >
-	{#if !bookmark.useImage}
-		<span class="title">{@html bookmark.title}</span>
+	{#if !bookmark?.useImage}
+		<span class="title">{@html bookmark?.title}</span>
 	{/if}
 </div>
 

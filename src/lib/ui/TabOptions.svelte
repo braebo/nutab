@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte'
+	let {
+		options,
+		selected = $bindable(),
+		onSelect = () => void 0,
+	}: {
+		options: string[]
+		selected: number
+		onSelect: (e: { option: (typeof options)[number]; index: number }) => void
+	} = $props()
 
-	const dispatch = createEventDispatcher()
-
-	interface Props {
-		options: string[];
-		selected: number;
-	}
-
-	let { options, selected = $bindable() }: Props = $props();
-
-	const handleClick = (option: typeof options[number], index: number) => {
+	const handleClick = (option: (typeof options)[number], index: number) => {
 		if (index !== selected) {
 			selected = index
 
-			dispatch('select', {
+			onSelect?.({
 				option,
 				index,
 			})
@@ -24,7 +23,14 @@
 
 <div class="tabs">
 	{#each options as option, i}
-		<div class="option" class:active={option === options[selected]} onclick={(e) => handleClick(option, i)}>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<div
+			class="option"
+			class:active={option === options[selected]}
+			onclick={() => handleClick(option, i)}
+			role="button"
+			tabindex="0"
+		>
 			{option}
 		</div>
 	{/each}
@@ -41,10 +47,10 @@
 		margin: 0;
 
 		border-radius: var(--radius);
-		border: 1px solid var(--light-b);
-		border-bottom-color: var(--light-c);
+		border: 1px solid var(--fg-b);
+		border-bottom-color: var(--fg-c);
 		background: transparent;
-		color: var(--light-d);
+		color: var(--fg-d);
 
 		overflow: hidden;
 		transition: 0.05s;
@@ -57,7 +63,7 @@
 		margin: 0;
 
 		opacity: 0.5;
-		background: var(--light-b);
+		background: var(--fg-b);
 
 		text-align: center;
 
@@ -66,19 +72,19 @@
 
 		&.active {
 			opacity: 1;
-			color: var(--dark-a);
-			background: var(--light-a);
+			color: var(--bg-a);
+			background: var(--fg-a);
 			cursor: default;
 		}
 
 		&:hover:not(.active) {
 			opacity: 1;
-			color: var(--dark-d);
-			background: var(--light-b);
+			color: var(--bg-d);
+			background: var(--fg-b);
 		}
 	}
 
 	.option:not(:last-of-type) {
-		border-right: 1px solid var(--light-c);
+		border-right: 1px solid var(--fg-c);
 	}
 </style>

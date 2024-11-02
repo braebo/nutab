@@ -5,16 +5,16 @@
 	import { onMount } from 'svelte'
 
 	interface Props {
-		showEmojiPicker: boolean;
-		emoji: string;
-		autofocus?: boolean;
+		showEmojiPicker: boolean
+		emoji: string
+		autofocus?: boolean
 	}
 
-	let { showEmojiPicker = $bindable(), emoji = $bindable(), autofocus = false }: Props = $props();
+	let { showEmojiPicker = $bindable(), emoji = $bindable(), autofocus = false }: Props = $props()
 
-	let emojiCount: number
+	// let emojiCount: number
 	let search = $state('')
-	let searchBar: HTMLInputElement = $state()
+	let searchBar = $state<HTMLInputElement>()
 
 	const handleClick = (char: string) => {
 		emoji = char
@@ -22,18 +22,32 @@
 	}
 
 	onMount(() => {
-		if (autofocus) searchBar.focus()
+		if (autofocus) searchBar?.focus()
 	})
 </script>
 
 <div class="container" transition:fly|local={{ y: -10, duration: 250 }}>
 	<div class="emoji-picker scroller">
-		<input bind:this={searchBar} type="text" class="search" bind:value={search} placeholder="Search" />
+		<input
+			bind:this={searchBar}
+			type="text"
+			class="search"
+			bind:value={search}
+			placeholder="Search"
+		/>
 
 		<div class="emojis">
 			{#each emojis as e, i}
 				{#if !search || e.name.includes(search)}
-					<div class="emoji" onclick={() => handleClick(e.char)} tabindex="0">{e.char}</div>
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<div
+						class="emoji"
+						onclick={() => handleClick(e.char)}
+						role="button"
+						tabindex="0"
+					>
+						{e.char}
+					</div>
 				{/if}
 			{/each}
 		</div>
@@ -44,7 +58,7 @@
 	.container {
 		overflow: hidden;
 
-		background-color: rgba(var(--light-a-rgb), 0.9);
+		background-color: color-mix(in srgb, var(--fg-a) 90%, transparent);
 		backdrop-filter: blur(5px);
 		border-radius: var(--radius-md, 10px);
 
@@ -103,11 +117,11 @@
 	}
 	.emoji:hover,
 	.emoji:focus {
-		background: var(--light-d);
+		background: var(--fg-d);
 	}
 	.emoji:active {
 		/* 		transform: scale(2); */
-		background: var(--dark-d);
+		background: var(--bg-d);
 	}
 
 	.search {
@@ -118,11 +132,13 @@
 
 		outline: none;
 		border: none;
-		color: var(--dark-b);
-		background: rgba(var(--light-a-rgb, 255, 255, 255), 0.8);
+		color: var(--bg-b);
+		background: color-mix(in srgb, var(--fg-a) 80%, transparent);
 		backdrop-filter: blur(5px);
 		border-radius: 20px;
-		box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.15), 0px 4px 3px -1px rgba(0, 0, 0, 0.05),
+		box-shadow:
+			0px 3px 5px -3px rgba(0, 0, 0, 0.15),
+			0px 4px 3px -1px rgba(0, 0, 0, 0.05),
 			0px 14px 15px -1px rgba(0, 0, 0, 0.04);
 
 		text-align: center;
@@ -132,7 +148,7 @@
 	}
 
 	.search::placeholder {
-		color: rgba(var(--dark-a-rgb, 0, 0, 0), 0.25);
+		color: color-mix(in srgb, var(--bg-a) 25%, transparent);
 
 		font-weight: 300;
 	}

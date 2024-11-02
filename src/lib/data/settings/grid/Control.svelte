@@ -2,15 +2,19 @@
 	import { fly } from 'svelte/transition'
 
 	interface Props {
-		label?: string;
-		i?: number;
-		children?: import('svelte').Snippet;
+		label?: string
+		i?: number
+		children?: import('svelte').Snippet
 	}
 
-	let { label = '', i = 1, children }: Props = $props();
+	let { label = '', i = 1, children }: Props = $props()
 </script>
 
-<div class="control" in:fly={{ y: 10, duration: 300, delay: 100 + 33 * i }} out:fly={{ y: 10, duration: 100 }}>
+<div
+	class="control"
+	in:fly={{ y: 10, duration: 300, delay: 100 + 33 * i }}
+	out:fly={{ y: 10, duration: 100 }}
+>
 	{#if label}<label for={label}>{label}</label>{/if}
 	<div class="range" class:fullWidth={label}>
 		{@render children?.()}
@@ -30,8 +34,8 @@
 		padding: 2px 15px;
 		margin: auto;
 
-		border: 1px solid rgba(var(--light-c-rgb), 0.33);
-		background: rgba(var(--light-b-rgb), 0.5);
+		border: 1px solid color-mix(in srgb, var(--fg-c) 33%, transparent);
+		background: color-mix(in srgb, var(--fg-b) 50%, transparent);
 		border-radius: 10px;
 
 		font-size: 16px;
@@ -44,7 +48,7 @@
 		display: flex;
 		align-items: center;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 
 		height: 100%;
 		margin: auto 0;

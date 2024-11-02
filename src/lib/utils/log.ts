@@ -1,15 +1,16 @@
 const isBrowser =
-	typeof globalThis.window !== "undefined" &&
-	typeof globalThis.window.document !== "undefined"
+	typeof globalThis.window !== 'undefined' && typeof globalThis.window.document !== 'undefined'
 
 const dev = () => {
 	if (!isBrowser) return
-	if (typeof process != "undefined") {
-		return process.env?.NODE_ENV === "development"
+	if (typeof process != 'undefined') {
+		return process.env?.NODE_ENV === 'development'
 	}
 	try {
 		return import.meta.env.DEV
-	} catch (e) { console.error(e) }
+	} catch (e) {
+		console.error(e)
+	}
 	return false
 }
 
@@ -23,7 +24,7 @@ const dev = () => {
  * @returns {void}
  */
 export const log = (
-	msg: string | any,
+	msg: string | unknown,
 	color = 'lightblue',
 	bgColor = 'transparent',
 	fontSize = 15,

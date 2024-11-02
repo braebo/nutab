@@ -1,46 +1,57 @@
 <script lang="ts">
-	import type { Writable, Readable } from 'svelte/store'
-
-	import { createEventDispatcher } from 'svelte'
 	import { slide } from 'svelte/transition'
+	import { quintOut } from 'svelte/easing'
 	import Row from './Row.svelte'
 
-	interface Props {
-		store: Writable<any> | Readable<any>;
-		isOpen: boolean;
-		label: string;
-	}
-
-	let { store, isOpen = $bindable(), label }: Props = $props();
-
-	const dispatch = createEventDispatcher()
+	let {
+		state,
+		isOpen = $bindable(),
+		label,
+		onToggle,
+	}: {
+		state: unknown
+		isOpen: boolean
+		label: string
+		onToggle: (e: { label: string; isOpen: boolean }) => void
+	} = $props()
 
 	const toggle = () => {
 		isOpen = !isOpen
-		dispatch('toggle', {
+		onToggle?.({
 			label,
 			isOpen,
 		})
 	}
+
+	console.log(state)
 </script>
 
-{#if 'subscribe' in store && $store !== (null || 'undefined')}
+{#if state}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<h4 class:isOpen onclick={toggle}>
 		<span>▼</span>
 		{label}
 	</h4>
 
-	{#if isOpen && 'subscribe' in store}
-		<div class="state-data" transition:slide>
-			{#key $store}
-				{#if $store === null}
+	{#if isOpen && typeof state === 'object'}
+		<div class="state-data" transition:slide={{ duration: 200, easing: quintOut }}>
+			{#key state}
+				{#if state === null}
 					<div class="null">null</div>
-				{:else if typeof $store === 'object'}
-					{#each Object.entries($store) as [key, value]}
-						<Row {key} {value} {store} path={key} />
+				{:else if typeof state === 'object'}
+					{#each Object.entries(state) as [key, value]}
+						<Row {key} {value} {state} path={key} />
 					{/each}
 				{:else}
-					<Row key={label} value={$store} {store} path={label} simple={true} label={false} />
+					<Row
+						{state}
+						key={label}
+						value={state}
+						path={label}
+						simple={true}
+						label={false}
+					/>
 				{/if}
 			{/key}
 		</div>
@@ -49,7 +60,6 @@
 
 <style lang="scss">
 	div {
-		// margin-bottom: 5px;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -69,21 +79,25 @@
 		margin: 0;
 
 		background: var(--header-bg);
-		color: var(--header-color, --color);
+		color: var(--header-color, var(--color));
 
 		text-transform: capitalize;
 		font-family: var(--font-a);
 		font-family: 'MonoLisa', monospace;
 		font-weight: 400;
-		// letter-spacing: 0.5px;
-		// word-spacing: 2px;
 		font-size: var(--heading-font-size, 12px);
+
+		transition: background 0.1s var(--ease_in_out_quint);
+		&:hover {
+			background: color-mix(in srgb, var(--header-bg) 95%, white);
+			color: color-mix(in srgb, var(--header-color, var(--color)), white 75%);
+		}
 
 		span {
 			display: inline-block;
 			font-size: 10px;
 			transform: rotate(-90deg);
-			transition: 0.2s transform var(--ease_in_out_quint);
+			// transition: 0.1s transform var(--ease_in_out_quint);
 		}
 
 		&.isOpen {

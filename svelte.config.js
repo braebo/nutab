@@ -1,15 +1,28 @@
-import sveltePreprocess from 'svelte-preprocess'
-import vercel from '@sveltejs/adapter-vercel'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+import adapter_vercel from '@sveltejs/adapter-vercel'
+import { sveltePreprocess } from 'svelte-preprocess'
+import adapter_auto from '@sveltejs/adapter-auto'
 import browser_extension from './adapter.js'
 
-const adapter = !!process.env.VERCEL ? vercel() : browser_extension({ fallback: 'index.html' })
+const vercel = !!process.env.VERCEL
+const extension = !!process.env.BROWSER_EXTENSION
+
+const adapter = vercel
+	? adapter_vercel()
+	: extension
+		? browser_extension({ fallback: 'index.html' })
+		: adapter_auto()
 
 const ignoreWarnings = ['a11y-click-events-have-key-events']
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: [
-		sveltePreprocess()
+		vitePreprocess(),
+		sveltePreprocess({
+			pug: true,
+			scss: true,
+		}),
 	],
 	kit: {
 		adapter,
@@ -23,6 +36,7 @@ const config = {
 			holdMode: true,
 		},
 	},
+	// @ts-expect-error - Why isn't this typed?
 	onwarn: (warning, handler) => {
 		// if (warning.code.startsWith('a11y-')) {
 		if (ignoreWarnings.includes(warning.code)) {

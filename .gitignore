@@ -1,3 +1,5 @@
+.git
+
 # OS
 .DS_Store
 Thumbs.db
@@ -33,3 +35,7 @@ test-results
 # Browser Extensions
 build.crx
 build.pem
+
+# Misc
+.cursorrules
+/context

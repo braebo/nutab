@@ -1,62 +1,65 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
+	import { activeSection } from '$lib/stores/activeSection.svelte'
+	import { blurOverlay } from '$lib/stores/blurOverlay.svelte'
+	import { settings } from '$lib/stores/settings.svelte'
+	import { device } from '$lib/stores/device.svelte'
 
-	import { wait, mouse, screenH, clickOutside, mapRange } from 'fractils'
-	import { showSettings, blurOverlay, activeSection } from '$lib/stores'
+	import { clickOutside } from '$lib/utils/clickOutside'
+	import { mapRange } from '$lib/utils/mapRange'
+	import { click } from '$lib/utils/onClick'
+	import { wait } from '$lib/utils/wait'
 
 	import { tweened, type Tweened } from 'svelte/motion'
 	import { quartInOut } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
+	import { untrack } from 'svelte'
 
 	interface Props {
-		size?: any;
-		children?: import('svelte').Snippet;
+		size?: any
+		children?: import('svelte').Snippet
 	}
 
-	let { size = [700, 400], children }: Props = $props();
+	let { size = [700, 400], children }: Props = $props()
 
 	let closed = $state(true)
 	let closing = $state(false)
 
-
 	/** Settings Panel */
-	let p = {
+	let panel = {
 		w: size[0],
 		h: size[1],
+		open: {
+			x: 0,
+			y: 0,
+			rx: 1,
+			width: 100,
+			height: 100,
+		},
+		closed: {
+			x: 45,
+			y: 92,
+			rx: 8,
+			width: 4,
+			height: 7,
+		},
 	}
 
-	const openState = {
-		x: 0,
-		y: 0,
-		rx: 1,
-		width: 100,
-		height: 100,
-	}
-
-	const closedState = {
-		x: 45,
-		y: 92,
-		rx: 8,
-		width: 4,
-		height: 7,
-	}
-
-	// Transition duration for open() and close().
+	/** Transition duration for open() and close(). */
 	const dur = 500
 
 	// SVG attributes
-	const x = tweened(closedState.x)
-	const y = tweened(closedState.y)
-	const rx = tweened(closedState.rx)
-	const width = tweened(closedState.width)
-	const height = tweened(closedState.height)
+	const x = tweened(panel.closed.x)
+	const y = tweened(panel.closed.y)
+	const rx = tweened(panel.closed.rx)
+	const width = tweened(panel.closed.width)
+	const height = tweened(panel.closed.height)
 	const opacity = tweened(0, { duration: 250 })
 
-	let adjust: number = $state()
-
+	// Circle offset
+	let offset: number = $state(panel.closed.width)
 
 	/** current state */
-	let s = $state(closedState)
+	let current = $derived(closed ? panel.closed : panel.open)
 	/** quarter duration */
 	const q = dur / 4
 	/** third of a quarter duration */
@@ -65,109 +68,131 @@
 	async function open() {
 		closed = false
 
-		tween(width, s.width, q)
-		tween(x, s.x, q)
+		tween(width, current.width, q)
+		tween(x, current.x, q)
 
-		tween(height, s.height, q, t)
-		tween(y, s.y, q, t)
+		tween(height, current.height, q, t)
+		tween(y, current.y, q, t)
 
-		tween(rx, s.rx)
+		tween(rx, current.rx)
 
 		await wait(dur / 3)
 	}
 
 	async function close() {
-		$blurOverlay = false
+		blurOverlay.value = false
 		closed = true
 		closing = true
 
-		tween(width, s.width)
-		tween(x, s.x)
+		tween(width, current.width)
+		tween(x, current.x)
 
-		tween(height, s.height)
-		tween(y, s.y)
+		tween(height, current.height)
+		tween(y, current.y)
 
-		tween(rx, s.rx, q)
+		tween(rx, current.rx, q)
 
 		await wait(dur)
 		closing = false
+
+		offset = panel.closed.width
 	}
 
-	async function tween(store: Tweened<number>, value: number, duration = dur / 2, delay = 0, easing = quartInOut) {
+	async function tween(
+		store: Tweened<number>,
+		value: number,
+		duration = dur / 2,
+		delay = 0,
+		easing = quartInOut,
+	) {
 		if (delay) await wait(delay)
 		store.set(value, { delay, duration, easing })
 	}
-	run(() => {
-		$showSettings ? open() : close()
-	});
+	$effect(() => {
+		settings.showSettings ? open() : close()
+	})
 	// Runs on mousemove (maybe debounce this?)
-	run(() => {
-		if (closed && !closing) {
-			adjust = Math.max(
-				// When the mouse drops below the center of the screen, this uses the ratio between
-				// the window height and the panel width to grow the circle up to 20% of the
-				// final width (closedState.width).
-				mapRange($mouse.y, 0 + $screenH / 1.5, $screenH, closedState.width, openState.width * 0.2),
+	$effect(() => {
+		device.mouse.x
+		device.mouse.y
+		untrack(() => {
+			if (closed && !closing) {
+				offset = Math.max(
+					// When the mouse drops below the center of the screen, this uses the ratio between
+					// the window height and the panel width to grow the circle up to 20% of the
+					// final width (closedState.width).
+					mapRange(
+						device.mouse.y,
+						0 + device.height / 1.5,
+						device.height,
+						panel.closed.width,
+						panel.open.width * 0.2,
+					),
 
-				// Don't allow the circle to shrink below it's starting size.
-				closedState.width,
-			)
+					// Don't allow the circle to shrink below it's starting size.
+					panel.closed.width,
+				)
 
-			// Widen the circle as the mouse approaches it.
-			width.set(adjust)
+				// Widen the circle as the mouse approaches it.
+				width.set(offset)
 
-			// Keep the circle centered.
-			$x = closedState.x - (adjust - closedState.width) * 0.5
+				// Keep the circle centered.
+				x.set(panel.closed.x - (offset - panel.closed.width) * 0.5)
 
-			// Inch the radius towards its open state.
-			$rx = Math.max(closedState.rx - adjust * 0.75, openState.rx)
+				// Inch the radius towards its open state.
+				rx.set(Math.max(panel.closed.rx - offset * 0.75, panel.open.rx))
 
-			// Fade in the button.
-			$opacity = mapRange($mouse.y, $screenH / 2, $screenH / 1.5, 0.2, 0.25)
-		} else $opacity = 0.25
-	});
-	run(() => {
-		s = !closed ? closedState : openState
-	});
+				// Fade in the button.
+				opacity.set(
+					mapRange(device.mouse.y, device.height / 2, device.height / 1.5, 0.2, 0.25),
+				)
+			} else {
+				opacity.set(0.25)
+			}
+		})
+	})
 </script>
 
-{#if $activeSection === 'bookmarks'}
+{#if activeSection.value === 'bookmarks'}
 	<div
 		class="panel-container"
-		style:--width="{p.w}px"
-		style:--height="{p.h}px"
+		style:--width="{panel.w}px"
+		style:--height="{panel.h}px"
 		use:clickOutside={{ whitelist: ['controls', 'nub', 'grabber', 'theme-toggle'] }}
-		onoutclick={() => (!closed ? ($showSettings = false) : void 0)}
+		onoutclick={() => {
+			if (!closed) settings.showSettings = false
+		}}
 		transition:fade
 	>
 		<div class="panel">
 			<div class="settings">
-				{#if $showSettings}
-					{#key $showSettings}
+				{#if settings.showSettings}
+					{#key settings.showSettings}
 						{@render children?.()}
 					{/key}
 				{/if}
 			</div>
-			<svg class:closed viewBox="0 0 {p.w} {p.h}" width="100%" height="100%">
-				<circle cx={p.w - 5} cy={p.w - 5} r={s.rx * 10} fill="white" />
+			<svg class:closed viewBox="0 0 {panel.w} {panel.h}" width="100%" height="100%">
+				<circle cx={panel.w - 5} cy={panel.w - 5} r={current.rx * 10} fill="white" />
 				<g>
 					<rect
+						use:click
 						x="{$x}%"
 						y="{closed ? $y : $y}%"
 						rx="{$rx}%"
 						width="{$width}%"
 						height="{$height}%"
 						opacity={$opacity}
-						onclick={() => ($showSettings = true)}
+						onClick={() => (settings.showSettings = true)}
 					/>
 					<text
 						x="{42.75}%"
 						y="{$y + 4.5}%"
 						font-size="15"
-						fill="var(--dark-d)"
+						fill="var(--bg-d)"
 						pointer-events="none"
 						font-family="var(--font-a)"
-						opacity={closed && !closing ? mapRange(adjust, 10, 20, 0, 1) : 0}
+						opacity={closed && !closing ? mapRange(offset, 10, 20, 0, 1) : 0}
 					>
 						settings
 					</text>
@@ -205,24 +230,32 @@
 
 	svg {
 		overflow: visible;
-		fill: rgba(var(--light-a-rgb), 0.95);
-		background: rgba(var(--light-a-rgb), 0.5);
+		fill: color-mix(in srgb, var(--fg-a) 95%, transparent);
+		background: color-mix(in srgb, var(--fg-a) 50%, transparent);
 		backface-visibility: hidden;
 		border-radius: var(--radius);
 		backdrop-filter: blur(20px);
-		box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0.04), 0 6px 20px 5px rgba(29, 29, 29, 0.01);
+		box-shadow:
+			0 10px 50px 0px rgba(29, 29, 29, 0.04),
+			0 6px 20px 5px rgba(29, 29, 29, 0.01);
 
-		transition: backdrop-filter 0.5s, box-shadow 0.5s, background 0.5s;
+		transition:
+			backdrop-filter 0.5s,
+			box-shadow 0.5s,
+			background 0.5s;
 
 		&.closed {
 			backdrop-filter: blur(0px);
-			box-shadow: 0 10px 50px 0px rgba(29, 29, 29, 0), 0 6px 20px 5px rgba(29, 29, 29, 0);
+			box-shadow:
+				0 10px 50px 0px rgba(29, 29, 29, 0),
+				0 6px 20px 5px rgba(29, 29, 29, 0);
 			transition-duration: 0.05s;
-			background: rgba(var(--light-d-rgb), 0);
+			background: color-mix(in srgb, var(--fg-d) 0%, transparent);
 
-			& rect {
+			rect {
 				pointer-events: all;
 				cursor: pointer;
+				outline: none;
 			}
 		}
 	}

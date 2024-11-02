@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { run, preventDefault } from 'svelte/legacy';
 
 	import { authStore, showAuthForm } from './authStore'
@@ -21,7 +21,7 @@
 		width = '300px',
 		emailInput = $state(),
 		passwordInput = $state(),
-		statusColor = $state('var(--light-c)'),
+		statusColor = $state('var(--fg-c)'),
 		passwordValid = $state(false)
 
 	interface Props {
@@ -36,7 +36,7 @@
 	run(() => {
 		switch ($status) {
 			case 'invalid':
-				statusColor = 'var(--light-c)'
+				statusColor = 'var(--fg-c)'
 				break
 			case 'valid':
 				statusColor = 'var(--primary)'
@@ -45,7 +45,7 @@
 				statusColor = 'var(--error)'
 				break
 			default:
-				statusColor = 'var(--light-c)'
+				statusColor = 'var(--fg-c)'
 				break
 		}
 	});
@@ -256,15 +256,15 @@
 		transition: 500ms;
 		text-align: center;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 		border: 1px solid var(--status-color);
 		border-radius: 8px;
 		outline: none;
 		outline-color: var(--primary);
-		background: var(--light-a);
+		background: var(--fg-a);
 	}
 	::placeholder {
-		color: var(--dark-a);
+		color: var(--bg-a);
 	}
 	.login-input:focus::placeholder {
 		opacity: 0;
@@ -288,11 +288,11 @@
 		transition: 250ms;
 		letter-spacing: 1px;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 		border: 1px solid var(--status-color);
 		border-radius: 5px;
-		outline-color: var(--dark-a);
-		background-color: var(--light-a);
+		outline-color: var(--bg-a);
+		background-color: var(--fg-a);
 
 		font-variation-settings: 'wght' 500;
 	}
@@ -342,7 +342,7 @@
 		user-select: none;
 		transition: color 500ms;
 
-		color: var(--dark-d);
+		color: var(--bg-d);
 	}
 	ul.login-signup {
 		display: inline-flex;
@@ -396,7 +396,7 @@
 
 		border: solid 1px var(--status-color);
 		border-radius: 10px;
-		background: var(--light-a);
+		background: var(--fg-a);
 		box-shadow: 0 0 10px var(--status-color);
 	}
-</style>
+</style> -->

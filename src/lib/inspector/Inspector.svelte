@@ -1,47 +1,54 @@
 <script lang="ts">
-	import type { Readable, Writable } from 'svelte/store'
-
-	import { inspectorStore } from './inspectorStore'
+	import { inspectorStore } from './inspectorStore.svelte'
+	import { themer } from '$lib/theme/themer.svelte'
 	import Group from './Group.svelte'
 	import Menu from './Menu.svelte'
-	import { theme } from 'fractils'
 
-	interface Props {
-		register: Record<string, Writable<unknown> | Readable<unknown>>;
-		top?: string;
-		nub?: string;
-	}
-
-	let { register, top = '10%', nub = '🛠' }: Props = $props();
+	let {
+		register,
+		top = '10%',
+		nub = '🛠',
+	}: {
+		register: Record<string, unknown>
+		top?: string
+		nub?: string
+	} = $props()
 
 	// Persists the folded / unfolded state of the inspector submenus / groups
 	let keys = Object.keys(register)
 	let data = keys.map((key) => {
-		const isOpen = $inspectorStore[key] ?? false
+		const isOpen = inspectorStore.value[key] ?? false
 		return {
 			label: key,
-			store: register[key],
+			state: register[key],
 			isOpen,
 		}
 	})
 
-	const saveOpenState = (e: CustomEvent) => {
-		const { label, isOpen } = e.detail
-		$inspectorStore[label] = isOpen
+	const saveOpenState = (e: { label: string; isOpen: boolean }) => {
+		const { label, isOpen } = e
+		inspectorStore.value[label] = isOpen
 	}
 </script>
 
 <Menu
-	theme={$theme}
 	{nub}
 	{top}
 	links={[]}
-	on:menuToggle={(e) => saveOpenState(e)}
-	isOpen={$inspectorStore['menu'] ?? false}
+	theme={themer.mode}
+	onToggle={(e) => saveOpenState(e)}
+	isOpen={inspectorStore.value['menu'] ?? false}
 >
-	<div class="state {$theme}">
-		{#each data as { label, store, isOpen }, i}
-			<Group on:toggle={(e) => saveOpenState(e)} {store} {label} {isOpen} />
+	<div class="state {themer.mode}">
+		{#each data as { label, state, isOpen }}
+			<Group
+				{state}
+				{label}
+				{isOpen}
+				onToggle={(e) => {
+					saveOpenState(e)
+				}}
+			/>
 		{/each}
 	</div>
 </Menu>

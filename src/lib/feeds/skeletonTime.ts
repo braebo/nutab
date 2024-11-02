@@ -6,8 +6,7 @@ const a = tweened(0, { duration: 500 })
 const b = tweened(0)
 const c = tweened(100)
 
-let stageTimer: NodeJS.Timeout
-
+let stageTimer: ReturnType<typeof setTimeout>
 let t = 1
 export const animate = async () => {
 	await tick()
@@ -48,7 +47,8 @@ export const animate = async () => {
 
 export const skeletonAnimation = derived(
 	[a, b, c],
-	([$a, $b, $c]) => `linear-gradient(to right, var(--light-b) ${$a}%, var(--light-a) ${$b}%, var(--light-b) ${$c}%)`
+	([$a, $b, $c]) =>
+		`linear-gradient(to right, var(--fg-b) ${$a}%, var(--fg-a) ${$b}%, var(--fg-b) ${$c}%)`,
 )
 
 // onDestroy(() => (stageTimer = null))

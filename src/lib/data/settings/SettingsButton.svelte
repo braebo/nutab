@@ -2,63 +2,70 @@
 	@component Toggles the visibility of a bookmark's settings editor panel.
  -->
 <script lang="ts">
-	import { cMenu } from '$lib/stores'
+	import { cMenu } from '$lib/stores/settings.svelte'
 	import { tick } from 'svelte'
 
 	const toggleCMenu = async () => {
-		if (!$cMenu.visible && !$cMenu.pending) {
-			$cMenu.visible = true
+		if (!cMenu.visible && !cMenu.pending) {
+			cMenu.visible = true
 			await tick()
-			$cMenu.x = window.innerWidth - $cMenu.el.clientWidth - 40
-			$cMenu.y = 20
+			cMenu.x = window.innerWidth - cMenu.el.clientWidth - 40
+			cMenu.y = 20
 		}
 	}
 </script>
 
-<template lang="pug">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div
+	id="settings-button"
+	onclick={toggleCMenu}
+	class:active={cMenu.visible}
+	role="button"
+	tabindex="0"
+>
+	<div class="dot"></div>
+	<div class="dot"></div>
+	<div class="dot"></div>
+</div>
 
-	#settings-button(on:click!='{toggleCMenu}' class:active='{$cMenu.visible}')
-		.dot
-		.dot
-		.dot
+<style lang="scss">
+	#settings-button {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 4px;
 
-</template>
+		height: 50px;
+		width: 40px;
 
-<style lang="sass">
-	#settings-button
-		position: absolute
-		top: 0
-		right: 0
-		display: flex
-		flex-direction: column
-		justify-content: center
-		align-items: center
-		gap: 4px
+		font-size: 25px;
 
-		height: 50px
-		width: 40px
+		box-sizing: content-box;
+		cursor: pointer;
 
-		font-size: 25px
+		transition: 150ms;
+	}
 
-		box-sizing: content-box
-		cursor: pointer
+	.active {
+		top: 3px !important;
+		gap: 10px !important;
+	}
 
-		transition: 150ms
+	.dot {
+		display: flex;
+		flex-direction: row;
 
-	.active
-		top: 3px !important
-		gap: 10px !important
+		width: 4px;
+		height: 4px;
 
-	.dot
-		display: flex
-		flex-direction: row
+		border-radius: 100%;
 
-		width: 4px
-		height: 4px
+		background: var(--bg-c);
 
-		border-radius: 100%
-
-		background: var(--dark-c)
-
-		pointer-events: none
+		pointer-events: none;
+	}
 </style>

@@ -12,7 +12,7 @@
 		sync: SyncSettings,
 	}
 
-	let activeSection: typeof sections[keyof typeof sections] = $state(sections['grid'])
+	let activeSection: (typeof sections)[keyof typeof sections] = $state(sections['grid'])
 </script>
 
 <FluidPanel>
@@ -20,8 +20,9 @@
 	<div class="control-panel">
 		<nav>
 			{#each Object.entries(sections) as [title, component]}
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
-					role="link"
 					class:active={activeSection === component}
 					onclick={() => (activeSection = component)}
 					out:fade={{ duration: 50 }}
@@ -61,7 +62,7 @@
 		height: 4rem;
 		gap: 1rem;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 
 		div {
 			font-variation-settings: 'wght' 100;

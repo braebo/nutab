@@ -1,8 +1,8 @@
 import type { Folder, Bookmark } from '../types'
 
-// import getIcon from '../besticon'  // TODO: Fetch icon from URL
-import cuid from 'cuid'
+import { nanoid } from '$lib/utils/nanoid'
 
+// import getIcon from '../besticon'  // TODO: Fetch icon from URL
 // const defaultImage = // TODO: Generate a random svg or something
 
 const default_theme = {
@@ -11,11 +11,11 @@ const default_theme = {
 }
 
 export const emptyFolder = (current_folder_count: number): Folder => ({
-	folder_id: cuid(),
+	folder_id: nanoid(),
 	user_id: '',
 	icon: '📌',
 	title: 'My Folder',
-	bookmarks: [],
+	bookmark_ids: [],
 	position: current_folder_count + 1,
 	active: true,
 })
@@ -23,7 +23,7 @@ export const emptyFolder = (current_folder_count: number): Folder => ({
 export const emptyBookmark = (current_folder: Folder): Bookmark => {
 	const { title } = current_folder
 	return {
-		bookmark_id: cuid(),
+		bookmark_id: nanoid(),
 		url: '',
 		title: '',
 		description: '',
@@ -32,13 +32,13 @@ export const emptyBookmark = (current_folder: Folder): Bookmark => {
 		image: null,
 		tags: [title],
 		...default_theme,
-		position: current_folder.bookmarks.length + 1,
+		position: current_folder.bookmark_ids.length + 1,
 	}
 }
 
 export const defaultBookmarks: Bookmark[] = [
 	{
-		bookmark_id: cuid(),
+		bookmark_id: nanoid(),
 		url: 'https://burakkarakan.com/devo/',
 		title: 'Devo',
 		description: 'Dev News Extensions',
@@ -50,19 +50,19 @@ export const defaultBookmarks: Bookmark[] = [
 		position: 0,
 	},
 	{
-		bookmark_id: cuid(),
+		bookmark_id: nanoid(),
 		url: 'https://www.reddit.com/',
 		title: 'Reddit',
 		description: 'Front Page of the Internet',
 		useImage: true,
 		autoImage: false,
-		image: 'https://www.redditinc.com/assets/images/site/reddit-logo.png',
+		image: 'https://cdn.svgporn.com/logos/reddit-icon.svg',
 		tags: ['Entertainment', 'News'],
 		...default_theme,
 		position: 2,
 	},
 	{
-		bookmark_id: cuid(),
+		bookmark_id: nanoid(),
 		url: 'https://www.youtube.com/',
 		title: 'Youtube',
 		description: '',
@@ -74,62 +74,61 @@ export const defaultBookmarks: Bookmark[] = [
 		position: 3,
 	},
 	{
-		bookmark_id: cuid(),
+		bookmark_id: nanoid(),
 		url: 'https://github.com',
 		title: 'Github',
 		description: '',
 		useImage: true,
 		autoImage: false,
-		// image: 'https://cdn.svgporn.com/logos/github-icon.svg',
-		image: 'https://cdn.iconscout.com/icon/free/png-256/github-159-721954.png',
+		image: 'https://cdn.svgporn.com/logos/github-icon.svg',
 		tags: ['Dev', 'Github'],
 		...default_theme,
 		position: 4,
 	},
-	{
-		bookmark_id: cuid(),
-		url: 'https://mail.google.com/mail',
-		title: 'Gmail',
-		description: 'Email',
-		useImage: true,
-		autoImage: false,
-		image: 'https://cdn.svgporn.com/logos/google-gmail.svg',
-		tags: ['Google', 'Email'],
-		...default_theme,
-		position: 5,
-	},
-	{
-		bookmark_id: cuid(),
-		url: 'https://drive.google.com/drive/my-drive',
-		title: 'Drive',
-		description: 'Google Drive',
-		useImage: true,
-		autoImage: false,
-		image: 'https://cdn.svgporn.com/logos/google-drive.svg',
-		tags: ['Google', 'Storage'],
-		...default_theme,
-		position: 6,
-	},
-	{
-		bookmark_id: cuid(),
-		url: 'https://photos.google.com/',
-		title: 'Photos',
-		description: 'Google Photos',
-		useImage: true,
-		autoImage: false,
-		image: 'https://cdn.svgporn.com/logos/google-photos.svg',
-		tags: ['Google', 'Storage', 'Photos', 'Images'],
-		...default_theme,
-		position: 7,
-	},
+	// {
+	// 	bookmark_id: nanoid(),
+	// 	url: 'https://mail.google.com/mail',
+	// 	title: 'Gmail',
+	// 	description: 'Email',
+	// 	useImage: true,
+	// 	autoImage: false,
+	// 	image: 'https://cdn.svgporn.com/logos/google-gmail.svg',
+	// 	tags: ['Google', 'Email'],
+	// 	...default_theme,
+	// 	position: 5,
+	// },
+	// {
+	// 	bookmark_id: nanoid(),
+	// 	url: 'https://drive.google.com/drive/my-drive',
+	// 	title: 'Drive',
+	// 	description: 'Google Drive',
+	// 	useImage: true,
+	// 	autoImage: false,
+	// 	image: 'https://cdn.svgporn.com/logos/google-drive.svg',
+	// 	tags: ['Google', 'Storage'],
+	// 	...default_theme,
+	// 	position: 6,
+	// },
+	// {
+	// 	bookmark_id: nanoid(),
+	// 	url: 'https://photos.google.com/',
+	// 	title: 'Photos',
+	// 	description: 'Google Photos',
+	// 	useImage: true,
+	// 	autoImage: false,
+	// 	image: 'https://cdn.svgporn.com/logos/google-photos.svg',
+	// 	tags: ['Google', 'Storage', 'Photos', 'Images'],
+	// 	...default_theme,
+	// 	position: 7,
+	// },
 ]
 
 export const defaultFolder: Folder = {
-	folder_id: cuid(),
+	folder_id: nanoid(),
 	user_id: 'anon',
 	icon: '🏠',
 	title: 'General',
-	bookmarks: defaultBookmarks.map((b) => b.bookmark_id),
+	bookmark_ids: defaultBookmarks.map((b) => b.bookmark_id),
 	active: true,
 	position: 0,
 }

@@ -46,7 +46,7 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 
 	// fetch stories
 	let stories: IHNItem[] = []
-	let storyPromises = []
+	const storyPromises = []
 	for (const id of ids) {
 		storyPromises.push(fetchItem(id))
 	}
@@ -54,17 +54,22 @@ export const fetchStories = async (rangeLower = 0, type = DEFAULT_CATEGORY): Pro
 
 	// fetch opengraph metadata
 	for (const story of stories) {
-		if (!story.url) continue;
+		if (!story.url) continue
 
-		story.days_ago = daysAgo(new Date(story.time * 1000)).string
+		if (story.time) {
+			story.days_ago = daysAgo(new Date(story.time * 1000)).string
+		}
 
 		story.meta = {
 			url: story.url,
-			title: story.title,
-			description: story.text,
+			title: '',
+			description: '',
 			icon: '',
 			image: '',
 		}
+
+		if (story.title) story.meta.title = story.title
+		if (story.text) story.meta.description = story.text
 
 		lazyLoadMeta(story.id, `${story.url}`)
 	}
@@ -80,8 +85,8 @@ async function lazyLoadMeta(id: number, url: string) {
 
 		if (!item) return items
 
-		item.meta.image = meta.image
-		item.meta.description = meta.description
+		if (item.meta) item.meta.image = meta.image
+		if (item.meta) item.meta.description = meta.description
 
 		return items
 	})

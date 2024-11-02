@@ -1,14 +1,19 @@
 <script lang="ts">
+	import { settings } from '$lib/stores/settings.svelte'
 	import { fly } from 'svelte/transition'
-	import { settings } from '$lib/stores'
 </script>
 
 <label for="showTitle">
-	<!-- <input type="checkbox" bind:checked={$settings.showTitle} /> -->
-	<div class="btn" onclick={() => ($settings.showTitle = !$settings.showTitle)}>
-		{#key $settings.showTitle}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		class="btn"
+		onclick={() => (settings.showTitle = !settings.showTitle)}
+		role="button"
+		tabindex="0"
+	>
+		{#key settings.showTitle}
 			<div class="show-hide" in:fly={{ y: 30 }} out:fly={{ y: -30 }}>
-				{$settings.showTitle ? 'Hide' : 'Show'}
+				{settings.showTitle ? 'Hide' : 'Show'}
 			</div>
 		{/key}
 		<div class="titles">Titles</div>

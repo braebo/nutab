@@ -1,7 +1,7 @@
 <script lang="ts">
 	// import { updateAllCollectionsList } from '../data/db';
 	import { fly, slide } from 'svelte/transition'
-	import AuthForm from './AuthForm.svelte'
+	// import AuthForm from './AuthForm.svelte'
 	import { authStore } from './authStore'
 
 	const { githubSignIn, signIn, signUp, status, successMessage, error } = authStore
@@ -17,22 +17,22 @@
 				<!-- <span on:load={updateAllCollectionsList()} /> -->
 				<div class="success-message" in:slide>{$successMessage}</div>
 			{:else if $status == 'error'}
-				<div class="error-message" transition:slide>
+				<!-- <div class="error-message" transition:slide>
 					{#await $error?.message then err}
 						{err} 🤔
 					{/await}
-				</div>
+				</div> -->
 			{/if}
 		</div>
 	{/if}
 
-	<AuthForm
+	<!-- <AuthForm
 		bind:email
 		bind:password
 		on:signin={async () => await signIn(email, password)}
 		on:signup={async () => await signUp(email, password)}
 		on:githubSignin={async () => await githubSignIn()}
-	/>
+	/> -->
 </div>
 
 <style>
@@ -44,25 +44,25 @@
 	}
 	.success-message {
 		text-align: center;
-		background-color: var(--light-a);
+		background-color: var(--fg-a);
 		border: 1px solid var(--primary);
 		font-variation-settings: 'wght' 700;
-		color: var(--dark-a);
+		color: var(--bg-a);
 		font-size: 18px;
 		border-radius: 5px;
 		padding: 5px 10px;
 		height: 100%;
 		width: 100%;
 	}
-	.error-message {
+	/* .error-message {
 		border: 1px solid rgb(245, 175, 167);
-		background-color: var(--light-a);
-		color: var(--dark-b);
+		background-color: var(--fg-a);
+		color: var(--bg-b);
 		border-radius: 5px;
 		padding: 5px 10px;
 		height: 100%;
 		width: 100%;
-	}
+	} */
 	.message {
 		height: max-content;
 		position: absolute;

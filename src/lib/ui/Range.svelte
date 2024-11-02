@@ -10,23 +10,19 @@
 	@prop `truncate?: boolean` - Rounds decimals into whole numbers.
  -->
 <script lang="ts">
-	import { stopPropagation } from 'svelte/legacy';
-
-	import { createEventDispatcher, tick } from 'svelte'
 	import { mapRange } from 'fractils'
 	import { onDestroy } from 'svelte'
+	import { tick } from 'svelte'
 
-	const dispatch = createEventDispatcher()
-
-	
 	interface Props {
 		/** The value to be controled by the slider. */
-		value: any;
-		name: string;
-		range: { min: number; max: number };
-		vertical?: boolean;
-		step?: number;
-		truncate?: boolean;
+		value: any
+		name: string
+		range: { min: number; max: number }
+		vertical?: boolean
+		step?: number
+		truncate?: boolean
+		oninput?: (e: Event) => void
 	}
 
 	let {
@@ -35,14 +31,14 @@
 		range,
 		vertical = false,
 		step = 0.0001,
-		truncate = false
-	}: Props = $props();
+		truncate = false,
+	}: Props = $props()
 
 	const { min, max } = range
 
-	let el: HTMLElement = $state()
-	let track: HTMLElement = $state()
-	let thumb: HTMLElement = $state()
+	let el = $state<HTMLElement>()
+	let track = $state<HTMLElement>()
+	let thumb = $state<HTMLElement>()
 	let dragging = false
 	const thumbWidth = 12
 	let clientWidth = $derived(el?.clientWidth ?? 100)
@@ -76,9 +72,9 @@
 
 		window.addEventListener('mousemove', mouseMove)
 
-		el.style.cursor = 'pointer'
-		track.style.cursor = 'pointer'
-		thumb.style.cursor = 'grab'
+		el && (el.style.cursor = 'pointer')
+		track && (track.style.cursor = 'pointer')
+		thumb && (thumb.style.cursor = 'grab')
 	}
 
 	const mouseDown = () => {
@@ -87,10 +83,10 @@
 		window.addEventListener('mouseup', mouseUp, { once: true })
 		window.addEventListener('mousemove', mouseMove)
 
-		el.style.cursor = 'grabbing'
-		el.parentElement.style.cursor = 'grabbing'
-		track.style.cursor = 'grabbing'
-		thumb.style.cursor = 'grabbing'
+		el && (el.style.cursor = 'grabbing')
+		el?.parentElement && (el.parentElement.style.cursor = 'grabbing')
+		track && (track.style.cursor = 'grabbing')
+		thumb && (thumb.style.cursor = 'grabbing')
 	}
 
 	const { performance } = globalThis
@@ -125,18 +121,24 @@
 
 <div
 	class="range"
+	tabindex="0"
 	class:vertical
 	role="slider"
-	{name}
+	aria-label={name}
+	aria-valuenow={value}
 	bind:this={el}
 	onmousedown={setFromMouse}
 	style:--thumb-width="{thumbWidth}px"
 	draggable="false"
 >
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="thumb"
 		bind:this={thumb}
-		onmousedowncapture={stopPropagation(mouseDown)}
+		onmousedown={(e) => {
+			e.stopPropagation()
+			mouseDown()
+		}}
 		style:left="{progress}px"
 		draggable="false"
 	></div>
@@ -158,7 +160,7 @@
 			outline: none;
 		}
 		&:hover .track {
-			border-color: var(--light-d);
+			border-color: var(--fg-d);
 		}
 	}
 
@@ -166,9 +168,9 @@
 		width: 100%;
 		height: 15px;
 
-		border: 0.2px solid var(--light-c);
+		border: 0.2px solid var(--fg-c);
 		border-radius: 50px;
-		background: var(--light-b);
+		background: var(--fg-b);
 
 		cursor: pointer;
 		transition: 200ms;
@@ -183,9 +185,9 @@
 		width: var(--thumb-width);
 		height: var(--thumb-width);
 
-		border: 1px solid var(--dark-d);
+		border: 1px solid var(--bg-d);
 		border-radius: 20px;
-		background: var(--dark-a);
+		background: var(--bg-a);
 
 		cursor: grab;
 		transition: background 0.3s;
@@ -193,7 +195,7 @@
 		appearance: none;
 
 		&:focus::-webkit-slider-thumb {
-			background: var(--brand-a);
+			background: var(--theme-a);
 		}
 	}
 </style>

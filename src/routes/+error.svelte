@@ -3,16 +3,14 @@
 	import { page } from '$app/stores'
 </script>
 
-<template lang="pug">
+<h1>{$page.status}</h1>
 
-	h1 {$page.status}
-
-	+if('dev')
-		.error
-			pre.message {$page.error.message}
-			pre.stack {$page.error.stack}
-
-</template>
+{#if dev}
+	<div class="error">
+		<pre class="message"> {$page.error?.message} </pre>
+		<pre class="stack"> {($page.error as Error)?.stack} </pre>
+	</div>
+{/if}
 
 <style lang="scss">
 	h1 {
@@ -45,32 +43,32 @@
 			margin: 1rem auto;
 			padding: 1rem;
 
-			color: var(--dark-d);
+			color: var(--bg-d);
 			background: transparent;
-			border: 1px solid var(--light-d);
+			border: 1px solid var(--fg-d);
 			border-radius: var(--radius-lg);
 		}
 
 		.stack {
-			color: rgba(var(--dark-d-rgb), 0.5);
+			color: color-mix(in srgb, var(--bg-d) 50%, transparent);
 			max-height: 40vh;
 			overflow-y: auto;
 		}
 
 		::-webkit-scrollbar {
-			background-color: var(--light-a);
+			background-color: var(--fg-a);
 			width: 10px;
 			height: 10px;
 		}
 		::-webkit-scrollbar-thumb {
-			background-color: rgba(var(--light-d-rgb), 0.5);
+			background-color: color-mix(in srgb, var(--fg-d) 50%, transparent);
 			border-radius: 5px;
 		}
 		::-webkit-scrollbar-track {
-			background-color: rgba(var(--light-d-rgb), 0.1);
+			background-color: color-mix(in srgb, var(--fg-d) 10%, transparent);
 		}
 		::-webkit-scrollbar-corner {
-			background-color: rgba(var(--light-d-rgb), 0.1);
+			background-color: color-mix(in srgb, var(--fg-d) 10%, transparent);
 		}
 	}
 </style>

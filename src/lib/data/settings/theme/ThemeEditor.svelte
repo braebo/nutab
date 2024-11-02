@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { settings, type Settings } from '$lib/stores'
+	import type { Settings } from '$lib/data/types'
+	import { settings } from '$lib/stores/settings.svelte'
 
 	import ShuffleBackground from './RandomizeBackground.svelte'
 	import GradientEditor from './GradientEditor.svelte'
@@ -8,21 +9,20 @@
 	import { fly } from 'svelte/transition'
 
 	interface Props {
-		thisTheme: keyof Settings['theme'];
+		thisTheme: keyof Settings['theme']
 	}
 
-	let { thisTheme }: Props = $props();
+	let { thisTheme }: Props = $props()
 
-	let selected = $state($settings.theme[thisTheme].lockBackground ? 1 : 0)
+	let selected = $state(settings.theme[thisTheme].lockBackground ? 1 : 0)
 
-	export const toggleMode = (e: CustomEvent) => {
-		$settings.theme[thisTheme].lockBackground = !!e.detail.index
+	export const toggleMode = (e: { index: number }) => {
+		settings.theme[thisTheme].lockBackground = !!e.index
 	}
 
-	let custom = $derived($settings.theme[thisTheme].lockBackground)
+	let custom = $derived(settings.theme[thisTheme])
 
 	const direction = thisTheme === 'dark' ? 1 : -1
-
 	const shared = thisTheme === 'shared'
 	const dark = thisTheme === 'dark'
 	const gradientIn = shared ? { y: 5 } : { x: 5 }
@@ -32,11 +32,13 @@
 	<div class="row" class:dark class:shared>
 		<div class="col">
 			<div class="tabs">
-				<TabOptions options={['Random', 'Custom']} bind:selected on:select={toggleMode} />
+				<TabOptions options={['Random', 'Custom']} bind:selected onSelect={toggleMode} />
 			</div>
+
 			<div class="controls">
 				<Saturation {thisTheme} />
-				{#if !custom}
+
+				{#if !custom.lockBackground}
 					<div class="randomize-btn">
 						<div
 							class:shared
@@ -50,7 +52,8 @@
 				{/if}
 			</div>
 		</div>
-		{#if custom}
+
+		{#if custom.lockBackground}
 			<div
 				class="color-pickers"
 				class:shared

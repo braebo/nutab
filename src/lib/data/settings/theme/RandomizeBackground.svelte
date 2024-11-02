@@ -1,23 +1,24 @@
 <script lang="ts">
-	import { settings, type Settings } from '$lib/stores'
-	import { randomizeBackground } from '$lib/theme'
+	import type { Settings } from '$lib/data/types'
+	import { settings } from '$lib/stores/settings.svelte'
+	import { randomizeBackground } from '$lib/theme_og'
+	import { themer } from '$lib/theme/themer.svelte'
 	import { tweened } from 'svelte/motion'
 	import { onDestroy } from 'svelte'
-	import { theme } from 'fractils'
 
 	interface Props {
-		thisTheme: keyof Settings['theme'];
+		thisTheme: keyof Settings['theme']
 	}
 
-	let { thisTheme }: Props = $props();
+	let { thisTheme }: Props = $props()
 
-	let timer: NodeJS.Timeout
+	let timer: ReturnType<typeof setTimeout>
 	let targetHue = 0
 	const hue = tweened(0, { duration: 1000 })
 	const animate = tweened(0, { duration: 100 })
 
 	const handleClick = () => {
-		if ($settings.theme[thisTheme].lockBackground) return
+		if (settings.theme[thisTheme].lockBackground) return
 		randomizeBackground(thisTheme)
 
 		targetHue += 360
@@ -40,13 +41,16 @@
 	let lightText = $derived(`hsl(${Math.floor($hue % 360)}, 50%, ${$animate * 10}%)`)
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
 	class="btn randomize"
 	onclick={() => handleClick()}
 	style="
 		filter: hue-rotate({Math.floor($hue)}deg) saturate(10);
-		color: {$theme === 'dark' ? darkText : lightText}
+		color: {themer.mode === 'dark' ? darkText : lightText}
 	"
+	role="button"
+	tabindex={0}
 >
 	Randomize
 </div>
@@ -60,6 +64,5 @@
 
 	:global(:root[theme='dark']) .randomize {
 		background: #0a0a0a;
-		// color: white;
 	}
 </style>

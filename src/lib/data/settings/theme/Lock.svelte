@@ -1,18 +1,24 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 
-	interface Props {
-		locked: boolean;
-	}
+	let {
+		locked = $bindable(false),
+		onclick = () => {},
+	}: {
+		locked: boolean
+		onclick: () => void
+	} = $props()
 
-	let { locked }: Props = $props();
+	let d = $derived(
+		locked
+			? 'M 32.6 17.9 v -2 a 7.1 7.1 0 0 0 -14.2 0 v 2 h -5 v -2 a 12.2 12.2 0 0 1 24.2 0 v 2 h -5 z'
+			: 'M 32.6 11.9 v -2 a 7.1 7.1 0 0 0 -14.2 0 v 2 h -5 v -2 a 12.2 12.2 0 0 1 24.2 0 v 8 h -5 z',
+	)
 </script>
 
 <Tooltip content="{locked ? 'Unlock' : 'Lock'}_Background" delay={[250, 150]} offset={[0, 10]}>
-	<div class="lock" onclick={bubble('click')}>
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div role="button" tabindex="0" class="lock" {onclick}>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="100%"
@@ -21,11 +27,7 @@
 			viewBox="0 0 50 50"
 			overflow="visible"
 		>
-			<path
-				class:locked
-				fill="currentColor"
-				d="M 32.6 11.9 v -2 a 7.1 7.1 0 0 0 -14.2 0 v 2 h -5 v -2 a 12.2 12.2 0 0 1 24.2 0 v 8 h -5 z"
-			/>
+			<path fill="currentColor" {d} />
 			<path
 				fill="currentColor"
 				fill-rule="evenodd"
@@ -36,16 +38,16 @@
 	</div>
 </Tooltip>
 
-<style lang="sass">
-	.lock
-		width: 25px
-		
-		color: var(--dark-d)
+<style lang="scss">
+	.lock {
+		width: 25px;
 
-		cursor: pointer
+		color: var(--bg-d);
 
-	path
-		transition: 0.15s
-		&.locked
-			d: path("M 32.6 17.9 v -2 a 7.1 7.1 0 0 0 -14.2 0 v 2 h -5 v -2 a 12.2 12.2 0 0 1 24.2 0 v 2 h -5 z")
+		cursor: pointer;
+	}
+
+	path {
+		transition: 0.15s;
+	}
 </style>

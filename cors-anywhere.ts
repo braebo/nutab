@@ -1,17 +1,28 @@
-import cors_proxy from 'cors-anywhere'
+export default {
+	async fetch(request: Request) {
+		const url = new URL(request.url).searchParams.get('q')
 
-// Listen on a specific host via the HOST environment variable
-const hostname = process.env.HOST || '0.0.0.0'
-// Listen on a specific port via the PORT environment constiable
-const port = process.env.PORT || 8080
+		if (!url) {
+			return new Response('No url provided', {
+				status: 400,
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Headers': '*',
+				},
+			})
+		}
 
-cors_proxy
-	.createServer({
-		originWhitelist: [], // Allow all origins
-		requireHeader: ['origin', 'x-requested-with'],
-		removeHeaders: ['cookie', 'cookie2'],
-	})
-	//@ts-ignore
-	.listen(port, hostname, function () {
-		console.log('Running CORS Anywhere on ' + hostname + ':' + port)
-	})
+		const response = await fetch(url, {
+			method: request.method,
+			headers: request.headers,
+		})
+
+		const headers = new Headers(response.headers)
+		headers.set('Access-Control-Allow-Origin', '*')
+		headers.set('Access-Control-Allow-Headers', '*')
+
+		const responseClone = new Response(response.body, { headers })
+
+		return responseClone
+	},
+}

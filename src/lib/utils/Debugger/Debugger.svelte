@@ -1,16 +1,17 @@
-<!-- <script lang="ts">
-	import { activeBookmarks, activeFolder, activeFolderBookmarks, tagFilter } from '$lib/data/dbStore'
-	import { showBookmarkEditor, bookmarkEditor, folderEditor } from '$lib/stores/bookmarkEditor'
-	import { settings, showSettings } from '$lib/stores'
-	import { gridDimensions, grid } from '$lib/stores/gridStore'
+<script lang="ts">
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	import { activeSection } from '$lib/stores/activeSection.svelte'
 	import { debug, showDebugger } from '$lib/stores/debug'
-	import { activeSection } from '$lib/stores/activeSection'
+	import { settings } from '$lib/stores/settings.svelte'
 	import FloatingPanel from './FloatingPanel.svelte'
-	import { localStorageStore, log } from 'fractils'
 	import { copy } from '$lib/utils/clipboardCopy'
-	import { fly, fade } from 'svelte/transition'
 	import { browser, dev } from '$app/environment'
+	import { grid } from '$lib/stores/grid.svelte'
+	import { fly, fade } from 'svelte/transition'
+	import { localStorageStore } from 'fractils'
+	import { db } from '$lib/data/db.svelte'
 	import { onMount, tick } from 'svelte'
+	import { DEV } from 'esm-env'
 
 	if (dev) {
 		import('../../../styles/prism.scss')
@@ -31,6 +32,7 @@
 	}
 
 	let timer: ReturnType<typeof setTimeout> | null = null
+	// svelte-ignore non_reactive_update
 	let hovering = false
 
 	const mouseover = () => {
@@ -45,7 +47,7 @@
 		}, 800)
 	}
 
-	const highlight = (node?: HTMLElement | undefined) => {
+	const highlight = (_node?: HTMLElement | undefined) => {
 		;(async () => {
 			if (Prism) {
 				try {
@@ -57,7 +59,7 @@
 		})()
 	}
 
-	let copied: boolean[] = []
+	let copied: boolean[] = $state([])
 	const handleCopy = (value: Object, i: number) => {
 		copy(JSON.stringify(value))
 		copied[i] = true
@@ -81,69 +83,103 @@
 	})
 
 	const bounds = { x: 10, y: 10 }
-	const position = { x: 5, y: 500 }
+	const position = $state({ x: 5, y: 500 })
 	const grabZone = 20
 
+	// svelte-ignore non_reactive_update
 	let debugPanel: Element
 
-	let panelWidth: number, panelHeight: number
+	let panelWidth = $state<number>()
+	let panelHeight = $state<number>()
 
-	$: if (debugPanel) {
-		panelWidth = debugPanel.getBoundingClientRect().width + grabZone
-		panelHeight = debugPanel.getBoundingClientRect().height + grabZone
-	}
+	$effect(() => {
+		if (debugPanel) {
+			panelWidth = debugPanel.getBoundingClientRect().width + grabZone
+			panelHeight = debugPanel.getBoundingClientRect().height + grabZone
+		}
+	})
 
-	let debuggables = []
-	$: debuggables = [
-		['$bookmarkEditor', $bookmarkEditor],
-		['$folderEditor', $folderEditor],
-		['$settings', $settings],
-		['$activeFolder', $activeFolder],
-		['$activeBookmarks', $activeBookmarks],
-		['$activeFolderBookmarks', $activeFolderBookmarks],
-		['$gridDimensions', $gridDimensions],
-		['grid', $grid],
-	]
+	let debuggables = $state<[string, any][]>([])
+	onMount(() => {
+		debuggables = [
+			['bookmarkEditor', bookmarkEditor.editor],
+			['folderEditor', bookmarkEditor.folderEditor],
+			['settings', settings],
+			['activeFolder', db.activeFolder],
+			['activeBookmarks', db.activeBookmarks],
+			['gridDimensions', grid.dimensions],
+			['grid', grid],
+		]
+	})
+
+	// svelte-ignore state_referenced_locally
 	const visible = localStorageStore('debuggerVisibility', Array(debuggables.length).fill(true))
 </script>
 
-<template lang="pug">
+{#if DEV && $showDebugger && !!$debug}
+	<FloatingPanel {bounds} {position} {grabZone} {panelWidth} {panelHeight} outOfBounds={true}>
+		<div
+			class="debug-panel scroller vertical"
+			transition:fade={{ duration: 100 }}
+			bind:this={debugPanel}
+		>
+			<div class="debuggable one scroller">
+				<!-- prettier-ignore -->
+				{#each [
+					['Show Debugger', $showDebugger],
+					['Active Section', activeSection.value],
+					['Tag Filter', db.tagFilter],
+					['Show Bookmark Editor', bookmarkEditor.showBookmarkEditor],
+					['Show Settings', settings.showSettings],
+				] as [name, value] (value)}
+					<div class="kv">
+						<h6>{name}</h6>
+						
+						<pre use:highlight>
+							<code class="language-javascript">
+								<div class="store">{JSON.stringify(value, null, 2)}</div>
+							</code>
+						</pre>
+					</div>
+				{/each}
+			</div>
 
-	+if('$showDebugger && !!$debug')
-		FloatingPanel({bounds} {position} {grabZone} {panelWidth} {panelHeight})
-			.debug-panel.scroller.vertical(transition:fade='{{ duration: 100 }}' bind:this='{debugPanel}')
-				.debuggable.one.scroller
-					+each("[['Show Debugger', $showDebugger], ['Active Section', $activeSection], ['Tag Filter', $tagFilter], ['Editor Context', $editorContext], ['Show Bookmark Editor', $showBookmarkEditor], ['Show Settings', $showSettings]] as [name, value]")
-						+key('value')
-							.kv
-								h6 {name}
-								pre(use:highlight)
-									code.language-javascript
-										.store {JSON.stringify(value, null, 2)}
+			{#each debuggables as [name, value], i}
+				{#if $visible[i]}
+					<input type="checkbox" bind:checked={$visible[i]} />
+					<div class="debuggable scroller">
+						<h4>{name}</h4>
+						<pre use:highlight>
+								<code class="language-JSON language-json">{name}: {JSON.stringify(value, null, 2)}</code>
+							</pre>
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="copy"
+							onclick={() => handleCopy(value, i)}
+							role="button"
+							tabindex="0"
+						>
+							{!copied[i] ? 'Copy' : 'Copied!'}
+						</div>
+					</div>
+				{:else}
+					<pre class="disabled">
+							<input type="checkbox" bind:checked={$visible[i]} />
+							{name}
+						</pre>
+				{/if}
+			{/each}
+		</div>
 
-				+each("debuggables as [name, value], i")
-					+if('$visible[i]')
-						input(type='checkbox' bind:checked='{$visible[i]}')
-						+key('value')
-							.debuggable.scroller
-								h4 {name}
-								pre(use:highlight)
-									code.language-JSON.language-json {name}: {JSON.stringify(value, null, 2)}
-								.copy(on:click!='{() => handleCopy(value, i)}') {!copied[i] ? 'Copy' : 'Copied!'}
-						+else
-							pre.disabled
-								input(type='checkbox' bind:checked='{$visible[i]}')
-								| {name}
+		<div class="mousetrap" onpointerover={mouseover} onpointerout={mouseout}></div>
+	</FloatingPanel>
+{/if}
 
-			// svelte-ignore a11y-mouse-events-have-key-events
-			.mousetrap(on:mouseover='{mouseover}' on:mouseout='{mouseout}')
-
-	+if('hovering || !!$debug')
-		// svelte-ignore a11y-mouse-events-have-key-events
-		button(on:click='{toggle}' on:mouseover='{mouseover}' transition:fly='{{ y: 50 }}')
-			.bug 🐞
-
-</template>
+{#if hovering || !!$debug}
+	<button onclick={toggle} onpointerover={mouseover} transition:fly={{ y: 50 }}>
+		<div class="bug">🐞</div>
+	</button>
+{/if}
 
 <style lang="scss">
 	.debug-panel {
@@ -158,11 +194,11 @@
 		margin: auto;
 		padding: 20px 10px;
 
-		border: 1px solid var(--light-b);
+		border: 1px solid var(--fg-b);
 		border-bottom: none;
 		border-top-left-radius: 5px;
 		border-top-right-radius: 5px;
-		background: var(--light-a);
+		background: var(--fg-a);
 		box-shadow: 0 0 10px 3px #00000011;
 
 		z-index: 50;
@@ -177,7 +213,7 @@
 		height: 800px;
 		padding: 10px;
 
-		border: 1px solid rgb(var(--light-c));
+		border: 1px solid rgb(var(--fg-c));
 		border-radius: 5px;
 
 		overflow-y: auto;
@@ -189,7 +225,7 @@
 	// }
 
 	h4 {
-		color: var(--brand-a);
+		color: var(--theme-a);
 
 		font-weight: 500;
 		font-family: var(--font-b);
@@ -207,7 +243,7 @@
 			margin-right: auto;
 			width: max-content;
 
-			color: var(--brand-a);
+			color: var(--theme-a);
 
 			font-family: var(--font-b);
 			font-weight: 300;
@@ -237,7 +273,7 @@
 		top: 0.5rem;
 		right: 1rem;
 
-		color: var(--light-d);
+		color: var(--fg-d);
 
 		cursor: pointer;
 
@@ -275,7 +311,7 @@
 		gap: 5px;
 
 		opacity: 0.5;
-		color: var(--dark-a);
+		color: var(--bg-a);
 	}
 
 	.mousetrap {
@@ -297,11 +333,11 @@
 		width: 45px;
 		height: 45px;
 
-		border: 1px solid rgba(var(--light-b-rgb), 0.5);
+		border: 1px solid color-mix(in srgb, var(--fg-b) 50%, transparent);
 		border-top-left-radius: 10px;
 		border-top-right-radius: 10px;
 		border-bottom: none;
-		background: var(--light-a);
+		background: var(--fg-a);
 		box-shadow: 0 0 8px 3px #00000009;
 
 		z-index: 100;
@@ -318,4 +354,4 @@
 			transform: translateX(-3px);
 		}
 	}
-</style> -->
+</style>

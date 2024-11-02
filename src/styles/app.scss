@@ -1,14 +1,14 @@
-@import './theme.scss';
-@import './utils.sass';
-@import './input.scss';
-@import './btn.scss';
+@use './theme.scss';
+@use './utils.sass';
+@use './input.scss';
+@use './btn.scss';
 
 /*
  *
 	FONTS
 */
 
-@import '@fontsource/fira-mono';
+@use '@fontsource/fira-mono';
 
 /*	RUBIK  */
 @font-face {
@@ -38,8 +38,8 @@
 	font-weight: 300;
 	font-style: normal;
 	src: url('/fonts/merriweather/merriweather.ttf') format('truetype');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
-		U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /*
@@ -70,26 +70,38 @@
 	--radius: 0.5rem;
 
 	--shadow-xs: 0px 0.5px 0.5px rgba(0, 0, 0, 0.01), 0px 2px 1.5px rgba(0, 0, 0, 0.01),
-		0px 1.5px 1px rgba(0, 0, 0, 0.01), 0px 1.5px 1.5px rgba(0, 0, 0, 0.03), 0px 3px 3px rgba(0, 0, 0, 0.015),
-		0px 3px 4px rgba(0, 0, 0, 0.05);
+		0px 1.5px 1px rgba(0, 0, 0, 0.01), 0px 1.5px 1.5px rgba(0, 0, 0, 0.03),
+		0px 3px 3px rgba(0, 0, 0, 0.015), 0px 3px 4px rgba(0, 0, 0, 0.05);
 	--shadow-sm: 0px 0.5px 0.75px rgba(0, 0, 0, 0.02), 0px 2px 1.5px rgba(0, 0, 0, 0.02),
-		0px 2.5px 2px rgba(0, 0, 0, 0.025), 0px 3px 3px rgba(0, 0, 0, 0.05), 0px 5px 5px rgba(0, 0, 0, 0.05),
-		0px 7px 10px rgba(0, 0, 0, 0.075);
+		0px 2.5px 2px rgba(0, 0, 0, 0.025), 0px 3px 3px rgba(0, 0, 0, 0.05),
+		0px 5px 5px rgba(0, 0, 0, 0.05), 0px 7px 10px rgba(0, 0, 0, 0.075);
 	--shadow-md: 0px 0.75px 1px rgba(0, 0, 0, 0.015), 0px 2.5px 2px rgba(0, 0, 0, 0.02),
-		0px 4.5px 3px rgba(0, 0, 0, 0.025), 0px 5px 5px rgba(0, 0, 0, 0.0325), 0px 10px 10px rgba(0, 0, 0, 0.045),
-		0px 10px 20px rgba(0, 0, 0, 0.05);
+		0px 4.5px 3px rgba(0, 0, 0, 0.025), 0px 5px 5px rgba(0, 0, 0, 0.0325),
+		0px 10px 10px rgba(0, 0, 0, 0.045), 0px 10px 20px rgba(0, 0, 0, 0.05);
 	--shadow-lg: 0px 1.25px 1px rgba(0, 0, 0, 0.035), 0px 2.5px 2.5px rgba(0, 0, 0, 0.04),
-		0px 4.5px 5px rgba(0, 0, 0, 0.045), 0px 5px 8px rgba(0, 0, 0, 0.05), 0px 10px 15px rgba(0, 0, 0, 0.06),
-		0px 20px 30px rgba(0, 0, 0, 0.07);
+		0px 4.5px 5px rgba(0, 0, 0, 0.045), 0px 5px 8px rgba(0, 0, 0, 0.05),
+		0px 10px 15px rgba(0, 0, 0, 0.06), 0px 20px 30px rgba(0, 0, 0, 0.07);
+}
+
+*:focus {
+	outline-color: transparent;
+	outline-width: 0;
+}
+*:focus-visible {
+	outline-color: var(--theme-a);
+	border-color: var(--theme-a);
+	outline-width: 0.5px;
+	outline-offset: 2px;
 }
 
 body {
 	min-height: 100vh;
 	margin: 0;
 
-	background-color: var(--light-a);
+	background-color: var(--fg-a);
 
 	transition: color 0.5s background 0.3s background-color 0.3s;
+	touch-action: none;
 }
 
 #svelte {
@@ -101,7 +113,7 @@ body {
 
 h1,
 h2 {
-	color: var(--dark-a);
+	color: var(--bg-a);
 
 	font-family: var(--font-a);
 	font-weight: 500;
@@ -111,23 +123,23 @@ h2 {
 
 p,
 li {
-	color: var(--dark-a, --text-color);
-	
+	color: var(--bg-a, --text-color);
+
 	font-family: var(--font-a);
 	font-size: var(--font-sm);
 	font-weight: 200;
 	line-height: 1.5;
-	
+
 	& a {
-		color: var(--dark-c);
+		color: var(--bg-c);
 	}
 }
 
 a {
-	color: var(--dark-a);
+	color: var(--bg-a);
 
 	text-decoration: underline;
-	text-decoration-color: var(--light-d);
+	text-decoration-color: var(--fg-d);
 }
 
 a:hover {
@@ -192,7 +204,7 @@ button:focus:not(:focus-visible) {
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background: rgba(var(--dark-d-rgb), 0);
+		background: color-mix(in srgb, var(--bg-d) 0%, transparent);
 		border-radius: 5px;
 		transition: background 0.2s;
 
@@ -201,9 +213,9 @@ button:focus:not(:focus-visible) {
 		}
 	}
 	&:hover::-webkit-scrollbar-thumb {
-		background: rgba(var(--dark-d-rgb), 0.1);
+		background: color-mix(in srgb, var(--bg-d) 10%, transparent);
 	}
 	&.ghost:hover::-webkit-scrollbar-thumb {
-		background: rgba(var(--dark-d-rgb), 0);
+		background: color-mix(in srgb, var(--bg-d) 0%, transparent);
 	}
 }

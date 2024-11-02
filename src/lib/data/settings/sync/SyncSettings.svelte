@@ -6,6 +6,7 @@
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 	import Button from '$lib/ui/Button.svelte'
 	import { quintOut } from 'svelte/easing'
+	import { click } from '$lib/utils/onClick'
 
 	let revealPhrase = $state(false)
 	let email = $state('')
@@ -15,12 +16,15 @@
 	}
 
 	const handleCreate = () => {
-		createUser(email)
+		createUser()
 		if (!$userEmail) $userEmail = email
 	}
 </script>
 
-<comingSoon in:fly={{ y: 10, delay: 150 }} out:fly|local={{ y: 2, duration: 200 }}>Coming Soon</comingSoon>
+<comingSoon in:fly={{ y: 10, delay: 150 }} out:fly|local={{ y: 2, duration: 200 }}>
+	Coming Soon
+</comingSoon>
+
 <div class="account DISABLED">
 	{#if $userPhrase?.length}
 		{#key revealPhrase}
@@ -39,7 +43,8 @@
 						<div
 							class="hide"
 							transition:fly={{ x: 10, delay: 250, duration: 200, easing: quintOut }}
-							onclick={() => (revealPhrase = false)}
+							use:click
+							onClick={() => (revealPhrase = false)}
 						>
 							👁
 						</div>
@@ -50,10 +55,16 @@
 				</div>
 			{:else}
 				<div class="reveal" in:fade={{ delay: 750 }} out:fade={{ duration: 250 }}>
-					<Button --width="14rem" on:click={() => (revealPhrase = true)}>Reveal secret passphrase</Button>
+					<Button --width="14rem" onclick={() => (revealPhrase = true)}
+						>Reveal secret passphrase</Button
+					>
 				</div>
 				{#if !$userEmail}
-					<div class="email" in:fade={{ duration: 150, delay: 300 }} out:fade|local={{ duration: 50 }}>
+					<div
+						class="email"
+						in:fade={{ duration: 150, delay: 300 }}
+						out:fade|local={{ duration: 50 }}
+					>
 						<p>
 							Add a recovery email <span class="note">(optional)</span>
 						</p>
@@ -63,23 +74,38 @@
 						<!-- TODO -->
 						<!-- <button on:click={() => postUserEmail(email)}>Add</button> -->
 
-						<p class="note">A recovery email can be used to recover a lost passphrase.</p>
+						<p class="note">
+							A recovery email can be used to recover a lost passphrase.
+						</p>
 					</div>
 				{/if}
 			{/if}
 		{/key}
 	{:else}
-		<div class="new" in:fly={{ y: 5, duration: 350, delay: 100 }} out:fly|local={{ y: 5, duration: 150 }}>
+		<div
+			class="new"
+			in:fly={{ y: 5, duration: 350, delay: 100 }}
+			out:fly|local={{ y: 5, duration: 150 }}
+		>
 			<p style:transform="translateY(-0.25rem)">Sync your data across browsers.</p>
-			<input bind:value={email} placeholder="Recovery Email (optional)" type="email" required />
+			<input
+				bind:value={email}
+				placeholder="Recovery Email (optional)"
+				type="email"
+				required
+			/>
 			<div class="button">
-				<div class="btn" onclick={handleCreate}>New Sync Code</div>
+				<div class="btn" use:click onClick={handleCreate}>New Sync Code</div>
 			</div>
 		</div>
-		<div class="existing" in:fly={{ y: 5, duration: 350, delay: 150 }} out:fly|local={{ y: 5, duration: 150 }}>
+		<div
+			class="existing"
+			in:fly={{ y: 5, duration: 350, delay: 150 }}
+			out:fly|local={{ y: 5, duration: 150 }}
+		>
 			<p>Already have a Sync Code?</p>
 			<div class="button">
-				<div class="btn" onclick={handleConnect}>Connect</div>
+				<div class="btn" use:click onClick={handleConnect}>Connect</div>
 			</div>
 		</div>
 	{/if}
@@ -99,7 +125,7 @@
 		position: absolute;
 		z-index: 999;
 		font-size: 1.5rem;
-		color: var(--dark-c);
+		color: var(--bg-c);
 		top: -9.75rem;
 		font-family: var(--font-a);
 		letter-spacing: 1px;
@@ -127,7 +153,7 @@
 
 		max-width: 80%;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 
 		font-size: 1.2rem;
 		font-family: var(--font-b);
@@ -172,7 +198,7 @@
 
 	p {
 		font-family: var(--font-a);
-		color: var(--light-d);
+		color: var(--fg-d);
 
 		text-align: center;
 	}
@@ -181,8 +207,8 @@
 		padding: 0.5rem 1rem;
 		width: 20rem;
 
-		color: var(--dark-a);
-		background-color: rgba(var(--light-c-rgb), 0.25);
+		color: var(--bg-a);
+		background: color-mix(in srgb, var(--fg-c) 25%, transparent);
 		border: none;
 		border-radius: 0.5rem;
 
@@ -190,15 +216,15 @@
 		font-variation-settings: 'wght' 300;
 
 		&::placeholder {
-			color: var(--light-d);
+			color: var(--fg-d);
 		}
 
 		&:hover {
-			outline: 1px solid var(--light-d);
+			outline: 1px solid var(--fg-d);
 		}
 
 		&:focus {
-			outline: 1px solid var(--dark-d);
+			outline: 1px solid var(--bg-d);
 			&::placeholder {
 				content: '';
 				color: transparent;
@@ -227,14 +253,14 @@
 	}
 
 	.btn {
-		border: 1px solid var(--light-a);
+		border: 1px solid var(--fg-a);
 	}
 	.btn:hover {
-		border: 1px solid var(--dark-d);
+		border: 1px solid var(--bg-d);
 	}
 
 	.new {
-		outline: 1px solid rgba(var(--light-d-rgb), 0.1);
+		outline: 1px solid color-mix(in srgb, var(--fg-d) 10%, transparent);
 		outline-offset: 1.5rem;
 		border-radius: 0.25rem;
 		margin-top: 5rem;

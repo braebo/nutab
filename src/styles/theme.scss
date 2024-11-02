@@ -1,46 +1,32 @@
-@mixin variables($map) {
-	@each $variable, $colour in $map {
-		--#{$variable}: #{$colour};
-		--#{$variable}-rgb: #{red($colour) + ', ' + green($colour) + ', ' + blue($colour)};
-	}
+:root {
+	--theme-a: #d71f5b;
+	--theme-b: #ffcc8b;
+	--theme-c: #ff8ba9;
+	--always-dark: #0b0e11;
+}
+:root {
+	--dark-a: #0b0e11;
+	--dark-b: #1c1e21;
+	--dark-c: #1d252e;
+	--dark-d: #3a3a44;
+	--light-a: #ffffff;
+	--light-b: #dfe1e9;
+	--light-c: #c3c4c7;
+	--light-d: #96969e;
+
+	--bg-a: light-dark(#0b0e11, #ffffff);
+	--bg-b: light-dark(#1c1e21, #dfe1e9);
+	--bg-c: light-dark(#1d252e, #c3c4c7);
+	--bg-d: light-dark(#545460, #96969e);
+	--fg-a: light-dark(#ffffff, #0b0e11);
+	--fg-b: light-dark(#dfe1e9, #1c1e21);
+	--fg-c: light-dark(#c3c4c7, #1d252e);
+	--fg-d: light-dark(#acacb4, #3a3a44);
 }
 
-:root {
-	--brand-a: #d71f5b;
-	--brand-b: #ffcc8b;
-	--brand-c: #ff8ba9;
-	--brand-a-rgb: 255, 187, 182;
-	--brand-b-rgb: 255, 204, 139;
-	--brand-c-rgb: 255, 139, 169;
-	--always-dark: #0b0e11;
-
-	&[theme='light'] {
-		@include variables(
-			(
-				dark-a: #0b0e11,
-				dark-b: #1c1e21,
-				dark-c: #1d252e,
-				dark-d: #3a3a44,
-				light-a: #ffffff,
-				light-b: #dfe1e9,
-				light-c: #c3c4c7,
-				light-d: #96969e
-			)
-		);
-	}
-
-	&[theme='dark'] {
-		@include variables(
-			(
-				light-a: #0b0e11,
-				light-b: #1c1e21,
-				light-c: #1d252e,
-				light-d: #545460,
-				dark-a: #ffffff,
-				dark-b: #dfe1e9,
-				dark-c: #c3c4c7,
-				dark-d: #acacb4
-			)
-		);
-	}
+:root[theme='dark'] {
+	color-scheme: dark;
+}
+:root[theme='light'] {
+	color-scheme: light;
 }

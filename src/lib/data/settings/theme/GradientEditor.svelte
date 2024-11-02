@@ -1,35 +1,35 @@
 <script lang="ts">
-	import type { Settings } from '$lib/stores/settingsStore'
-	import { settings } from '$lib/stores'
-	import { createGradient } from '$lib/theme'
+	import type { Settings } from '$lib/data/types'
+	import { settings } from '$lib/stores/settings.svelte'
+	import { createGradient } from '$lib/theme_og'
 
 	interface Props {
-		thisTheme: keyof Settings['theme'];
+		thisTheme: keyof Settings['theme']
 	}
 
-	let { thisTheme }: Props = $props();
+	let { thisTheme }: Props = $props()
 
-	const updateBg = (e: Event) => {
-		$settings.theme[thisTheme].background = createGradient(thisTheme)
+	const updateBg = (_e: Event) => {
+		settings.theme[thisTheme].background = createGradient(thisTheme)
 	}
 </script>
 
 <div class="gradient-editor">
 	<div class="picker">
 		<input
-			disabled={!$settings.theme[thisTheme].lockBackground}
+			disabled={!settings.theme[thisTheme].lockBackground}
 			class="a"
 			type="color"
-			bind:value={$settings.theme[thisTheme].gradientA}
+			bind:value={settings.theme[thisTheme].gradientA}
 			oninput={updateBg}
 		/>
 	</div>
 	<div class="picker">
 		<input
-			disabled={!$settings.theme[thisTheme].lockBackground}
+			disabled={!settings.theme[thisTheme].lockBackground}
 			class="b"
 			type="color"
-			bind:value={$settings.theme[thisTheme].gradientB}
+			bind:value={settings.theme[thisTheme].gradientB}
 			oninput={updateBg}
 		/>
 	</div>

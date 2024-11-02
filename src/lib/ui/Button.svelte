@@ -1,30 +1,23 @@
-<script>
-	import { createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
-	/**
-	 * @typedef {Object} Props
-	 * @property {import('svelte').Snippet} [children]
-	 */
-
-	/** @type {Props} */
-	let { children } = $props();
-</script>
-
 <!-- 
 	@component
 	A simple button with a `<slot/>`
 	@event on:click
-	@styleprop width ?? `max-content`
-	@styleprop bg ?? `var(--light-a)`
-	@styleprop color ?? `var(--dark-a)`
-	@styleprop border ?? `1px solid transparent`
-	@styleprop bgHover
-	@styleprop borderHover ?? `1px solid var(--dark-a)`
-	@styleprop colorHover
+	@styleprop --width ?? `max-content`
+	@styleprop --bg ?? `var(--fg-a)`
+	@styleprop --color ?? `var(--bg-a)`
+	@styleprop --border ?? `1px solid transparent`
+	@styleprop --bgHover
+	@styleprop --borderHover ?? `1px solid var(--bg-a)`
+	@styleprop --colorHover
  -->
 
-<button onclick={bubble('click')}>
+<script lang="ts">
+	import type { Snippet } from 'svelte'
+
+	let { children, onclick = () => {} }: { children?: Snippet; onclick?: () => void } = $props()
+</script>
+
+<button {onclick}>
 	{#if children}{@render children()}{:else}Click Me{/if}
 </button>
 
@@ -34,12 +27,10 @@
 		min-width: max-content;
 		height: 2.3rem;
 
-		/* padding: 0.5em 1em; */
-
-		color: var(--color, var(--dark-a));
+		color: var(--color, var(--bg-a));
 		border: var(--border, 1px solid transparent);
 		border-radius: 5px;
-		background: var(--bg, var(--light-a));
+		background: var(--bg, var(--fg-a));
 		box-shadow: 0 1px 2px #00000022;
 
 		font-family: var(--font-a);
@@ -51,7 +42,7 @@
 	}
 	button:hover {
 		background: var(--bgHover);
-		border: var(--borderHover, 1px solid var(--dark-d));
+		border: var(--borderHover, 1px solid var(--bg-d));
 		color: var(--colorHover);
 		box-shadow: 0 4px 8px #00000015;
 

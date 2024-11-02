@@ -1,21 +1,27 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
-	import { bookmarkEditorContext } from '$lib/stores/bookmarkEditor'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 	import TrashIcon from '$lib/data/icons/TrashIcon.svelte'
 	import Tooltip from '$lib/ui/Tooltip.svelte'
 
-	interface Props {
-		disabled?: boolean;
-	}
-
-	let { disabled = true }: Props = $props();
+	let {
+		disabled = true,
+		onclose = () => {},
+		onclick = () => {},
+	}: {
+		disabled?: boolean
+		onclose?: () => void
+		onclick?: () => void
+	} = $props()
 </script>
 
-{#if $bookmarkEditorContext == 'edit'}
-	<div class="delete" onclick={bubble('click')} class:disabled>
-		<Tooltip content={disabled ? `Unable_to_delete_your_only_Folder` : 'Delete'} offset={[0, 10]} placement="top">
+{#if bookmarkEditor.bookmarkEditorContext == 'edit'}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div role="button" tabindex="0" class="delete" {onclick} class:disabled>
+		<Tooltip
+			content={disabled ? `Unable_to_delete_your_only_Folder` : 'Delete'}
+			offset={[0, 10]}
+			placement="top"
+		>
 			<TrashIcon />
 		</Tooltip>
 	</div>

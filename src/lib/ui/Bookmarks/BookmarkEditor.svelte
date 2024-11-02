@@ -1,10 +1,10 @@
 <script lang="ts">
 	// Data
-	import { showBookmarkEditor, bookmarkEditor, bookmarkEditorContext } from '$lib/stores'
-	import { newBookmark_db, updateBookmark_db } from '$lib/data/transactions'
-	import { editor } from '$lib/stores/bookmarkEditor'
-	import { reRender } from '$lib/stores/gridStore'
-	import { uniqueTags } from '$lib/data/dbStore'
+	import { addBookmark_db, updateBookmark_db } from '$lib/data/transactions.svelte'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	// import { uniqueTags } from '$lib/data/dbStore'
+	import { grid } from '$lib/stores/grid.svelte'
+	import { db } from '$lib/data/db.svelte'
 
 	// Components
 	import BookmarkImageEditor from './BookmarkImageEditor.svelte'
@@ -16,54 +16,53 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
-	import { wait } from 'fractils'
-
 	interface Props {
-		i?: number;
+		i?: number
 	}
 
-	let { i = 0 }: Props = $props();
+	let { i = 0 }: Props = $props()
 
-	let titleInput: HTMLInputElement = $state()
-	let urlInput: HTMLInputElement = $state()
-	let descriptionInput: HTMLInputElement = $state()
+	let titleInput = $state<HTMLInputElement>()
+	let urlInput = $state<HTMLInputElement>()
+	let descriptionInput = $state<HTMLInputElement>()
 	let descriptionFocused = $state(false)
 	let placeholder = $derived(descriptionFocused ? '' : 'description')
 
-	let tag = ''
-	function handleTags(event: CustomEvent) {
-		tag = event.detail.tags
-	}
-	async function updateTags(event: CustomEvent, index: number, id: string) {
-		$bookmarkEditor['tags'] = event.detail.tags
+	// let tag = ''
+	// function handleTags(tags: string[]) {
+	// 	tag = tags
+	// }
+	async function updateTags(tags: string[], _index: number, _id: string) {
+		if (!bookmarkEditor.editor) return
+		bookmarkEditor.editor['tags'] = tags
 	}
 
 	async function handleSave() {
-		if (!$bookmarkEditor.url) {
-			urlInput.style.border = '1px solid var(--warn)'
-			await wait(1000)
-			urlInput.style.border = '1px solid transparent'
+		if (!bookmarkEditor.editor?.url) {
+			urlInput?.style.setProperty('border', '1px solid var(--warn)')
+			await new Promise((r) => setTimeout(r, 1000))
+			urlInput?.style.setProperty('border', '1px solid transparent')
 			return
 		}
-		if (!$bookmarkEditor.image && $bookmarkEditor.useImage) {
-			$bookmarkEditor.useImage = false
+		if (!bookmarkEditor.editor.image && bookmarkEditor.editor.useImage) {
+			bookmarkEditor.editor.useImage = false
 		}
-		if ($bookmarkEditorContext === 'edit') {
-			updateBookmark_db($bookmarkEditor)
+		if (bookmarkEditor.bookmarkEditorContext === 'edit') {
+			updateBookmark_db(bookmarkEditor.editor)
 		} else {
-			await newBookmark_db($bookmarkEditor)
+			await addBookmark_db(bookmarkEditor.editor)
 		}
-		editor.hide()
-		$reRender = !$reRender
+		bookmarkEditor.hide()
+		grid.reRender()
 	}
 
 	onMount(async () => {
-		if ($bookmarkEditorContext === 'create') titleInput?.select()
+		if (bookmarkEditor.bookmarkEditorContext === 'create') titleInput?.select()
 	})
 </script>
 
 <div>
-	{#if $showBookmarkEditor && $bookmarkEditor}
+	{#if bookmarkEditor.showBookmarkEditor && bookmarkEditor.editor}
 		<div class="editor-container" out:fade={{ duration: 100 }}>
 			<BookmarkImageEditor />
 
@@ -72,25 +71,21 @@
 					name="title"
 					placeholder="title"
 					bind:this={titleInput}
-					bind:value={$bookmarkEditor.title}
-					onclick={() => titleInput.select()}
+					bind:value={bookmarkEditor.editor.title}
+					onclick={() => titleInput?.select()}
 					onkeydown={(e) => e.key === 'Enter' && handleSave()}
 				/>
 			</div>
 
 			<div class="setting description">
 				<input
-					name="description"
-					{placeholder}
 					type="text"
+					{placeholder}
+					name="description"
 					bind:this={descriptionInput}
-					bind:value={$bookmarkEditor.description}
-					onfocus={() => {
-						descriptionFocused = true
-					}}
-					onblur={() => {
-						descriptionFocused = false
-					}}
+					bind:value={bookmarkEditor.editor.description}
+					onfocus={() => (descriptionFocused = true)}
+					onblur={() => (descriptionFocused = false)}
 				/>
 			</div>
 
@@ -100,20 +95,21 @@
 					type="text"
 					placeholder="url"
 					bind:this={urlInput}
-					onclick={() => urlInput.select()}
-					bind:value={$bookmarkEditor.url}
+					onclick={() => urlInput?.select()}
+					bind:value={bookmarkEditor.editor.url}
 					autoComplete="off"
 				/>
 			</div>
 
 			<div class="setting">
-				<div name="tags" class="tags">
+				<div title="tags" class="tags">
 					<Tags
-						on:updateTags={(e) => updateTags(e, i, $bookmarkEditor.bookmark_id)}
-						bind:tags={$bookmarkEditor['tags']}
+						onTagChange={(tags) => {
+							updateTags(tags, i, bookmarkEditor.editor?.bookmark_id ?? '')
+						}}
+						bind:tags={bookmarkEditor.editor['tags']}
 						placeholder={'new tag'}
-						on:tags={handleTags}
-						autoComplete={$uniqueTags ? $uniqueTags : false}
+						autoComplete={db.uniqueTags ? db.uniqueTags : false}
 						allowPaste={true}
 						onlyUnique={true}
 						removeKeys={[46]}
@@ -130,15 +126,26 @@
 			</div>
 
 			<div class="buttons">
-				<Button --colorHover="var(--warn)" --borderHover="1px solid var(--warn)" on:click={() => editor.hide()}>
+				<Button
+					--colorHover="var(--warn)"
+					--borderHover="1px solid var(--warn)"
+					onclick={() => bookmarkEditor.hide()}
+				>
 					Cancel
 				</Button>
 
-				<Button --colorHover="var(--confirm)" --borderHover="1px solid var(--confirm)" on:click={handleSave}>
+				<Button
+					--colorHover="var(--confirm)"
+					--borderHover="1px solid var(--confirm)"
+					onclick={handleSave}
+				>
 					Save
 				</Button>
 
-				<DeleteBookmark bookmark_id={$bookmarkEditor?.bookmark_id} on:close={() => editor.hide()} />
+				<DeleteBookmark
+					bookmark_id={bookmarkEditor.editor?.bookmark_id}
+					on:close={() => bookmarkEditor.hide()}
+				/>
 			</div>
 		</div>
 	{/if}
@@ -156,8 +163,8 @@
 		padding: 0.5rem 0;
 
 		border-radius: 10px;
-		background: var(--light-a);
-		color: var(--dark-a);
+		background: var(--fg-a);
+		color: var(--bg-a);
 		box-shadow: 0 5px 15px 5px #00000011;
 
 		perspective: 1200px;
@@ -195,11 +202,11 @@
 		width: 60%;
 		padding: 5px 8px 5px 8px;
 
-		color: var(--dark-a);
-		border: 1px solid rgba(var(--light-b-rgb), 0);
+		color: var(--bg-a);
+		border: 1px solid color-mix(in srgb, var(--fg-b) 0%, transparent);
 		border-radius: 3px;
 		outline: none;
-		background: var(--light-a);
+		background: var(--fg-a);
 
 		font-family: 'Abel';
 		font-size: 1rem;
@@ -214,7 +221,7 @@
 		}
 		&:focus,
 		&:hover {
-			border-bottom: 1px solid rgba(var(--light-b-rgb), 1);
+			border-bottom: 1px solid color-mix(in srgb, var(--fg-b) 100%, transparent);
 		}
 	}
 
@@ -227,7 +234,7 @@
 		margin: auto;
 		margin-bottom: 1.1rem;
 
-		color: var(--dark-d);
+		color: var(--bg-d);
 
 		font: 0.8rem monospace;
 	}
@@ -235,10 +242,10 @@
 	input[name='description'] {
 		margin: 0 auto 2rem auto;
 
-		color: rgba(var(--dark-d-rgb), 0.75);
+		color: color-mix(in srgb, var(--bg-d) 75%, transparent);
 
 		&::placeholder {
-			color: rgba(var(--dark-d-rgb), 0.25);
+			color: color-mix(in srgb, var(--bg-d) 25%, transparent);
 		}
 	}
 

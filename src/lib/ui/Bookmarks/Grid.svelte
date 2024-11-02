@@ -1,67 +1,71 @@
 <script lang="ts">
-	import { run, preventDefault, stopPropagation } from 'svelte/legacy';
-
 	// Data
-	import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
-	import { grid, gridDimensions, reRender } from '$lib/stores/gridStore'
-	import { swapBookmarks_db } from '$lib/data/transactions'
-	import { searchValue } from '$lib/search/searchStore'
-	import { showGuidelines } from '$lib/stores'
+	// import { activeBookmarks, activeFolder, tagFilter } from '$lib/data/dbStore'
+	import { swapBookmarks_db } from '$lib/data/transactions.svelte'
+	import { search_state } from '$lib/search/search_state.svelte'
+	import { grid } from '$lib/stores/grid.svelte'
+	import { db } from '$lib/data/db.svelte'
 
 	// Components
 	import Edit from '$lib/graphics/icons/Edit.svelte'
 	import Bookmark from './Bookmark.svelte'
 
 	// Utils
-	import { editor } from '$lib/stores/bookmarkEditor'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 	import { debounce } from '$lib/utils/debounce'
 	import { scale } from 'svelte/transition'
+	import { untrack } from 'svelte'
 
 	let hovering: number | null = $state(null)
 
 	let dragging = $state(false)
 
-	// The element to drag
-	let active: number = $state(null)
+	/** The element to drag */
+	let active = $state<number | null>(null)
 
-	// The element to swap with
-	let target: number = $state(null)
-	let lastTarget: number = null
+	/** The element to swap with */
+	let target = $state<number | null>(null)
+	let lastTarget = $state<number | null>(null)
 
-	// Mouse movement for dragging active element
+	/** Mouse movement for dragging active element */
 	let move = $state({ x: 0, y: 0 })
 
-	// Temporary positions for animations while dragging
-	let positionProxy = $state(Array($gridDimensions.positions.length).fill(null))
+	/** Temporary positions for animations while dragging */
+	let positionProxy = $state(Array(grid.dimensions.positions.length).fill(null))
 
-	// Cell transition animation duration in ms
+	/** Cell transition animation duration in ms */
 	const transitionDuration = 250
 
-	// Temporarily disables target detection
+	/** Temporarily disables target detection */
 	let cooldown = false
 
-	// Temporarily disables transitions
+	/** Temporarily disables transitions */
 	let disableTransitions = $state(false)
 
-	// A ref to each cell
+	/** A ref to each cell */
 	let cells: HTMLElement[] = $state([])
 
-	// Hides and shows the edit icon for each bookmark.
-	let showEditIcon: boolean[] = $state(Array($grid.items?.length).fill(false))
-	// Ugly hack $grid.items is not defined on first render
-	let first = $state(false)
-	run(() => {
-		if (!first && showEditIcon.length < $grid?.items?.length) {
-			first = true
-			showEditIcon = Array($grid.items.length).fill(false)
-		}
-	});
+	/** Hides and shows the edit icon for each bookmark. */
+	let showEditIcon: boolean[] = $state(Array(grid.items?.length).fill(false))
 
-	const handleMouseUp = async (e: MouseEvent) => {
+	// Ugly hack (grid.items is not defined on first render)
+	let first = $state(false)
+	$effect(() => {
+		grid
+		grid.items
+		untrack(() => {
+			if (!first && showEditIcon.length < (grid?.items?.length ?? 0)) {
+				first = true
+				showEditIcon = Array(grid?.items?.length ?? 0).fill(false)
+			}
+		})
+	})
+
+	const handleMouseUp = async (_e: MouseEvent) => {
 		// If we have a target, swap the elements
 		if (target !== null && active != null && target != active) {
 			await swap(active, target)
-			$activeFolder = $activeFolder
+			// db.activeFolder = db.activeFolder
 		}
 
 		// TODO It would be nice to smoothly animate the dragged
@@ -78,7 +82,10 @@
 
 	const handleMouseDown = (e: MouseEvent) => {
 		// Disable re-arranging when filter is active
-		if ($tagFilter) return
+		if (db.tagFilter) return
+
+		e.stopPropagation()
+		e.preventDefault()
 
 		// Store index of active item located in its classname. i.e. - "item-3"
 		const activeClass = (e.target as Element).classList[0]
@@ -99,7 +106,7 @@
 		// If we're hovering over a cell and not on cooldown
 		if (!cooldown && (e.target as HTMLElement)?.dataset?.cell) {
 			// Store the target cell's index
-			target = parseInt((e.target as HTMLElement)?.dataset?.cell)
+			target = parseInt((e.target as HTMLElement)?.dataset?.cell ?? '')
 
 			// If our target cell has changed
 			if (lastTarget != null && lastTarget != target) {
@@ -110,7 +117,7 @@
 			// If the target cell isn't the current active cell
 			if (target != active) {
 				// Move it to our active cell's position
-				positionProxy[target] = $gridDimensions.positions[active]
+				positionProxy[target] = grid.dimensions.positions[active]
 			} else {
 				// We have returned to the original cell, so we can reset all positions
 				positionProxy = positionProxy.fill(null)
@@ -125,7 +132,7 @@
 	}
 
 	function toggleShowEditIcon(bool: boolean, i: number) {
-		showEditIcon = showEditIcon.map((x, index) => (index === i ? bool : !bool))
+		showEditIcon = showEditIcon.map((_, index) => (index === i ? bool : !bool))
 	}
 
 	function handleItemMouseOver(i: number) {
@@ -139,14 +146,14 @@
 	}
 
 	// Hide edit icon while dragging
-	run(() => {
+	$effect(() => {
 		if (dragging) {
 			hovering = null
 			showEditIcon.fill(false)
 		}
-	});
+	})
 
-	let cooldownTimer: NodeJS.Timeout
+	let cooldownTimer: ReturnType<typeof setTimeout>
 	function setCooldown() {
 		cooldown = true
 		clearTimeout(cooldownTimer)
@@ -159,15 +166,11 @@
 		if (positionProxy[i] != null) {
 			return `translate(${positionProxy[i].x}px, ${positionProxy[i].y}px)`
 		} else {
-			return `translate(${$gridDimensions.positions[i].x}px, ${$gridDimensions.positions[i].y}px)`
+			return `translate(${grid.dimensions.positions[i].x}px, ${grid.dimensions.positions[i].y}px)`
 		}
 	})
 
-	run(() => {
-		$gridDimensions
-	});
-
-	let swapTimer: NodeJS.Timeout
+	let swapTimer: ReturnType<typeof setTimeout>
 	const swap = async (a: number, b: number) => {
 		// A bit of a hack to make sure the swap doesn't trigger the wrong animations
 		clearTimeout(swapTimer)
@@ -178,19 +181,25 @@
 		return new Promise<void>(async (resolve, reject) => {
 			disableTransitions = true
 
+			if (!db.activeBookmarks) {
+				return reject(console.error('Error: db.activeBookmarks is falsey'))
+			}
+
 			// Swap the elements and update stores / db
-			const _a = $activeBookmarks[a]
-			const _b = $activeBookmarks[b]
+			const _a = db.activeBookmarks[a]
+			const _b = db.activeBookmarks[b]
 			if (!_a || !_b) return
+
 			const aPosition = _a.position
 			const bPosition = _b.position
 			_a.position = bPosition
 			_b.position = aPosition
 			if (_a.position === _b.position) {
-				reject(console.error('Error: Bookmarks are in the same position'))
+				return reject(console.error('Error: Bookmarks are in the same position'))
 			}
-			$activeBookmarks[a] = _b
-			$activeBookmarks[b] = _a
+
+			db.activeBookmarks[a] = _b
+			db.activeBookmarks[b] = _a
 			await swapBookmarks_db([_a, _b])
 
 			resolve()
@@ -198,10 +207,10 @@
 	}
 
 	const isRelevant = (i: number) => {
-		const bm = $activeBookmarks[i]
+		const bm = db.activeBookmarks?.[i]
 		return (
-			bm.title.toLowerCase().includes($searchValue.toLowerCase()) ||
-			bm.description.toLowerCase().includes($searchValue.toLowerCase())
+			bm?.title.toLowerCase().includes(search_state.searchValue?.toLowerCase() ?? '') ||
+			bm?.description.toLowerCase().includes(search_state.searchValue?.toLowerCase() ?? '')
 		)
 	}
 </script>
@@ -210,26 +219,26 @@
 
 <div
 	class="grid"
-	class:showGuidelines={$showGuidelines}
+	class:showGuidelines={grid.showGuidelines}
 	class:dragging
 	style="
-		width: {$grid.gridWidth}px;
-		height: {$gridDimensions.gridHeight}px;
-		--item-size: {$grid.iconSize}px;
+		width: {grid.width}px;
+		height: {grid.dimensions.gridHeight}px;
+		--item-size: {grid.iconSize}px;
 	"
 >
-	{#if $grid.items}
-		{#each $grid.items as bookmark, i (bookmark.bookmark_id)}
-			{#key $reRender}
+	{#if grid.items}
+		{#each grid.items as bookmark, i (bookmark.bookmark_id)}
+			{#key grid.reRender}
 				<div
 					class="cell"
-					class:unfocused={$searchValue !== '' && !isRelevant(i)}
-					class:focused={$searchValue === '' || isRelevant(i)}
+					class:unfocused={search_state.searchValue !== '' && !isRelevant(i)}
+					class:focused={search_state.searchValue === '' || isRelevant(i)}
 					class:active={i == active}
 					class:target={target === i}
 					style="
-						width: {$gridDimensions.totalItemSize}px;
-						height: {$grid.iconSize}px;
+						width: {grid.dimensions.totalItemSize}px;
+						height: {grid.iconSize}px;
 						transform: {getCellPosition(i)};
 						transition: {disableTransitions ? 'none' : `${transitionDuration}ms`};
 					"
@@ -243,10 +252,12 @@
 						class:target={target === i}
 						class:dragging
 						class:disableTransitions
-						style="transform: translate({active === i ? `${move.x}px, ${move.y}px` : `0, 0`});"
-						onmousedown={stopPropagation(preventDefault(handleMouseDown))}
-						onmouseover={() => handleItemMouseOver(i)}
-						onmouseout={() => handleItemMouseOut(i)}
+						style="transform: translate({active === i
+							? `${move.x}px, ${move.y}px`
+							: `0, 0`});"
+						onpointerdown={(e) => handleMouseDown(e)}
+						onpointerover={() => handleItemMouseOver(i)}
+						onpointerout={() => handleItemMouseOut(i)}
 						onfocus={() => handleItemMouseOver(i)}
 						onblur={() => handleItemMouseOut(i)}
 					>
@@ -256,20 +267,30 @@
 								{hovering}
 								{dragging}
 								{i}
-								on:showBookmarkEditor
-								--size={$grid.iconSize + 'px'}
+								onShowBookmarkEditor={() => {
+									// todo
+									bookmarkEditor.show(['edit', 'bookmark'], i)
+								}}
+								--size={grid.iconSize + 'px'}
 								{disableTransitions}
 							/>
 						</div>
 						{#if showEditIcon[i] && !dragging}
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<div
-								onmouseover={() => handleItemMouseOver(i)}
-								onmouseout={() => handleItemMouseOut(i)}
+								tabindex="0"
+								role="button"
+								onpointerover={() => handleItemMouseOver(i)}
+								onpointerout={() => handleItemMouseOut(i)}
 								onfocus={() => handleItemMouseOver(i)}
 								onblur={() => handleItemMouseOut(i)}
 								class="edit"
 								transition:scale={{ duration: 150 }}
-								onclick={stopPropagation(preventDefault(() => editor.show(['edit', 'bookmark'], i)))}
+								onclick={(e) => {
+									e.preventDefault()
+									e.stopPropagation()
+									bookmarkEditor.show(['edit', 'bookmark'], i)
+								}}
 							>
 								<Edit />
 							</div>
@@ -299,7 +320,7 @@
 		user-select: none;
 
 		&.showGuidelines {
-			border: 1px solid rgba(var(--dark-d-rgb), 0.5);
+			border: 1px solid color-mix(in srgb, var(--bg-d) 50%, transparent);
 			border-bottom: none;
 			border-top: none;
 		}
@@ -331,8 +352,6 @@
 		color: white;
 
 		cursor: pointer;
-
-		// transition: 0.2s ease-in-out;
 
 		&.active {
 			pointer-events: none;

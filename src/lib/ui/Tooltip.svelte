@@ -1,23 +1,19 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import tippy, { sticky } from 'tippy.js'
 	import { onMount } from 'svelte'
 
-	
-	
 	interface Props {
-		content?: string;
-		placement?: string;
+		content?: string
+		placement?: string
 		/**
-	 * @param delay - Intro & outro delay in ms.  Default [750, 100]
-	 */
-		delay?: [number, number];
-		interactive?: boolean;
-		arrow?: boolean;
-		offset?: any;
-		display?: string;
-		children?: import('svelte').Snippet;
+		 * @param delay - Intro & outro delay in ms.  Default [750, 100]
+		 */
+		delay?: [number, number]
+		interactive?: boolean
+		arrow?: boolean
+		offset?: any
+		display?: string
+		children?: import('svelte').Snippet
 	}
 
 	let {
@@ -28,8 +24,8 @@
 		arrow = true,
 		offset = [0, 0],
 		display = '',
-		children
-	}: Props = $props();
+		children,
+	}: Props = $props()
 	let instance: any = $state()
 
 	onMount(() => {
@@ -54,9 +50,9 @@
 		instance = container?._tippy
 	})
 
-	run(() => {
-		if (tippy && instance) instance.setContent(content.split('_').join(' '))
-	});
+	$effect(() => {
+		if (instance) instance.setContent(content.split('_').join(' '))
+	})
 </script>
 
 <span id={content} style="display: {display};" class="tippy-container">
@@ -76,10 +72,10 @@
 	:global(.tippy-box) {
 		position: relative;
 
-		color: var(--dark-d);
+		color: var(--bg-d);
 		border-radius: 4px;
 		outline: 0;
-		background-color: var(--light-a);
+		background-color: var(--fg-a);
 		box-shadow: 0 2px 5px #54354311;
 
 		font-family: var(--font-b);
@@ -155,7 +151,7 @@
 		width: 16px;
 		height: 16px;
 
-		color: var(--light-a);
+		color: var(--fg-a);
 
 		z-index: 0;
 	}
@@ -181,16 +177,24 @@
 	:global(.tippy-box[data-animation='shift-away-subtle'][data-state='hidden']) {
 		opacity: 0;
 	}
-	:global(.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='top']) {
+	:global(
+			.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='top']
+		) {
 		transform: translateY(5px);
 	}
-	:global(.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='bottom']) {
+	:global(
+			.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='bottom']
+		) {
 		transform: translateY(-5px);
 	}
-	:global(.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='left']) {
+	:global(
+			.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='left']
+		) {
 		transform: translateX(5px);
 	}
-	:global(.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='right']) {
+	:global(
+			.tippy-box[data-animation='shift-away-subtle'][data-state='hidden'][data-placement^='right']
+		) {
 		transform: translateX(-5px);
 	}
 </style>

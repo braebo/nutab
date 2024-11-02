@@ -2,9 +2,9 @@
 	import { onMount, tick } from 'svelte'
 
 	interface Props {
-		position?: any
-		bounds?: any
-		outOfBounds: any
+		position?: { x: number; y: number }
+		bounds?: { x: number; y: number }
+		outOfBounds?: boolean
 		/**
 		 * Size of the grabbable border
 		 */
@@ -24,7 +24,7 @@
 		children,
 	}: Props = $props()
 
-	let panel: Element = $state()
+	let panel = $state<HTMLElement>()
 	let dragging = $state(false)
 	let innerWidth = $state<number>()
 	let innerHeight = $state<number>()
@@ -34,24 +34,23 @@
 	let dragLock = false
 
 	onMount(() => {
-		const { x, y } = panel.getBoundingClientRect()
+		const { x, y } = panel!.getBoundingClientRect()
 		position = { x, y }
 	})
 
-	const handleMouseDown = (/*{ clientX, clientY }*/) => {
+	const handleMouseDown = () => {
 		dragging = inZone
 	}
 	const handleMouseUp = () => {
 		dragging = false
 		dragLock = false
-		const { x, y } = panel.getBoundingClientRect()
 	}
 
 	const handleMouseMove = async (e: PointerEvent) => {
-		await tick
+		await tick()
 		mouse.x = e.clientX
 		mouse.y = e.clientY
-		const { x, y, width, height } = panel.getBoundingClientRect()
+		const { x, y, width, height } = panel!.getBoundingClientRect()
 		inZone =
 			e.target === panel
 				? inRange(mouse.x, x, x + grabZone) ||
@@ -96,7 +95,7 @@
 	onpointerdown={handleMouseDown}
 	style="
 						transform: translate({position.x}px, {position.y}px);
-						box-shadow: 0 0 0 {grabZone}px var(--light-b, black) inset;
+						box-shadow: 0 0 0 {grabZone}px var(--fg-b, black) inset;
 						box-sizing: content-box;
 						user-select: {dragging ? 'none' : 'auto'};
 						width: {panelWidth}px;
@@ -116,9 +115,9 @@
 		align-items: center;
 		justify-content: center;
 
-		background: var(--light-b, black);
+		background: var(--fg-b, black);
 		border-radius: var(--border-radius, 10px);
-		box-shadow: 0 5px 15px 0 var(--light-a, #0003);
+		box-shadow: 0 5px 15px 0 var(--fg-a, #0003);
 
 		z-index: var(--z-index, 50);
 	}

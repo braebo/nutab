@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { showBookmarkEditor, showFolderEditor } from '$lib/stores/bookmarkEditor'
-	import { showSettings } from '$lib/stores'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 
 	import BookmarkEditor from '$lib/ui/Bookmarks/BookmarkEditor.svelte'
 	import FolderEditor from '$lib/ui/Folders/FolderEditor.svelte'
@@ -9,26 +8,27 @@
 	import Search from '$lib/search/Search.svelte'
 	import Overlay from '$lib/ui/Overlay.svelte'
 	import Modal from '$lib/ui/Modal.svelte'
+	import Root from './Root.svelte'
 </script>
 
-<template lang="pug">
-	
-	Overlay
-	
-	.br-md
+<Root>
+	<Overlay />
 
-	Search
+	<div class="br-md"></div>
 
-	.br-md
+	<Search />
 
-	Grid
+	<div class="br-md"></div>
 
-	RightClickMenu
+	<Grid />
 
-	Modal(bind:showModal!='{$showBookmarkEditor}' opacity='{0}')
-		BookmarkEditor
+	<RightClickMenu />
 
-	Modal(bind:showModal!='{$showFolderEditor}' opacity='{0}')
-		FolderEditor
+	<Modal bind:showModal={bookmarkEditor.showBookmarkEditor} opacity={0}>
+		<BookmarkEditor />
+	</Modal>
 
-</template>
+	<Modal bind:showModal={bookmarkEditor.showFolderEditor} opacity={0}>
+		<FolderEditor />
+	</Modal>
+</Root>

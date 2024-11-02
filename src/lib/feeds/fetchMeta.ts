@@ -4,17 +4,16 @@ import type { IMeta } from './types'
 import { parse } from 'node-html-parser'
 import { rulesets } from './rulesets'
 import { CORS } from './constants'
-import { dev } from '$app/environment'
 
 const fetchHead = async (url: string) => {
 	const read = async (body: ReadableStream<Uint8Array> | null): Promise<string> =>
 		new Promise(async (resolve) => {
 			let head = ''
-			const reader = body.getReader()
+			const reader = body?.getReader()
 			const decoder = new TextDecoder()
 
 			// Stream and decode the response body until the closing <head/> tag is found.
-			reader.read().then(function next({ done, value }) {
+			reader?.read().then(function next({ done, value }) {
 				const text = decoder.decode(value)
 				head += text
 				const headBody = head.toString().split('</head>')
@@ -54,7 +53,7 @@ const makeUrlAbsolute = (url: string, path: string) => new URL(path, new URL(url
  * @returns A promise that resolves to the metadata.
  * @example const meta = await fetchMeta('https://news.ycombinator.com/')
  */
-export const fetchMeta = async (url: string, imgOnly = false, proxy = false) => {
+export const fetchMeta = async (url: string, imgOnly = false, proxy = true) => {
 	// const corsUrl = dev ? CORS + url : url
 	const corsUrl = proxy ? CORS + url : url
 
@@ -70,13 +69,13 @@ export const fetchMeta = async (url: string, imgOnly = false, proxy = false) => 
 	}
 
 	for (const key in rulesets) {
-		if (imgOnly && key !== ('image' || 'icon')) continue
+		if (imgOnly && ['image', 'icon'].includes(key)) continue
 
 		for (const rule of rulesets[key].rules) {
 			const el = dom.querySelector(rule[0])
 
 			if (el) {
-				let data = rule[1](el)
+				const data = rule[1](el)
 
 				metadata[key] = rulesets[key].absolute ? makeUrlAbsolute(url, data) : data
 				break

@@ -1,23 +1,20 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	// Data
-	import { settings, activeTheme, activeBackground, type Settings as ISettings } from '$lib/stores'
 	import { addMissingSettings } from '$lib/data/settings/addMissingSettings'
-	import { init_db } from '$lib/data/transactions'
+	import { settings } from '$lib/stores/settings.svelte'
+	import { init_db } from '$lib/data/transactions.svelte'
 
 	// Components
 	import Settings from '$lib/data/settings/Settings.svelte'
+	import Themer from '$lib/theme_og/ThemeToggle.svelte'
 	import Inspector from '$lib/inspector/index.svelte'
-	import Themer from '$lib/theme/ThemeToggle.svelte'
-	import Modal from '$lib/ui/Modal.svelte'
 	import Main from '$lib/ui/Main.svelte'
 	import Nav from '$lib/ui/Nav.svelte'
-	import { Header } from '$lib/ui'
 
 	// Utils
-	import { initBackground, randomizeBackground } from '$lib/theme'
-	import { Fractils, theme } from 'fractils'
+	import { initBackground } from '$lib/theme_og'
 	import { dev } from '$app/environment'
-	import { page } from '$app/stores'
+	import { Fractils } from 'fractils'
 	import { onMount } from 'svelte'
 
 	// Styles
@@ -33,27 +30,27 @@
 	})
 </script>
 
-<template lang="pug">
+<svelte:head>
+	<title>Nutab</title>
+</svelte:head>
 
-	svelte:head
-		title Nutab
+<Fractils />
 
-	Fractils
+{#if dev}
+	<Inspector />
+{/if}
 
-	+if('dev')
-		Inspector
+<div id="app" style={settings.activeBackground}>
+	<Themer size={50} />
 
-	#app(style='{$activeBackground}')
-		Themer(size='{50}')
+	<Nav />
 
-		Nav
+	<Main>
+		<slot />
+	</Main>
 
-		Main
-			slot
-
-		Settings
-
-</template>
+	<Settings />
+</div>
 
 <style>
 	#app {
@@ -61,4 +58,6 @@
 
 		overflow: hidden;
 	}
-</style>
+</style> -->
+
+<slot />

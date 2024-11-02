@@ -2,17 +2,15 @@
 	import HN from '$lib/feeds/HN.svelte'
 </script>
 
-<template lang="pug">
-	
-	.news
-		HN
+<div class="news">
+	<HN />
+</div>
 
-</template>
+<style lang="scss">
+	.news {
+		top: -100%;
 
-<style lang="sass">
-	.news
-		top: -100%
-		
-		height: 100vh
-		width: 100vw
+		height: 100vh;
+		width: 100vw;
+	}
 </style>

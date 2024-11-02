@@ -1,0 +1,13 @@
+.vscode/
+.dependencygraph/
+
+.git/
+node_modules/
+
+.svelte-kit/
+static/
+worktop/
+scripts/
+
+pnpm-lock.yaml
+adapter.js

@@ -1,6 +1,6 @@
-import { get } from 'svelte/store'
-import { debounce } from './debounce'
 import localStorageStore from './localStorageStore'
+import { debounce } from './debounce'
+import { get } from 'svelte/store'
 
 const inspectorSize = localStorageStore('inspectorSize', '300px')
 
@@ -43,10 +43,10 @@ const px = (size: number | string) => {
 	if (typeof size === 'number') return `${size}px`
 	else return size
 }
-const vw = (size: number | string) => {
-	if (typeof size === 'number') return `${size}vw`
-	else return size
-}
+// const vw = (size: number | string) => {
+// 	if (typeof size === 'number') return `${size}vw`
+// 	else return size
+// }
 
 export const resize = (node: HTMLElement, options: ResizeOptions) => {
 	const {
@@ -70,12 +70,19 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 		node.style.width = persistentSize
 	}
 
-	const direction = side === ('left' || 'right') ? 'vertical' : 'horizontal'
+	const direction = side === 'left' || side === 'right' ? 'vertical' : 'horizontal'
 	const width = direction === 'vertical' ? px(gutterSize) : px(node.scrollWidth)
-	const height = direction === 'vertical' ? px(node.clientHeight + node.scrollTop) : px(gutterSize)
+	const height =
+		direction === 'vertical' ? px(node.clientHeight + node.scrollTop) : px(gutterSize)
 
-	direction === 'vertical' ? (grabber.style.top = '0') : (grabber.style.left = '0')
-	const cursor = (grabber.style.cursor = direction === 'vertical' ? 'ew-resize' : 'ns-resize')
+	if (direction === 'vertical') {
+		grabber.style.top = '0'
+	} else {
+		grabber.style.left = '0'
+	}
+
+	const cursor = direction === 'vertical' ? 'ew-resize' : 'ns-resize'
+	grabber.style.cursor = cursor
 
 	grabber.classList.add('grabber')
 	grabber.style.cssText += `
@@ -108,6 +115,10 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 	node.addEventListener('mouseover', updateHeight)
 
+	const debouncedUpdate = debounce(() => {
+		inspectorSize.set(px(node.offsetWidth))
+	}, 50)
+
 	const onMove = (e: MouseEvent) => {
 		const startWidth = node.offsetWidth
 		const startHeight = node.offsetHeight
@@ -133,12 +144,13 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 		onResize()
 
-		debounce(() => {
-			inspectorSize.set(px(node.offsetWidth))
-		}, 50)
+		// debounce(() => {
+		// 	inspectorSize.set(px(node.offsetWidth))
+		// }, 50)
+		debouncedUpdate()
 	}
 
-	const onUp = (e?: Event, styleEl?: HTMLStyleElement) => {
+	const onUp = (_e?: Event, styleEl?: HTMLStyleElement) => {
 		document.removeEventListener('mousemove', onMove)
 		// Remove the cursor style element.
 		if (styleEl) document.head.removeChild(styleEl)
@@ -149,9 +161,12 @@ export const resize = (node: HTMLElement, options: ResizeOptions) => {
 
 	function updateHeight() {
 		const node_rect = node.getBoundingClientRect()
-		direction === 'vertical'
-			? (grabber.style.height = px(Math.min(node.scrollHeight, node_rect.height)))
-			: (grabber.style.width = px(Math.min(node.scrollWidth, node_rect.width)))
+
+		if (direction === 'vertical') {
+			grabber.style.height = px(Math.min(node.scrollHeight, node_rect.height))
+		} else {
+			grabber.style.width = px(Math.min(node.scrollWidth, node_rect.width))
+		}
 	}
 
 	updateHeight()

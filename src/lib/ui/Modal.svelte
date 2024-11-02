@@ -1,26 +1,30 @@
 <script lang="ts">
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 	import { clickOutside } from '../utils/clickOutside'
-	import { editor } from '$lib/stores/bookmarkEditor'
 	import { fade } from 'svelte/transition'
 
 	interface Props {
-		showModal?: boolean;
-		opacity?: number;
-		background?: any;
-		children?: import('svelte').Snippet;
+		showModal?: boolean
+		opacity?: number
+		background?: any
+		children?: import('svelte').Snippet
 	}
 
 	let {
-		showModal = false,
+		showModal = $bindable(false),
 		opacity = 0.3,
-		background = `rgba(var(--light-d-rgb), ${opacity})`,
-		children
-	}: Props = $props();
+		background = `color-mix(in srgb, var(--fg-d) ${opacity * 100}%, transparent)`,
+		children,
+	}: Props = $props()
 </script>
 
 {#if showModal}
-	<div class="background" style="background-color: {background};" transition:fade={{ duration: 150 }}>
-		<div class="wrapper" use:clickOutside onclick_outside={() => editor.hide()}>
+	<div
+		class="background"
+		style="background-color: {background};"
+		transition:fade={{ duration: 150 }}
+	>
+		<div class="wrapper" use:clickOutside onoutclick={() => bookmarkEditor.hide()}>
 			{@render children?.()}
 		</div>
 	</div>

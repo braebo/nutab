@@ -1,9 +1,9 @@
 <script lang="ts">
 	interface Props {
-		active?: boolean;
+		active?: boolean
 	}
 
-	let { active = false }: Props = $props();
+	let { active = false }: Props = $props()
 </script>
 
 <svg
@@ -13,7 +13,7 @@
 	height="20"
 	viewBox="0 0 24 24"
 	stroke-width="1"
-	stroke={active ? 'var(--light-c)' : 'var(--light-b)'}
+	stroke={active ? 'var(--fg-c)' : 'var(--fg-b)'}
 	fill="none"
 	stroke-linecap="round"
 	stroke-linejoin="round"

@@ -1,37 +1,30 @@
 <script lang="ts">
-	import { run, preventDefault, stopPropagation } from 'svelte/legacy';
-
 	import type { Bookmark } from '$lib/data/types'
 
-	import { editor } from '$lib/stores/bookmarkEditor'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	import { settings } from '$lib/stores/settings.svelte'
 	import { scale, fade } from 'svelte/transition'
 	import { debounce } from '$lib/utils/debounce'
 	import BookmarkArt from './BookmarkArt.svelte'
-	import { bookmarkEditor } from '$lib/stores'
-	import { settings } from '$lib/stores'
-
-	interface Props {
-		i: number;
-		hovering: number;
-		dragging?: boolean;
-		bookmark: Bookmark;
-		disableTransitions?: boolean;
-	}
 
 	let {
 		i,
 		hovering,
 		dragging = false,
 		bookmark = $bindable(),
-		disableTransitions = false
-	}: Props = $props();
+		disableTransitions = false,
+		onShowBookmarkEditor = () => {},
+	}: {
+		i: number
+		bookmark: Bookmark
+		hovering: number | null
+		dragging?: boolean
+		disableTransitions?: boolean
+		onShowBookmarkEditor?: () => void
+	} = $props()
 
-	run(() => {
-		disableTransitions
-	}); // is this necessary?
-	let url = $derived(bookmark?.url)
-
-	let title = $derived(bookmark?.title)
+	let url = $derived(bookmark?.url ?? '')
+	let title = $derived(bookmark?.title ?? '')
 </script>
 
 <div class="bookmark-container">
@@ -40,17 +33,24 @@
 		href={url}
 		class:dragging
 		draggable="false"
-		oncontextmenu={stopPropagation(preventDefault(() => editor.show(['edit', 'bookmark'], i)))}
+		oncontextmenu={(e) => {
+			e.preventDefault()
+			e.stopPropagation()
+			bookmarkEditor.show(['edit', 'bookmark'], i)
+			onShowBookmarkEditor()
+		}}
 	>
 		<div
+			role="button"
+			tabindex="0"
 			class="bookmark"
 			in:scale={{ duration: disableTransitions ? 0 : 200 + 50 * i }}
-			onmouseover={() => debounce(() => ($settings.showTitle = true), 1500)}
-			onfocus={() => debounce(() => ($settings.showTitle = false))}
+			onmouseover={() => debounce(() => (settings.showTitle = true), 1500)}
+			onfocus={() => debounce(() => (settings.showTitle = false))}
 		>
 			<BookmarkArt bind:bookmark />
 
-			{#if $settings.showTitle || hovering == i}
+			{#if settings.showTitle || hovering == i}
 				{#if title && !dragging}
 					<p transition:fade={{ duration: disableTransitions ? 0 : 100 }}>
 						{title}
@@ -61,40 +61,20 @@
 	</a>
 </div>
 
-<style>
-	.bookmark-container {
+<style lang="scss">
+	.bookmark-container,
+	.bookmark {
 		position: relative;
 		display: flex;
-		position: relative;
 		align-items: center;
 		flex-direction: column;
 		justify-content: flex-end;
-
-		height: var(--size, 100%);
-		width: var(--size, 100%);
-
 		pointer-events: none;
 	}
 
-	.bookmark {
-		display: flex;
-		position: relative;
-		align-items: center;
-		flex-direction: column;
-		justify-content: flex-end;
-
-		/* width: var(--size, 100%); */
-		/* height: var(--size, 100%); */
-		/* margin: auto; */
-
-		/* background-repeat: no-repeat; */
-		/* background-position: center; */
-
-		/* border-radius: 10px; */
-
-		/* text-align: center; */
-
-		pointer-events: none;
+	.bookmark-container {
+		height: var(--size, 100%);
+		width: var(--size, 100%);
 	}
 
 	.icon {
@@ -102,8 +82,6 @@
 		top: 0;
 		bottom: 0;
 
-		/* max-width: 100%; */
-		/* max-height: 100%; */
 		height: 100%;
 		margin: auto;
 
@@ -115,7 +93,7 @@
 
 		width: fit-content;
 
-		color: var(--dark-d);
+		color: var(--bg-d);
 
 		font-size: 16px;
 		line-height: 150%;
@@ -133,7 +111,7 @@
 		width: max-content;
 		height: max-content;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 
 		text-decoration: none;
 

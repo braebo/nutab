@@ -3,58 +3,54 @@
 	import type { Folder } from '$lib/data/types'
 
 	// Data
-	import {
-		activeBookmarks,
-		activeFolder,
-		activeFolderBookmarks,
-		lastActiveFolderId,
-		tagFilter,
-		uniqueTags,
-		folders,
-	} from '$lib/data/dbStore'
-	import { getAllFolders_db, getFolder_db, newFolder_db } from '$lib/data/transactions'
-	import { editor, folderEditor } from '$lib/stores/bookmarkEditor'
-	import db from '$lib/data/db'
+	// import {
+	// 	activeBookmarks,
+	// 	activeFolder,
+	// 	activeFolderBookmarks,
+	// 	lastActiveFolderId,
+	// 	tagFilter,
+	// 	uniqueTags,
+	// 	folders,
+	// } from '$lib/data/dbStore'
+	import { db } from '$lib/data/db.svelte'
+	// import { getFolder_db } from '$lib/data/transactions.svelte'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
 
 	// Utils
-	import { reRender } from '$lib/stores/gridStore'
+	import { grid } from '$lib/stores/grid.svelte'
 	import { debounce } from '$lib/utils/debounce'
+	import { Logger } from '$lib/utils/logger'
 	import { fly } from 'svelte/transition'
-	import { onMount } from 'svelte'
 
 	// Components
 	import Tooltip from '$lib/ui/Tooltip.svelte'
-	import { log, wait } from 'fractils'
-	import { get } from 'svelte/store'
+	import dexie from '$lib/data/dexie.svelte'
+	// import { log } from 'fractils'
 
-	let folderIcons = []
-	let selectedTags: boolean[] | string[] = []
+	const { log } = new Logger('FolderSidebar')
 
-	onMount(async () => {
-		$folders = await getAllFolders_db()
-	})
+	// onMount(async () => {
+	// 	db.folders = await getAllFolders_db()
+	// })
 
-	let hovering = false
-	let sidebar: HTMLElement
+	let hovering = $state(false)
 
-	let isActive = $derived((id: Folder['folder_id']) => id === $activeFolder?.folder_id)
+	let isActive = $derived((id: Folder['folder_id']) => id === db.activeFolder?.folder_id)
 
 	// Filters bookmark grid by tag
-	const applyTagFilter = async (tag: string) => {
-		if (tag === $tagFilter || tag === null) {
-			$tagFilter = null
+	const applyTagFilter = async (tag: string | null) => {
+		if (tag === db.tagFilter || tag === null) {
+			db.tagFilter = null
 		} else {
-			$tagFilter = tag
+			db.tagFilter = tag
 		}
 		// reRender()
-		log('applyTagFilter:  Tag filter = ' + $tagFilter)
-		reRender.set(!get(reRender))
+		log('applyTagFilter:  Tag filter = ' + db.tagFilter)
+		grid.reRender()
 	}
 
 	// Debounced mouse hover for show / hide / animations
-	let smoothHovering = false
-
-	const smooth = debounce
+	let smoothHovering = $state(false)
 
 	const mouseOver = async () => {
 		hovering = true
@@ -68,78 +64,86 @@
 
 	// Selects a folder
 	const handleFolderClick = async (id: Folder['folder_id']) => {
-		if ($tagFilter != null) applyTagFilter(null)
+		if (db.tagFilter != null) applyTagFilter(null)
 		if (!isActive(id)) {
-			$activeFolder = await getFolder_db(id)
+			// db.activeFolder = (await getFolder_db(id)) ?? null
+
+			await dexie.settings.put({ key: 'activeFolderId', value: id })
 
 			// This is a gnarly hack to wait for "activeFolderBookmarks"
 			// derived store to update to the new activeFolder...
 			setTimeout(() => {
-				$activeBookmarks = $activeFolderBookmarks
+				// db.activeBookmarks = db.activeFolderBookmarks
 			}, 100)
 
-			$lastActiveFolderId = id
-			$reRender = !$reRender
+			// db.lastActiveFolderId = id
+			grid.reRender()
 		}
 	}
 
 	// Just opens a blank folder editor
 	const newFolder = async () => {
-		await editor.show(['create', 'folder'])
+		await bookmarkEditor.show(['create', 'folder'])
 	}
 </script>
 
 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-<template lang="pug">
+<div class="folder-sidebar-container">
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="folder-sidebar" class:hovering onmouseover={mouseOver} onmouseout={mouseOut}>
+		{#if db.folders}
+			{#each db.folders as { folder_id, icon, title }, i}
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div
+					class="_folder_"
+					id={folder_id}
+					role="button"
+					tabindex={i}
+					onclick={() => handleFolderClick(folder_id)}
+					class:active={isActive(folder_id)}
+				>
+					<div class="folder-icon" class:active={isActive(folder_id)}>{icon}</div>
+					<div class="folder-title" class:hovering>{title}</div>
+				</div>
+			{/each}
+		{/if}
 
-	.folder-sidebar-container
-		
-		.folder-sidebar(
-			bind:this='{sidebar}'
-			class:hovering
-			on:mouseover!='{mouseOver}'
-			on:mouseout!='{mouseOut}'
-		)
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<div class="new-folder" class:hovering onclick={newFolder}>
+			<Tooltip content="New_Folder" placement="right" offset={[9, 20]}>+</Tooltip>
+		</div>
 
-			+if ('$folders')
-				
-				+each('$folders as {folder_id, icon, title}, i')
-					
-					._folder_(
-						id='{folder_id}'
-						on:click!='{() => handleFolderClick(folder_id)}'
-						class:active!='{isActive(folder_id)}'
-					)
-						.folder-icon(class:active!='{isActive(folder_id)}') {icon}
-						.folder-title(class:hovering) {title}
-
-
-			.new-folder(class:hovering on:click='{newFolder}')
-				Tooltip(content='New_Folder' placement='right' offset='{[9,20]}')
-					| +
-
-
-			+if ('$uniqueTags && smoothHovering || $tagFilter')
-
-				.tags(
-					in:fly='{{ x: -10, duration: 300 }}'
-					out:fly='{{ x: -20, duration: 600 }}'
-				)
-
-					+if('$uniqueTags')
-
-						+each('$uniqueTags as tag')
-
-							.tag(
-								class:active='{$tagFilter === tag}'
-								class:inactive!='{$tagFilter && $tagFilter !== tag}'
-							)
-
-								.tag-title(class:hovering on:click!='{() => applyTagFilter(tag)}')
-									span.hashtag # 
-									| {tag}
-
-</template>
+		{#if (db.uniqueTags && smoothHovering) || db.tagFilter}
+			<div
+				class="tags"
+				in:fly={{ x: -10, duration: 300 }}
+				out:fly={{ x: -20, duration: 600 }}
+			>
+				{#if db.uniqueTags}
+					{#each db.uniqueTags as tag, i}
+						<div
+							class="tag"
+							class:active={db.tagFilter === tag}
+							class:inactive={db.tagFilter && db.tagFilter !== tag}
+						>
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<div
+								role="button"
+								tabindex={i}
+								class="tag-title"
+								class:hovering
+								onclick={() => applyTagFilter(tag)}
+							>
+								<span class="hashtag">#</span>
+								{tag}
+							</div>
+						</div>
+					{/each}
+				{/if}
+			</div>
+		{/if}
+	</div>
+</div>
 
 <style lang="scss">
 	.folder-sidebar-container {
@@ -185,7 +189,7 @@
 			}
 
 			& .folder-title {
-				color: var(--dark-c);
+				color: var(--bg-c);
 				opacity: 0;
 
 				font-family: var(--font-b);
@@ -243,7 +247,7 @@
 			transition: 0.2s;
 
 			&:hover {
-				color: var(--dark-c);
+				color: var(--bg-c);
 
 				transition-delay: 0s;
 			}
@@ -258,7 +262,7 @@
 		& .tag {
 			padding: 1.5rem auto 0 0.5rem;
 
-			color: var(--dark-d);
+			color: var(--bg-d);
 			opacity: 0.3;
 
 			transition: opacity 0.2s;

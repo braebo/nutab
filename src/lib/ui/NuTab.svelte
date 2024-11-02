@@ -50,10 +50,10 @@
 	}
 
 	#NU {
-		color: var(--brand-a);
+		color: var(--theme-a);
 	}
 
 	#TAB {
-		color: var(--dark-a);
+		color: var(--bg-a);
 	}
 </style>

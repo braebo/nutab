@@ -1,23 +1,22 @@
 <script lang="ts">
 	interface Props {
-		color?: string;
-		thickness?: number;
-		speed?: number;
-		radius?: number;
-		size?: number;
-		gap?: number;
+		color?: string
+		thickness?: number
+		speed?: number
+		radius?: number
+		size?: number
+		gap?: number
 	}
 
 	let {
-		color = 'var(--light-c)',
+		color = 'var(--fg-c)',
 		thickness = 2,
 		speed = 750,
 		radius = 10,
 		size = 35,
-		gap = 40
-	}: Props = $props();
+		gap = 40,
+	}: Props = $props()
 	let dash = $derived((2 * Math.PI * radius * (100 - gap)) / 100)
-	
 </script>
 
 <svg

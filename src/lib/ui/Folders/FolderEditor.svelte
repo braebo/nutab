@@ -1,116 +1,155 @@
 <script lang="ts">
 	import EmojiPicker from './EmojiPicker.svelte'
 	// Types
-	import type { Bookmark } from '$lib/data/types'
+	// import type { Bookmark } from '$lib/data/types'
 
 	// Data
-	import { folderEditor, bookmarkEditorContext } from '$lib/stores/bookmarkEditor'
-	import { editor } from '$lib/stores/bookmarkEditor'
-	import { uniqueTags } from '$lib/data/dbStore'
+	import { bookmarkEditor } from '$lib/stores/bookmarkEditor.svelte'
+	// import { uniqueTags } from '$lib/data/dbStore'
 	import {
 		getBookmarksWithSelectedTags_db,
 		getFolderCount_db,
-		updateFolder_db,
+		putFolder_db,
 		deleteFolder_db,
-		newFolder_db,
-	} from '$lib/data/transactions'
+		addFolder_db,
+	} from '$lib/data/transactions.svelte'
+	import { db } from '$lib/data/db.svelte'
 
 	// Components
 	import DeleteFolder from './DeleteFolder.svelte'
 	import Button from '$lib/ui/Button.svelte'
 
 	// Utils
-	import { clickOutside } from 'fractils'
+	import { clickOutside } from '$lib/utils/clickOutside'
 	import { onMount } from 'svelte'
-	import cuid from 'cuid'
+	// import { createId } from '@paralleldrive/cuid2'
 
 	let emoji = '📌'
 	let showEmojiPicker = $state(false)
-	let titleInput: HTMLInputElement
+	// svelte-ignore non_reactive_update
+	let titleInput = $state<HTMLInputElement>()
 	let header = $state('')
 	let selectedTags: boolean[] = $state([])
 	let folderCount = $state(0)
 	let deleteDisabled = $derived(folderCount === 1)
 
 	async function handleSave() {
-		if ($bookmarkEditorContext === 'edit') {
-			updateFolder_db($folderEditor)
+		if (bookmarkEditor.folderEditor === null) {
+			console.error('editor: No folder to save')
+			return
+		}
+		if (bookmarkEditor.bookmarkEditorContext === 'edit') {
+			putFolder_db(bookmarkEditor.folderEditor)
 		} else {
 			// Save the current Folder along with the relevant bookmark id's of any selected tags.
-			// @ts-ignore
-			const tags = selectedTags.reduce((acc, curr, i) => (curr === true ? [...acc, $uniqueTags[i]] : []), [])
-			$folderEditor.bookmarks = await getBookmarksWithSelectedTags_db(tags)
-			newFolder_db($folderEditor)
+			const tags = selectedTags.reduce((acc, curr, i) => {
+				// return curr ? [...acc, db.uniqueTags?.[i]] : acc
+				const tag = db.uniqueTags?.[i]
+				if (curr && tag) {
+					acc.push(tag)
+				}
+				return acc
+			}, [] as string[])
+			bookmarkEditor.folderEditor.bookmark_ids = await getBookmarksWithSelectedTags_db(tags)
+			addFolder_db(bookmarkEditor.folderEditor)
 		}
-		editor.hide()
+		bookmarkEditor.hide()
 	}
 
 	async function handleDelete() {
 		if (folderCount === 1) return
-		await deleteFolder_db($folderEditor)
-		editor.hide()
+		if (bookmarkEditor.folderEditor === null) {
+			console.error('editor: No folder to delete')
+			return
+		}
+		await deleteFolder_db(bookmarkEditor.folderEditor)
+		bookmarkEditor.hide()
 	}
 
 	onMount(async () => {
-		if ($bookmarkEditorContext === 'create') {
+		if (bookmarkEditor.bookmarkEditorContext === 'create') {
 			header = 'New Folder'
 			titleInput?.select()
 		} else {
-			if ($folderEditor !== null) emoji = $folderEditor.icon
+			if (bookmarkEditor.folderEditor !== null) emoji = bookmarkEditor.folderEditor.icon
 			folderCount = await getFolderCount_db()
 		}
 	})
 </script>
 
-<template lang="pug">
+{#if bookmarkEditor.folderEditor}
+	<div class="editor-container" use:clickOutside onoutclick={() => bookmarkEditor.hide()}>
+		<div class="space-sm"></div>
+		<h2 class="header">{header}</h2>
+		<div class="space-sm"></div>
 
-	+if('$folderEditor')
-		.editor-container(use:clickOutside!='{() => editor.hide()}')
-			.space-sm
-			h2.header {header}
-			.space-sm
+		<div class="setting title">
+			<div class="emoji" onpointerdown={() => (showEmojiPicker = !showEmojiPicker)}>
+				{bookmarkEditor.folderEditor.icon}
+			</div>
+			{#if showEmojiPicker}
+				<div class="emoji-picker">
+					<EmojiPicker
+						bind:showEmojiPicker
+						bind:emoji={bookmarkEditor.folderEditor.icon}
+					/>
+				</div>
+			{/if}
+			<input
+				class="title"
+				placeholder="My Folder"
+				bind:this={titleInput}
+				bind:value={bookmarkEditor.folderEditor.title}
+				onclick={() => titleInput?.select()}
+				onkeydown={(e) => e.key === 'Enter' && handleSave()}
+			/>
+		</div>
+		<div class="space-lg"></div>
 
-			.setting.title
-				.emoji(on:click!='{() => showEmojiPicker = !showEmojiPicker}') {$folderEditor.icon}
-				+if('showEmojiPicker')
-					.emoji-picker
-						EmojiPicker(bind:showEmojiPicker bind:emoji='{$folderEditor.icon}')
-				input.title(
-					placeholder="My Folder"
-					bind:this='{titleInput}'
-					bind:value='{$folderEditor.title}'
-					on:click!='{() => titleInput.select()}'
-					on:keydown!='{(e) => e.key === "Enter" && handleSave()}'
-				)
-			.space-lg
+		{#if bookmarkEditor.bookmarkEditorContext === 'create'}
+			<div class="setting tag-manager scroller">
+				<div class="info">Add bookmarks from tags (optional)</div>
+				<div class="tags">
+					{#if db.uniqueTags}
+						{#each db.uniqueTags as tag, i}
+							<div
+								class="tag"
+								class:selected={selectedTags[i]}
+								onpointerdown={() => (selectedTags[i] = !selectedTags[i])}
+							>
+								{tag}
+							</div>
+						{/each}
+					{/if}
+				</div>
+			</div>
+		{/if}
 
-			+if('$bookmarkEditorContext === "create"')
-				.setting.tag-manager.scroller
-					.info Add bookmarks from tags (optional)
-					.tags
-						+if('$uniqueTags')
-							+each('$uniqueTags as tag, i')
-								.tag(
-									class:selected='{selectedTags[i]}'
-									on:click!='{() => selectedTags[i] = !selectedTags[i]}'
-								) {tag}
+		<div class="buttons">
+			<Button
+				--colorHover="var(--warn)"
+				--borderHover="1px solid var(--warn)"
+				onclick={() => bookmarkEditor.hide()}
+			>
+				Cancel
+			</Button>
 
-			.buttons
-				Button(
-					'--colorHover'='var(--warn)'
-					'--borderHover'='1px solid var(--warn)'
-					on:click!='{() => editor.hide()}'
-				) Cancel
+			<Button
+				--colorHover="var(--confirm)"
+				--borderHover="1px solid var(--confirm)"
+				onclick={handleSave}
+			>
+				Save
+			</Button>
 
-				Button(
-					'--colorHover'='var(--confirm)'
-					'--borderHover'='1px solid var(--confirm)'
-					on:click='{handleSave}'
-				) Save
-
-				DeleteFolder(disabled='{deleteDisabled}' on:close!='{() => editor.hide()}' on:click='{handleDelete}')
-
-</template>
+			<DeleteFolder
+				disabled={deleteDisabled}
+				onclose={() => bookmarkEditor.hide()}
+				onclick={handleDelete}
+			/>
+		</div>
+	</div>
+{/if}
 
 <style lang="scss">
 	.editor-container {
@@ -124,8 +163,8 @@
 		margin: 30vh auto;
 
 		border-radius: 10px;
-		background: var(--light-a);
-		color: var(--dark-a);
+		background: var(--fg-a);
+		color: var(--bg-a);
 		box-shadow: 0 5px 15px 5px #00000011;
 
 		perspective: 1200px;
@@ -152,7 +191,7 @@
 	.header {
 		margin: 1rem auto;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 
 		text-align: center;
 		font-size: 1.5rem;
@@ -172,13 +211,13 @@
 		width: 50%;
 		padding: 8px;
 
-		color: var(--dark-a);
-		border: 1px solid rgba(var(--light-b-rgb), 0);
+		color: var(--bg-a);
+		border: 1px solid color-mix(in srgb, var(--fg-b) 0%, transparent);
 		border-radius: 3px;
 		outline: none;
-		background: var(--light-a);
+		background: var(--fg-a);
 		box-shadow: var(--shadow-sm);
-		border-bottom: 1px solid rgba(var(--light-b-rgb), 1);
+		border-bottom: 1px solid color-mix(in srgb, var(--fg-b) 100%, transparent);
 
 		font-family: 'Abel';
 		font-size: 1rem;
@@ -199,12 +238,12 @@
 
 		font-size: 1.25rem;
 
-		border: 1px solid rgba(var(--dark-a-rgb), 0.1);
+		border: 1px solid color-mix(in srgb, var(--bg-a) 10%, transparent);
 		&:hover {
-			border: 1px solid rgba(var(--dark-a-rgb), 0.5);
+			border: 1px solid color-mix(in srgb, var(--bg-a) 50%, transparent);
 		}
 		&:focus {
-			border: 1px solid rgba(var(--dark-a-rgb), 1);
+			border: 1px solid color-mix(in srgb, var(--bg-a) 100%, transparent);
 		}
 	}
 
@@ -231,12 +270,12 @@
 		transform: translateX(-2rem);
 
 		border-radius: 4px;
-		border: 1px solid rgba(var(--dark-a-rgb), 0.1);
+		border: 1px solid color-mix(in srgb, var(--bg-a) 10%, transparent);
 		&:hover {
-			border: 1px solid rgba(var(--dark-a-rgb), 0.5);
+			border: 1px solid color-mix(in srgb, var(--bg-a) 50%, transparent);
 		}
 		&:focus {
-			border: 1px solid rgba(var(--dark-a-rgb), 1);
+			border: 1px solid color-mix(in srgb, var(--bg-a) 100%, transparent);
 		}
 	}
 
@@ -254,7 +293,7 @@
 		width: 90%;
 		margin: auto;
 
-		border: 1px solid var(--light-b);
+		border: 1px solid var(--fg-b);
 		border-radius: 5px;
 		opacity: 0.5;
 
@@ -266,7 +305,7 @@
 	.info {
 		margin: 1rem auto;
 
-		color: var(--dark-c);
+		color: var(--bg-c);
 
 		text-align: center;
 		font-size: 0.95rem;
@@ -297,7 +336,7 @@
 		opacity: 0.5;
 		border: 1px solid;
 		border-radius: 5px;
-		border-color: rgba(var(--dark-a-rgb), 0.25);
+		border-color: color-mix(in srgb, var(--bg-a) 25%, transparent);
 
 		font-size: 0.95rem;
 		text-align: center;
@@ -307,12 +346,12 @@
 
 		&:hover {
 			opacity: 0.75;
-			border-color: rgba(var(--dark-a-rgb), 0.5);
+			border-color: color-mix(in srgb, var(--bg-a) 50%, transparent);
 		}
 
 		&.selected {
 			opacity: 1;
-			border-color: var(--dark-a);
+			border-color: var(--bg-a);
 		}
 	}
 

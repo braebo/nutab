@@ -3,26 +3,23 @@
 
 	const links = [
 		['/about', 'About'],
-		['/contact', 'Contact']
+		['/contact', 'Contact'],
 	]
 </script>
 
-<template lang="pug">
+<nav>
+	<ul>
+		{#each links as [path, title] (title)}
+			<li class:active={$page.url.pathname === path}>
+				<a data-sveltekit-preload-code data-sveltekit-preload-data href={path}>
+					{title}
+				</a>
+			</li>
+		{/each}
+	</ul>
+</nav>
 
-	nav
-		ul
-			+each('links as [path, title], i (title)')
-
-				li(class:active='{$page.url.pathName === path}')
-
-					a(
-						sveltekit:prefetch
-						href='{path}'
-					) {title}
-
-</template>
-
-<style>
+<style lang="scss">
 	nav {
 		display: flex;
 		justify-content: center;
@@ -40,7 +37,7 @@
 	li {
 		list-style: none;
 
-		color: var(--dark-a);
+		color: var(--bg-a);
 	}
 
 	a {
@@ -64,10 +61,10 @@
 	a:hover {
 		text-decoration: none;
 
-		color: var(--brand-a);
+		color: var(--theme-a);
 	}
 
 	.active {
-		color: var(--brand-a);
+		color: var(--theme-a);
 	}
 </style>

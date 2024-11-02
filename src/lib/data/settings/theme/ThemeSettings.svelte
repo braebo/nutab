@@ -1,18 +1,25 @@
 <script lang="ts">
+	import { settings } from '$lib/stores/settings.svelte'
 	import TabOptions from '$lib/ui/TabOptions.svelte'
 	import ThemeEditor from './ThemeEditor.svelte'
-	import { settings } from '$lib/stores'
 	import { fly } from 'svelte/transition'
 
-	import Clouds from '$lib/theme/graphics/Clouds.svelte'
-	import Stars from '$lib/theme/graphics/Stars.svelte'
-	import Moon from '$lib/theme/graphics/Moon.svelte'
-	import Sun from '$lib/theme/graphics/Sun.svelte'
+	import Clouds from '$lib/theme_og/graphics/Clouds.svelte'
+	import Stars from '$lib/theme_og/graphics/Stars.svelte'
+	import Moon from '$lib/theme_og/graphics/Moon.svelte'
+	import Sun from '$lib/theme_og/graphics/Sun.svelte'
 
-	let selected = $state($settings.sharedTheme ? 0 : 1)
+	const options = ['Shared', 'Separate']
 
-	const toggleShared = (e: CustomEvent) => {
-		$settings.sharedTheme = !e.detail.index
+	interface Selection {
+		option: (typeof options)[number]
+		index: number
+	}
+
+	let selected = $state(settings.sharedTheme ? 0 : 1)
+
+	const toggleShared = ({ index }: Selection) => {
+		settings.sharedTheme = !index
 	}
 
 	const size = 60
@@ -23,10 +30,10 @@
 
 <div class="theme-settings">
 	<div class="shared" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
-		<TabOptions options={['Shared', 'Separate']} bind:selected on:select={toggleShared} />
+		<TabOptions options={['Shared', 'Separate']} bind:selected onSelect={toggleShared} />
 	</div>
 
-	{#if $settings.sharedTheme}
+	{#if settings.sharedTheme}
 		<div class="content">
 			<div class="editor" in:fly={_in({ y: 10 })} out:fly={_out({ y: 10 })}>
 				<ThemeEditor thisTheme="shared" />
@@ -80,7 +87,7 @@
 
 	.modes {
 		display: flex;
-		color: var(--dark-d);
+		color: var(--bg-d);
 		justify-content: space-between;
 		width: 100%;
 	}
@@ -116,7 +123,7 @@
 	.title {
 		position: relative;
 
-		color: var(--dark-d);
+		color: var(--bg-d);
 		opacity: 0.75;
 
 		font-size: 1.5rem;

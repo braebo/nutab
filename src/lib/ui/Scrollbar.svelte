@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy'
-
 	import { onMount, onDestroy } from 'svelte'
 	import { mapRange, log } from 'fractils'
 
@@ -8,7 +6,7 @@
 		root = $bindable(),
 		disabled = $bindable(false),
 		padding = 0.7,
-		e = $bindable(),
+		e = $bindable<Event>(),
 	}: {
 		/**
 		 * The element to add the scrollbar to.  Can be a selector or an element.
@@ -24,16 +22,16 @@
 		 * @default 0.7
 		 */
 		padding?: number
-		e: Event
+		e?: Event
 	} = $props()
 
-	let viewHeight: number = $state()
-	let containerHeight: number = $state()
-	let ratio: number = $state()
-	let scrollbarHeight: number = $state()
-	let scrollbarHeightRatio: number = $state()
-	let scrollbarOffset: number = $state()
-	let scrollPercentage: number = $state()
+	let viewHeight = $state<number>()
+	let containerHeight = $state<number>()
+	let ratio = $state<number>()
+	let scrollbarHeight = $state<number>()
+	let scrollbarHeightRatio = $state<number>()
+	let scrollbarOffset = $state<number>()
+	let scrollPercentage = $state<number>()
 
 	onMount(() => {
 		if (typeof root === 'string') {
@@ -60,7 +58,7 @@
 	onDestroy(() => (disabled = true))
 
 	let reveal = $state(false)
-	let timer: NodeJS.Timeout | null = null
+	let timer: ReturnType<typeof setTimeout> | null = null
 
 	function showScrollbar() {
 		if (timer) clearTimeout(timer)
@@ -69,9 +67,7 @@
 			reveal = false
 		}, 1000)
 	}
-	$effect(() => {
-		disabled = disabled ?? false
-	})
+
 	$effect(() => {
 		if (e) {
 			if (
@@ -126,7 +122,7 @@
 		width: 7px;
 		height: var(--scrollbar-height);
 
-		background: var(--mac-scrollbar-color, var(--light-d));
+		background: var(--mac-scrollbar-color, var(--fg-d));
 		border-radius: 20px;
 		opacity: 0;
 

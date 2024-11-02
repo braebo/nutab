@@ -1,18 +1,19 @@
 <script lang="ts">
-	import { settings, showGuidelines } from '$lib/stores'
-	import { blurOverlay } from '$lib/stores/blurOverlay'
+	import { blurOverlay } from '$lib/stores/blurOverlay.svelte'
+	import { settings } from '$lib/stores/settings.svelte'
+	import { grid } from '$lib/stores/grid.svelte'
 	import ShowTitle from './ShowTitle.svelte'
 	import Range from '$lib/ui/Range.svelte'
 	import { fly } from 'svelte/transition'
 	import Control from './Control.svelte'
 	import { onDestroy } from 'svelte'
 
-	let timer: NodeJS.Timeout
-	function handleInput(e: Event, setting: string) {
-		$blurOverlay = true
+	let timer: ReturnType<typeof setTimeout>
+	function handleInput(_e: Event, setting: keyof typeof settings.ranges) {
+		blurOverlay.value = true
 
 		// Show and hide "guidelines" when gridwidth changes
-		if (setting === 'gridWidth') $showGuidelines = true
+		if (setting === 'gridWidth') grid.showGuidelines = true
 
 		clearTimeout(timer)
 
@@ -27,18 +28,30 @@
 	})
 
 	function cleanup() {
-		$blurOverlay = false
-		$showGuidelines = false
+		blurOverlay.value = false
+		grid.showGuidelines = false
+	}
+
+	const settingsKeys = $derived(
+		Object.keys(settings.ranges).filter((s) =>
+			['gridWidth', 'gridGap', 'iconSize'].includes(s),
+		) as Array<keyof typeof settings.ranges>,
+	)
+
+	const ranges = {
+		gridWidth: { label: 'Width', range: { min: 500, max: 2000 } },
+		iconSize: { label: 'Icon', range: { min: 32, max: 90 } },
+		gridGap: { label: 'Spacing', range: { min: 0, max: 100 } },
 	}
 </script>
 
 <div class="controls">
-	{#each Object.keys($settings.ranges).filter((s) => ['gridWidth', 'gridGap', 'iconSize'].includes(s)) as setting, i}
-		<Control label={$settings.ranges[setting].label} {i}>
+	{#each settingsKeys as setting, i}
+		<Control label={ranges[setting].label} {i}>
 			<Range
-				on:input={(e) => handleInput(e, setting)}
-				bind:value={$settings.ranges[setting].value}
-				range={$settings.ranges[setting].range}
+				oninput={(e) => handleInput(e, setting)}
+				bind:value={settings.ranges[setting]}
+				range={ranges[setting].range}
 				name={setting}
 			/>
 		</Control>
@@ -46,7 +59,7 @@
 
 	<div
 		class="show-title"
-		in:fly={{ y: 10, duration: 200, delay: 50 * Object.keys($settings.ranges).length }}
+		in:fly={{ y: 10, duration: 200, delay: 50 * Object.keys(settings.ranges).length }}
 		out:fly={{ y: 15, duration: 100 }}
 	>
 		<ShowTitle />

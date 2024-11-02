@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
+	import type { Snippet } from 'svelte'
 
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
+	let {
+		children,
+	}: {
+		children?: Snippet
+	} = $props()
 
-	let { children }: Props = $props();
-	let inspector: HTMLElement = $state()
-	run(() => {
-		console.log(inspector)
-	});
+	let inspector = $state<HTMLElement>()
 </script>
 
 <span bind:this={inspector}>

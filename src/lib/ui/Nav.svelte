@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-
 	import NuTab from './NuTab.svelte'
 
 	let visible = false
@@ -12,32 +11,28 @@
 	})
 </script>
 
-<template lang="pug">
+<nav>
+	{#if visible}
+		<div class="logo">
+			<NuTab />
+		</div>
+	{/if}
+</nav>
 
-	nav
-		+if('visible')
-			.logo
-				NuTab
+<style>
+	nav {
+		display: flex;
+		justify-content: center;
+		position: fixed;
+		width: 100%;
+		padding: 1rem;
+		font-size: 30px;
+	}
 
-</template>
-
-<style lang="sass">
-
-	nav
-		display: flex
-		justify-content: center
-		position: fixed
-
-		width: 100%
-		padding: 1rem
-
-		font-size: 30px
-
-	.logo
-		position: absolute
-		inset: 0
-		
-		width: max-content
-		margin: 2rem auto
-
+	.logo {
+		position: absolute;
+		inset: 0;
+		width: max-content;
+		margin: 2rem auto;
+	}
 </style>

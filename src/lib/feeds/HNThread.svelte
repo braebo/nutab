@@ -7,92 +7,111 @@
 	import { fetchItem } from './fetchData'
 
 	interface Props {
-		threadId: number;
+		threadId: number
 	}
 
-	let { threadId }: Props = $props();
+	let { threadId }: Props = $props()
 
 	let transitionDuration = 200
 </script>
 
-<template lang="pug">
+{#await fetchItem(threadId)}
+	<LoadingDots />
+{:then item}
+	<article
+		class="item"
+		out:fly={{ y: -10, duration: transitionDuration }}
+		in:fly={{ y: -10, delay: transitionDuration }}
+	>
+		<a class="main-link" href={item.url} target="_blank">
+			<h1>{item.title}</h1>
+		</a>
 
-	+await('fetchItem(threadId)')
-		LoadingDots
+		<p class="meta">
+			{item.score} points
+			<span class="dot">·</span>
+			<a href="https://news.ycombinator.com/user?id={item.by}">
+				{item.by}
+			</a>
+			<span class="dot">·</span>
+			{#if item.time}
+				{formatDistanceToNow(item.time * 1000).replace('about', '')} ago
+			{/if}
+		</p>
 
-		+then('item')
-			article.item(out:fly='{{ y: -10, duration: transitionDuration }}' in:fly='{{ y: -10, delay: transitionDuration }}')
-				a(class='main-link' href='{item.url}' target="_blank")
-					h1 {item.title}
+		{#if item.text}
+			<div class="content">{@html item.text}</div>
+		{/if}
+	</article>
 
-				p.meta
-					| {item.score} points 
-					span.dot · 
-					a(href!="https://news.ycombinator.com/user?id={item.by}")
-						| {item.by} 
-					span.dot · 
-					| {formatDistanceToNow(item.time * 1000).replace('about', '')} ago
+	<div class="comments">
+		{#if item.kids?.length}
+			{#each item.kids as commentId}
+				<HNComment {commentId} />
+			{/each}
+		{:else}
+			<p>No comments yet...</p>
+		{/if}
+	</div>
+{:catch e}
+	Problem loading thread:
+	<pre>{JSON.stringify(e)}</pre>
+{/await}
 
-				+if('item.text')
-					.content {@html item.text}
-
-			.comments
-				+if('item.kids?.length > 0')
-					+each('item.kids as commentId')
-						HNComment({commentId})
-					+else
-						p No comments yet...
-
-		+catch('e') Problem loading thread:
-			pre {JSON.stringify(e)}
-
-</template>
-
-<style lang="sass">
+<style lang="scss">
 	// TODO #19 install Merriweather locally if it's going to be used
-	// @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300')
-	article.item
-		margin: 0 auto 2rem auto
-		padding: 1rem 2rem
+	// @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300');
 
-		border-radius: 1.5rem
-		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
-		background: rgba(var(--light-a-rgb), 0.5)
-		box-shadow: 0 3px 0.75rem 0 #11111115
+	article.item {
+		margin: 0 auto 2rem auto;
+		padding: 1rem 2rem;
 
-	.item :global(*)
-		font-size: 1rem
+		border-radius: 1.5rem;
+		border-bottom: 0.5rem solid color-mix(in srgb, var(--fg-d) 25%, transparent);
+		background: color-mix(in srgb, var(--fg-a) 50%, transparent);
+		box-shadow: 0 3px 0.75rem 0 #11111115;
+	}
 
-	h1
-		font-weight: 300 !important
-		font-size: 1.75rem !important
-		font-family: var(--font-c)
+	.item :global(*) {
+		font-size: 1rem;
+	}
 
-	:global(html.dark) .item
-		border-bottom: 0.5rem solid rgba(var(--light-d-rgb), 0.25)
+	h1 {
+		font-weight: 300 !important;
+		font-size: 1.75rem !important;
+		font-family: var(--font-c);
+	}
 
-	.main-link
-		display: block
-		text-decoration: none
+	:global(html.dark) .item {
+		border-bottom: 0.5rem solid color-mix(in srgb, var(--fg-d) 25%, transparent);
+	}
 
-	.meta
-		display: flex
-		align-items: center
-		gap: 0.5rem
+	.main-link {
+		display: block;
+		text-decoration: none;
+	}
 
-		margin: 1rem auto 0 auto
+	.meta {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 
-		opacity: 0.5
+		margin: 1rem auto 0 auto;
 
-		font-size: 0.85rem
-		font-weight: 300
+		opacity: 0.5;
 
-	.content
-		padding: 1rem
-		color: var(--dark-a)
-		background: rgba(var(--light-a-rgb), 0.2)
-		border-radius: var(--radius-sm)
-	
-	.comments
-		width: 100%
+		font-size: 0.85rem;
+		font-weight: 300;
+	}
+
+	.content {
+		padding: 1rem;
+		color: var(--bg-a);
+		background: color-mix(in srgb, var(--fg-a) 20%, transparent);
+		border-radius: var(--radius-sm);
+	}
+
+	.comments {
+		width: 100%;
+	}
 </style>

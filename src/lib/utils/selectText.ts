@@ -6,6 +6,7 @@
 export function selectText(el: Element | string): void {
 	if (typeof window === 'undefined') return
 	if (typeof el === 'string') {
+		// @ts-expect-error ...
 		el = document.getElementById(el)
 	}
 	if (!el) {
@@ -14,7 +15,7 @@ export function selectText(el: Element | string): void {
 	}
 	const selection = window.getSelection()
 	const range = document.createRange()
-	range.selectNodeContents(el)
-	selection.removeAllRanges()
-	selection.addRange(range)
+	range.selectNodeContents(el as Node)
+	selection?.removeAllRanges()
+	selection?.addRange(range)
 }
