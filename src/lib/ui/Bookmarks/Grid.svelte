@@ -65,7 +65,6 @@
 		// If we have a target, swap the elements
 		if (target !== null && active != null && target != active) {
 			await swap(active, target)
-			// db.activeFolder = db.activeFolder
 		}
 
 		// TODO It would be nice to smoothly animate the dragged
@@ -199,8 +198,6 @@
 				return reject(console.error('Error: Bookmarks are in the same position'))
 			}
 
-			// db.activeBookmarks[a] = _b
-			// db.activeBookmarks[b] = _a
 			await swapBookmarks_db([_a, _b])
 
 			resolve()
@@ -310,7 +307,6 @@
 		margin: 1vh auto;
 		box-sizing: border-box;
 
-		// for $showGuidelines
 		border: 1px solid #0000;
 		border-top: none;
 		border-bottom: none;

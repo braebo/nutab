@@ -7,8 +7,6 @@ import dexie from './dexie.svelte'
 import { db } from './db.svelte'
 import { DEV } from 'esm-env'
 
-// let loopguard = 0
-
 const log = logger('Transactions', { fg: 'darksalmon', server: false, browser: DEV })
 
 /**
@@ -37,17 +35,6 @@ export async function init_db() {
 			lastActiveFolder = defaultFolder[0]
 		} else {
 			throw new Error('❌ Failed to initialize database: No folders found')
-			// localStorage.removeItem('lastActiveFolderId')
-			// loopguard++
-			// if (loopguard === 0) {
-			// 	init_db()
-			// 	return
-			// } else {
-			// 	console.error(
-			// 		"❌ No folders found in database... this shouldn't happen.  Try clearing local storage to delete / reset all data.",
-			// 	)
-			// 	return
-			// }
 		}
 	}
 }
@@ -196,9 +183,6 @@ export const swapBookmarks_db = async (bookmarks: Bookmark[]) => {
 			})
 			.then(resolve)
 	})
-
-	// // Update activeFolder
-	// activeFolder.set(get(activeFolder))
 }
 
 /**
@@ -264,7 +248,6 @@ export async function deleteFolder_db(folder: Folder) {
 		if (!fallbackFolder) {
 			throw new Error('fallbackFolder not found')
 		}
-		// db.activeFolder = fallbackFolder
 	}
 	log('🏁 Folder deleted')
 }

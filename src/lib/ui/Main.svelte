@@ -70,6 +70,7 @@
 		scroll-snap-align: start;
 		contain: content;
 		min-height: 100vh;
+		max-height: 100vh;
 		min-width: 100vw;
 	}
 </style>
