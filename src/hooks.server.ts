@@ -11,7 +11,10 @@ export async function handle({ event, resolve }) {
 	return resolve(event, {
 		transformPageChunk: ({ html, done }) => {
 			page += html
-			if (done) return page.replace('%nutab.theme%', event.locals.theme)
+			if (done)
+				return page
+					.replace('%nutab.theme%', event.locals.theme)
+					.replace('%nutab.theme%', event.locals.theme)
 		},
 	})
 }
