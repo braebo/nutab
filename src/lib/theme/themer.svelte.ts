@@ -59,7 +59,6 @@ class Themer {
 			$effect(() => {
 				this.applyTheme()
 			})
-			$inspect('Themer', typeof this.preference, this.preference)
 		})
 	}
 
@@ -112,7 +111,7 @@ class Themer {
 				safeLocalStorage.set(this.#storageKey, this.preference)
 			}
 
-			if (typeof document !== 'undefined') {
+			if (typeof globalThis.document !== 'undefined') {
 				document.cookie = `${this.#storageKey}=${this.#resolveMode(this.preference)}; path=/;`
 			}
 		}
@@ -141,8 +140,6 @@ class Themer {
 	 */
 	#resolveStorage(fallback: Preference): Preference {
 		if (!this.#storage || !globalThis.localStorage) return fallback
-
-		console.log('resolveStorage() for key:', this.#storageKey)
 		try {
 			const localPref = safeLocalStorage.get(this.#storageKey, fallback)
 			if (Themer.#isPref(localPref)) return localPref
